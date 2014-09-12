@@ -3,15 +3,7 @@ __author__ = 'akoziol'
 import re
 import os
 from collections import defaultdict
-import pprint
 import json
-
-# Initialise variables
-global totalClustersPF
-reads = []
-samples = []
-
-# global investigator
 
 # Import ElementTree - try first to import the faster C version, if that doesn't
 # work, try to import the regular version
@@ -20,33 +12,50 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 
+# Initialise variables
+flowcell = ""
+instrument = ""
+reads = []
+samples = []
+elementData = []
+
 
 def make_dict():
     """Makes Perl-style dictionaries"""
     return defaultdict(make_dict)
 
 # Initialise the dictionary responsible for storing the report data
-reportData = defaultdict(make_dict)
-sampleData = defaultdict(make_dict)
+returnData = defaultdict(make_dict)
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
 os.chdir("/media/nas1/akoziol/Pipeline_development/SPAdesPipelineSandbox")
 path = os.getcwd()
 
 
+def parseRunInfo():
+    """Parses the run information file (RunInfo.xml)"""
+    global flowcell
+    global instrument
+    # Use elementTree to get the xml file into memory
+    runInfo = ET.ElementTree(file="RunInfo.xml")
+    # pull the text from flowcell and instrument values using the .iter(tag="X") function
+    for elem in runInfo.iter(tag="Flowcell"):
+        flowcell = elem.text
+    for elem in runInfo.iter(tag="Instrument"):
+        instrument = elem.text
+
+
 def parseSampleSheet():
     """Parses the sample sheet (SampleSheet.csv) to determine certain values
     important for the creation of the assembly report"""
-    global investigator
-    global experiment
-    global date
-    global forwardLength
-    global reverseLength
-    global adapter
     sampleSheet = open("SampleSheet.csv", "r")
+    # Go line-by-line through the csv file to find the information required
     for line in sampleSheet:
-        line.strip()
+        # Remove all newlines
+        line.rstrip()
+        # As this is a csv file, data are separated by commas - split on commas
         data = line.split(",")
+        # Populate variables with appropriate data
         if re.search("Investigator", line):
             investigator = data[1].rstrip()
         elif re.search("Experiment", line):
@@ -62,6 +71,7 @@ def parseSampleSheet():
                 if re.search("Settings", subline):
                     break
                 reads.append(subline)
+            # Grab the number of reads in the first and second reads
             forwardLength = reads[0].rstrip()
             reverseLength = reads[1].rstrip()
         if re.search("Adapter", line):
@@ -69,21 +79,57 @@ def parseSampleSheet():
         elif re.search("Sample_ID", line):
             for subline in sampleSheet:
                 subdata = subline.split(",")
-                # Capture      Sample_ID	          Sample_Name	         I7_Index_ID	        index	         I5_Index_ID	          index2	       Sample_Project
-                sampleData[subdata[0].rstrip()][subdata[1].rstrip()][subdata[4].rstrip()][subdata[5].rstrip()][subdata[6].rstrip()][subdata[7].rstrip()] = subdata[8].rstrip()
-        # elif re.search("Settings", line):
-            # print line
-
-
-
-
+                # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
+                strain = subdata[1].rstrip().replace(" ", "")
+                returnData[strain]["SampleName"] = subdata[0].rstrip()
+                returnData[strain]["I7IndexID"] = subdata[4].rstrip()
+                returnData[strain]["index1"] = subdata[5].rstrip()
+                returnData[strain]["I5IndexID"] = subdata[6].rstrip()
+                returnData[strain]["index2"] = subdata[7].rstrip()
+                returnData[strain]["Project"] = subdata[8].rstrip()
+                returnData[strain]["Investigator"] = investigator
+                returnData[strain]["Experiment"] = experiment
+                returnData[strain]["Date"] = date
+                returnData[strain]["AdapterSequence"] = adapter
+                returnData[strain]["LengthofFirstRead"] = forwardLength
+                returnData[strain]["LengthofSecondRead"] = reverseLength
+                returnData[strain]["Flowcell"] = flowcell
+                returnData[strain]["Instrument"] = instrument
 
 
 def parseRunStats():
-    """Parses the XML run statistics (GenerateFASTQRunStatistics.xml)"""
-    pass
+    """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml)"""
+    global totalClustersPF
+    dataList = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
+    runStatistics = ET.ElementTree(file="GenerateFASTQRunStatistics.xml")
+    # .iterfind() allow for the matching and iterating though matches
+    for elem in runStatistics.iterfind("RunStats/NumberOfClustersPF"):
+        # This is stored as a float to allow subsequent calculations
+        totalClustersPF = float(elem.text)
+    # Similar to above
+    for element in runStatistics.iterfind("OverallSamples/SummarizedSampleStatistics"):
+        # Iterate through the list of the various values defined above
+        for dataL in dataList:
+            for element1 in element.iter(dataL):
+                # Append to elementData
+                elementData.append(element1.text)
+        percentperStrain = float(elementData[3]) / totalClustersPF * 100
+        # Format the outputs to have two decimal places
+        roundedPercentperStrain = ("%.2f" % percentperStrain)
+        # Populate returnData with all the appropriate values
+        # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
+        # totalClustersPF, and % of total readsPF
+        strain = elementData[2]
+        returnData[strain]["SampleNumber"] = elementData[0]
+        returnData[strain]["NumberOfClustersPF"] = elementData[3]
+        returnData[strain]["TotalClustersinRun"] = totalClustersPF
+        returnData[strain]["PercentOfClusters"] = roundedPercentperStrain
+        # Clears the list for the next iteration
+        elementData[:] = []
 
+# Run the functions
+parseRunInfo()
 parseSampleSheet()
-print investigator, experiment, date, forwardLength, reverseLength, adapter
+parseRunStats()
 
-print json.dumps(sampleData, sort_keys=True, indent=4)
+print json.dumps(returnData, sort_keys=True, indent=4)

@@ -12,10 +12,6 @@ try:
 except ImportError:
     import xml.etree.ElementTree as ET
 
-# The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/media/nas1/akoziol/Pipeline_development/SPAdesPipelineSandbox")
-path = os.getcwd()
-
 # Initialise variables
 flowcell = ""
 instrument = ""
@@ -95,6 +91,8 @@ def parseSampleSheet():
                 returnData[strain]["LengthofSecondRead"] = reverseLength
                 returnData[strain]["Flowcell"] = flowcell
                 returnData[strain]["Instrument"] = instrument
+                # Make a list of sample names to return to the main script
+                samples.append(strain)
 
 
 def parseRunStats():
@@ -133,8 +131,4 @@ def functionsGoNOW():
     parseRunInfo()
     parseSampleSheet()
     parseRunStats()
-    return returnData
-    # print json.dumps(returnData, sort_keys=True, indent=4)
-
-
-
+    return returnData, samples

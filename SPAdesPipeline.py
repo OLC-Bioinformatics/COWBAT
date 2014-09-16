@@ -24,6 +24,8 @@ import time
 import runMetadataOptater
 # Custom script for moving and/or extracting archived files
 import fileExtractionProcessing
+# Custom Script to perform quake error corrections on the reads
+import quakeR
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
 os.chdir("/media/nas1/akoziol/Pipeline_development/SPAdesPipelineSandbox")
@@ -43,9 +45,12 @@ print("There are %s CPUs in your system" % cpus)
 def pipeline():
     """All the functions for running the pipeline"""
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
+    print("Extracting metadata from sequencing run.")
     runMetadata, sampleNames = runMetadataOptater.functionsGoNOW()
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
+    # quakify
+    quakeR.functionsGoNOW(sampleNames, path)
 
 # Run the pipeline
 pipeline()

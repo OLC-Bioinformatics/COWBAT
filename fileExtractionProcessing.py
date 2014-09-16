@@ -19,6 +19,7 @@ def make_path(inPath):
     does what is indicated by the URL"""
     try:
         os.makedirs(inPath)
+        os.chmod(inPath, 0777)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise

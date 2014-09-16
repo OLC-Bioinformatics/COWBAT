@@ -87,7 +87,5 @@ def folderer(sampleNames, path):
 
 def functionsGoNOW(sampleNames, path):
     """Run the functions"""
-    sampleNames = sampleNames
-    path = path
     unzipping()
     folderer(sampleNames, path)

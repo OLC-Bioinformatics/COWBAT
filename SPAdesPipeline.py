@@ -28,7 +28,7 @@ import fileExtractionProcessing
 import quakeR
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/media/nas1/akoziol/Pipeline_development/SPAdesPipelineSandbox")
+os.chdir("/media/nas/akoziol/Pipeline_development/SPAdesPipelineSandbox")
 path = os.getcwd()
 
 # Start time
@@ -50,9 +50,10 @@ def pipeline():
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify
-    quakeR.functionsGoNOW(sampleNames, path)
+    correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata)
 
 # Run the pipeline
 pipeline()
 
+# print json.dumps(runTrimMetadata, sort_keys=True, indent=4)
 print "\nElapsed Time: %s seconds" % (time.time() - start)

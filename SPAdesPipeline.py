@@ -26,6 +26,8 @@ import runMetadataOptater
 import fileExtractionProcessing
 # Custom Script to perform quake error corrections on the reads
 import quakeR
+# Run SPAdes
+import spadesGoUpper
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
 os.chdir("/media/nas/akoziol/Pipeline_development/SPAdesPipelineSandbox")
@@ -51,6 +53,8 @@ def pipeline():
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify
     correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata)
+    # SPAdesify
+    spadesGoUpper.functionsGoNOW(correctedFiles, path)
 
 # Run the pipeline
 pipeline()

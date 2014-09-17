@@ -38,12 +38,15 @@ def runQuake((name, path)):
         fastqList = open("%s/%s_fastqFiles.txt" % (newPath, name), "wb")
         fastqList.write("%s/%s\t%s/%s" % (newPath, forward, newPath, reverse))
         fastqList.close()
-        # Quake run command
+        # Quake run command - using a kmer size of 15 because that is what the developers recommended for
+        # microbial genomes
         # This is using a hard-coded path, as for some reason, when run within pycharm, quake.py could not
         # be located. Maybe the $PATH needs to be updated?
+        # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 2" % (newPath, name)
         quakeRun = "/home/blais/Bioinformatics/Quake/bin/quake.py -f %s/%s_fastqFiles.txt -k 15 -p 2" % (newPath, name)
         # Run the command
-        subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+        # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         sys.stdout.write('.')
     else:
         sys.stdout.write('.')

@@ -28,6 +28,11 @@ import fileExtractionProcessing
 import quakeR
 # Run SPAdes
 import spadesGoUpper
+# Perform typing using rMLST to determine best reference genome
+# import rMLST_typer
+# quastR
+import quastR
+
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
 os.chdir("/media/nas/akoziol/Pipeline_development/SPAdesPipelineSandbox")
@@ -55,6 +60,11 @@ def pipeline():
     correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata)
     # SPAdesify
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
+    # Typing
+    # rMLST_typer.functionsGoNOW(correctedFiles, path)
+    # Quasting
+    quastR.functionsGoNOW(correctedFiles, path)
+
 
 # Run the pipeline
 pipeline()

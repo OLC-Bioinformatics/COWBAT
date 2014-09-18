@@ -39,7 +39,7 @@ def runSpades((name, path)):
         else:
             spadesRun = "/home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
                         "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
-        # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system intead
+        # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
         os.system(spadesRun)
         # Print dots as per usual

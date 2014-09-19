@@ -67,10 +67,10 @@ def pipeline():
     # Quasting
     runTrimAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)
-    reportR.functionsGoNOW(runTrimAssemblyMetadata, path)
+    reportR.functionsGoNOW(correctedFiles, runTrimAssemblyMetadata, path)
 
 
 # Run the pipeline
 pipeline()
 
-print "\nElapsed Time: %s seconds" % (time.time() - start)
+print "Elapsed Time: %s seconds" % (time.time() - start)

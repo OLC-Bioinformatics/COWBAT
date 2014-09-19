@@ -77,20 +77,20 @@ def parseSampleSheet():
                 subdata = subline.split(",")
                 # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
                 strain = subdata[1].rstrip().replace(" ", "")
-                returnData[strain]["Run"]["SampleName"] = subdata[0].rstrip()
-                returnData[strain]["Run"]["I7IndexID"] = subdata[4].rstrip()
-                returnData[strain]["Run"]["index1"] = subdata[5].rstrip()
-                returnData[strain]["Run"]["I5IndexID"] = subdata[6].rstrip()
-                returnData[strain]["Run"]["index2"] = subdata[7].rstrip()
-                returnData[strain]["Run"]["Project"] = subdata[8].rstrip()
-                returnData[strain]["Run"]["Investigator"] = investigator
-                returnData[strain]["Run"]["Experiment"] = experiment
-                returnData[strain]["Run"]["Date"] = date
-                returnData[strain]["Run"]["AdapterSequence"] = adapter
-                returnData[strain]["Run"]["LengthofFirstRead"] = forwardLength
-                returnData[strain]["Run"]["LengthofSecondRead"] = reverseLength
-                returnData[strain]["Run"]["Flowcell"] = flowcell
-                returnData[strain]["Run"]["Instrument"] = instrument
+                returnData[strain]["3.Run"]["SampleName"] = subdata[0].rstrip()
+                returnData[strain]["3.Run"]["I7IndexID"] = subdata[4].rstrip()
+                returnData[strain]["3.Run"]["index1"] = subdata[5].rstrip()
+                returnData[strain]["3.Run"]["I5IndexID"] = subdata[6].rstrip()
+                returnData[strain]["3.Run"]["index2"] = subdata[7].rstrip()
+                returnData[strain]["3.Run"]["Project"] = subdata[8].rstrip()
+                returnData[strain]["3.Run"]["Investigator"] = investigator
+                returnData[strain]["3.Run"]["Experiment"] = experiment
+                returnData[strain]["3.Run"]["Date"] = date
+                returnData[strain]["3.Run"]["AdapterSequence"] = adapter
+                returnData[strain]["3.Run"]["LengthofFirstRead"] = forwardLength
+                returnData[strain]["3.Run"]["LengthofSecondRead"] = reverseLength
+                returnData[strain]["3.Run"]["Flowcell"] = flowcell
+                returnData[strain]["3.Run"]["Instrument"] = instrument
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
 
@@ -118,10 +118,10 @@ def parseRunStats():
         # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
         # totalClustersPF, and % of total readsPF
         strain = elementData[2]
-        returnData[strain]["Run"]["SampleNumber"] = elementData[0]
-        returnData[strain]["Run"]["NumberOfClustersPF"] = elementData[3]
-        returnData[strain]["Run"]["TotalClustersinRun"] = totalClustersPF
-        returnData[strain]["Run"]["PercentOfClusters"] = roundedPercentperStrain
+        returnData[strain]["3.Run"]["SampleNumber"] = elementData[0]
+        returnData[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
+        returnData[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
+        returnData[strain]["3.Run"]["PercentOfClusters"] = roundedPercentperStrain
         # Clears the list for the next iteration
         elementData[:] = []
 

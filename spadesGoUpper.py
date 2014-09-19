@@ -3,6 +3,8 @@ __author__ = 'akoziol'
 import os
 from multiprocessing import Pool
 import sys
+import re
+from Bio import SeqIO
 
 
 def spadesPrepProcesses(sampleName, path):
@@ -48,7 +50,30 @@ def runSpades((name, path)):
         sys.stdout.write('.')
 
 
+def contigFileFormatter(correctedFiles, path):
+    """Changes the name of each contig from ">NODE_XXX_length..." to the name of the file ">OLC795_XXX..." """
+    for name in correctedFiles:
+        newPath = path + "/" + name
+         #
+        if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
+            # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
+            over200bp = []
+            for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
+                if len(record.seq) >= 200:
+                    # Add this record to our list
+                    newID = re.sub("NODE", name, record.id)
+                    record.id = newID
+                    record.name = ''
+                    record.description = ''
+                    over200bp.append(record)
+            # print "Found %s long sequences" % len(over200bp)
+            formatted = open("%s/%s_filteredAssembled.fasta" % (newPath, name), "wb")
+            SeqIO.write(over200bp, formatted, "fasta")
+            formatted.close()
+
+
 def functionsGoNOW(correctedFiles, path):
     """Run the helper function"""
     print("Assembling reads.")
     spadesPrepProcesses(correctedFiles, path)
+    contigFileFormatter(correctedFiles, path)

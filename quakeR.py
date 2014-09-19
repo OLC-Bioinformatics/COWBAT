@@ -45,8 +45,7 @@ def runQuake((name, path)):
         # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 2" % (newPath, name)
         quakeRun = "/home/blais/Bioinformatics/Quake/bin/quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
-
-        # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         sys.stdout.write('.')
     else:
         sys.stdout.write('.')
@@ -56,6 +55,7 @@ def completionist(sampleNames, path, runMetadata):
     """This function checks to see which files could not be processed by Quake, and populates a list as appropriate.
     Additionally, it populates a dictionary with the metadata values for the correction"""
     for name in sampleNames:
+        # Populate the number of reads
         statsFileForward = name + "_R1_001.stats.txt"
         statsFileReverse = name + "_R2_001.stats.txt"
         newPath = path + "/" + name
@@ -64,18 +64,18 @@ def completionist(sampleNames, path, runMetadata):
         if not os.path.isfile("%s/%s" % (newPath, statsFileForward)):
             print(name)
             # Populate the dictionary with "N/A" values, as error correction did not occur
-            runMetadata[name]["Correction"]["ForwardValidatedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ForwardValidatedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ForwardCorrectedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ForwardTrimmedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ForwardTrimmedOnlyReads"] = "N/A"
-            runMetadata[name]["Correction"]["ForwardRemovedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardCorrectedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardTrimmedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardTrimmedOnlyReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ForwardRemovedReads"] = "N/A"
             #
-            runMetadata[name]["Correction"]["ReverseValidatedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ReverseCorrectedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ReverseTrimmedReads"] = "N/A"
-            runMetadata[name]["Correction"]["ReverseTrimmedOnlyReads"] = "N/A"
-            runMetadata[name]["Correction"]["ReverseRemovedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ReverseValidatedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ReverseCorrectedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ReverseTrimmedReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ReverseTrimmedOnlyReads"] = "N/A"
+            runMetadata[name]["4.Correction"]["ReverseRemovedReads"] = "N/A"
         else:
             # Add the strainName to a list of strains that were processed by quake
             corrected.append(name)
@@ -87,30 +87,30 @@ def completionist(sampleNames, path, runMetadata):
                 subline = line.split(": ")
                 # Populate the dictionary with the appropriate metadata
                 if re.search("Validated", line):
-                    runMetadata[name]["Correction"]["ForwardValidatedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ForwardValidatedReads"] = subline[1].strip()
                 elif re.search("Corrected", line):
-                    runMetadata[name]["Correction"]["ForwardCorrectedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ForwardCorrectedReads"] = subline[1].strip()
                 elif re.search("Trimmed:", line):
-                    runMetadata[name]["Correction"]["ForwardTrimmedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ForwardTrimmedReads"] = subline[1].strip()
                 elif re.search("only", line):
-                    runMetadata[name]["Correction"]["ForwardTrimmedOnlyReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ForwardTrimmedOnlyReads"] = subline[1].strip()
                 elif re.search("Removed", line):
-                    runMetadata[name]["Correction"]["ForwardRemovedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ForwardRemovedReads"] = subline[1].strip()
             forward.close()
             # Same as with the forward read file
             reverse = open("%s/%s" % (newPath, statsFileReverse), "r")
             for line in reverse:
                 subline = line.split(": ")
                 if re.search("Validated", line):
-                    runMetadata[name]["Correction"]["ReverseValidatedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ReverseValidatedReads"] = subline[1].strip()
                 elif re.search("Corrected", line):
-                    runMetadata[name]["Correction"]["ReverseCorrectedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ReverseCorrectedReads"] = subline[1].strip()
                 elif re.search("Trimmed:", line):
-                    runMetadata[name]["Correction"]["ReverseTrimmedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ReverseTrimmedReads"] = subline[1].strip()
                 elif re.search("only", line):
-                    runMetadata[name]["Correction"]["ReverseTrimmedOnlyReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ReverseTrimmedOnlyReads"] = subline[1].strip()
                 elif re.search("Removed", line):
-                    runMetadata[name]["Correction"]["ReverseRemovedReads"] = subline[1].strip()
+                    runMetadata[name]["4.Correction"]["ReverseRemovedReads"] = subline[1].strip()
             reverse.close()
     return runMetadata
 

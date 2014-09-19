@@ -58,88 +58,91 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
         newPath = path + "/" + name
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
         # Populate the dictionary with the referenceGenome - this may be moved to the rMLST module
-        runTrimMetadata[name]["General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
+        runTrimMetadata[name]["1.General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
         # This is just here as a placeholder until the rMLST module is functional
-        runTrimMetadata[name]["rMLST"]["rMLST_sequenceType"] = "N/A"
-        runTrimMetadata[name]["General"]["filelocation"] = newPath
-        runTrimMetadata[name]["General"]["assemblyDate"]= time.strftime("%Y-%m-%d")
+        runTrimMetadata[name]["1.General"]["rMLST_sequenceType"] = "N/A"
+        runTrimMetadata[name]["1.General"]["fileName"] = name
+        runTrimMetadata[name]["1.General"]["filelocation"] = newPath
+        runTrimMetadata[name]["1.General"]["assemblyDate"]= time.strftime("%Y-%m-%d")
+        runTrimMetadata[name]["2.Assembly"]["kmerRange"] = "21,33,55,77,99,127"
+        runTrimMetadata[name]["2.Assembly"]["assemblyType"] = "PE"
         if not os.path.isfile("%s/quast_results/report.tsv" % newPath):
             print "There was an issue getting the metadata from %s" % name
         else:
             report = open("%s/quast_results/transposed_report.tsv" % newPath, "r")
             for line in report:
-                if re.search("Assembly", line):
+                if re.search("2.Assembly", line):
                     pass
                 else:
                     if os.path.isfile("%s/quast_results/gage_report.tsv" % newPath):
                         subline = line.split("\t")
                         # Populate the dictionary
-                        runTrimMetadata[name]["Assembly"]["Assembly"] = subline[0]
-                        runTrimMetadata[name]["Assembly"]["NumContigs"] = subline[1]
-                        runTrimMetadata[name]["Assembly"]["NumContigsOver1000bp"] = subline[2]
-                        runTrimMetadata[name]["Assembly"]["TotalLength"] = subline[3]
-                        runTrimMetadata[name]["Assembly"]["TotalLengthOver1000bp"] = subline[4]
-                        runTrimMetadata[name]["Assembly"]["NumContigsOver500bp"] = subline[5]
-                        runTrimMetadata[name]["Assembly"]["LargestContig"] = subline[6]
-                        runTrimMetadata[name]["Assembly"]["TotalLengthOver500bp"] = subline[7]
-                        runTrimMetadata[name]["Assembly"]["ReferenceLength"] = subline[8]
-                        runTrimMetadata[name]["Assembly"]["percentGC"] = subline[9]
-                        runTrimMetadata[name]["Assembly"]["ReferencePercentGC"] = subline[10]
-                        runTrimMetadata[name]["Assembly"]["N50"] = subline[11]
-                        runTrimMetadata[name]["Assembly"]["NG50"] = subline[12]
-                        runTrimMetadata[name]["Assembly"]["N75"] = subline[13]
-                        runTrimMetadata[name]["Assembly"]["NG75"] = subline[14]
-                        runTrimMetadata[name]["Assembly"]["L50"] = subline[15]
-                        runTrimMetadata[name]["Assembly"]["LG50"] = subline[16]
-                        runTrimMetadata[name]["Assembly"]["L75"] = subline[17]
-                        runTrimMetadata[name]["Assembly"]["LG75"] = subline[18]
-                        runTrimMetadata[name]["Assembly"]["NumMisassemblies"] = subline[19]
-                        runTrimMetadata[name]["Assembly"]["NumMisassembledContigs"] = subline[20]
-                        runTrimMetadata[name]["Assembly"]["MisassembledContigsLength"] = subline[21]
-                        runTrimMetadata[name]["Assembly"]["NumLocalMisassemblies"] = subline[22]
-                        runTrimMetadata[name]["Assembly"]["NumUnalignedContigs"] = subline[23]
-                        runTrimMetadata[name]["Assembly"]["UnalignedLength"] = subline[23]
-                        runTrimMetadata[name]["Assembly"]["percentGenomeFraction"] = subline[24]
-                        runTrimMetadata[name]["Assembly"]["DuplicationRatio"] = subline[25]
-                        runTrimMetadata[name]["Assembly"]["NumNsPer100kbp"] = subline[26]
-                        runTrimMetadata[name]["Assembly"]["NumMismatchesPer100kbp"] = subline[27]
-                        runTrimMetadata[name]["Assembly"]["NumIndelsPer100kbp"] = subline[28]
-                        runTrimMetadata[name]["Assembly"]["LargestAlignment"] = subline[29]
+                        runTrimMetadata[name]["2.Assembly"]["Assembly"] = subline[0]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
+                        runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLengthOver500bp"] = subline[7]
+                        runTrimMetadata[name]["2.Assembly"]["ReferenceLength"] = subline[8]
+                        runTrimMetadata[name]["2.Assembly"]["percentGC"] = subline[9]
+                        runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = subline[10]
+                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[11]
+                        runTrimMetadata[name]["2.Assembly"]["NG50"] = subline[12]
+                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[13]
+                        runTrimMetadata[name]["2.Assembly"]["NG75"] = subline[14]
+                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[15]
+                        runTrimMetadata[name]["2.Assembly"]["LG50"] = subline[16]
+                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[17]
+                        runTrimMetadata[name]["2.Assembly"]["LG75"] = subline[18]
+                        runTrimMetadata[name]["2.Assembly"]["NumMisassemblies"] = subline[19]
+                        runTrimMetadata[name]["2.Assembly"]["NumMisassembledContigs"] = subline[20]
+                        runTrimMetadata[name]["2.Assembly"]["MisassembledContigsLength"] = subline[21]
+                        runTrimMetadata[name]["2.Assembly"]["NumLocalMisassemblies"] = subline[22]
+                        runTrimMetadata[name]["2.Assembly"]["NumUnalignedContigs"] = subline[23]
+                        runTrimMetadata[name]["2.Assembly"]["UnalignedLength"] = subline[24]
+                        runTrimMetadata[name]["2.Assembly"]["percentGenomeFraction"] = subline[25]
+                        runTrimMetadata[name]["2.Assembly"]["DuplicationRatio"] = subline[26]
+                        runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[27]
+                        runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = subline[28]
+                        runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = subline[29]
+                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30]
                     else:
                         # As above, but since the gage analysis wasn't performed,
                         # populate the dictionary with N/A where appropriate
                         subline = line.split("\t")
-                        runTrimMetadata[name]["Assembly"]["Assembly"] = subline[0]
-                        runTrimMetadata[name]["Assembly"]["NumContigs"] = subline[1]
-                        runTrimMetadata[name]["Assembly"]["NumContigsOver1000bp"] = subline[2]
-                        runTrimMetadata[name]["Assembly"]["TotalLength"] = subline[3]
-                        runTrimMetadata[name]["Assembly"]["TotalLengthOver1000bp"] = subline[4]
-                        runTrimMetadata[name]["Assembly"]["NumContigsOver500bp"] = subline[5]
-                        runTrimMetadata[name]["Assembly"]["LargestContig"] = subline[6]
-                        runTrimMetadata[name]["Assembly"]["TotalLengthOver500bp"] = subline[7]
-                        runTrimMetadata[name]["Assembly"]["ReferenceLength"] = subline[8]
-                        runTrimMetadata[name]["Assembly"]["percentGC"] = subline[9]
-                        runTrimMetadata[name]["Assembly"]["ReferencePercentGC"] = subline[10]
-                        runTrimMetadata[name]["Assembly"]["N50"] = subline[11]
-                        runTrimMetadata[name]["Assembly"]["NG50"] = subline[12]
-                        runTrimMetadata[name]["Assembly"]["N75"] = subline[13]
-                        runTrimMetadata[name]["Assembly"]["NG75"] = subline[14]
-                        runTrimMetadata[name]["Assembly"]["L50"] = subline[15]
-                        runTrimMetadata[name]["Assembly"]["LG50"] = subline[16]
-                        runTrimMetadata[name]["Assembly"]["L75"] = subline[17]
-                        runTrimMetadata[name]["Assembly"]["LG75"] = subline[18]
-                        runTrimMetadata[name]["Assembly"]["NumMisassemblies"] = subline[19]
-                        runTrimMetadata[name]["Assembly"]["NumMisassembledContigs"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["MisassembledContigsLength"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["NumLocalMisassemblies"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["NumUnalignedContigs"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["UnalignedLength"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["percentGenomeFraction"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["DuplicationRatio"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["NumNsPer100kbp"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["NumMismatchesPer100kbp"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["NumIndelsPer100kbp"] = "N/A"
-                        runTrimMetadata[name]["Assembly"]["LargestAlignment"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["Assembly"] = subline[0]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
+                        runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
+                        runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
+                        runTrimMetadata[name]["2.Assembly"]["TotalLengthOver500bp"] = subline[7]
+                        runTrimMetadata[name]["2.Assembly"]["ReferenceLength"] = subline[8]
+                        runTrimMetadata[name]["2.Assembly"]["percentGC"] = subline[9]
+                        runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = subline[10]
+                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[11]
+                        runTrimMetadata[name]["2.Assembly"]["NG50"] = subline[12]
+                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[13]
+                        runTrimMetadata[name]["2.Assembly"]["NG75"] = subline[14]
+                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[15]
+                        runTrimMetadata[name]["2.Assembly"]["LG50"] = subline[16]
+                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[17]
+                        runTrimMetadata[name]["2.Assembly"]["LG75"] = subline[18]
+                        runTrimMetadata[name]["2.Assembly"]["NumMisassemblies"] = subline[19]
+                        runTrimMetadata[name]["2.Assembly"]["NumMisassembledContigs"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["MisassembledContigsLength"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumLocalMisassemblies"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumUnalignedContigs"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["UnalignedLength"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["percentGenomeFraction"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["DuplicationRatio"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = "N/A"
     return runTrimMetadata
 
 

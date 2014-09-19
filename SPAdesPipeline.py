@@ -32,6 +32,8 @@ import spadesGoUpper
 # import rMLST_typer
 # quastR
 import quastR
+# Create a YAML report
+import reportR
 
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
@@ -63,11 +65,12 @@ def pipeline():
     # Typing
     # rMLST_typer.functionsGoNOW(correctedFiles, path)
     # Quasting
-    quastR.functionsGoNOW(correctedFiles, path)
+    runTrimAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMetadata)
+    # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)
+    reportR.functionsGoNOW(runTrimAssemblyMetadata, path)
 
 
 # Run the pipeline
 pipeline()
 
-# print json.dumps(runTrimMetadata, sort_keys=True, indent=4)
 print "\nElapsed Time: %s seconds" % (time.time() - start)

@@ -45,7 +45,7 @@ def quasting((name, path)):
     # in the quast analyses. If not, then perform quast without a reference genome.
     if os.path.isdir("%s/referenceGenome" % newPath):
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --threads 24 --gage %s/spades_output/contigs.fasta -o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, newPath)
+        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --threads 24 --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, name, newPath)
         performQuast(newPath, quastCall)
     else:
         quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py --threads 24 %s/spades_output/contigs.fasta -o %s/quast_results 1>/dev/null" % (newPath, newPath)

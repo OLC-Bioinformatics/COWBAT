@@ -29,7 +29,7 @@ import quakeR
 # Run SPAdes
 import spadesGoUpper
 # Perform typing using rMLST to determine best reference genome
-# import rMLST_typer
+import rMLST_typer
 # quastR
 import quastR
 # Create a YAML report
@@ -55,7 +55,7 @@ def pipeline():
     """All the functions for running the pipeline"""
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
     print("Extracting metadata from sequencing run.")
-    runMetadata, sampleNames = runMetadataOptater.functionsGoNOW()
+    runMetadata, sampleNames, experimentDate = runMetadataOptater.functionsGoNOW()
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify
@@ -63,7 +63,7 @@ def pipeline():
     # SPAdesify
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
     # Typing
-    # rMLST_typer.functionsGoNOW(correctedFiles, path)
+    rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate)
     # Quasting
     runTrimAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)

@@ -25,8 +25,265 @@ def dotter():
         count = 0
 
 
+def makeblastdb(dqueue):
+    while True:  # while daemon
+        fastapath = dqueue.get() # grabs fastapath from dqueue
+        nhr = "%s.nhr" % (fastapath)
+        if not os.path.isfile(str(nhr)):
+            subprocess.Popen(shlex.split("makeblastdb -in %s -dbtype nucl -out %s" % (fastapath, fastapath)))
+            dotter()
+        dqueue.task_done() # signals to dqueue job is done
+        sys.exit()
+
+# Declare queues, list, and dict
+dqueue = Queue()
+blastqueue = Queue()
+parsequeue = Queue()
+testqueue = Queue()
+plusqueue = Queue()
+plusdict = {}
+genedict = defaultdict(list)
+blastpath = {}
+threadlock = threading.Lock()
+genomes = []
+scheme = []
+# blastexist = {}
+
+def makedbthreads(fastas):
+    ''' Setup and create threads for class'''
+    for i in range(len(fastas)):
+        threads = Thread(target=makeblastdb, args=(dqueue,))
+        threads.setDaemon(True)
+        threads.start()
+    for fasta in fastas:
+        dqueue.put(fasta)
+    dqueue.join() #wait on the dqueue until everything has been processed
+
+
+def xmlout (fasta, genome):
+    gene = re.search('\/(\w+)\.tfa', fasta)
+    path = re.search('(.+)\/(.+)\/(.+?)\.fa', genome)
+    return path, gene
+
+
+class runblast(threading.Thread):
+    def __init__(self, blastqueue):
+        self.blastqueue = blastqueue
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            global blastpath, plusdict
+            genome, fasta, blastexist = self.blastqueue.get()
+            path, gene = xmlout(fasta, genome)
+            out = "%s/tmp/%s.%s.xml" % (path.group(1), path.group(3), gene.group(1))
+            threadlock.acquire()
+            blastpath[out] = {path.group(3): (gene.group(1),)}
+            # plusdict[path.group(3)] = {gene.group(1): 0}
+            # print path.group(3), gene.group(1)
+            threadlock.release()
+            if not os.path.isfile(out):
+                dotter()
+                blastn = NcbiblastnCommandline(query=genome, db=fasta, evalue=1e-40, out=out, outfmt=5, perc_identity=100)
+                stdout, stderr = blastn()
+            if not any(blastpath):
+                print out
+            self.blastqueue.task_done()
+
+
+def blastnthreads(fastas, genomes):
+    '''Setup and create  threads for blastn and xml path'''
+    blastexist = {}
+    for i in range(len(fastas)):
+        threads = runblast(blastqueue)
+        threads.setDaemon(True)
+        threads.start()
+    for genome in genomes:
+        for fasta in fastas:
+            blastqueue.put((genome, fasta, blastexist))
+        blastqueue.join()
+
+
+class blastparser(threading.Thread): # records, genomes):
+    def __init__(self, parsequeue):
+        self.parsequeue = parsequeue
+        threading.Thread.__init__(self)
+    def run(self):
+        while True:
+            global plusdict, genedict
+            xml, genomes, mm, num = self.parsequeue.get()
+            records = NCBIXML.parse(mm)
+            numhsp = sum(line.count('<Hsp>') for line in iter(mm.readline, ""))
+            if numhsp >= 1:
+                mm.seek(0)
+                for record in records:
+                    for alignment in record.alignments:
+                        for hsp in alignment.hsps:
+                            threadlock.acquire()  # precaution
+                            col = 'N'
+                            if hsp.identities == alignment.length:
+                                col = alignment.title.split('_')[-1]  # MLST type
+                                col = re.sub(" No definition line", "", col)
+                            for genome in genomes:
+                                for gene in genomes[genome]:
+                                    if genome not in plusdict:
+                                        plusdict[genome] = defaultdict(str)
+                                    if gene[-2:] not in plusdict[genome]:
+                                        # plusdict[genome][gene] = col
+                                        plusdict[genome][gene[-2:]] = col
+                                    # print genome, gene[-2:], col
+                            threadlock.release()  # precaution for populate dictionary with GIL
+            else:
+                for genome in genomes:
+                    for gene in genomes[genome]:
+                        if genome not in plusdict:
+                            plusdict[genome] = defaultdict(str)
+                        if gene[-2:] not in plusdict[genome]:
+                            # print gene, genome
+                            # plusdict[genome][gene] = col
+                            plusdict[genome][gene[-2:]] = "N"
+                        # print genome, gene[-2:], col
+                    # threadlock.release()  # precaution for populate dictionary with GIL
+            dotter()
+            mm.close()
+
+            self.parsequeue.task_done()
+
+def parsethreader(blastpath, genomes):
+    global plusdict
+    dotter()
+    for i in range(len(genomes)):
+        threads = blastparser(parsequeue)
+        threads.setDaemon(True)
+        threads.start()
+    progress = len(blastpath)
+    for xml in blastpath:
+        # print xml
+        handle = open(xml, 'r')
+        mm = mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ)
+        # time.sleep(0.05) # Previously used to combat open file error
+        handle.close()
+        parsequeue.put((xml, blastpath[xml], mm, progress))
+        parsequeue.join()
+
+
+def blaster(markers, strains, path, out, experimentName):
+    '''
+    The blaster function is the stack manager of the module
+    markers are the the target fasta folder that with be db'd and BLAST'd against strains folder
+    out is the working directory where the blastxml folder will be placed
+    name is the partial title of the csv output
+    ALL PATHS REQUIRE TRAILING SLASHES!!!
+    '''
+    global count, genedict, blastpath
+    #retrieve rMLST markers from input
+    fastas = glob.glob(markers + "*.tfa")
+    # #retrieve genomes from input
+    for name in strains:
+        genomeFile = glob.glob("%s/%s/*_filteredAssembled.fasta" % (path, name))
+        # print genomeFile
+        genomes.append(genomeFile[0])
+    # print genomes
+    # if os.path.isdir(strains):
+    #     genomes = glob.glob(strains + "*.fa")
+    # elif os.path.isfile(strains):
+    #     genomes = strains
+    # else:
+    #     print "The variable \"--genomes\" is not a folder or file"
+    #     return
+    sys.stdout.write("[%s] Creating necessary databases for BLAST" % (time.strftime("%H:%M:%S")))
+    # #push markers to threads
+    makedbthreads(fastas)
+    print "\n[%s] BLAST database(s) created" % (time.strftime("%H:%M:%S"))
+    if os.path.isfile('%s/blastxmldict.json' % path):
+        # print "[%s] Loading BLAST data from file" % (time.strftime("%H:%M:%S"))
+        # sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
+        blastpath = json.load(open('%s/blastxmldict.json' % path))
+    else:
+        # print "[%s] Now performing BLAST database searches" % (time.strftime("%H:%M:%S"))
+        # sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
+        # make blastn threads and retrieve xml file locations
+        blastnthreads(fastas, genomes)
+        json.dump(blastpath, open('%s/blastxmldict.json' % path, 'wb'), sort_keys=True, indent=4, separators=(',', ': '))
+    print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
+    sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
+    # for bpath in blastpath:
+        # print fastas
+    parsethreader(blastpath, fastas)
+    csvheader = 'Strain'
+    row = ""
+    rowcount = 0
+    for genomerow in plusdict:
+        row += "\n" + genomerow
+        rowcount += 1
+        for generow in sorted(plusdict[genomerow]):
+            if rowcount <= 1:
+                csvheader += ', BACT0000' + generow.zfill(2)
+            # for plusrow in plusdict[genomerow][generow]:
+            row += ',' + str(plusdict[genomerow][generow])
+    with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
+        csvfile.write(csvheader)
+        csvfile.write(row)
+    print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
+    # print json.dumps(plusdict, sort_keys=True, indent=4)
+    return plusdict
+
+
+header = []
+body = []
+
+def make_dict():
+    """Makes Perl-style dictionaries"""
+    return defaultdict(make_dict)
+
+# Initialise the dictionary responsible for storing the report data
+types = defaultdict(make_dict)
 
 
 
-def functionsGoNOW(sampleNames, path):
-    print path, sampleNames
+def determineSubtype(plusdict, sampleNames, path):
+    # print json.dumps(plusdict, sort_keys=True, indent=4)
+    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
+    for line in profile:
+        if re.search("rST", line):
+            subline = line.split("\t")
+            for subsubline in subline:
+                if re.search("BACT", subsubline):
+                    header.append(subsubline)
+        else:
+            subline = line.split("\t")
+            body.append(subline)
+
+        # count2 += 1
+    for i in range(1, len(header)):
+        count2 += 1
+        for line1 in body:
+            # print line1[i]
+            subline = line.split("\t")
+            types[header[count2]][line1[i]] = subline[i]
+        # count2 = 0
+        # for entry in header:
+            # for i in range(1, len(header)):
+                # types[body[0][0]][entry] = subline[count2][i]
+                # count2 += 1
+        # print subline[0]
+        # for i in range(1, len(header)):
+        #     print subline[i]
+        # for subsubline in subline:
+    # for entry in header:
+    #     print entry
+    print json.dumps(types, sort_keys=True, indent=4)
+
+        # scheme.append(subline)
+    for genome in plusdict:
+        for bactNumber, allele in sorted(plusdict[genome].iteritems()):
+            # print genome, "BACT0000%s" % bactNumber, allele
+            pass
+
+
+def functionsGoNOW(sampleNames, path, date):
+    print "\nPerforming rMLST analyses."
+    rMLSTgenes = path + "/rMLST/alleles/"
+    plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
+    determineSubtype(plusdict, sampleNames, path)
+    # print rMLSTgenes
+    # print path, sampleNames

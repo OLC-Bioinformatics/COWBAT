@@ -45,7 +45,8 @@ def runQuake((name, path)):
         # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 2" % (newPath, name)
         quakeRun = "/home/blais/Bioinformatics/Quake/bin/quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
-        subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+        # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         sys.stdout.write('.')
     else:
         sys.stdout.write('.')

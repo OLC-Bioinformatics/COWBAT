@@ -93,6 +93,7 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["Instrument"] = instrument
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
+                return date
 
 
 def parseRunStats():
@@ -129,6 +130,6 @@ def parseRunStats():
 def functionsGoNOW():
     """Run the functions"""
     parseRunInfo()
-    parseSampleSheet()
+    date = parseSampleSheet()
     parseRunStats()
-    return returnData, samples
+    return returnData, samples, date

@@ -220,7 +220,8 @@ def blaster(markers, strains, path, out, experimentName):
                 csvheader += ', BACT0000' + generow.zfill(2)
             # for plusrow in plusdict[genomerow][generow]:
             row += ',' + str(plusdict[genomerow][generow])
-    with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
+    with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%H:%M:%S")), 'wb') as csvfile:
+    # with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
         csvfile.write(csvheader)
         csvfile.write(row)
     print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
@@ -236,11 +237,12 @@ def make_dict():
     return defaultdict(make_dict)
 
 # Initialise the dictionary responsible for storing the report data
-types = defaultdict(make_dict)
+sequenceTypes = defaultdict(make_dict)
+strainTypes = defaultdict(make_dict)
+mismatch = defaultdict(make_dict)
 
 
-
-def determineSubtype(plusdict, sampleNames, path):
+def determineSubtype(plusdict, path):
     # print json.dumps(plusdict, sort_keys=True, indent=4)
     profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
     for line in profile:
@@ -252,38 +254,44 @@ def determineSubtype(plusdict, sampleNames, path):
         else:
             subline = line.split("\t")
             body.append(subline)
+    # Populate the dictionary of sequenceType => geneName => alleleValue
+    for line in body:
+        for i in range(len(header) + 1):
+            sequenceTypes[int(line[0])][header[i - 1]] = line[i]
 
-        # count2 += 1
-    for i in range(1, len(header)):
-        count2 += 1
-        for line1 in body:
-            # print line1[i]
-            subline = line.split("\t")
-            types[header[count2]][line1[i]] = subline[i]
-        # count2 = 0
-        # for entry in header:
-            # for i in range(1, len(header)):
-                # types[body[0][0]][entry] = subline[count2][i]
-                # count2 += 1
-        # print subline[0]
-        # for i in range(1, len(header)):
-        #     print subline[i]
-        # for subsubline in subline:
-    # for entry in header:
-    #     print entry
-    print json.dumps(types, sort_keys=True, indent=4)
-
-        # scheme.append(subline)
+    print "\nDetermining sequence types."
     for genome in plusdict:
-        for bactNumber, allele in sorted(plusdict[genome].iteritems()):
-            # print genome, "BACT0000%s" % bactNumber, allele
-            pass
+        dotter()
+        bestCount = 0
+        for sType in sequenceTypes:
+            count = 0
+            for bactNum, allele in sorted(plusdict[genome].iteritems()):
+            # for bactNum in sorted(plusdict[genome]):
+                fullBact = "BACT0000%s" % bactNum
+                if allele == sequenceTypes[sType][fullBact]:
+                    count += 1
+                else:
+                    mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+            if count > bestCount:
+                bestCount = count
+                strainTypes[genome].clear()
+                # print genome, sType, json.dumps(mismatch, sort_keys=True, indent=4)
+                if mismatch:
+                    for geneName in sorted(mismatch):
+                        for observedAllele, refAllele in sorted(mismatch[geneName].iteritems()):
+                            strainTypes[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                else:
+                    strainTypes[genome][sType] = bestCount
+                    print genome, "no mismatches"
+                # print genome, sType, count
+            mismatch.clear()
+    print json.dumps(strainTypes, sort_keys=True, indent=4)
 
 
 def functionsGoNOW(sampleNames, path, date):
     print "\nPerforming rMLST analyses."
     rMLSTgenes = path + "/rMLST/alleles/"
     plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    determineSubtype(plusdict, sampleNames, path)
+    determineSubtype(plusdict, path)
     # print rMLSTgenes
     # print path, sampleNames

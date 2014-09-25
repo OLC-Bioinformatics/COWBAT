@@ -6,8 +6,20 @@ from multiprocessing import Pool
 import sys
 import re
 import time
+import errno
 import json
 import shutil
+
+
+def make_path(inPath):
+    """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
+    does what is indicated by the URL"""
+    try:
+        os.makedirs(inPath)
+        os.chmod(inPath, 0777)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
 def performQuast(newPath, quastCall):
@@ -40,6 +52,7 @@ def quastProcesses(sampleNames, path):
 def quasting((name, path)):
     """Performs quast analysis on the assemblies"""
     newPath = path + "/" + name
+    # make_path("%s/quast_results" % newPath)
     # shutil.rmtree("%s/quast_results" % newPath)
     # Check to see if there is a directory named referenceGenome - if there is, use the reference genome in that folder
     # in the quast analyses. If not, then perform quast without a reference genome.
@@ -56,9 +69,10 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
     """Pulls the metadata from the quast assembly reports"""
     for name in sampleNames:
         newPath = path + "/" + name
-        referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
+        if os.path.isdir("%s/referenceGenome" % newPath):
+            referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
         # Populate the dictionary with the referenceGenome - this may be moved to the rMLST module
-        runTrimMetadata[name]["1.General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
+            runTrimMetadata[name]["1.General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
         # This is just here as a placeholder until the rMLST module is functional
         runTrimMetadata[name]["1.General"]["rMLST_sequenceType"] = "N/A"
         runTrimMetadata[name]["1.General"]["fileName"] = name
@@ -71,7 +85,7 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
         else:
             report = open("%s/quast_results/transposed_report.tsv" % newPath, "r")
             for line in report:
-                if re.search("2.Assembly", line):
+                if re.search("Assembly", line):
                     pass
                 else:
                     if os.path.isfile("%s/quast_results/gage_report.tsv" % newPath):
@@ -122,16 +136,18 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver500bp"] = subline[7]
                         runTrimMetadata[name]["2.Assembly"]["ReferenceLength"] = subline[8]
                         runTrimMetadata[name]["2.Assembly"]["percentGC"] = subline[9]
-                        runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = subline[10]
-                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[11]
-                        runTrimMetadata[name]["2.Assembly"]["NG50"] = subline[12]
-                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[13]
-                        runTrimMetadata[name]["2.Assembly"]["NG75"] = subline[14]
-                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[15]
-                        runTrimMetadata[name]["2.Assembly"]["LG50"] = subline[16]
-                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[17]
-                        runTrimMetadata[name]["2.Assembly"]["LG75"] = subline[18]
-                        runTrimMetadata[name]["2.Assembly"]["NumMisassemblies"] = subline[19]
+                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[10]
+                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[11]
+                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[12]
+                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[13]
+                        # These values aren't determined in a non-gage analysis, so in order to keep
+                        # the schema consistent they are populated with "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NG50"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NG75"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["LG50"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["LG75"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumMisassemblies"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["NumMisassembledContigs"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["MisassembledContigsLength"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["NumLocalMisassemblies"] = "N/A"

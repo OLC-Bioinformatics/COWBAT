@@ -285,7 +285,7 @@ def determineSubtype(plusdict, path):
                     print genome, "no mismatches"
                 # print genome, sType, count
             mismatch.clear()
-    print json.dumps(strainTypes, sort_keys=True, indent=4)
+    # print json.dumps(strainTypes, sort_keys=True, indent=4)
 
 
 def functionsGoNOW(sampleNames, path, date):

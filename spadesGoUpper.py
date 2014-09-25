@@ -5,6 +5,19 @@ from multiprocessing import Pool
 import sys
 import re
 from Bio import SeqIO
+import shutil
+import errno
+
+
+def make_path(inPath):
+    """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
+    does what is indicated by the URL"""
+    try:
+        os.makedirs(inPath)
+        # os.chmod(inPath, 0777)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
 def spadesPrepProcesses(sampleName, path):
@@ -24,10 +37,10 @@ def spadesPrepProcesses(sampleName, path):
 def runSpades((name, path)):
     """Performs necessary checks and runs SPAdes"""
     # Set up variables to keep commands clean looking
-    scaffoldsFile = "scaffolds.fastg"
+    contigsFile = "contigs.fasta"
     newPath = path + "/" + name
     # Check for the existence of the scaffolds file - hopefully this will be created at the end of the run
-    if not os.path.isfile("%s/spades_output/%s" % (newPath, scaffoldsFile)):
+    if not os.path.isfile("%s/spades_output/%s" % (newPath, contigsFile)):
         # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
         # be located. Maybe the $PATH needs to be updated?
         # --continue
@@ -54,7 +67,7 @@ def contigFileFormatter(correctedFiles, path):
     """Changes the name of each contig from ">NODE_XXX_length..." to the name of the file ">OLC795_XXX..." """
     for name in correctedFiles:
         newPath = path + "/" + name
-         #
+        #
         if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
             # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
             over200bp = []
@@ -67,9 +80,18 @@ def contigFileFormatter(correctedFiles, path):
                     record.description = ''
                     over200bp.append(record)
             # print "Found %s long sequences" % len(over200bp)
-            formatted = open("%s/%s_filteredAssembled.fasta" % (newPath, name), "wb")
+            fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
+            formatted = open(fileName, "wb")
             SeqIO.write(over200bp, formatted, "fasta")
             formatted.close()
+        # Move the files to a BestAssemblies folder
+        assemblyPath = "%s/BestAssemblies" % path
+        make_path(assemblyPath)
+        fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
+        # print name
+        if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
+            shutil.copy(fileName, assemblyPath)
+
 
 
 def functionsGoNOW(correctedFiles, path):

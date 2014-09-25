@@ -32,6 +32,8 @@ import spadesGoUpper
 import rMLST_typer
 # quastR
 import quastR
+# Library size estimation
+import lse
 # Create a YAML report
 import reportR
 
@@ -64,10 +66,13 @@ def pipeline():
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
     # Typing
     rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate)
+    # Library size estimation
+    runTrimInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # Quasting
-    runTrimAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMetadata)
-    # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)
-    reportR.functionsGoNOW(correctedFiles, runTrimAssemblyMetadata, path)
+    runTrimInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimInsertMetadata)
+
+    # print json.dumps(runTrimInsertAssemblyMetadata, sort_keys=True, indent=4)
+    reportR.functionsGoNOW(correctedFiles, runTrimInsertAssemblyMetadata, path)
 
 
 # Run the pipeline

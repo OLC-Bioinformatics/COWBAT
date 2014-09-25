@@ -93,7 +93,7 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["Instrument"] = instrument
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
-                return date
+    return date
 
 
 def parseRunStats():

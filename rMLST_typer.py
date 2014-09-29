@@ -10,7 +10,7 @@ from Bio.Blast import NCBIXML
 from threading import Thread
 from Queue import Queue
 from collections import defaultdict
-import subprocess, os, glob, time, sys, shlex, re, threading, json, mmap
+import subprocess, os, glob, time, sys, shlex, re, threading, json, mmap, shutil, errno
 
 count = 0
 
@@ -23,6 +23,16 @@ def dotter():
     else:
         sys.stdout.write('\n[%s].' % (time.strftime("%H:%M:%S")))
         count = 0
+
+def make_path(inPath):
+    """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
+    does what is indicated by the URL"""
+    try:
+        os.makedirs(inPath)
+        os.chmod(inPath, 0777)
+    except OSError as exception:
+        if exception.errno != errno.EEXIST:
+            raise
 
 
 def makeblastdb(dqueue):
@@ -242,36 +252,49 @@ strainTypes = defaultdict(make_dict)
 mismatch = defaultdict(make_dict)
 
 
-def determineSubtype(plusdict, path):
+def determineSubtype(plusdict, path, metadata):
     # print json.dumps(plusdict, sort_keys=True, indent=4)
-    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
-    for line in profile:
-        if re.search("rST", line):
-            subline = line.split("\t")
-            for subsubline in subline:
-                if re.search("BACT", subsubline):
-                    header.append(subsubline)
-        else:
-            subline = line.split("\t")
-            body.append(subline)
-    # Populate the dictionary of sequenceType => geneName => alleleValue
-    for line in body:
-        for i in range(len(header) + 1):
-            sequenceTypes[int(line[0])][header[i - 1]] = line[i]
+    with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % path, "r") as referenceFile:
+        sequenceTypes = json.load(referenceFile)
+        referenceFile.close()
 
+    # print json.dumps(referenceGenomeProfile, sort_keys=True, indent=4)
+    # for strain in sorted(sequenceTypes):
+    #     for gene, allele in sorted(sequenceTypes[strain].iteritems()):
+    #         print strain, gene, allele
+
+    # print json.dumps(plusdict, sort_keys=True, indent=4)
+    #
     print "\nDetermining sequence types."
     for genome in plusdict:
         dotter()
         bestCount = 0
-        for sType in sequenceTypes:
+        for sType in sorted(sequenceTypes):
             count = 0
             for bactNum, allele in sorted(plusdict[genome].iteritems()):
             # for bactNum in sorted(plusdict[genome]):
                 fullBact = "BACT0000%s" % bactNum
-                if allele == sequenceTypes[sType][fullBact]:
-                    count += 1
+                if str(fullBact) in sequenceTypes[sType]:
+                    # print genome, sType, fullBact, sequenceTypes[sType][str(fullBact)]
+                    referenceAllele = sequenceTypes[sType][fullBact]
+                    if re.search(" ", referenceAllele):
+                        splitAllele = referenceAllele.split(" ")
+                        if allele == splitAllele[0] or allele == splitAllele[1]:
+                            count += 1
+                        else:
+                            mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+                    else:
+                        if allele == referenceAllele:
+                            count += 1
+                        else:
+                            mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
                 else:
-                    mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+                    # print genome, sType, fullBact, "N"
+                    mismatch[fullBact][allele] = "N"
+                # if allele == sequenceTypes[sType][fullBact]:
+                    # count += 1
+                # else:
+                    # mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
             if count > bestCount:
                 bestCount = count
                 strainTypes[genome].clear()
@@ -282,16 +305,23 @@ def determineSubtype(plusdict, path):
                             strainTypes[genome][sType][bestCount][geneName][observedAllele] = refAllele
                 else:
                     strainTypes[genome][sType] = bestCount
-                    print genome, "no mismatches"
+                    # print genome, sType, "no mismatches"
                 # print genome, sType, count
             mismatch.clear()
     # print json.dumps(strainTypes, sort_keys=True, indent=4)
+    for strain in sorted(strainTypes):
+        strainTrimmed = re.split("_filteredAssembled", strain)[0]
+        make_path("%s/%s/referenceGenome" % (path, strainTrimmed))
+        for reference in sorted(strainTypes[strain]):
+            shutil.copy("%s/referenceGenomes/%s.fasta" % (path, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
+            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoRef"] = strainTypes[strain][reference]
+            # print strain, reference
 
 
-def functionsGoNOW(sampleNames, path, date):
+def functionsGoNOW(sampleNames, path, date, metadata):
     print "\nPerforming rMLST analyses."
     rMLSTgenes = path + "/rMLST/alleles/"
     plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    determineSubtype(plusdict, path)
+    determineSubtype(plusdict, path, metadata)
     # print rMLSTgenes
     # print path, sampleNames

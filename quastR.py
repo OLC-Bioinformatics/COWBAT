@@ -121,7 +121,7 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[27]
                         runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = subline[28]
                         runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = subline[29]
-                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30]
+                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30].rstrip()
                     else:
                         # As above, but since the gage analysis wasn't performed,
                         # populate the dictionary with N/A where appropriate

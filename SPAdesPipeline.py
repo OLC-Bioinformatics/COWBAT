@@ -65,7 +65,7 @@ def pipeline():
     # SPAdesify
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
     # Typing
-    rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate)
+    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
     # Library size estimation
     runTrimInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # Quasting

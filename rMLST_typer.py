@@ -230,7 +230,8 @@ def blaster(markers, strains, path, out, experimentName):
                 csvheader += ', BACT0000' + generow.zfill(2)
             # for plusrow in plusdict[genomerow][generow]:
             row += ',' + str(plusdict[genomerow][generow])
-    with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%H:%M:%S")), 'wb') as csvfile:
+    make_path("%s/reports" % path)
+    with open("%s/reports/%s_rMLSTresults.csv" % (out, experimentName), 'wb') as csvfile:
     # with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
         csvfile.write(csvheader)
         csvfile.write(row)
@@ -251,8 +252,12 @@ sequenceTypes = defaultdict(make_dict)
 strainTypes = defaultdict(make_dict)
 mismatch = defaultdict(make_dict)
 
+sequenceTypesMLST = defaultdict(make_dict)
+strainTypesMLST = defaultdict(make_dict)
+mismatchMLST = defaultdict(make_dict)
 
-def determineSubtype(plusdict, path, metadata):
+
+def determineReferenceGenome(plusdict, path, metadata):
     # print json.dumps(plusdict, sort_keys=True, indent=4)
     with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % path, "r") as referenceFile:
         sequenceTypes = json.load(referenceFile)
@@ -265,7 +270,7 @@ def determineSubtype(plusdict, path, metadata):
 
     # print json.dumps(plusdict, sort_keys=True, indent=4)
     #
-    print "\nDetermining sequence types."
+    print "\nDetermining closest reference genome."
     for genome in plusdict:
         dotter()
         bestCount = 0
@@ -316,12 +321,69 @@ def determineSubtype(plusdict, path, metadata):
             shutil.copy("%s/referenceGenomes/%s.fasta" % (path, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
             metadata[strainTrimmed]["1.General"]["rMLSTmatchestoRef"] = strainTypes[strain][reference]
             # print strain, reference
+    return metadata
+
+
+def determineSubtype(plusdict, path, metadata):
+    # print json.dumps(plusdict, sort_keys=True, indent=4)
+    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
+    for line in profile:
+        if re.search("rST", line):
+            subline = line.split("\t")
+            for subsubline in subline:
+                if re.search("BACT", subsubline):
+                    header.append(subsubline)
+        else:
+            subline = line.split("\t")
+            body.append(subline)
+    # Populate the dictionary of sequenceType => geneName => alleleValue
+    for line in body:
+        for i in range(len(header) + 1):
+            sequenceTypesMLST[int(line[0])][header[i - 1]] = line[i]
+
+    print "\nDetermining sequence types."
+    for genome in plusdict:
+        dotter()
+        bestCount = 0
+        for sType in sequenceTypesMLST:
+            count = 0
+            for bactNum, allele in sorted(plusdict[genome].iteritems()):
+            # for bactNum in sorted(plusdict[genome]):
+                fullBact = "BACT0000%s" % bactNum
+                if allele == sequenceTypesMLST[sType][fullBact]:
+                    count += 1
+                else:
+                    mismatchMLST[fullBact][allele] = sequenceTypesMLST[sType][fullBact]
+            if count > bestCount:
+                bestCount = count
+                strainTypesMLST[genome].clear()
+                # print genome, sType, json.dumps(mismatch, sort_keys=True, indent=4)
+                if mismatchMLST:
+                    for geneName in sorted(mismatchMLST):
+                        for observedAllele, refAllele in sorted(mismatchMLST[geneName].iteritems()):
+                            strainTypesMLST[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                else:
+                    strainTypesMLST[genome][sType] = bestCount
+                    # print genome, "no mismatches"
+                # print genome, sType, count
+            mismatchMLST.clear()
+    for strain in sorted(strainTypesMLST):
+        strainTrimmed = re.split("_filteredAssembled", strain)[0]
+        for reference in sorted(strainTypesMLST[strain]):
+            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoScheme"] = strainTypesMLST[strain][reference]
+    # print json.dumps(strainTypesMLST, sort_keys=True, indent=4)
+    return metadata
 
 
 def functionsGoNOW(sampleNames, path, date, metadata):
     print "\nPerforming rMLST analyses."
     rMLSTgenes = path + "/rMLST/alleles/"
+    make_path("%s/tmp" % path)
+    print "\nFinding rMLST alleles."
     plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    determineSubtype(plusdict, path, metadata)
+    print "\nDetermining subtypes."
+    additionalMetadata = determineReferenceGenome(plusdict, path, metadata)
+    moreMetadata = determineSubtype(plusdict, path, additionalMetadata)
+    return moreMetadata
     # print rMLSTgenes
     # print path, sampleNames

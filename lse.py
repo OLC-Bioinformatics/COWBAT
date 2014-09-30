@@ -204,7 +204,7 @@ def graphing((target, path)):
     make_path(newPath)
     os.chdir(newPath)
     if not os.path.isfile("%s/%s_insert_sizes.pdf" % (newPath, target)):
-        graphingCommand = "Rscript /home/blais/PycharmProjects/LibrarySizeEstimator/insertsizes.R %s %s" % (filePath, target)
+        graphingCommand = "Rscript /home/blais/PycharmProjects/LibrarySizeEstimator/insertsizes.R %s %s 1>/dev/null 2>/dev/null" % (filePath, target)
         # subprocess.call(graphingCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         os.system(graphingCommand)
         dotter()
@@ -225,19 +225,26 @@ def formatOutput(path, sampleNames, runTrimMetadata):
         outputFile.write("Strain\tMedian Insert Size\tStandard Deviation\n")
         for name in sampleNames:
             newPath = path + "/" + name
-            infile = open("%s/insertSizes/%s_insert_sizes.txt" % (newPath, name), "r")
-            inData = infile.read()
-            data = inData.split("\t")
-            infile.close()
-            outputFile.write("%s\n" % inData)
-            runTrimMetadata[name]["1.General"]["MedianInsertSize"] = data[1]
-            runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = data[2]
-            dotter()
+            if os.path.isfile("%s/insertSizes/%s_insert_sizes.txt" % (newPath, name)):
+                infile = open("%s/insertSizes/%s_insert_sizes.txt" % (newPath, name), "r")
+                inData = infile.read()
+                data = inData.split("\t")
+                infile.close()
+                outputFile.write("%s\n" % inData)
+                runTrimMetadata[name]["1.General"]["MedianInsertSize"] = data[1]
+                runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = data[2].rstrip()
+                dotter()
+            else:
+                outputFile.write("%s\tN/A\tN/A\n" % name)
+                runTrimMetadata[name]["1.General"]["MedianInsertSize"] = "N/A"
+                runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = "N/A"
+                dotter()
     return runTrimMetadata
 
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
     """Calls all the functions in a way that they can be multi-processed"""
     inputData = referenceFiletoAssembly(path, sampleNames)
+    # print json.dumps(runTrimMetadata, sort_keys=True, indent=4)
     print "\nSampling fastq files."
     sampleFastq(path, sampleNames)
     indexTargetsProcesses(path, inputData)

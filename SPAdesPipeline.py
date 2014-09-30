@@ -39,7 +39,7 @@ import reportR
 
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/media/nas/akoziol/Pipeline_development/SPAdesPipelineSandbox")
+os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-19")
 path = os.getcwd()
 
 # Start time
@@ -67,12 +67,12 @@ def pipeline():
     # Typing
     runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
     # Library size estimation
-    runTrimInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMetadata)
+    # print json.dumps(runTrimMLSTMetadata, sort_keys=True, indent=4)
+    runTrimMLSTInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
     # Quasting
-    runTrimInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimInsertMetadata)
+    runTrimMLSTInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTInsertMetadata)
 
-    # print json.dumps(runTrimInsertAssemblyMetadata, sort_keys=True, indent=4)
-    reportR.functionsGoNOW(correctedFiles, runTrimInsertAssemblyMetadata, path)
+    reportR.functionsGoNOW(correctedFiles, runTrimMLSTInsertAssemblyMetadata, path)
 
 
 # Run the pipeline

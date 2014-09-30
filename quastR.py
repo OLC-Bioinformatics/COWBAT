@@ -58,10 +58,11 @@ def quasting((name, path)):
     # in the quast analyses. If not, then perform quast without a reference genome.
     if os.path.isdir("%s/referenceGenome" % newPath):
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --threads 24 --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, name, newPath)
+        # --gage
+        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --threads 24 %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, name, newPath)
         performQuast(newPath, quastCall)
     else:
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py --threads 24 %s/spades_output/contigs.fasta -o %s/quast_results 1>/dev/null" % (newPath, newPath)
+        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py --threads 24 %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
         performQuast(newPath, quastCall)
 
 
@@ -74,7 +75,6 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
         # Populate the dictionary with the referenceGenome - this may be moved to the rMLST module
             runTrimMetadata[name]["1.General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
         # This is just here as a placeholder until the rMLST module is functional
-        runTrimMetadata[name]["1.General"]["rMLST_sequenceType"] = "N/A"
         runTrimMetadata[name]["1.General"]["fileName"] = name
         runTrimMetadata[name]["1.General"]["filelocation"] = newPath
         runTrimMetadata[name]["1.General"]["assemblyDate"]= time.strftime("%Y-%m-%d")
@@ -165,6 +165,7 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
     print "\nPerforming quality checks on assemblies."
     quastProcesses(sampleNames, path)
+    # quasting(sampleNames, path)
     print "\nCollating metadata."
     runTrimAssemblyMetadata = quastMetadata(sampleNames, path, runTrimMetadata)
     return runTrimAssemblyMetadata

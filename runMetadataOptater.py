@@ -76,7 +76,7 @@ def parseSampleSheet():
             for subline in sampleSheet:
                 subdata = subline.split(",")
                 # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
-                strain = subdata[1].rstrip().replace(" ", "")
+                strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("---", "-").replace("--", "-")
                 returnData[strain]["3.Run"]["SampleName"] = subdata[0].rstrip()
                 returnData[strain]["3.Run"]["I7IndexID"] = subdata[4].rstrip()
                 returnData[strain]["3.Run"]["index1"] = subdata[5].rstrip()

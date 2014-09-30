@@ -46,7 +46,7 @@ def runQuake((name, path)):
         quakeRun = "/home/blais/Bioinformatics/Quake/bin/quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
 
-        # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         sys.stdout.write('.')
     else:
         sys.stdout.write('.')
@@ -63,7 +63,7 @@ def completionist(sampleNames, path, runMetadata):
         # Check for the existence of the stats file - hopefully this will be created at the end
         # of the error correction processes
         if not os.path.isfile("%s/%s" % (newPath, statsFileForward)):
-            print(name)
+            print(name, " could not be corrected, and will not be assembled.")
             # Populate the dictionary with "N/A" values, as error correction did not occur
             runMetadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
             runMetadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
@@ -118,12 +118,12 @@ def completionist(sampleNames, path, runMetadata):
 
 def functionsGoNOW(sampleNames, path, runMetadata):
     """Run the functions"""
-    print('Performing error correction on fastq files.')
+    print('\nPerforming error correction on fastq files.')
     quakePrepProcesses(sampleNames, path)
     # I don't know why, but it seems that some files don't get processed the first time
     print("\nSecond error correction pass.")
     quakePrepProcesses(sampleNames, path)
-    print("\nThese files could not be corrected, and will not be assembled.")
+    # print("\nThese files could not be corrected, and will not be assembled.")
     # Run completionist to determine unprocessable files, and acquire metadata
     runTrimMetadata = completionist(sampleNames, path, runMetadata)
     # Return important variables

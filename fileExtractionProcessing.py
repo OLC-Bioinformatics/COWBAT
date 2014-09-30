@@ -62,7 +62,7 @@ def folderer(sampleNames, path):
         print("Processing files.")
         for strain in sampleNames:
             os.chdir("%s/%s" % (path, strain))
-            gzFiles = glob.glob("*.gz")
+            gzFiles = glob.glob("%s*.gz" % strain)
             if not gzFiles:
                 pass
             else:
@@ -71,12 +71,12 @@ def folderer(sampleNames, path):
         print("Moving and extracting fastq files.")
         for strain in sampleNames:
             # Make the required folders (if necessary)
-            make_path(strain)
+            make_path("%s/%s" % (path, strain))
             # Get the .gz files into a list
-            gzFiles = glob.glob("%s_S*" % strain)
+            gzFiles = glob.glob("%s_*" % strain)
             if not gzFiles:
                 os.chdir("%s/%s" % (path, strain))
-                gzFiles = glob.glob("*.gz")
+                gzFiles = glob.glob("%s/*.gz" % strain)
                 if not gzFiles:
                     pass
                 else:

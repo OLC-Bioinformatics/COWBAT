@@ -92,7 +92,6 @@ def indexTargetsProcesses(path, inputData):
         indexTargetsPool.map(indexTargets, indexTargetArgs)
 
 
-
 def indexTargets((reference, target, path)):
     """Performs smalt index on the targets using the range of k-mers stored in the variable kmer"""
     filename = target.split('.')[0]
@@ -239,6 +238,7 @@ def formatOutput(path, sampleNames, runTrimMetadata):
                 runTrimMetadata[name]["1.General"]["MedianInsertSize"] = "N/A"
                 runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = "N/A"
                 dotter()
+    outputFile.close()
     return runTrimMetadata
 
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
@@ -252,8 +252,9 @@ def functionsGoNOW(sampleNames, path, runTrimMetadata):
     mappingProcesses(path, inputData)
     extractingProcesses(path, inputData)
     graphingProcesses(path, inputData)
-    runTrimInsertMetadata = formatOutput(path, sampleNames, runTrimMetadata)
     os.chdir(path)
+    runTrimInsertMetadata = formatOutput(path, sampleNames, runTrimMetadata)
+
     return runTrimInsertMetadata
     # print json.dumps(inputData, sort_keys=True, indent=4)
 

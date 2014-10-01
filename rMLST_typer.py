@@ -235,7 +235,7 @@ def blaster(markers, strains, path, out, experimentName):
     # with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
         csvfile.write(csvheader)
         csvfile.write(row)
-    print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
+    # print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
     # print json.dumps(plusdict, sort_keys=True, indent=4)
     return plusdict
 
@@ -307,7 +307,8 @@ def determineReferenceGenome(plusdict, path, metadata):
                 if mismatch:
                     for geneName in sorted(mismatch):
                         for observedAllele, refAllele in sorted(mismatch[geneName].iteritems()):
-                            strainTypes[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                            # strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypes[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
                 else:
                     strainTypes[genome][sType] = bestCount
                     # print genome, sType, "no mismatches"
@@ -340,7 +341,6 @@ def determineSubtype(plusdict, path, metadata):
     for line in body:
         for i in range(len(header) + 1):
             sequenceTypesMLST[int(line[0])][header[i - 1]] = line[i]
-
     print "\nDetermining sequence types."
     for genome in plusdict:
         dotter()
@@ -350,6 +350,7 @@ def determineSubtype(plusdict, path, metadata):
             for bactNum, allele in sorted(plusdict[genome].iteritems()):
             # for bactNum in sorted(plusdict[genome]):
                 fullBact = "BACT0000%s" % bactNum
+
                 if allele == sequenceTypesMLST[sType][fullBact]:
                     count += 1
                 else:
@@ -359,19 +360,27 @@ def determineSubtype(plusdict, path, metadata):
                 strainTypesMLST[genome].clear()
                 # print genome, sType, json.dumps(mismatch, sort_keys=True, indent=4)
                 if mismatchMLST:
+                    # print genome, sType, bestCount
                     for geneName in sorted(mismatchMLST):
                         for observedAllele, refAllele in sorted(mismatchMLST[geneName].iteritems()):
-                            strainTypesMLST[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                            strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
                 else:
                     strainTypesMLST[genome][sType] = bestCount
+                    # print genome, sType, bestCount
                     # print genome, "no mismatches"
                 # print genome, sType, count
             mismatchMLST.clear()
+    for genome in plusdict:
+        if genome not in sorted(strainTypesMLST):
+            strainTrimmed = re.split("_filteredAssembled", genome)[0]
+            metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"] = "N/A"
+
     for strain in sorted(strainTypesMLST):
         strainTrimmed = re.split("_filteredAssembled", strain)[0]
         for reference in sorted(strainTypesMLST[strain]):
-            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoScheme"] = strainTypesMLST[strain][reference]
-    # print json.dumps(strainTypesMLST, sort_keys=True, indent=4)
+            metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"]["sequenceType"][reference] = strainTypesMLST[strain][reference]
+            # print strainTypesMLST[strain][reference]
+    # print json.dumps(metadata, sort_keys=True, indent=4)
     return metadata
 
 
@@ -381,7 +390,7 @@ def functionsGoNOW(sampleNames, path, date, metadata):
     make_path("%s/tmp" % path)
     print "\nFinding rMLST alleles."
     plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    print "\nDetermining subtypes."
+    # print "\nDetermining subtypes."
     additionalMetadata = determineReferenceGenome(plusdict, path, metadata)
     moreMetadata = determineSubtype(plusdict, path, additionalMetadata)
     return moreMetadata

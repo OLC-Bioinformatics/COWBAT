@@ -23,7 +23,7 @@ def functionsGoNOW(sampleNames, metadata, path):
         newPath = path + "/" + name
         reportName = "%s_metadataReport.json" % name
         JSONreport = open("%s/%s" % (newPath, reportName), "wb")
-        output = json.dumps(metadata[name], sort_keys=True, indent=4)
+        output = json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
         JSONreport.write(output)
         JSONreport.close()
         reportPath = "%s/reports" % path

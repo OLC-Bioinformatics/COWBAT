@@ -96,6 +96,6 @@ def contigFileFormatter(correctedFiles, path):
 
 def functionsGoNOW(correctedFiles, path):
     """Run the helper function"""
-    print("Assembling reads.")
+    print("\nAssembling reads.")
     spadesPrepProcesses(correctedFiles, path)
     contigFileFormatter(correctedFiles, path)

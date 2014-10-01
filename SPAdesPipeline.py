@@ -66,13 +66,12 @@ def pipeline():
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
     # Typing
     runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
+    # Quasting
+    runTrimMLSTAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
     # Library size estimation
     # print json.dumps(runTrimMLSTMetadata, sort_keys=True, indent=4)
-    runTrimMLSTInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
-    # Quasting
-    runTrimMLSTInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTInsertMetadata)
-
-    reportR.functionsGoNOW(correctedFiles, runTrimMLSTInsertAssemblyMetadata, path)
+    runTrimMLSTAssemblyInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTAssemblyMetadata)
+    reportR.functionsGoNOW(correctedFiles, runTrimMLSTAssemblyInsertMetadata, path)
 
 
 # Run the pipeline

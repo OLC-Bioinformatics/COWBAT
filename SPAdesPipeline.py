@@ -29,13 +29,17 @@ import quakeR
 # Run SPAdes
 import spadesGoUpper
 # Perform typing using rMLST to determine best reference genome
-# import rMLST_typer
+import rMLST_typer
 # quastR
 import quastR
+# Library size estimation
+import lse
+# Create a YAML report
+import reportR
 
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/media/nas/akoziol/Pipeline_development/SPAdesPipelineSandbox")
+os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-19")
 path = os.getcwd()
 
 # Start time
@@ -53,7 +57,7 @@ def pipeline():
     """All the functions for running the pipeline"""
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
     print("Extracting metadata from sequencing run.")
-    runMetadata, sampleNames = runMetadataOptater.functionsGoNOW()
+    runMetadata, sampleNames, experimentDate = runMetadataOptater.functionsGoNOW()
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify
@@ -61,13 +65,17 @@ def pipeline():
     # SPAdesify
     spadesGoUpper.functionsGoNOW(correctedFiles, path)
     # Typing
-    # rMLST_typer.functionsGoNOW(correctedFiles, path)
+    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
+    # Library size estimation
+    # print json.dumps(runTrimMLSTMetadata, sort_keys=True, indent=4)
+    runTrimMLSTInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
     # Quasting
-    quastR.functionsGoNOW(correctedFiles, path)
+    runTrimMLSTInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTInsertMetadata)
+
+    reportR.functionsGoNOW(correctedFiles, runTrimMLSTInsertAssemblyMetadata, path)
 
 
 # Run the pipeline
 pipeline()
 
-# print json.dumps(runTrimMetadata, sort_keys=True, indent=4)
-print "\nElapsed Time: %s seconds" % (time.time() - start)
+print "Elapsed Time: %s seconds" % (time.time() - start)

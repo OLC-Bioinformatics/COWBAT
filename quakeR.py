@@ -42,7 +42,6 @@ def runQuake((name, path)):
         # microbial genomes
         # This is using a hard-coded path, as for some reason, when run within pycharm, quake.py could not
         # be located. Maybe the $PATH needs to be updated?
-        # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 2" % (newPath, name)
         quakeRun = "/home/blais/Bioinformatics/Quake/bin/quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
 

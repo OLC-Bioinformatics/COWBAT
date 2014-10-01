@@ -167,7 +167,5 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
     print "\nPerforming quality checks on assemblies."
     quastProcesses(sampleNames, path)
-    # print "\nCollating metadata."
     runTrimAssemblyMetadata = quastMetadata(sampleNames, path, runTrimMetadata)
     return runTrimAssemblyMetadata
-    # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)

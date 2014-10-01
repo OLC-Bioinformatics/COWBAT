@@ -1,23 +1,7 @@
 __author__ = 'akoziol'
 
-# Regex
-import re
 # OS commands
 import os
-# Perl-style dictionaries
-from collections import defaultdict
-# Prints variables in an easy-to-ready JSON format
-import json
-# Subprocess->call is used for making system calls
-import subprocess
-# Glob finds all the path names matching a specified pattern according to the rules used by the Unix shell
-import glob
-# Shutil is useful for file moving/copying
-import shutil
-# Errno is used in the file creation command  - I think it's similar to the $! variable in Perl
-import errno
-# System tools
-import sys
 # Time module
 import time
 # Custom script for pulling metadata from sequencing run reports/files
@@ -34,7 +18,7 @@ import rMLST_typer
 import quastR
 # Library size estimation
 import lse
-# Create a YAML report
+# Create a JSON report
 import reportR
 
 

@@ -67,11 +67,12 @@ def contigFileFormatter(correctedFiles, path):
     """Changes the name of each contig from ">NODE_XXX_length..." to the name of the file ">OLC795_XXX..." """
     for name in correctedFiles:
         newPath = path + "/" + name
-        #
+        # Ensures that the contigs file is present, but the renamed, manipulated file is not
         if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
             # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
             over200bp = []
             for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
+                # Include only contigs greater than 200 bp in length
                 if len(record.seq) >= 200:
                     # Add this record to our list
                     newID = re.sub("NODE", name, record.id)
@@ -91,7 +92,6 @@ def contigFileFormatter(correctedFiles, path):
         # print name
         if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
             shutil.copy(fileName, assemblyPath)
-
 
 
 def functionsGoNOW(correctedFiles, path):

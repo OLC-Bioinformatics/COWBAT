@@ -199,7 +199,8 @@ def formatOutput(path, sampleNames, runTrimMetadata):
     # Determine the folder name by taking the last folder name from the path
     folderName = path.split('/')[-1]
     # As the file is opened to append - it must be deleted each time through the pipeline
-    os.remove("%s/%s_insertSizes.csv" % (insertSizePath, folderName))
+    if os.path.isfile("%s/%s_insertSizes.csv" % (insertSizePath, folderName)):
+        os.remove("%s/%s_insertSizes.csv" % (insertSizePath, folderName))
     with open("%s/%s_insertSizes.csv" % (insertSizePath, folderName), "a") as outputFile:
         outputFile.write("Strain\tMedian Insert Size\tStandard Deviation\n")
         for name in sampleNames:

@@ -21,6 +21,9 @@ import lse
 # Create a JSON report
 import reportR
 
+# TODO Move the rMLST and the referenceGenomes folders to a central location
+# TODO Figure out how to avoid using absolute paths for called scripts
+# TODO Think about getting this pipeline into docker
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
 os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-19")

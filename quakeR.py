@@ -5,6 +5,7 @@ from multiprocessing import Pool
 import subprocess
 import sys
 import re
+import glob
 
 # Initialise variables
 corrected = []
@@ -115,6 +116,15 @@ def completionist(sampleNames, path, runMetadata):
     return runMetadata
 
 
+def tmpFileRemover(path):
+    """Removes temporary files cluttering up the path"""
+    if os.path.isfile("%s/r.log" % path):
+        os.remove("%s/r.log" % path)
+    tmpFiles = glob.glob("%s/*.txt*" % path)
+    for file in tmpFiles:
+        os.remove(file)
+
+
 def functionsGoNOW(sampleNames, path, runMetadata):
     """Run the functions"""
     print('\nPerforming error correction on fastq files.')
@@ -125,5 +135,7 @@ def functionsGoNOW(sampleNames, path, runMetadata):
     # print("\nThese files could not be corrected, and will not be assembled.")
     # Run completionist to determine unprocessable files, and acquire metadata
     runTrimMetadata = completionist(sampleNames, path, runMetadata)
+    # Clean up tmp files
+    tmpFileRemover(path)
     # Return important variables
     return corrected, runTrimMetadata

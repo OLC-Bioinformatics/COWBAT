@@ -63,28 +63,33 @@ def runSpades((name, path)):
         sys.stdout.write('.')
 
 
-def contigFileFormatter(correctedFiles, path):
+def contigFileFormatter(correctedFiles, path, metadata):
     """Changes the name of each contig from ">NODE_XXX_length..." to the name of the file ">OLC795_XXX..." """
     for name in correctedFiles:
         newPath = path + "/" + name
         # Ensures that the contigs file is present, but the renamed, manipulated file is not
-        if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
+        os.remove("%s/%s_filteredAssembled.fasta" % (newPath, name))
+        # if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
             # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
-            over200bp = []
-            for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
-                # Include only contigs greater than 200 bp in length
-                if len(record.seq) >= 200:
-                    # Add this record to our list
-                    newID = re.sub("NODE", name, record.id)
-                    record.id = newID
-                    record.name = ''
-                    record.description = ''
-                    over200bp.append(record)
-            # print "Found %s long sequences" % len(over200bp)
-            fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
-            formatted = open(fileName, "wb")
-            SeqIO.write(over200bp, formatted, "fasta")
-            formatted.close()
+        over200bp = []
+        lengthCov = 0
+        for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
+            # Include only contigs greater than 200 bp in length
+            if len(record.seq) >= 200:
+                # Add this record to our list
+                newID = re.sub("NODE", name, record.id)
+                lengthCov += (float(newID.split("_")[-5]) * float(newID.split("_")[-3]))
+                record.id = newID
+                record.name = ''
+                record.description = ''
+                over200bp.append(record)
+        metadata[name]["2.Assembly"]["totalBasesxCoverage"] = lengthCov
+        # print metadata[name]["2.Assembly"]["totalBasesxCoverage"]
+        # print "Found %s long sequences" % len(over200bp)
+        fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
+        formatted = open(fileName, "wb")
+        SeqIO.write(over200bp, formatted, "fasta")
+        formatted.close()
         # Move the files to a BestAssemblies folder
         assemblyPath = "%s/BestAssemblies" % path
         make_path(assemblyPath)
@@ -92,10 +97,12 @@ def contigFileFormatter(correctedFiles, path):
         # print name
         if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
             shutil.copy(fileName, assemblyPath)
+    return metadata
 
 
-def functionsGoNOW(correctedFiles, path):
+def functionsGoNOW(correctedFiles, path, metadata):
     """Run the helper function"""
     print("\nAssembling reads.")
     spadesPrepProcesses(correctedFiles, path)
-    contigFileFormatter(correctedFiles, path)
+    updatedMetadata = contigFileFormatter(correctedFiles, path, metadata)
+    return updatedMetadata

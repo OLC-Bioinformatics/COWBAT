@@ -97,6 +97,7 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
                         runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
@@ -132,6 +133,7 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
                         runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]

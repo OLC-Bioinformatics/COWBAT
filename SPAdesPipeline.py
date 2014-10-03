@@ -24,9 +24,10 @@ import reportR
 # TODO Move the rMLST and the referenceGenomes folders to a central location
 # TODO Figure out how to avoid using absolute paths for called scripts
 # TODO Think about getting this pipeline into docker
+# TODO add depth of coverage
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-19")
+os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-30")
 path = os.getcwd()
 
 # Start time
@@ -50,13 +51,12 @@ def pipeline():
     # quakify
     correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata)
     # SPAdesify
-    spadesGoUpper.functionsGoNOW(correctedFiles, path)
+    runTrimMetadata = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # Typing
     runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
     # Quasting
     runTrimMLSTAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
     # Library size estimation
-    # print json.dumps(runTrimMLSTMetadata, sort_keys=True, indent=4)
     runTrimMLSTAssemblyInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTAssemblyMetadata)
     reportR.functionsGoNOW(correctedFiles, runTrimMLSTAssemblyInsertMetadata, path)
 

@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 __author__ = 'akoziol'
 
 # OS commands
@@ -24,11 +25,12 @@ import reportR
 # TODO Move the rMLST and the referenceGenomes folders to a central location
 # TODO Figure out how to avoid using absolute paths for called scripts
 # TODO Think about getting this pipeline into docker
-# TODO add depth of coverage
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-30")
+# os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-30")
 path = os.getcwd()
+
+refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
 
 # Start time
 start = time.time()
@@ -53,7 +55,7 @@ def pipeline():
     # SPAdesify
     runTrimMetadata = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # Typing
-    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
+    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata, refFilePath)
     # Quasting
     runTrimMLSTAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
     # Library size estimation

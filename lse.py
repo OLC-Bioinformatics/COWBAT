@@ -96,7 +96,7 @@ def indexTargets((reference, target, path)):
     shutil.copy(reference, indexPath)
     indexFileSMI = "%s.smi" % filename
     if not os.path.isfile("%s/%s" % (indexPath, indexFileSMI)):
-        indexCommand = "/bin/smalt index -k 20 -s 10 %s/%s_filteredAssembled %s" % (indexPath, target, reference)
+        indexCommand = "smalt index -k 20 -s 10 %s/%s_filteredAssembled %s" % (indexPath, target, reference)
         subprocess.call(indexCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         dotter()
     else:
@@ -126,7 +126,7 @@ def mapping((target, path)):
     make_path(filePath)
     targetPath = "%s/targets/%s" % (newPath, filename)
     if not os.path.isfile("%s/%s.bam" % (filePath, target)):
-        smaltMap = "/bin/smalt map -o %s/%s.bam -f bam -n 24 -x %s_filteredAssembled %s %s" \
+        smaltMap = "smalt map -o %s/%s.bam -f bam -n 24 -x %s_filteredAssembled %s %s" \
                    % (filePath, target, targetPath, fastq1, fastq2)
         subprocess.call(smaltMap, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
         dotter()
@@ -183,7 +183,7 @@ def graphing((target, path)):
     make_path(newPath)
     os.chdir(newPath)
     if not os.path.isfile("%s/%s_insert_sizes.pdf" % (newPath, target)):
-        graphingCommand = "Rscript /home/blais/PycharmProjects/LibrarySizeEstimator/insertsizes.R %s %s 1>/dev/null 2>/dev/null" % (filePath, target)
+        graphingCommand = "insertsizes.R %s %s 1>/dev/null 2>/dev/null" % (filePath, target)
         os.system(graphingCommand)
         dotter()
     else:

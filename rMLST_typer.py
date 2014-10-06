@@ -167,24 +167,24 @@ class blastparser(threading.Thread): # records, genomes):
             self.parsequeue.task_done()
 
 
-def parsethreader(blastpath, genomes):
+def parsethreader(bPath, Genomes):
     """Sets up multithreaded blast"""
     global plusdict
     dotter()
-    for i in range(len(genomes)):
+    for i in range(len(Genomes)):
         threads = blastparser(parsequeue)
         threads.setDaemon(True)
         threads.start()
-    progress = len(blastpath)
-    for xml in blastpath:
+    progress = len(bPath)
+    for xml in bPath:
         handle = open(xml, 'r')
         mm = mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ)
         handle.close()
-        parsequeue.put((xml, blastpath[xml], mm, progress))
+        parsequeue.put((xml, bPath[xml], mm, progress))
         parsequeue.join()
 
 
-def blaster(markers, strains, path, out, experimentName):
+def blaster(markers, strains, path, out, experimentName, refFilesPath):
     '''
     The blaster function is the stack manager of the module
     markers are the the target fasta folder that with be db'd and BLAST'd against strains folder
@@ -208,7 +208,8 @@ def blaster(markers, strains, path, out, experimentName):
     else:
         # make blastn threads and retrieve xml file locations
         blastnthreads(fastas, genomes)
-        json.dump(blastpath, open('%s/blastxmldict.json' % path, 'wb'), sort_keys=True, indent=4, separators=(',', ': '))
+        # , indent=4, separators=(',', ': ')
+        json.dump(blastpath, open('%s/blastxmldict.json' % path, 'wb'), sort_keys=True, indent=4)
     print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
     sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
     parsethreader(blastpath, fastas)
@@ -229,11 +230,11 @@ def blaster(markers, strains, path, out, experimentName):
     return plusdict
 
 
-def determineReferenceGenome(plusdict, path, metadata):
+def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
     """Find the reference genome with the closest number of identical alleles to each
     sequenced strain"""
     # Retrieve the rMLST profiles of the reference genomes
-    with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % path, "r") as referenceFile:
+    with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % refFilesPath, "r") as referenceFile:
         sequenceTypes = json.load(referenceFile)
         referenceFile.close()
     print "\nDetermining closest reference genome."
@@ -293,15 +294,15 @@ def determineReferenceGenome(plusdict, path, metadata):
         make_path("%s/%s/referenceGenome" % (path, strainTrimmed))
         for reference in sorted(strainTypes[strain]):
             # Copy the reference genome to the referenceGenome subfolder in the strain directory
-            shutil.copy("%s/referenceGenomes/%s.fasta" % (path, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
+            shutil.copy("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
             metadata[strainTrimmed]["1.General"]["rMLSTmatchestoRef"] = strainTypes[strain][reference]
     return metadata
 
 
-def determineSubtype(plusdict, path, metadata):
+def determineSubtype(plusdict, path, metadata, refFilesPath):
     """Same as above (determineReferenceGenome), but this determines the rMLST sequence type
     Comments are as above, as this is very similar"""
-    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
+    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % refFilesPath)
     for line in profile:
         # Skip the first line of the scheme
         if re.search("rST", line):
@@ -353,14 +354,14 @@ def determineSubtype(plusdict, path, metadata):
     return metadata
 
 
-def functionsGoNOW(sampleNames, path, date, metadata):
+def functionsGoNOW(sampleNames, path, date, metadata, refFilesPath):
     """Commenting is subpar in this script, as I am using code written by Mike,
     so I can't really comment on it very well"""
     print "\nPerforming rMLST analyses."
-    rMLSTgenes = path + "/rMLST/alleles/"
+    rMLSTgenes = refFilesPath + "/rMLST/alleles/"
     make_path("%s/tmp" % path)
     print "\nFinding rMLST alleles."
-    plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    additionalMetadata = determineReferenceGenome(plusdict, path, metadata)
-    moreMetadata = determineSubtype(plusdict, path, additionalMetadata)
+    plusdict = blaster(rMLSTgenes, sampleNames, path, path, date, refFilesPath)
+    additionalMetadata = determineReferenceGenome(plusdict, path, metadata, refFilesPath)
+    moreMetadata = determineSubtype(plusdict, path, additionalMetadata, refFilesPath)
     return moreMetadata

@@ -47,13 +47,14 @@ def moveExtract(strain, gzFiles, path):
     """Renames, moves, and uncompresses .gz files"""
     forward = str(strain) + "_R1_001.fastq.gz"
     reverse = str(strain) + "_R2_001.fastq.gz"
-    shutil.move(gzFiles[0], "%s/%s/%s" % (path, strain, forward))
-    shutil.move(gzFiles[1], "%s/%s/%s" % (path, strain, reverse))
-    sys.stdout.write('.')
-    gzipCommandForward = "gzip -d %s/%s/%s" % (path, strain, forward)
-    gzipCommandReverse = "gzip -d %s/%s/%s" % (path, strain, reverse)
-    subprocess.call(gzipCommandForward, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-    subprocess.call(gzipCommandReverse, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+    if os.path.isfile(gzFiles[0]) and os.path.isfile(gzFiles[1]):
+        shutil.move(gzFiles[0], "%s/%s/%s" % (path, strain, forward))
+        shutil.move(gzFiles[1], "%s/%s/%s" % (path, strain, reverse))
+        sys.stdout.write('.')
+        gzipCommandForward = "gzip -d %s/%s/%s" % (path, strain, forward)
+        gzipCommandReverse = "gzip -d %s/%s/%s" % (path, strain, reverse)
+        subprocess.call(gzipCommandForward, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        subprocess.call(gzipCommandReverse, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
 
 
 def folderer(sampleNames, path):

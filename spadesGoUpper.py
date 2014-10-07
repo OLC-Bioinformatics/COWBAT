@@ -69,7 +69,7 @@ def contigFileFormatter(correctedFiles, path, metadata):
     for name in correctedFiles:
         newPath = path + "/" + name
         # Ensures that the contigs file is present, but the renamed, manipulated file is not
-        os.remove("%s/%s_filteredAssembled.fasta" % (newPath, name))
+        # os.remove("%s/%s_filteredAssembled.fasta" % (newPath, name))
         if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
             # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
             over200bp = []

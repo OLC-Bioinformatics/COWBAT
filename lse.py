@@ -34,9 +34,9 @@ def sampleFastq(path, sampleNames):
         newPath = path + "/" + name
         # Randomly samples 10 000 reads with a seed of 100
         if not os.path.isfile("%s/%s_R1_001_cor_sampled10000.fastq" % (newPath, name)):
-            seqtkCall = "/home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
+            seqtkCall = "seqtk sample -s seed=100 " \
                         "%s/%s_R1_001.cor.fastq 10000 > %s/%s_R1_001_cor_sampled10000.fastq " \
-                        "&& /home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
+                        "&&seqtk sample -s seed=100 " \
                         "%s/%s_R2_001.cor.fastq 10000 > %s/%s_R2_001_cor_sampled10000.fastq" \
                         % (newPath, name, newPath, name, newPath, name, newPath, name)
             os.system(seqtkCall)

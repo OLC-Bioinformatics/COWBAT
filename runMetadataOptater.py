@@ -44,6 +44,7 @@ def parseRunInfo():
 def parseSampleSheet():
     """Parses the sample sheet (SampleSheet.csv) to determine certain values
     important for the creation of the assembly report"""
+    global returnData
     sampleSheet = open("SampleSheet.csv", "r")
     # Go line-by-line through the csv file to find the information required
     for line in sampleSheet:
@@ -93,10 +94,10 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["Instrument"] = instrument
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
-    return date
+    return date, returnData
 
 
-def parseRunStats():
+def parseRunStats(metadata):
     """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml)"""
     global totalClustersPF
     dataList = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
@@ -119,17 +120,18 @@ def parseRunStats():
         # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
         # totalClustersPF, and % of total readsPF
         strain = elementData[2]
-        returnData[strain]["3.Run"]["SampleNumber"] = elementData[0]
-        returnData[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
-        returnData[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
-        returnData[strain]["3.Run"]["PercentOfClusters"] = roundedPercentperStrain
+        metadata[strain]["3.Run"]["SampleNumber"] = elementData[0]
+        metadata[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
+        metadata[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
+        metadata[strain]["3.Run"]["PercentOfClusters"] = roundedPercentperStrain
         # Clears the list for the next iteration
         elementData[:] = []
+    return metadata
 
 
 def functionsGoNOW():
     """Run the functions"""
     parseRunInfo()
-    date = parseSampleSheet()
-    parseRunStats()
-    return returnData, samples, date
+    date, metadata = parseSampleSheet()
+    moreMetadata = parseRunStats(metadata)
+    return moreMetadata, samples, date

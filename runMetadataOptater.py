@@ -119,7 +119,7 @@ def parseRunStats(metadata):
         # Populate returnData with all the appropriate values
         # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
         # totalClustersPF, and % of total readsPF
-        strain = elementData[2]
+        strain = elementData[2].rstrip().replace(" ", "-").replace(".", "-").replace("---", "-").replace("--", "-")
         metadata[strain]["3.Run"]["SampleNumber"] = elementData[0]
         metadata[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
         metadata[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF

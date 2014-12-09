@@ -47,6 +47,7 @@ def moveExtract(strain, gzFiles, path):
     """Renames, moves, and uncompresses .gz files"""
     forward = str(strain) + "_R1_001.fastq.gz"
     reverse = str(strain) + "_R2_001.fastq.gz"
+    print strain
     if os.path.isfile(gzFiles[0]) and os.path.isfile(gzFiles[1]):
         shutil.move(gzFiles[0], "%s/%s/%s" % (path, strain, forward))
         shutil.move(gzFiles[1], "%s/%s/%s" % (path, strain, reverse))
@@ -59,6 +60,7 @@ def moveExtract(strain, gzFiles, path):
 
 def folderer(sampleNames, path):
     """Move the .gz files into appropriately named folders, and decompress them"""
+    os.chdir(path)
     gzCheck = glob.glob("*.gz")
     if not gzCheck:
         print("Processing files.")
@@ -68,10 +70,11 @@ def folderer(sampleNames, path):
             if not gzFiles:
                 pass
             else:
-                moveExtract(strain, gzFiles, path)
+                moveExtract(strain, sorted(gzFiles), path)
     else:
         print("Moving and extracting fastq files.")
         for strain in sampleNames:
+            os.chdir(path)
             # Make the required folders (if necessary)
             make_path("%s/%s" % (path, strain))
             # Get the .gz files into a list
@@ -82,9 +85,9 @@ def folderer(sampleNames, path):
                 if not gzFiles:
                     pass
                 else:
-                    moveExtract(strain, gzFiles, path)
+                    moveExtract(strain, sorted(gzFiles), path)
             else:
-                moveExtract(strain, gzFiles, path)
+                moveExtract(strain, sorted(gzFiles), path)
 
 
 def functionsGoNOW(sampleNames, path):

@@ -21,13 +21,15 @@ import quastR
 import lse
 # Create a JSON report
 import reportR
+import json
 
 # TODO Move the rMLST and the referenceGenomes folders to a central location
 # TODO Figure out how to avoid using absolute paths for called scripts
+# TODO Locate MiSeq mount and copy files to a new folder in the nas using the date of the run as the file name
 # TODO Think about getting this pipeline into docker
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-# os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-30")
+# os.chdir("/media/nas/akoziol/WGS/2014-10-31")
 path = os.getcwd()
 
 refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
@@ -48,6 +50,7 @@ def pipeline():
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
     print("Extracting metadata from sequencing run.")
     runMetadata, sampleNames, experimentDate = runMetadataOptater.functionsGoNOW()
+    # print json.dumps(runMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify

@@ -282,10 +282,11 @@ def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
                     for geneName in sorted(mismatch):
                         for observedAllele, refAllele in sorted(mismatch[geneName].iteritems()):
                             # Populate the metadata dictionary
-                            strainTypes[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypes[genome][sType]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypes[genome][sType]["NumIdenticalAlleles"] = bestCount
                 # If no mismatches, populate the dictionary with the strain name, reference genome name, and the count
                 else:
-                    strainTypes[genome][sType] = bestCount
+                    strainTypes[genome][sType]["NumIdenticalAlleles"] = bestCount
             # Clear the dictionary for the next round of analysis
             mismatch.clear()
     # Populate the metadata dictionary with the appropriate data
@@ -295,7 +296,11 @@ def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
         for reference in sorted(strainTypes[strain]):
             # Copy the reference genome to the referenceGenome subfolder in the strain directory
             shutil.copy("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
-            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoRef"] = strainTypes[strain][reference]
+            # print json.dumps(strainTypes[strain][reference], sort_keys=True, indent=4, separators=(',', ': '))
+            metadata[strainTrimmed]["6.rMLSTmatchestoRef"] = strainTypes[strain][reference]
+            # metadata[strainTrimmed]["6.rMLSTmatchestoRef"]["NumIdenticalAlleles"] = bestCount
+
+
     return metadata
 
 
@@ -335,7 +340,11 @@ def determineSubtype(plusdict, path, metadata, refFilesPath):
                 if mismatchMLST:
                     for geneName in sorted(mismatchMLST):
                         for observedAllele, refAllele in sorted(mismatchMLST[geneName].iteritems()):
-                            strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            # strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypesMLST[genome][sType]["rMLSTIdenticalAlleles"] = bestCount
+                            strainTypesMLST[genome][sType]["rMLSTMismatchDetails"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+
+
                 else:
                     strainTypesMLST[genome][sType] = bestCount
             mismatchMLST.clear()
@@ -345,18 +354,22 @@ def determineSubtype(plusdict, path, metadata, refFilesPath):
         # If the genome key is not in the strainTypesMLST dictionary
         if genome not in sorted(strainTypesMLST):
             strainTrimmed = re.split("_filteredAssembled", genome)[0]
-            metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"] = "N/A"
+            metadata[strainTrimmed]["5.rMLST"]["rMLSTSequenceType"] = "N/A"
     # Populates the metadata dictionary with data from strains present in the strainTypesMLST dictionary
     for strain in sorted(strainTypesMLST):
         strainTrimmed = re.split("_filteredAssembled", strain)[0]
         for reference in sorted(strainTypesMLST[strain]):
-            metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"]["sequenceType"][reference] = strainTypesMLST[strain][reference]
+            # metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"]["sequenceType"][reference] = strainTypesMLST[strain][reference]
+            print reference, strainTrimmed
+            metadata[strainTrimmed]["5.rMLST"] = strainTypesMLST[strain][reference]
+            metadata[strainTrimmed]["5.rMLST"]["rMLSTSequenceType"] = reference
     return metadata
 
 
 def functionsGoNOW(sampleNames, path, date, metadata, refFilesPath):
     """Commenting is subpar in this script, as I am using code written by Mike,
     so I can't really comment on it very well"""
+    '''Yeah, well if I didn't have to change it so much to work it would have been commented better Adam'''
     print "\nPerforming rMLST analyses."
     rMLSTgenes = refFilesPath + "/rMLST/alleles/"
     make_path("%s/tmp" % path)
@@ -364,4 +377,5 @@ def functionsGoNOW(sampleNames, path, date, metadata, refFilesPath):
     plusdict = blaster(rMLSTgenes, sampleNames, path, path, date, refFilesPath)
     additionalMetadata = determineReferenceGenome(plusdict, path, metadata, refFilesPath)
     moreMetadata = determineSubtype(plusdict, path, additionalMetadata, refFilesPath)
+    # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     return moreMetadata

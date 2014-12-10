@@ -93,6 +93,10 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["LengthofSecondRead"] = reverseLength
                 returnData[strain]["3.Run"]["Flowcell"] = flowcell
                 returnData[strain]["3.Run"]["Instrument"] = instrument
+                returnData[strain]["7.Pipeline"]["SPAdesVersion"] = "3.1.1"
+                returnData[strain]["7.Pipeline"]["QUASTVersion"] = "2.3"
+                returnData[strain]["7.Pipeline"]["QuakeVersion"] = "0.3"
+                returnData[strain]["7.Pipeline"]["PipelineVersion"] = ""
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
                 if not os.path.isfile("GenerateFASTQRunStatistics.xml"):

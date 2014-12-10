@@ -24,9 +24,9 @@ def functionsGoNOW(sampleNames, metadata, path):
     reportPath = "%s/reports" % path
     make_path(reportPath)
     combinedReport = open("%s/CombinedMetadataReport.csv" % reportPath, "wb")
-    headings = ["fileName", "N50", "NumContigs", "TotalLength", "MeanInsertSize", "averageDepthofCov",
+    headings = ["fileName", "SampleName", "N50", "NumContigs", "TotalLength", "MeanInsertSize", "averageDepthofCov",
                 "referenceGenome", "NumIdenticalAlleles", "rMLSTSequenceType", "rMLSTIdenticalAlleles", "Date",
-                "percentGC", "Investigator", "LengthofFirstRead", "LengthofSecondRead", "Project"]
+                "percentGC", "Investigator", "TotalClustersinRun", "LengthofFirstRead", "LengthofSecondRead", "Project"]
     reportHeadings = ["1.General", "2.Assembly", "3.Run", "4.Correction", "5.rMLST", "6.rMLSTmatchestoRef"]
     combinedReport.write("\t".join(headings))
     combinedReport.write("\n")

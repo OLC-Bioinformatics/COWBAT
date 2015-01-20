@@ -12,7 +12,35 @@ from Queue import Queue
 from collections import defaultdict
 import subprocess, os, glob, time, sys, shlex, re, threading, json, mmap, shutil, errno
 
+# Initialise variables
 count = 0
+dqueue = Queue()
+blastqueue = Queue()
+parsequeue = Queue()
+testqueue = Queue()
+plusqueue = Queue()
+plusdict = {}
+genedict = defaultdict(list)
+blastpath = {}
+threadlock = threading.Lock()
+genomes = []
+scheme = []
+header = []
+body = []
+
+
+def make_dict():
+    """Makes Perl-style dictionaries"""
+    return defaultdict(make_dict)
+
+# Initialise the dictionary responsible for storing the report data
+sequenceTypes = defaultdict(make_dict)
+strainTypes = defaultdict(make_dict)
+mismatch = defaultdict(make_dict)
+
+sequenceTypesMLST = defaultdict(make_dict)
+strainTypesMLST = defaultdict(make_dict)
+mismatchMLST = defaultdict(make_dict)
 
 
 def dotter():
@@ -45,19 +73,6 @@ def makeblastdb(dqueue):
         dqueue.task_done() # signals to dqueue job is done
         sys.exit()
 
-# Declare queues, list, and dict
-dqueue = Queue()
-blastqueue = Queue()
-parsequeue = Queue()
-testqueue = Queue()
-plusqueue = Queue()
-plusdict = {}
-genedict = defaultdict(list)
-blastpath = {}
-threadlock = threading.Lock()
-genomes = []
-scheme = []
-# blastexist = {}
 
 def makedbthreads(fastas):
     ''' Setup and create threads for class'''
@@ -71,6 +86,7 @@ def makedbthreads(fastas):
 
 
 def xmlout (fasta, genome):
+    """Extracts the name of the file by stripping off extensions"""
     gene = re.search('\/(\w+)\.tfa', fasta)
     path = re.search('(.+)\/(.+)\/(.+?)\.fa', genome)
     return path, gene
@@ -80,6 +96,7 @@ class runblast(threading.Thread):
     def __init__(self, blastqueue):
         self.blastqueue = blastqueue
         threading.Thread.__init__(self)
+
     def run(self):
         while True:
             global blastpath, plusdict
@@ -88,8 +105,6 @@ class runblast(threading.Thread):
             out = "%s/tmp/%s.%s.xml" % (path.group(1), path.group(3), gene.group(1))
             threadlock.acquire()
             blastpath[out] = {path.group(3): (gene.group(1),)}
-            # plusdict[path.group(3)] = {gene.group(1): 0}
-            # print path.group(3), gene.group(1)
             threadlock.release()
             if not os.path.isfile(out):
                 dotter()
@@ -138,9 +153,7 @@ class blastparser(threading.Thread): # records, genomes):
                                     if genome not in plusdict:
                                         plusdict[genome] = defaultdict(str)
                                     if gene[-2:] not in plusdict[genome]:
-                                        # plusdict[genome][gene] = col
                                         plusdict[genome][gene[-2:]] = col
-                                    # print genome, gene[-2:], col
                             threadlock.release()  # precaution for populate dictionary with GIL
             else:
                 for genome in genomes:
@@ -148,35 +161,30 @@ class blastparser(threading.Thread): # records, genomes):
                         if genome not in plusdict:
                             plusdict[genome] = defaultdict(str)
                         if gene[-2:] not in plusdict[genome]:
-                            # print gene, genome
-                            # plusdict[genome][gene] = col
                             plusdict[genome][gene[-2:]] = "N"
-                        # print genome, gene[-2:], col
-                    # threadlock.release()  # precaution for populate dictionary with GIL
             dotter()
             mm.close()
-
             self.parsequeue.task_done()
 
-def parsethreader(blastpath, genomes):
+
+def parsethreader(bPath, Genomes):
+    """Sets up multithreaded blast"""
     global plusdict
     dotter()
-    for i in range(len(genomes)):
+    for i in range(len(Genomes)):
         threads = blastparser(parsequeue)
         threads.setDaemon(True)
         threads.start()
-    progress = len(blastpath)
-    for xml in blastpath:
-        # print xml
+    progress = len(bPath)
+    for xml in bPath:
         handle = open(xml, 'r')
         mm = mmap.mmap(handle.fileno(), 0, access=mmap.ACCESS_READ)
-        # time.sleep(0.05) # Previously used to combat open file error
         handle.close()
-        parsequeue.put((xml, blastpath[xml], mm, progress))
+        parsequeue.put((xml, bPath[xml], mm, progress))
         parsequeue.join()
 
 
-def blaster(markers, strains, path, out, experimentName):
+def blaster(markers, strains, path, out, experimentName, refFilesPath):
     '''
     The blaster function is the stack manager of the module
     markers are the the target fasta folder that with be db'd and BLAST'd against strains folder
@@ -192,32 +200,18 @@ def blaster(markers, strains, path, out, experimentName):
         genomeFile = glob.glob("%s/%s/*_filteredAssembled.fasta" % (path, name))
         # print genomeFile
         genomes.append(genomeFile[0])
-    # print genomes
-    # if os.path.isdir(strains):
-    #     genomes = glob.glob(strains + "*.fa")
-    # elif os.path.isfile(strains):
-    #     genomes = strains
-    # else:
-    #     print "The variable \"--genomes\" is not a folder or file"
-    #     return
     sys.stdout.write("[%s] Creating necessary databases for BLAST" % (time.strftime("%H:%M:%S")))
-    # #push markers to threads
     makedbthreads(fastas)
     print "\n[%s] BLAST database(s) created" % (time.strftime("%H:%M:%S"))
     if os.path.isfile('%s/blastxmldict.json' % path):
-        # print "[%s] Loading BLAST data from file" % (time.strftime("%H:%M:%S"))
-        # sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
         blastpath = json.load(open('%s/blastxmldict.json' % path))
     else:
-        # print "[%s] Now performing BLAST database searches" % (time.strftime("%H:%M:%S"))
-        # sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
         # make blastn threads and retrieve xml file locations
         blastnthreads(fastas, genomes)
-        json.dump(blastpath, open('%s/blastxmldict.json' % path, 'wb'), sort_keys=True, indent=4, separators=(',', ': '))
+        # , indent=4, separators=(',', ': ')
+        json.dump(blastpath, open('%s/blastxmldict.json' % path, 'wb'), sort_keys=True, indent=4)
     print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
     sys.stdout.write('[%s]' % (time.strftime("%H:%M:%S")))
-    # for bpath in blastpath:
-        # print fastas
     parsethreader(blastpath, fastas)
     csvheader = 'Strain'
     row = ""
@@ -228,48 +222,21 @@ def blaster(markers, strains, path, out, experimentName):
         for generow in sorted(plusdict[genomerow]):
             if rowcount <= 1:
                 csvheader += ', BACT0000' + generow.zfill(2)
-            # for plusrow in plusdict[genomerow][generow]:
             row += ',' + str(plusdict[genomerow][generow])
     make_path("%s/reports" % path)
     with open("%s/reports/%s_rMLSTresults.csv" % (out, experimentName), 'wb') as csvfile:
-    # with open("%s/%s_results_%s.csv" % (out, experimentName, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') as csvfile:
         csvfile.write(csvheader)
         csvfile.write(row)
-    print "\n[%s] Now parsing BLAST database searches" % (time.strftime("%H:%M:%S"))
-    # print json.dumps(plusdict, sort_keys=True, indent=4)
     return plusdict
 
 
-header = []
-body = []
-
-def make_dict():
-    """Makes Perl-style dictionaries"""
-    return defaultdict(make_dict)
-
-# Initialise the dictionary responsible for storing the report data
-sequenceTypes = defaultdict(make_dict)
-strainTypes = defaultdict(make_dict)
-mismatch = defaultdict(make_dict)
-
-sequenceTypesMLST = defaultdict(make_dict)
-strainTypesMLST = defaultdict(make_dict)
-mismatchMLST = defaultdict(make_dict)
-
-
-def determineReferenceGenome(plusdict, path, metadata):
-    # print json.dumps(plusdict, sort_keys=True, indent=4)
-    with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % path, "r") as referenceFile:
+def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
+    """Find the reference genome with the closest number of identical alleles to each
+    sequenced strain"""
+    # Retrieve the rMLST profiles of the reference genomes
+    with open("%s/referenceGenomes/referenceGenome_rMLSTprofiles.json" % refFilesPath, "r") as referenceFile:
         sequenceTypes = json.load(referenceFile)
         referenceFile.close()
-
-    # print json.dumps(referenceGenomeProfile, sort_keys=True, indent=4)
-    # for strain in sorted(sequenceTypes):
-    #     for gene, allele in sorted(sequenceTypes[strain].iteritems()):
-    #         print strain, gene, allele
-
-    # print json.dumps(plusdict, sort_keys=True, indent=4)
-    #
     print "\nDetermining closest reference genome."
     for genome in plusdict:
         dotter()
@@ -277,57 +244,72 @@ def determineReferenceGenome(plusdict, path, metadata):
         for sType in sorted(sequenceTypes):
             count = 0
             for bactNum, allele in sorted(plusdict[genome].iteritems()):
-            # for bactNum in sorted(plusdict[genome]):
+                # bactNum is only the two trailing digits of the gene name
                 fullBact = "BACT0000%s" % bactNum
+                # Checks to see if the key (e.g. BACT000001) is in the dictionary of reference genomes
                 if str(fullBact) in sequenceTypes[sType]:
-                    # print genome, sType, fullBact, sequenceTypes[sType][str(fullBact)]
+                    # Assigns the corresponding allele to refAllele
                     referenceAllele = sequenceTypes[sType][fullBact]
+                    # Part of the reference genome rMLST profile includes genes that match two alleles
+                    # if this is encountered, split on the space, and check each allele separately
                     if re.search(" ", referenceAllele):
                         splitAllele = referenceAllele.split(" ")
+                        # If the alleles match, increment the count
                         if allele == splitAllele[0] or allele == splitAllele[1]:
                             count += 1
+                        # If not, add the mismatch details to the mismatch dictionary
                         else:
                             mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+                    # No spaces encountered in the allele definitions
                     else:
                         if allele == referenceAllele:
                             count += 1
                         else:
                             mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+                # If the key isn't in the dictionary, add a "N" to the mismatch dictionary
                 else:
-                    # print genome, sType, fullBact, "N"
                     mismatch[fullBact][allele] = "N"
-                # if allele == sequenceTypes[sType][fullBact]:
-                    # count += 1
-                # else:
-                    # mismatch[fullBact][allele] = sequenceTypes[sType][fullBact]
+            # In order to find the best match, compare the score of the previous best match
+            # to this current match, if this new match is better, then proceed
             if count > bestCount:
+                # Set the best count to current count
                 bestCount = count
+                # Clear out the previous information from the dictionary
                 strainTypes[genome].clear()
-                # print genome, sType, json.dumps(mismatch, sort_keys=True, indent=4)
+                # If mismatches are recorded in the dictionary
                 if mismatch:
+                    # Traverse the dictionary
                     for geneName in sorted(mismatch):
                         for observedAllele, refAllele in sorted(mismatch[geneName].iteritems()):
-                            strainTypes[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                            # Populate the metadata dictionary
+                            strainTypes[genome][sType]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypes[genome][sType]["NumIdenticalAlleles"] = bestCount
+                # If no mismatches, populate the dictionary with the strain name, reference genome name, and the count
                 else:
-                    strainTypes[genome][sType] = bestCount
-                    # print genome, sType, "no mismatches"
-                # print genome, sType, count
+                    strainTypes[genome][sType]["NumIdenticalAlleles"] = bestCount
+            # Clear the dictionary for the next round of analysis
             mismatch.clear()
-    # print json.dumps(strainTypes, sort_keys=True, indent=4)
+    # Populate the metadata dictionary with the appropriate data
     for strain in sorted(strainTypes):
         strainTrimmed = re.split("_filteredAssembled", strain)[0]
         make_path("%s/%s/referenceGenome" % (path, strainTrimmed))
         for reference in sorted(strainTypes[strain]):
-            shutil.copy("%s/referenceGenomes/%s.fasta" % (path, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
-            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoRef"] = strainTypes[strain][reference]
-            # print strain, reference
+            # Copy the reference genome to the referenceGenome subfolder in the strain directory
+            shutil.copy("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
+            # print json.dumps(strainTypes[strain][reference], sort_keys=True, indent=4, separators=(',', ': '))
+            metadata[strainTrimmed]["6.rMLSTmatchestoRef"] = strainTypes[strain][reference]
+            # metadata[strainTrimmed]["6.rMLSTmatchestoRef"]["NumIdenticalAlleles"] = bestCount
+
+
     return metadata
 
 
-def determineSubtype(plusdict, path, metadata):
-    # print json.dumps(plusdict, sort_keys=True, indent=4)
-    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % path)
+def determineSubtype(plusdict, path, metadata, refFilesPath):
+    """Same as above (determineReferenceGenome), but this determines the rMLST sequence type
+    Comments are as above, as this is very similar"""
+    profile = open("%s/rMLST/profile/rMLST_scheme.txt" % refFilesPath)
     for line in profile:
+        # Skip the first line of the scheme
         if re.search("rST", line):
             subline = line.split("\t")
             for subsubline in subline:
@@ -340,7 +322,6 @@ def determineSubtype(plusdict, path, metadata):
     for line in body:
         for i in range(len(header) + 1):
             sequenceTypesMLST[int(line[0])][header[i - 1]] = line[i]
-
     print "\nDetermining sequence types."
     for genome in plusdict:
         dotter()
@@ -348,7 +329,6 @@ def determineSubtype(plusdict, path, metadata):
         for sType in sequenceTypesMLST:
             count = 0
             for bactNum, allele in sorted(plusdict[genome].iteritems()):
-            # for bactNum in sorted(plusdict[genome]):
                 fullBact = "BACT0000%s" % bactNum
                 if allele == sequenceTypesMLST[sType][fullBact]:
                     count += 1
@@ -357,33 +337,45 @@ def determineSubtype(plusdict, path, metadata):
             if count > bestCount:
                 bestCount = count
                 strainTypesMLST[genome].clear()
-                # print genome, sType, json.dumps(mismatch, sort_keys=True, indent=4)
                 if mismatchMLST:
                     for geneName in sorted(mismatchMLST):
                         for observedAllele, refAllele in sorted(mismatchMLST[geneName].iteritems()):
-                            strainTypesMLST[genome][sType][bestCount][geneName][observedAllele] = refAllele
+                            # strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            strainTypesMLST[genome][sType]["rMLSTIdenticalAlleles"] = bestCount
+                            strainTypesMLST[genome][sType]["rMLSTMismatchDetails"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+
+
                 else:
                     strainTypesMLST[genome][sType] = bestCount
-                    # print genome, "no mismatches"
-                # print genome, sType, count
             mismatchMLST.clear()
+    # Somehow, there are some files which do not have a single allele in common with any
+    # of the profiles present in the rMLST scheme. These are addressed here.
+    for genome in plusdict:
+        # If the genome key is not in the strainTypesMLST dictionary
+        if genome not in sorted(strainTypesMLST):
+            strainTrimmed = re.split("_filteredAssembled", genome)[0]
+            metadata[strainTrimmed]["5.rMLST"]["rMLSTSequenceType"] = "N/A"
+    # Populates the metadata dictionary with data from strains present in the strainTypesMLST dictionary
     for strain in sorted(strainTypesMLST):
         strainTrimmed = re.split("_filteredAssembled", strain)[0]
         for reference in sorted(strainTypesMLST[strain]):
-            metadata[strainTrimmed]["1.General"]["rMLSTmatchestoScheme"] = strainTypesMLST[strain][reference]
-    # print json.dumps(strainTypesMLST, sort_keys=True, indent=4)
+            # metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"]["sequenceType"][reference] = strainTypesMLST[strain][reference]
+            print reference, strainTrimmed
+            metadata[strainTrimmed]["5.rMLST"] = strainTypesMLST[strain][reference]
+            metadata[strainTrimmed]["5.rMLST"]["rMLSTSequenceType"] = reference
     return metadata
 
 
-def functionsGoNOW(sampleNames, path, date, metadata):
+def functionsGoNOW(sampleNames, path, date, metadata, refFilesPath):
+    """Commenting is subpar in this script, as I am using code written by Mike,
+    so I can't really comment on it very well"""
+    '''Yeah, well if I didn't have to change it so much to work it would have been commented better Adam'''
     print "\nPerforming rMLST analyses."
-    rMLSTgenes = path + "/rMLST/alleles/"
+    rMLSTgenes = refFilesPath + "/rMLST/alleles/"
     make_path("%s/tmp" % path)
     print "\nFinding rMLST alleles."
-    plusdict = blaster(rMLSTgenes, sampleNames, path, path, date)
-    print "\nDetermining subtypes."
-    additionalMetadata = determineReferenceGenome(plusdict, path, metadata)
-    moreMetadata = determineSubtype(plusdict, path, additionalMetadata)
+    plusdict = blaster(rMLSTgenes, sampleNames, path, path, date, refFilesPath)
+    additionalMetadata = determineReferenceGenome(plusdict, path, metadata, refFilesPath)
+    moreMetadata = determineSubtype(plusdict, path, additionalMetadata, refFilesPath)
+    # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     return moreMetadata
-    # print rMLSTgenes
-    # print path, sampleNames

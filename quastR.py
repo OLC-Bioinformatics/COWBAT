@@ -9,7 +9,7 @@ import time
 import errno
 import json
 import shutil
-
+import subprocess
 
 def make_path(inPath):
     """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
@@ -30,6 +30,7 @@ def performQuast(newPath, quastCall):
         sys.stdout.write('.')
     else:
         # Run the command
+        # subprocess.call(quastCall)
         os.system(quastCall)
         sys.stdout.write('.')
 
@@ -52,17 +53,18 @@ def quastProcesses(sampleNames, path):
 def quasting((name, path)):
     """Performs quast analysis on the assemblies"""
     newPath = path + "/" + name
-    # make_path("%s/quast_results" % newPath)
     # shutil.rmtree("%s/quast_results" % newPath)
+    make_path("%s/quast_results" % newPath)
     # Check to see if there is a directory named referenceGenome - if there is, use the reference genome in that folder
     # in the quast analyses. If not, then perform quast without a reference genome.
     if os.path.isdir("%s/referenceGenome" % newPath):
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
-        # --gage
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --threads 24 %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, name, newPath)
+        # 1>/dev/null
+        quastCall = "quast.py -R %s --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" \
+                    % (referenceGenome[0], newPath, name, newPath)
         performQuast(newPath, quastCall)
     else:
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py --threads 24 %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
+        quastCall = "quast.py %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
         performQuast(newPath, quastCall)
 
 
@@ -74,6 +76,8 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
             referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
         # Populate the dictionary with the referenceGenome - this may be moved to the rMLST module
             runTrimMetadata[name]["1.General"]["referenceGenome"] = re.split("\.", re.split("/", referenceGenome[0])[-1])[0]
+        else:
+            runTrimMetadata[name]["1.General"]["referenceGenome"] = "N/A"
         # This is just here as a placeholder until the rMLST module is functional
         runTrimMetadata[name]["1.General"]["fileName"] = name
         runTrimMetadata[name]["1.General"]["filelocation"] = newPath
@@ -95,6 +99,10 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        if runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]:
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
+                        else:
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
                         runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
@@ -130,6 +138,10 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigs"] = subline[1]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
+                        if runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]:
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
+                        else:
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
                         runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
@@ -165,8 +177,5 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
     print "\nPerforming quality checks on assemblies."
     quastProcesses(sampleNames, path)
-    # quasting(sampleNames, path)
-    print "\nCollating metadata."
     runTrimAssemblyMetadata = quastMetadata(sampleNames, path, runTrimMetadata)
     return runTrimAssemblyMetadata
-    # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4)

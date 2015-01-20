@@ -44,6 +44,8 @@ def parseRunInfo():
 def parseSampleSheet():
     """Parses the sample sheet (SampleSheet.csv) to determine certain values
     important for the creation of the assembly report"""
+    global returnData
+    global samples
     sampleSheet = open("SampleSheet.csv", "r")
     # Go line-by-line through the csv file to find the information required
     for line in sampleSheet:
@@ -57,7 +59,7 @@ def parseSampleSheet():
         elif re.search("Experiment", line):
             experiment = data[1].rstrip().replace("  ", " ")
         elif re.search("Date", line):
-            date = data[1].rstrip()
+            date = data[1].rstrip().replace("/", "-")
         # Here's a Perl-like solution for reading lines after a regex match
         # Perform the regex
         elif re.search("Reads", line):
@@ -68,15 +70,15 @@ def parseSampleSheet():
                     break
                 reads.append(subline)
             # Grab the number of reads in the first and second reads
-            forwardLength = reads[0].rstrip()
-            reverseLength = reads[1].rstrip()
+            forwardLength = reads[0].rstrip().replace(",", "")
+            reverseLength = reads[1].rstrip().replace(",", "")
         if re.search("Adapter", line):
             adapter = data[1].rstrip()
         elif re.search("Sample_ID", line):
             for subline in sampleSheet:
                 subdata = subline.split(",")
                 # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
-                strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("---", "-").replace("--", "-")
+                strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
                 returnData[strain]["3.Run"]["SampleName"] = subdata[0].rstrip()
                 returnData[strain]["3.Run"]["I7IndexID"] = subdata[4].rstrip()
                 returnData[strain]["3.Run"]["index1"] = subdata[5].rstrip()
@@ -91,12 +93,21 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["LengthofSecondRead"] = reverseLength
                 returnData[strain]["3.Run"]["Flowcell"] = flowcell
                 returnData[strain]["3.Run"]["Instrument"] = instrument
+                returnData[strain]["7.Pipeline"]["SPAdesVersion"] = "3.1.1"
+                returnData[strain]["7.Pipeline"]["QUASTVersion"] = "2.3"
+                returnData[strain]["7.Pipeline"]["QuakeVersion"] = "0.3"
+                returnData[strain]["7.Pipeline"]["PipelineVersion"] = ""
                 # Make a list of sample names to return to the main script
                 samples.append(strain)
-    return date
+                if not os.path.isfile("GenerateFASTQRunStatistics.xml"):
+                    returnData[strain]["3.Run"]["SampleNumber"] = "N/A"
+                    returnData[strain]["3.Run"]["NumberOfClustersPF"] = "N/A"
+                    returnData[strain]["3.Run"]["TotalClustersinRun"] = "N/A"
+                    returnData[strain]["3.Run"]["PercentOfClusters"] = "N/A"
+    return date, returnData, samples
 
 
-def parseRunStats():
+def parseRunStats(passedMetadata):
     """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml)"""
     global totalClustersPF
     dataList = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
@@ -118,18 +129,25 @@ def parseRunStats():
         # Populate returnData with all the appropriate values
         # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
         # totalClustersPF, and % of total readsPF
-        strain = elementData[2]
-        returnData[strain]["3.Run"]["SampleNumber"] = elementData[0]
-        returnData[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
-        returnData[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
-        returnData[strain]["3.Run"]["PercentOfClusters"] = roundedPercentperStrain
+        # strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("---", "-").replace("--", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "")
+        strain = elementData[2].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
+        passedMetadata[strain]["3.Run"]["SampleNumber"] = elementData[0]
+        passedMetadata[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
+        passedMetadata[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
+        passedMetadata[strain]["3.Run"]["PercentOfClusters"] = roundedPercentperStrain
         # Clears the list for the next iteration
         elementData[:] = []
+    return passedMetadata
 
 
 def functionsGoNOW():
     """Run the functions"""
     parseRunInfo()
-    date = parseSampleSheet()
-    parseRunStats()
-    return returnData, samples, date
+    date, metadata, sampleNames = parseSampleSheet()
+    if os.path.isfile("GenerateFASTQRunStatistics.xml"):
+        moreMetadata = parseRunStats(metadata)
+        print sampleNames
+        return moreMetadata, sampleNames, date
+    else:
+    # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+        return metadata, samples, date

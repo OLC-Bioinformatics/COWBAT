@@ -1,23 +1,8 @@
+#! /usr/bin/env python
 __author__ = 'akoziol'
 
-# Regex
-import re
 # OS commands
 import os
-# Perl-style dictionaries
-from collections import defaultdict
-# Prints variables in an easy-to-ready JSON format
-import json
-# Subprocess->call is used for making system calls
-import subprocess
-# Glob finds all the path names matching a specified pattern according to the rules used by the Unix shell
-import glob
-# Shutil is useful for file moving/copying
-import shutil
-# Errno is used in the file creation command  - I think it's similar to the $! variable in Perl
-import errno
-# System tools
-import sys
 # Time module
 import time
 # Custom script for pulling metadata from sequencing run reports/files
@@ -34,13 +19,20 @@ import rMLST_typer
 import quastR
 # Library size estimation
 import lse
-# Create a YAML report
+# Create a JSON report
 import reportR
+import json
 
+# TODO Move the rMLST and the referenceGenomes folders to a central location
+# TODO Figure out how to avoid using absolute paths for called scripts
+# TODO Locate MiSeq mount and copy files to a new folder in the nas using the date of the run as the file name
+# TODO Think about getting this pipeline into docker
 
 # The path is still hardcoded as, most of the time, this script is run from within Pycharm.
-os.chdir("/home/blais/PycharmProjects/SPAdesPipeline/2014-09-19")
+# os.chdir("/media/nas/akoziol/WGS/2014-10-31")
 path = os.getcwd()
+
+refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
 
 # Start time
 start = time.time()
@@ -58,21 +50,20 @@ def pipeline():
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
     print("Extracting metadata from sequencing run.")
     runMetadata, sampleNames, experimentDate = runMetadataOptater.functionsGoNOW()
+    # print json.dumps(runMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
     # quakify
     correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata)
     # SPAdesify
-    spadesGoUpper.functionsGoNOW(correctedFiles, path)
+    runTrimMetadata = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata)
     # Typing
-    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata)
-    # Library size estimation
-    # print json.dumps(runTrimMLSTMetadata, sort_keys=True, indent=4)
-    runTrimMLSTInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
+    runTrimMLSTMetadata = rMLST_typer.functionsGoNOW(correctedFiles, path, experimentDate, runTrimMetadata, refFilePath)
     # Quasting
-    runTrimMLSTInsertAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTInsertMetadata)
-
-    reportR.functionsGoNOW(correctedFiles, runTrimMLSTInsertAssemblyMetadata, path)
+    runTrimMLSTAssemblyMetadata = quastR.functionsGoNOW(correctedFiles, path, runTrimMLSTMetadata)
+    # Library size estimation
+    runTrimMLSTAssemblyInsertMetadata = lse.functionsGoNOW(correctedFiles, path, runTrimMLSTAssemblyMetadata)
+    reportR.functionsGoNOW(correctedFiles, runTrimMLSTAssemblyInsertMetadata, path)
 
 
 # Run the pipeline

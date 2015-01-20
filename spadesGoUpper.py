@@ -7,6 +7,8 @@ import re
 from Bio import SeqIO
 import shutil
 import errno
+# add spades.py to PYTHONPATH and interact directly
+import spades
 
 
 def make_path(inPath):
@@ -44,15 +46,20 @@ def runSpades((name, path)):
         # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
         # be located. Maybe the $PATH needs to be updated?
         # --continue
-        forward = "%s/%s_R1_001.cor.fastq" %(newPath, name)
-        reverse = "%s/%s_R2_001.cor.fastq" %(newPath, name)
+        forward = "%s/%s_R1_001.cor.fastq" % (newPath, name)
+        reverse = "%s/%s_R2_001.cor.fastq" % (newPath, name)
+        # forward = "%s/%s_R1_001.fastq" % (newPath, name)
+        # reverse = "%s/%s_R2_001.fastq" % (newPath, name)
         # There's an option to continue from checkpoints if the assembly is terminated prematurely within SPAdes,
         #  but the output directory must exist - if this directory exists, --continue, else don't --continue
+        # /home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/
+
         if os.path.isdir("%s/spades_output" % name):
-            spadesRun = "/home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/spades.py -k 21,33,55,77,99,127 " \
+            spadesRun = "spades.py -k 21,33,55,77,99,127 " \
                         "--careful --continue --only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
+
         else:
-            spadesRun = "/home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
+            spadesRun = "spades.py -k 21,33,55,77,99,127 --careful " \
                         "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
         # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
@@ -63,39 +70,45 @@ def runSpades((name, path)):
         sys.stdout.write('.')
 
 
-def contigFileFormatter(correctedFiles, path):
+def contigFileFormatter(correctedFiles, path, metadata):
     """Changes the name of each contig from ">NODE_XXX_length..." to the name of the file ">OLC795_XXX..." """
     for name in correctedFiles:
         newPath = path + "/" + name
-        #
-        if os.path.isfile("%s/spades_output/contigs.fasta" % newPath) and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
+        # Ensures that the contigs file is present, but the renamed, manipulated file is not
+        # os.remove("%s/%s_filteredAssembled.fasta" % (newPath, name))
+        # and not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name))
+        if os.path.isfile("%s/spades_output/contigs.fasta" % newPath):
             # http://biopython.org/wiki/SeqIO#Input.2FOutput_Example_-_Filtering_by_sequence_length
-            over200bp = []
+            over1000bp = []
+            lengthCov = 0
             for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
-                if len(record.seq) >= 200:
+                # Include only contigs greater than 200 bp in length
+                if len(record.seq) >= 1000:
                     # Add this record to our list
                     newID = re.sub("NODE", name, record.id)
+                    lengthCov += (float(newID.split("_")[-5]) * float(newID.split("_")[-3]))
                     record.id = newID
                     record.name = ''
                     record.description = ''
-                    over200bp.append(record)
+                    over1000bp.append(record)
+            metadata[name]["2.Assembly"]["totalBasesxCoverage"] = lengthCov
+            # print metadata[name]["2.Assembly"]["totalBasesxCoverage"]
             # print "Found %s long sequences" % len(over200bp)
             fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
             formatted = open(fileName, "wb")
-            SeqIO.write(over200bp, formatted, "fasta")
+            SeqIO.write(over1000bp, formatted, "fasta")
             formatted.close()
-        # Move the files to a BestAssemblies folder
-        assemblyPath = "%s/BestAssemblies" % path
-        make_path(assemblyPath)
-        fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
-        # print name
-        if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
-            shutil.copy(fileName, assemblyPath)
+            # Move the files to a BestAssemblies folder
+            assemblyPath = "%s/BestAssemblies" % path
+            make_path(assemblyPath)
+            if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
+                shutil.copy(fileName, assemblyPath)
+    return metadata
 
 
-
-def functionsGoNOW(correctedFiles, path):
+def functionsGoNOW(correctedFiles, path, metadata):
     """Run the helper function"""
-    print("Assembling reads.")
+    print("\nAssembling reads.")
     spadesPrepProcesses(correctedFiles, path)
-    contigFileFormatter(correctedFiles, path)
+    updatedMetadata = contigFileFormatter(correctedFiles, path, metadata)
+    return updatedMetadata

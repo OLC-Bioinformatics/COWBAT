@@ -7,8 +7,10 @@ import re
 from Bio import SeqIO
 import shutil
 import errno
+import subprocess
 # add spades.py to PYTHONPATH and interact directly
-import spades
+# import spades
+import glob
 
 
 def make_path(inPath):
@@ -22,7 +24,7 @@ def make_path(inPath):
             raise
 
 
-def spadesPrepProcesses(sampleName, path):
+def spadesPrepProcesses(sampleName, path, fLength):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     spadesPrepArgs = []
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
@@ -31,16 +33,18 @@ def spadesPrepProcesses(sampleName, path):
         createSpadesPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            spadesPrepArgs.append((name, path))
+            spadesPrepArgs.append((name, path, fLength))
         # This map function allows for multi-processing
         createSpadesPool.map(runSpades, spadesPrepArgs)
 
 
-def runSpades((name, path)):
+def runSpades((name, path, fLength)):
     """Performs necessary checks and runs SPAdes"""
     # Set up variables to keep commands clean looking
     contigsFile = "contigs.fasta"
     newPath = path + "/" + name
+    forward = ""
+    reverse = ""
     # Check for the existence of the scaffolds file - hopefully this will be created at the end of the run
     if not os.path.isfile("%s/spades_output/%s" % (newPath, contigsFile)):
         # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
@@ -48,19 +52,37 @@ def runSpades((name, path)):
         # --continue
         forward = "%s/%s_R1_001.cor.fastq" % (newPath, name)
         reverse = "%s/%s_R2_001.cor.fastq" % (newPath, name)
+        # forwardFile = glob.glob("%s/*1.cor.fastq" % newPath)
+        # if forwardFile:
+        #     forward = forwardFile[0]
+        # reverseFile = glob.glob("%s/*2.cor.fastq" % newPath)
+        # if reverseFile:
+        #     reverse = reverseFile[0]
         # forward = "%s/%s_R1_001.fastq" % (newPath, name)
         # reverse = "%s/%s_R2_001.fastq" % (newPath, name)
         # There's an option to continue from checkpoints if the assembly is terminated prematurely within SPAdes,
         #  but the output directory must exist - if this directory exists, --continue, else don't --continue
         # /home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/
+        if fLength > 50:
+            #  1>/dev/null
+            if os.path.isdir("%s/spades_output" % name):
+                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 " \
+                            "--careful --continue --only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output" % (forward, reverse, newPath)
 
-        if os.path.isdir("%s/spades_output" % name):
-            spadesRun = "spades.py -k 21,33,55,77,99,127 " \
-                        "--careful --continue --only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
-
+            else:
+            #  1>/dev/null
+                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
+                            "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output" % (forward, reverse, newPath)
         else:
-            spadesRun = "spades.py -k 21,33,55,77,99,127 --careful " \
-                        "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
+            # 1>/dev/null
+            if os.path.isdir("%s/spades_output" % name):
+                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 " \
+                            "--careful --continue --only-assembler --s1 %s -o %s/spades_output" % (reverse, newPath)
+
+            else:
+            #  1>/dev/null
+                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
+                            "--only-assembler --s1 %s -o %s/spades_output" % (reverse, newPath)
         # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
         os.system(spadesRun)
@@ -82,7 +104,9 @@ def contigFileFormatter(correctedFiles, path, metadata):
             over1000bp = []
             lengthCov = 0
             for record in SeqIO.parse(open("%s/spades_output/contigs.fasta" % newPath, "rU"), "fasta"):
-                # Include only contigs greater than 200 bp in length
+                cov = float(record.id.split("_")[5])
+                # Include only contigs greater than 1000 bp in length
+                 #and cov > 10
                 if len(record.seq) >= 1000:
                     # Add this record to our list
                     newID = re.sub("NODE", name, record.id)
@@ -106,9 +130,83 @@ def contigFileFormatter(correctedFiles, path, metadata):
     return metadata
 
 
-def functionsGoNOW(correctedFiles, path, metadata):
+def completionist(correctedFiles, path):
+    """Function to determine for which strains assembly was successful. Creates a list of the successful
+     assemblies that will be further processed by the pipeline"""
+    # Initialise the list
+    assembledFiles = []
+    for name in correctedFiles:
+        # Check if the assembly has completed successfully
+        if os.path.isfile("%s/%s/%s_filteredAssembled.fasta" % (path, name, name)):
+            # Append successful assemblies to the list
+            assembledFiles.append(name)
+        # Else inform that assembly failed
+        else:
+            print "%s could not be assembled!"
+    return assembledFiles
+
+
+
+def pipelineMetadata(path, metadata, sampleNames):
+    # Update these values as required
+    #Quast
+    quastOutput = subprocess.Popen(["/home/blais/Bioinformatics/quast-2.3/quast.py"], stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, shell=True)
+    out, err = quastOutput.communicate()
+    quastVer = err.split("\n")[1].strip("Version ").replace(" ,", ",")
+
+    # SMALT
+    smaltOutput = subprocess.Popen(["/bin/smalt"], stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, shell=True)
+    out, err = smaltOutput.communicate()
+    smaltVer = out.split("\n")[2].strip(" ").strip("(").strip(")").strip("version: ")
+
+    # Samtools
+    samOutput = subprocess.Popen(["/usr/bin/samtools"], stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, shell=True)
+    out, err = samOutput.communicate()
+    samVer = err.split("\n")[2].strip("Version: ")
+
+    # Blast
+    blastnOutput = subprocess.Popen(["/usr/bin/blastn -version"], stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE, shell=True)
+    out, err = blastnOutput.communicate()
+    blastVer = out.split("\n")[0].strip("blastn: ")
+
+    for name in sampleNames:
+
+        with open("%s/%s/spades_output/spades.log" % (path, name)) as spadesLog:
+            for line in spadesLog:
+                if "SPAdes version" in line:
+                    spadesVer = line.strip("SPAdes version: ").rstrip()
+                elif "Python version" in line:
+                    pythonVer = line.strip("Python version: ").rstrip()
+                elif "OS" in line:
+                    OS = line.strip("OS: ").rstrip()
+
+
+        versions = open("%s/%s/programVersions.txt" % (path, name), "wb")
+        versions.write("spadesVersion\tquastVersion\tquakeVersion\tSmaltVersion\tSamtools\tBlastVersion\t"
+                   "PythonVersion\tOS\t")
+        # print name, quastVer, smaltVer, samVer, blastVer, spadesVer, pythonVer, OS
+        metadata[name]["7.Pipeline"]["SPAdesVersion"] = spadesVer
+        metadata[name]["7.Pipeline"]["QUASTVersion"] = quastVer
+        metadata[name]["7.Pipeline"]["QuakeVersion"] = "0.3"
+        metadata[name]["7.Pipeline"]["SmaltVersion"] = smaltVer
+        metadata[name]["7.Pipeline"]["SamtoolsVersion"] = samVer
+        metadata[name]["7.Pipeline"]["BlastVersion"] = blastVer
+        metadata[name]["7.Pipeline"]["PythonVersion"] = pythonVer
+        metadata[name]["7.Pipeline"]["OS"] = OS
+        metadata[name]["7.Pipeline"]["PipelineVersion"] = "42c32dfb9a 2014-12-10 Adam Koziol"
+    return metadata
+
+
+
+def functionsGoNOW(correctedFiles, path, metadata, fLength):
     """Run the helper function"""
     print("\nAssembling reads.")
-    spadesPrepProcesses(correctedFiles, path)
+    spadesPrepProcesses(correctedFiles, path, fLength)
     updatedMetadata = contigFileFormatter(correctedFiles, path, metadata)
-    return updatedMetadata
+    assembledFiles = completionist(correctedFiles, path)
+    moreMetadata = pipelineMetadata(path, updatedMetadata, assembledFiles)
+    return moreMetadata, assembledFiles

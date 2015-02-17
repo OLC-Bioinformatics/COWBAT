@@ -1,0 +1,136 @@
+---
+- release:
+    date: 12/18/2013
+    species: Arcobacter lanthierii
+    strain: strain AF 1440
+    version: R01
+- genome_assembly:
+    N50: '1329211'
+    assembly_sample_types: PE
+    estimated_genome_length: '1700000'
+    kingdom: Bacteria
+    max_contig: '1329211'
+    median_contig_len: 1861.5
+    min_contig_len: 244
+    num_contigs: 16
+    reads_used: 9416617/9760754
+    release_kmer: '91'
+    species_dir: ../../processing_lanthierii/A_lanthierii
+    total_length: '2232457'
+- samples:
+  - read_data:
+      R1:
+        raw:
+          file_path: /isilon/biodiversity/data/raw/illumina/PBI/Project_C2CK5ACXX/S0017B0_TGACCA_L008_R1.fq.gz
+          num_reads: '4880377'
+          read_length: '101'
+        trim:
+          file_path: ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz
+          num_reads: '4880377'
+          read_length: '96'
+      R2:
+        raw:
+          file_path: /isilon/biodiversity/data/raw/illumina/PBI/Project_C2CK5ACXX/S0017B0_TGACCA_L008_R2.fq.gz
+          num_reads: '4880377'
+          read_length: '101'
+        trim:
+          file_path: ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz
+          num_reads: '4880377'
+          read_length: '96'
+      sample_dir: ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0
+    release:
+    - input_file: /isilon/biodiversity/data/raw/illumina/PBI/Project_C2CK5ACXX/S0017B0_TGACCA_L008_R1.fq.gz
+      output_file: ../../processing_lanthierii/A_lanthierii/release/Al_AF_1440_R01/Al_AF_1440_R01_DNA_PE_S0017B0_R1.fq.gz
+    - input_file: /isilon/biodiversity/data/raw/illumina/PBI/Project_C2CK5ACXX/S0017B0_TGACCA_L008_R2.fq.gz
+      output_file: ../../processing_lanthierii/A_lanthierii/release/Al_AF_1440_R01/Al_AF_1440_R01_DNA_PE_S0017B0_R2.fq.gz
+    - input_file: ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz
+      output_file: ../../processing_lanthierii/A_lanthierii/release/Al_AF_1440_R01/Al_AF_1440_R01_DNA_PE_S0017B0_trim_R1.fq.gz
+    - input_file: ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz
+      output_file: ../../processing_lanthierii/A_lanthierii/release/Al_AF_1440_R01/Al_AF_1440_R01_DNA_PE_S0017B0_trim_R2.fq.gz
+    sequencing_metadata:
+      Barcode: TGACCA
+      Biomaterial: Al AF1440 gDNA
+      Biomaterial_Type: Genomic
+      Download: ''
+      Genotype: strain AF 1440
+      Growth_Condition_Notes: Incubated for 2-3 days at 30Â°C in microaerophilic conditions
+      Growth_Media: Modified Agarised Arcobacter media (m-AAM)
+      Lane: '13'
+      MID_Tag: IDX4
+      NumReads: ''
+      Organism: Arcobacter lanthierii
+      Percent_of_Reads_in_Lane: '3.6'
+      Plate_Name: C2CK5ACXX
+      Project: CRTI
+      Results_Received_NRC_PBI_LIMS_Request: (R004C2)
+      Run_Name: 130808_7001410_0076_BC2CK5ACXX
+      Sample_Name: S0017B0
+      Sequencing_Specifications: Illumina HiSeq, Paired-End, 101 cycles
+      Shipping_Date: Mar 20 2013
+      Total_Numreads_in_Lane: 4,880,377
+- pipeline:
+  - command: /opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R1.fq.gz
+    description: FastQC
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N raw_FastQC  qsub_script.sh '/opt/bio/FastQC/fastqc
+      -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R1.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: FastQC v0.10.1
+  - command: /opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R2.fq.gz
+    description: FastQC
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N raw_FastQC  qsub_script.sh '/opt/bio/FastQC/fastqc
+      -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R2.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: FastQC v0.10.1
+  - command: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline/FastxTrim.sh
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R1.fq.gz
+      33 6 ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz
+    description: Fastx_trimmer
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N fastx_trim  qsub_script.sh '/isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline/FastxTrim.sh
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R1.fq.gz
+      33 6 ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: Part of FASTX Toolkit 0.0.13.2 by A. Gordon (gordon@cshl.edu)
+  - command: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline/FastxTrim.sh
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R2.fq.gz
+      33 6 ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz
+    description: Fastx_trimmer
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N fastx_trim  qsub_script.sh '/isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline/FastxTrim.sh
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_R2.fq.gz
+      33 6 ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: Part of FASTX Toolkit 0.0.13.2 by A. Gordon (gordon@cshl.edu)
+  - command: /opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz
+    description: FastQC
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N trim_FastQC  qsub_script.sh
+      '/opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: FastQC v0.10.1
+  - command: /opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz
+    description: FastQC
+    qsub_cmd: /opt/gridengine/bin/lx26-amd64/qsub  -N trim_FastQC  qsub_script.sh
+      '/opt/bio/FastQC/fastqc -o ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/fastqc_out
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz'
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: FastQC v0.10.1
+  - command: '/opt/bio/velvet/velveth_127 ../../processing_lanthierii/A_lanthierii/DNA/assemblies/AF_1440/velvet//trim/assem_kmer-91_exp_cov-80_covcutoff-auto
+      91  -fastq -create_binary -shortPaired -separate -fastq ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R1.fq.gz
+      ../../processing_lanthierii/A_lanthierii/DNA/data/Al_S0017B0/S0017B0_TGACCA_L008_trim_5-0-0_R2.fq.gz '
+    description: velveth
+    qsub_cmd: ''
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: Version 1.2.08
+  - command: '/opt/bio/velvet/velvetg_127 ../../processing_lanthierii/A_lanthierii/DNA/assemblies/AF_1440/velvet//trim/assem_kmer-91_exp_cov-80_covcutoff-auto
+      -exp_cov 80   -scaffolding yes  -amos_file no -cov_cutoff auto -very_clean yes  -ins_length
+      300 '
+    description: velvetg
+    qsub_cmd: ''
+    release:
+    - input_file: ../../processing_lanthierii/A_lanthierii/DNA/assemblies/AF_1440/velvet//trim/assem_kmer-91_exp_cov-80_covcutoff-auto/contigs.fa
+      output_file: ../../processing_lanthierii/A_lanthierii/release/Al_AF_1440_R01/Al_AF_1440_R01_contigs.fa
+    run_dir: /isilon/biodiversity/projects/CRTI/specimen/processing/AssemblyPipeline
+    version: Version 1.2.08

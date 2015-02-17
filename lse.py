@@ -33,11 +33,12 @@ def sampleFastq(path, sampleNames):
     for name in sampleNames:
         newPath = path + "/" + name
         # Randomly samples 10 000 reads with a seed of 100
-        if not os.path.isfile("%s/%s_R1_001_cor_sampled10000.fastq" % (newPath, name)):
-            seqtkCall = "seqtk sample -s seed=100 " \
-                        "%s/%s_R1_001.cor.fastq 10000 > %s/%s_R1_001_cor_sampled10000.fastq " \
-                        "&&seqtk sample -s seed=100 " \
-                        "%s/%s_R2_001.cor.fastq 10000 > %s/%s_R2_001_cor_sampled10000.fastq" \
+        if not os.path.isfile("%s/%s_R1_001_sampled10000.fastq" % (newPath, name)) and not \
+            os.path.isfile("%s/%s_R1_001_sampled10000.fastq.xz" % (newPath, name)):
+            seqtkCall = "/home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
+                        "%s/%s_R1_001.cor.fastq 10000 > %s/%s_R1_001_sampled10000.fastq " \
+                        "&&/home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
+                        "%s/%s_R2_001.cor.fastq 10000 > %s/%s_R2_001_sampled10000.fastq" \
                         % (newPath, name, newPath, name, newPath, name, newPath, name)
         # if not os.path.isfile("%s/%s_R1_001_sampled10000.fastq" % (newPath, name)):
         #     seqtkCall = "seqtk sample -s seed=100 " \
@@ -93,20 +94,23 @@ def indexTargetsProcesses(path, inputData):
 
 def indexTargets((reference, target, path)):
     """Performs smalt index on the targets"""
-    filename = target.split('.')[0]
     newPath = path + "/" + target
-    # Create a new path to be created (if necessary) for the generation of the range of k-mers
-    indexPath = "%s/targets" % newPath
-    # Call the make_path function to make folders as necessary
-    make_path(indexPath)
-    shutil.copy(reference, indexPath)
-    indexFileSMI = "%s.smi" % filename
-    if not os.path.isfile("%s/%s" % (indexPath, indexFileSMI)):
-        indexCommand = "smalt index -k 20 -s 10 %s/%s_filteredAssembled %s" % (indexPath, target, reference)
-        subprocess.call(indexCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-        dotter()
+    if os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, target)):
+        filename = target.split('.')[0]
+        # Create a new path to be created (if necessary) for the generation of the range of k-mers
+        indexPath = "%s/targets" % newPath
+        # Call the make_path function to make folders as necessary
+        make_path(indexPath)
+        shutil.copy(reference, indexPath)
+        indexFileSMI = "%s.smi" % filename
+        if not os.path.isfile("%s/%s" % (indexPath, indexFileSMI)):
+            indexCommand = "smalt index -k 20 -s 10 %s/%s_filteredAssembled %s" % (indexPath, target, reference)
+            subprocess.call(indexCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            dotter()
+        else:
+            dotter()
     else:
-        dotter()
+            dotter()
 
 
 def mappingProcesses(path, inputData):
@@ -124,22 +128,25 @@ def mappingProcesses(path, inputData):
 
 def mapping((target, path)):
     """Performs the mapping of the sampled reads to the targets"""
-    filename = target.split('.')[0]
     newPath = path + "/" + target
-    fastq1 = "%s/%s_R1_001_cor_sampled10000.fastq" % (newPath, target)
-    fastq2 = "%s/%s_R2_001_cor_sampled10000.fastq" % (newPath, target)
-    # fastq1 = "%s/%s_R1_001_sampled10000.fastq" % (newPath, target)
-    # fastq2 = "%s/%s_R2_001_sampled10000.fastq" % (newPath, target)
-    filePath = "%s/tmp" % newPath
-    make_path(filePath)
-    targetPath = "%s/targets/%s" % (newPath, filename)
-    if not os.path.isfile("%s/%s.bam" % (filePath, target)):
-        smaltMap = "smalt map -o %s/%s.bam -f bam -n 24 -x %s_filteredAssembled %s %s" \
-                   % (filePath, target, targetPath, fastq1, fastq2)
-        subprocess.call(smaltMap, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-        dotter()
+    if os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, target)):
+        filename = target.split('.')[0]
+        fastq1 = "%s/%s_R1_001_sampled10000.fastq" % (newPath, target)
+        fastq2 = "%s/%s_R2_001_sampled10000.fastq" % (newPath, target)
+        # fastq1 = "%s/%s_R1_001_sampled10000.fastq" % (newPath, target)
+        # fastq2 = "%s/%s_R2_001_sampled10000.fastq" % (newPath, target)
+        filePath = "%s/tmp" % newPath
+        make_path(filePath)
+        targetPath = "%s/targets/%s" % (newPath, filename)
+        if not os.path.isfile("%s/%s.bam" % (filePath, target)):
+            smaltMap = "smalt map -o %s/%s.bam -f bam -n 24 -x %s_filteredAssembled %s %s" \
+                       % (filePath, target, targetPath, fastq1, fastq2)
+            subprocess.call(smaltMap, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            dotter()
+        else:
+            dotter()
     else:
-        dotter()
+            dotter()
 
 
 def extractingProcesses(path, inputData):
@@ -160,10 +167,13 @@ def extractInsertSize((target, path)):
     mapped paired reads"""
     # samtools view HG00418_A.bam | cut -f9 > HG00418_A.insertsizes.txt
     newPath = path + "/" + target
-    filePath = "%s/tmp" % newPath
-    extractCommand = "samtools view %s/%s.bam | cut -f9 > %s/%s_insertsizes.csv" % (filePath, target, filePath, target)
-    subprocess.call(extractCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-    dotter()
+    if os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, target)):
+        filePath = "%s/tmp" % newPath
+        extractCommand = "samtools view %s/%s.bam | cut -f9 > %s/%s_insertsizes.csv" % (filePath, target, filePath, target)
+        subprocess.call(extractCommand, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        dotter()
+    else:
+        dotter()
 
 
 def graphingProcesses(path, inputData):
@@ -183,17 +193,21 @@ def graphing((target, path)):
     """Uses samtools view and Linux cut to extract the column of interest (column 9), which contains the distance between
     mapped paired reads"""
     newPath = path + "/" + target
-    filePath = "%s/tmp" % newPath
-    newPath = "%s/insertSizes" % newPath
-    make_path(newPath)
-    os.chdir(newPath)
-    if not os.path.isfile("%s/%s_insert_sizes.pdf" % (newPath, target)):
-        #
-        graphingCommand = "insertsizes.R %s %s 1>/dev/null 2>/dev/null" % (filePath, target)
-        os.system(graphingCommand)
-        dotter()
+    if os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, target)):
+        filePath = "%s/tmp" % newPath
+        newPath = "%s/insertSizes" % newPath
+        make_path(newPath)
+        os.chdir(newPath)
+        if not os.path.isfile("%s/%s_insert_sizes.pdf" % (newPath, target)):
+            #  1>/dev/null 2>/dev/null
+            graphingCommand = "/home/blais/PycharmProjects/LibrarySizeEstimator/insertsizes.R " \
+                              "%s %s 1>/dev/null 2>/dev/null" % (filePath, target)
+            os.system(graphingCommand)
+            dotter()
+        else:
+            dotter()
     else:
-        dotter()
+            dotter()
 
 
 def formatOutput(path, sampleNames, runTrimMetadata):
@@ -217,8 +231,9 @@ def formatOutput(path, sampleNames, runTrimMetadata):
                 data = inData.split("\t")
                 infile.close()
                 outputFile.write("%s\n" % inData)
-                runTrimMetadata[name]["1.General"]["MeanInsertSize"] = data[1]
-                runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = data[2].rstrip()
+                insertSize = "%.2f" % float(data[1])
+                runTrimMetadata[name]["1.General"]["MeanInsertSize"] = insertSize
+                runTrimMetadata[name]["1.General"]["InsertSizeStDev"] = float(data[2].rstrip())
                 dotter()
             else:
                 outputFile.write("%s\tN/A\tN/A\n" % name)
@@ -227,6 +242,7 @@ def formatOutput(path, sampleNames, runTrimMetadata):
                 dotter()
     outputFile.close()
     return runTrimMetadata
+
 
 def functionsGoNOW(sampleNames, path, runTrimMetadata):
     """Calls all the functions in a way that they can be multi-processed"""

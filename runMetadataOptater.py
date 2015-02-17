@@ -17,6 +17,7 @@ flowcell = ""
 instrument = ""
 reads = []
 samples = []
+IDs = []
 elementData = []
 
 
@@ -46,6 +47,7 @@ def parseSampleSheet():
     important for the creation of the assembly report"""
     global returnData
     global samples
+    global IDs
     sampleSheet = open("SampleSheet.csv", "r")
     # Go line-by-line through the csv file to find the information required
     for line in sampleSheet:
@@ -78,6 +80,7 @@ def parseSampleSheet():
             for subline in sampleSheet:
                 subdata = subline.split(",")
                 # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
+                sampleID = subdata[0]
                 strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
                 returnData[strain]["3.Run"]["SampleName"] = subdata[0].rstrip()
                 returnData[strain]["3.Run"]["I7IndexID"] = subdata[4].rstrip()
@@ -93,23 +96,16 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["LengthofSecondRead"] = reverseLength
                 returnData[strain]["3.Run"]["Flowcell"] = flowcell
                 returnData[strain]["3.Run"]["Instrument"] = instrument
-                returnData[strain]["7.Pipeline"]["SPAdesVersion"] = "3.1.1"
-                returnData[strain]["7.Pipeline"]["QUASTVersion"] = "2.3"
-                returnData[strain]["7.Pipeline"]["QuakeVersion"] = "0.3"
-                returnData[strain]["7.Pipeline"]["PipelineVersion"] = ""
                 # Make a list of sample names to return to the main script
+                IDs.append([sampleID, strain])
                 samples.append(strain)
-                if not os.path.isfile("GenerateFASTQRunStatistics.xml"):
-                    returnData[strain]["3.Run"]["SampleNumber"] = "N/A"
-                    returnData[strain]["3.Run"]["NumberOfClustersPF"] = "N/A"
-                    returnData[strain]["3.Run"]["TotalClustersinRun"] = "N/A"
-                    returnData[strain]["3.Run"]["PercentOfClusters"] = "N/A"
-    return date, returnData, samples
+    return date, returnData, samples, int(forwardLength)
 
 
 def parseRunStats(passedMetadata):
     """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml)"""
     global totalClustersPF
+    print IDs
     dataList = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
     runStatistics = ET.ElementTree(file="GenerateFASTQRunStatistics.xml")
     # .iterfind() allow for the matching and iterating though matches
@@ -140,14 +136,53 @@ def parseRunStats(passedMetadata):
     return passedMetadata
 
 
-def functionsGoNOW():
+def indexingQC(metadata):
+    """In some cases, the GenerateFastqRunStatistics.xml file is not available. Equivalent data can be pulled from Basespace.
+    Generate a text file  name indexingQC.txt containing the copied tables from the Indexing QC tab of the run on Basespace"""
+    global IDs
+    if os.path.isfile("indexingQC.txt"):
+        with open("indexingQC.txt") as indexQC:
+            for indexLine in indexQC:
+                if re.search("Total", indexLine):
+                    pass
+                elif not re.search("Index", indexLine):
+                    data = indexLine.split("\t")
+                    PFreads = data[1]
+                if re.search("Index", indexLine):
+                    for subindex in indexQC:
+                        for ID, strain in IDs:
+                            if re.search(ID, subindex):
+                                data = subindex.split("\t")
+                                clustersPF = float(data[-1].rstrip()) * float(PFreads) / 100
+                                roundedClustersPF = ("%.0f" % clustersPF)
+                                metadata[strain]["3.Run"]["SampleNumber"] = data[0].rstrip()
+                                metadata[strain]["3.Run"]["NumberOfClustersPF"] = roundedClustersPF
+                                metadata[strain]["3.Run"]["TotalClustersinRun"] = PFreads
+                                metadata[strain]["3.Run"]["PercentOfClusters"] = data[-1].rstrip()
+    else:
+        for ID, strain in IDs:
+            metadata[strain]["3.Run"]["SampleNumber"] = "N/A"
+            metadata[strain]["3.Run"]["NumberOfClustersPF"] = "N/A"
+            metadata[strain]["3.Run"]["TotalClustersinRun"] = "N/A"
+            metadata[strain]["3.Run"]["PercentOfClusters"] = "N/A"
+    return metadata
+
+
+
+def functionsGoNOW(path):
     """Run the functions"""
     parseRunInfo()
-    date, metadata, sampleNames = parseSampleSheet()
-    if os.path.isfile("GenerateFASTQRunStatistics.xml"):
+    date, metadata, sampleNames, fLength = parseSampleSheet()
+    if os.path.isfile("%s/GenerateFASTQRunStatistics.xml" % path):
+        print "GenerateFASTQRunStatistics.xml"
         moreMetadata = parseRunStats(metadata)
-        print sampleNames
-        return moreMetadata, sampleNames, date
+        # print sampleNames
+        # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+        return moreMetadata, sampleNames, date, fLength
+
     else:
     # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-        return metadata, samples, date
+        increasedMetadata = indexingQC(metadata)
+        # print json.dumps(increasedMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+    #
+        return increasedMetadata, samples, date, fLength

@@ -22,12 +22,16 @@ def functionsGoNOW(sampleNames, metadata, path):
     """As outputting a JSON file is so straightforward, helper functions were unnecessary"""
     print "\nCreating reports."
     reportPath = "%s/reports" % path
+    folderName = path.split("/")[-1]
     make_path(reportPath)
-    combinedReport = open("%s/CombinedMetadataReport.csv" % reportPath, "wb")
-    headings = ["fileName", "SampleName", "N50", "NumContigs", "TotalLength", "MeanInsertSize", "averageDepthofCov",
+    combinedReport = open("%s/%s_CombinedMetadataReport.tsv" % (reportPath, folderName), "wb")
+    headings = ["SampleName", "fileName", "N50", "NumContigs", "TotalLength", "MeanInsertSize", "averageDepthofCov",
                 "referenceGenome", "NumIdenticalAlleles", "rMLSTSequenceType", "rMLSTIdenticalAlleles", "Date",
-                "percentGC", "Investigator", "TotalClustersinRun", "LengthofFirstRead", "LengthofSecondRead", "Project"]
-    reportHeadings = ["1.General", "2.Assembly", "3.Run", "4.Correction", "5.rMLST", "6.rMLSTmatchestoRef"]
+                "geneSeekrProfile", "verotoxinProfile", "MLST_sequenceType", "percentGC", "Investigator",
+                "NumberOfClustersPF", "PercentOfClusters", "TotalClustersinRun", "LengthofFirstRead",
+                "LengthofSecondRead", "Project", "PipelineVersion"]
+    reportHeadings = ["1.General", "2.Assembly", "3.Run", "4.Correction",
+                      "5.rMLST", "6.rMLSTmatchestoRef", "7.Pipeline"]
     combinedReport.write("\t".join(headings))
     combinedReport.write("\n")
     for name in sampleNames:

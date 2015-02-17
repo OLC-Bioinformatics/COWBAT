@@ -199,7 +199,10 @@ def blaster(markers, strains, path, out, experimentName, refFilesPath):
     for name in strains:
         genomeFile = glob.glob("%s/%s/*_filteredAssembled.fasta" % (path, name))
         # print genomeFile
-        genomes.append(genomeFile[0])
+        if genomeFile:
+            genomes.append(genomeFile[0])
+        # else:
+        #     pass
     sys.stdout.write("[%s] Creating necessary databases for BLAST" % (time.strftime("%H:%M:%S")))
     makedbthreads(fastas)
     print "\n[%s] BLAST database(s) created" % (time.strftime("%H:%M:%S"))
@@ -341,12 +344,11 @@ def determineSubtype(plusdict, path, metadata, refFilesPath):
                     for geneName in sorted(mismatchMLST):
                         for observedAllele, refAllele in sorted(mismatchMLST[geneName].iteritems()):
                             # strainTypesMLST[genome][sType]["NumIdenticalAlleles"][bestCount]["gene"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
-                            strainTypesMLST[genome][sType]["rMLSTIdenticalAlleles"] = bestCount
-                            strainTypesMLST[genome][sType]["rMLSTMismatchDetails"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
-
-
+                            strainTypesMLST[genome][str(sType)]["rMLSTIdenticalAlleles"] = bestCount
+                            strainTypesMLST[genome][str(sType)]["rMLSTMismatchDetails"][geneName]["observedAllele"][observedAllele]["referenceAllele"] = refAllele
+                            # print json.dumps(strainTypesMLST[genome][sType], sort_keys=True, indent=4, separators=(',', ': '))
                 else:
-                    strainTypesMLST[genome][sType] = bestCount
+                    strainTypesMLST[genome][str(sType)]["rMLSTIdenticalAlleles"] = bestCount
             mismatchMLST.clear()
     # Somehow, there are some files which do not have a single allele in common with any
     # of the profiles present in the rMLST scheme. These are addressed here.
@@ -358,10 +360,13 @@ def determineSubtype(plusdict, path, metadata, refFilesPath):
     # Populates the metadata dictionary with data from strains present in the strainTypesMLST dictionary
     for strain in sorted(strainTypesMLST):
         strainTrimmed = re.split("_filteredAssembled", strain)[0]
-        for reference in sorted(strainTypesMLST[strain]):
+        for INTreference in sorted(strainTypesMLST[strain]):
+            reference = str(INTreference)
             # metadata[strainTrimmed]["1.General"]["rMLSTSequenceType"]["sequenceType"][reference] = strainTypesMLST[strain][reference]
-            print reference, strainTrimmed
+            # print reference, strainTrimmed
             metadata[strainTrimmed]["5.rMLST"] = strainTypesMLST[strain][reference]
+            # print json.dumps(metadata[strainTrimmed]["5.rMLST"], sort_keys=True, indent=4, separators=(',', ': '))
+            # print json.dumps(strainTypesMLST[strain][reference], sort_keys=True, indent=4, separators=(',', ': '))
             metadata[strainTrimmed]["5.rMLST"]["rMLSTSequenceType"] = reference
     return metadata
 

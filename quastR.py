@@ -60,11 +60,11 @@ def quasting((name, path)):
     if os.path.isdir("%s/referenceGenome" % newPath):
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
         # 1>/dev/null
-        quastCall = "quast.py -R %s --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" \
+        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" \
                     % (referenceGenome[0], newPath, name, newPath)
         performQuast(newPath, quastCall)
     else:
-        quastCall = "quast.py %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
+        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
         performQuast(newPath, quastCall)
 
 
@@ -81,9 +81,10 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
         # This is just here as a placeholder until the rMLST module is functional
         runTrimMetadata[name]["1.General"]["fileName"] = name
         runTrimMetadata[name]["1.General"]["filelocation"] = newPath
-        runTrimMetadata[name]["1.General"]["assemblyDate"]= time.strftime("%Y-%m-%d")
+        runTrimMetadata[name]["1.General"]["assemblyDate"] = time.strftime("%Y-%m-%d")
         runTrimMetadata[name]["2.Assembly"]["kmerRange"] = "21,33,55,77,99,127"
         runTrimMetadata[name]["2.Assembly"]["assemblyType"] = "PE"
+
         if not os.path.isfile("%s/quast_results/report.tsv" % newPath):
             print "There was an issue getting the metadata from %s" % name
         else:
@@ -100,7 +101,8 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
                         if runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]:
-                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
+                            depthofcoverage = "%.2f" % float(float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3]))
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = depthofcoverage
                         else:
                             runTrimMetadata[name]["1.General"]["averageDepthofCov"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
@@ -126,10 +128,14 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["UnalignedLength"] = subline[24]
                         runTrimMetadata[name]["2.Assembly"]["percentGenomeFraction"] = subline[25]
                         runTrimMetadata[name]["2.Assembly"]["DuplicationRatio"] = subline[26]
-                        runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[27]
-                        runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = subline[28]
-                        runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = subline[29]
-                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30].rstrip()
+                        runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = "N/A"
+                        runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = "N/A"
+                        # runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[27]
+                        # runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = subline[28]
+                        # runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = subline[29]
+                        # runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30].rstrip()
                     else:
                         # As above, but since the gage analysis wasn't performed,
                         # populate the dictionary with N/A where appropriate
@@ -139,19 +145,19 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver1000bp"] = subline[2]
                         runTrimMetadata[name]["2.Assembly"]["TotalLength"] = subline[3]
                         if runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]:
-                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3])
+                            depthofcoverage = "%.2f" % float(float(runTrimMetadata[name]["2.Assembly"]["totalBasesxCoverage"]) / float(subline[3]))
+                            runTrimMetadata[name]["1.General"]["averageDepthofCov"] = depthofcoverage
                         else:
                             runTrimMetadata[name]["1.General"]["averageDepthofCov"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver1000bp"] = subline[4]
                         runTrimMetadata[name]["2.Assembly"]["NumContigsOver500bp"] = subline[5]
                         runTrimMetadata[name]["2.Assembly"]["LargestContig"] = subline[6]
                         runTrimMetadata[name]["2.Assembly"]["TotalLengthOver500bp"] = subline[7]
-                        runTrimMetadata[name]["2.Assembly"]["ReferenceLength"] = subline[8]
-                        runTrimMetadata[name]["2.Assembly"]["percentGC"] = subline[9]
-                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[10]
-                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[11]
-                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[12]
-                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[13]
+                        runTrimMetadata[name]["2.Assembly"]["percentGC"] = subline[8]
+                        runTrimMetadata[name]["2.Assembly"]["N50"] = subline[9]
+                        runTrimMetadata[name]["2.Assembly"]["N75"] = subline[10]
+                        runTrimMetadata[name]["2.Assembly"]["L50"] = subline[11]
+                        runTrimMetadata[name]["2.Assembly"]["L75"] = subline[12]
                         # These values aren't determined in a non-gage analysis, so in order to keep
                         # the schema consistent they are populated with "N/A"
                         runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = "N/A"

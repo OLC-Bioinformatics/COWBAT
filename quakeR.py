@@ -59,10 +59,11 @@ def runQuakeMP((name, path, fLength)):
             # microbial genomes. Also using 24 processors.
             #   2>/dev/null -q 33 -k 15
             if fLength > 50:
-                quakeRun = "cat %s/%s %s/%s" \
-                       "| /home/blais/Bioinformatics/Quake/bin/count-qmers -q 33 -k 15 > %s/%s" % (newPath, forward, newPath, reverse, newPath, countsFile)
+                quakeRun = "cat %s/%s %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
+                           % (newPath, forward, newPath, reverse, newPath, countsFile)
             else:
-                quakeRun = "cat %s/%s | /home/blais/Bioinformatics/Quake/bin/count-qmers -q 33 -k 15 > %s/%s" % (newPath, reverse, newPath, countsFile)
+                quakeRun = "cat %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
+                           % (newPath, reverse, newPath, countsFile)
             # Run the command
             os.system(quakeRun)
             sys.stdout.write('.')
@@ -99,7 +100,7 @@ def cutQuakeMP((name, path)):
             # I made edits to the cov_model.py script, and the R script called by cov_model.py to allow
             # for multi-processing. Essentially, I modified the scripts to include a path variable, so that
             # all files searched for and created are in 'newPath' instead of the path
-            quakeCut = "/home/blais/Bioinformatics/Quake/bin/cov_model.py --path %s %s/%s 2>/dev/null" % (newPath, newPath, countsFile)
+            quakeCut = "cov_model.py --path %s %s/%s 2>/dev/null" % (newPath, newPath, countsFile)
             # Run the command
             os.system(quakeCut)
             sys.stdout.write('.')
@@ -141,10 +142,9 @@ def correctQuakeMP((name, path, fLength)):
             necessaryNoCorFiles = 1
         if os.path.isfile(cutoffFile) and cutoffSize != 0 and len(corFile) < necessaryNoCorFiles:
             cutoff = open('%s/cutoff.txt' % newPath).readline().rstrip()
-            print name
             # microbial genomes. Also using 24 processors.
             #  2>/dev/null  -q 33 -k 15
-            quakeCorrect = "/home/blais/Bioinformatics/Quake/bin/correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
+            quakeCorrect = "correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
             # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
             # Run the command
             # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
@@ -236,7 +236,7 @@ def completionist(sampleNames, path, runMetadata, fLength):
     return runMetadata, corrected
 
 
-def tmpFileRemover(path):
+def tmpFileRemover(path, correctedList):
     """Removes temporary files cluttering up the path"""
     if os.path.isfile("%s/r.log" % path):
         os.remove("%s/r.log" % path)
@@ -244,6 +244,18 @@ def tmpFileRemover(path):
     for file in tmpFiles:
         if not re.search("indexingQC.txt", file):
             os.remove(file)
+    for name in correctedList:
+        newPath = path + "/" + name
+        fastq = glob.glob("%s/*_001.fastq" % newPath)
+        for files in fastq:
+            if os.path.isfile(files):
+                os.remove(files)
+        counts = "%s/%s_counts.txt" % (newPath, name)
+        if os.path.isfile(counts):
+            os.remove(counts)
+        qcts = "%s/%s_fastqFiles.txt.qcts" % (newPath, name)
+        if os.path.isfile(qcts):
+            os.remove(qcts)
 
 
 def functionsGoNOW(sampleNames, path, runMetadata, fLength):
@@ -263,6 +275,6 @@ def functionsGoNOW(sampleNames, path, runMetadata, fLength):
     # Run completionist to determine unprocessable files, and acquire metadata
     runTrimMetadata, correctedList = completionist(sampleNames, path, runMetadata, fLength)
     # Clean up tmp files
-    tmpFileRemover(path)
+    tmpFileRemover(path, correctedList)
     # Return important variables
     return correctedList, runTrimMetadata

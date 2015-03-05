@@ -105,7 +105,6 @@ def parseSampleSheet():
 def parseRunStats(passedMetadata):
     """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml)"""
     global totalClustersPF
-    print IDs
     dataList = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
     runStatistics = ET.ElementTree(file="GenerateFASTQRunStatistics.xml")
     # .iterfind() allow for the matching and iterating though matches
@@ -174,15 +173,9 @@ def functionsGoNOW(path):
     parseRunInfo()
     date, metadata, sampleNames, fLength = parseSampleSheet()
     if os.path.isfile("%s/GenerateFASTQRunStatistics.xml" % path):
-        print "GenerateFASTQRunStatistics.xml"
         moreMetadata = parseRunStats(metadata)
-        # print sampleNames
-        # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
         return moreMetadata, sampleNames, date, fLength
 
     else:
-    # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
         increasedMetadata = indexingQC(metadata)
-        # print json.dumps(increasedMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-    #
         return increasedMetadata, samples, date, fLength

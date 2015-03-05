@@ -12,7 +12,8 @@ import shutil
 import errno
 # System tools
 import sys
-
+from multiprocessing import Pool
+import re
 
 def make_path(inPath):
     """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
@@ -26,10 +27,13 @@ def make_path(inPath):
 
 
 def unzipping():
+    """Unzips the zip archive of .fastq.gz files if it exists"""
     zipFile = glob.glob("*.zip")
     if not zipFile:
         print("Files are already extracted from archive.")
-        pass
+        undeterminedFiles = glob.glob("Undetermined*")
+        for file in undeterminedFiles:
+            os.remove(file)
     else:
         zipCommand = "unzip -j -qq %s" % zipFile[0]
         # print(zipCommand)
@@ -43,56 +47,88 @@ def unzipping():
             os.remove(file)
 
 
-def moveExtract(strain, gzFiles, path):
+def foldererPrepProcesses(sampleName, path):
+    """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
+    foldererPrepArgs = []
+    # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
+    # must equal the name of the script
+    if __name__ == 'fileExtractionProcessing':
+        createfoldererPool = Pool()
+        # Prepare a tuple of the arguments (strainName and path)
+        for name in sampleName:
+            foldererPrepArgs.append((name, path))
+        # This map function allows for multi-processing
+        createfoldererPool.map(folderer, foldererPrepArgs)
+
+
+def moveExtract(strain, gzFiles, path, seqNum):
     """Renames, moves, and uncompresses .gz files"""
-    forward = str(strain) + "_R1_001.fastq.gz"
-    reverse = str(strain) + "_R2_001.fastq.gz"
-    uncompressedFiles = glob.glob("%s/%s/*.fastq" % (path, strain))
-    print strain
-    if os.path.isfile(gzFiles[0]) and os.path.isfile(gzFiles[1]) and len(uncompressedFiles) < 2:
-        shutil.move(gzFiles[0], "%s/%s/%s" % (path, strain, forward))
-        shutil.move(gzFiles[1], "%s/%s/%s" % (path, strain, reverse))
-        sys.stdout.write('.')
-        gzipCommandForward = "gzip -d --force %s/%s/%s" % (path, strain, forward)
-        gzipCommandReverse = "gzip -d --force %s/%s/%s" % (path, strain, reverse)
-        #
+    forward = str(strain) + "_R1_001.fastq"
+    reverse = str(strain) + "_R2_001.fastq"
+
+    # uncompressedFiles = glob.glob("%s/%s/*.fastq" % (path, strain))
+    if seqNum:
+        # print strain, gzFiles[0]
+    # if os.path.isfile("%s/%s" % (path, gzFiles[0])) and os.path.isfile("%s/%s" % (path, gzFiles[1])) and len(uncompressedFiles) < 2:
+    #     print "bort"
+    # if gzFiles[0]:
+        shutil.move(gzFiles[0], "%s/%s/%s.gz" % (path, strain, forward))
+    # if gzFiles[1]:
+        shutil.move(gzFiles[1], "%s/%s/%s.gz" % (path, strain, reverse))
+    #     sys.stdout.write('.')
+    if not os.path.isfile("%s/%s/%s" % (path, strain, forward)):
+        gzipCommandForward = "gzip -d --force %s/%s/%s.gz" % (path, strain, forward)
         subprocess.call(gzipCommandForward, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+
+    if not os.path.isfile("%s/%s/%s" % (path, strain, reverse)):
+        gzipCommandReverse = "gzip -d --force %s/%s/%s.gz" % (path, strain, reverse)
         subprocess.call(gzipCommandReverse, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
 
 
-def folderer(sampleNames, path):
+def folderer((name, path)):
     """Move the .gz files into appropriately named folders, and decompress them"""
-    os.chdir(path)
-    gzCheck = glob.glob("*.gz")
+    # os.chdir(path)
+    # print name
+    # os.system("pwd")
+    gzCheck = [f for f in os.listdir(path) if re.search("%s\w+.fastq.gz" % name, f)]
+
+    seqNum = ""
+    # gzCheck = glob.glob("%s\w+.fastq.gz" % name)
+
+    # print gzCheck
     if not gzCheck:
-        print("Processing files.")
-        for strain in sampleNames:
-            os.chdir("%s/%s" % (path, strain))
-            gzFiles = glob.glob("%s*.gz" % strain)
-            if not gzFiles:
-                pass
-            else:
-                moveExtract(strain, sorted(gzFiles), path)
+        # print("Processing files.")
+    #     # for strain in sampleNames:
+        newPath = "%s/%s" % (path, name)
+        folderCheck = [f for f in os.listdir(newPath) if re.search("%s\w+.fastq.gz" % name, f)]
+    #     # os.chdir("%s/%s" % (path, strain))
+    #     # gzFiles = glob.glob("%s*.gz" % name)
+    #     # if not gzFiles:
+    #     #     pass
+        if folderCheck:
+            moveExtract(name, sorted(folderCheck), path, seqNum)
     else:
-        print("Moving and extracting fastq files.")
-        for strain in sampleNames:
-            os.chdir(path)
-            # Make the required folders (if necessary)
-            make_path("%s/%s" % (path, strain))
-            # Get the .gz files into a list
-            gzFiles = glob.glob("%s_*" % strain)
-            if not gzFiles:
-                os.chdir("%s/%s" % (path, strain))
-                gzFiles = glob.glob("%s/*.gz" % strain)
-                if not gzFiles:
-                    pass
-                else:
-                    moveExtract(strain, sorted(gzFiles), path)
-            else:
-                moveExtract(strain, sorted(gzFiles), path)
+        seqNum = re.search("%s_(\w+)_R\d_001.fastq.gz" % name, gzCheck[0])
+        # print name, seqNum.group(1)
+    # #     print("Moving and extracting fastq files.")
+    # #     for strain in sampleNames:
+    # #         os.chdir(path)
+    #     # Make the required folders (if necessary)
+        make_path("%s/%s" % (path, name))
+    # #         # Get the .gz files into a list
+    # #         gzFiles = glob.glob("%s_*" % strain)
+    # #         if not gzFiles:
+    # #             os.chdir("%s/%s" % (path, strain))
+    # #             gzFiles = glob.glob("%s/*.gz" % strain)
+    # #             if not gzFiles:
+    # #                 pass
+    # #             else:
+        moveExtract(name, sorted(gzCheck), path, seqNum)
+    #         else:
+    #             moveExtract(strain, sorted(gzFiles), path)
 
 
 def functionsGoNOW(sampleNames, path):
     """Run the functions"""
     unzipping()
-    folderer(sampleNames, path)
+    foldererPrepProcesses(sampleNames, path)

@@ -35,17 +35,9 @@ def sampleFastq(path, sampleNames):
         # Randomly samples 10 000 reads with a seed of 100
         if not os.path.isfile("%s/%s_R1_001_sampled10000.fastq" % (newPath, name)) and not \
             os.path.isfile("%s/%s_R1_001_sampled10000.fastq.xz" % (newPath, name)):
-            seqtkCall = "/home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
-                        "%s/%s_R1_001.cor.fastq 10000 > %s/%s_R1_001_sampled10000.fastq " \
-                        "&&/home/blais/PycharmProjects/seqtk/seqtk sample -s seed=100 " \
-                        "%s/%s_R2_001.cor.fastq 10000 > %s/%s_R2_001_sampled10000.fastq" \
+            seqtkCall = "seqtk sample -s seed=100 %s/%s_R1_001.cor.fastq 10000 > %s/%s_R1_001_sampled10000.fastq " \
+                        "&& seqtk sample -s seed=100 %s/%s_R2_001.cor.fastq 10000 > %s/%s_R2_001_sampled10000.fastq" \
                         % (newPath, name, newPath, name, newPath, name, newPath, name)
-        # if not os.path.isfile("%s/%s_R1_001_sampled10000.fastq" % (newPath, name)):
-        #     seqtkCall = "seqtk sample -s seed=100 " \
-        #         "%s/%s_R1_001.fastq 10000 > %s/%s_R1_001_sampled10000.fastq " \
-        #         "&&seqtk sample -s seed=100 " \
-        #         "%s/%s_R2_001.fastq 10000 > %s/%s_R2_001_sampled10000.fastq" \
-        #         % (newPath, name, newPath, name, newPath, name, newPath, name)
             os.system(seqtkCall)
             dotter()
         else:
@@ -133,8 +125,6 @@ def mapping((target, path)):
         filename = target.split('.')[0]
         fastq1 = "%s/%s_R1_001_sampled10000.fastq" % (newPath, target)
         fastq2 = "%s/%s_R2_001_sampled10000.fastq" % (newPath, target)
-        # fastq1 = "%s/%s_R1_001_sampled10000.fastq" % (newPath, target)
-        # fastq2 = "%s/%s_R2_001_sampled10000.fastq" % (newPath, target)
         filePath = "%s/tmp" % newPath
         make_path(filePath)
         targetPath = "%s/targets/%s" % (newPath, filename)
@@ -200,8 +190,7 @@ def graphing((target, path)):
         os.chdir(newPath)
         if not os.path.isfile("%s/%s_insert_sizes.pdf" % (newPath, target)):
             #  1>/dev/null 2>/dev/null
-            graphingCommand = "/home/blais/PycharmProjects/LibrarySizeEstimator/insertsizes.R " \
-                              "%s %s 1>/dev/null 2>/dev/null" % (filePath, target)
+            graphingCommand = "insertsizes.R %s %s 1>/dev/null 2>/dev/null" % (filePath, target)
             os.system(graphingCommand)
             dotter()
         else:

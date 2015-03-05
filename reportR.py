@@ -52,9 +52,6 @@ def functionsGoNOW(sampleNames, metadata, path):
                         is FloatType or type(metadata[name][rHeading][heading]) is IntType:
                     # print name, heading, rHeading, metadata[name][rHeading][heading], type(metadata[name][rHeading][heading])
                     value = str(metadata[name][rHeading][heading])
-                    # combinedReport.write(str(metadata[name][rHeading][heading]))
-                    # combinedReport.write("\t")
-                # else:
 
             combinedReport.write(value)
             combinedReport.write("\t")

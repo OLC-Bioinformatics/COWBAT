@@ -41,12 +41,12 @@ def spadesPrepProcesses(sampleName, path, fLength):
 def runSpades((name, path, fLength)):
     """Performs necessary checks and runs SPAdes"""
     # Set up variables to keep commands clean looking
-    contigsFile = "contigs.fasta"
+    # contigsFile = "contigs.fasta"
     newPath = path + "/" + name
     forward = ""
     reverse = ""
     # Check for the existence of the scaffolds file - hopefully this will be created at the end of the run
-    if not os.path.isfile("%s/spades_output/%s" % (newPath, contigsFile)):
+    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
         # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
         # be located. Maybe the $PATH needs to be updated?
         # --continue
@@ -64,25 +64,21 @@ def runSpades((name, path, fLength)):
         #  but the output directory must exist - if this directory exists, --continue, else don't --continue
         # /home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/
         if fLength > 50:
-            #  1>/dev/null
             if os.path.isdir("%s/spades_output" % name):
-                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 " \
-                            "--careful --continue --only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output" % (forward, reverse, newPath)
+                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
+                            "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
 
             else:
-            #  1>/dev/null
-                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
-                            "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output" % (forward, reverse, newPath)
+                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
+                            "--pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
         else:
-            # 1>/dev/null
             if os.path.isdir("%s/spades_output" % name):
-                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 " \
-                            "--careful --continue --only-assembler --s1 %s -o %s/spades_output" % (reverse, newPath)
+                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
+                            "--only-assembler --s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
 
             else:
-            #  1>/dev/null
-                spadesRun = "/media/nas/SPAdes-3.5.0-Linux/bin/spades.py -k 21,33,55,77,99,127 --careful " \
-                            "--only-assembler --s1 %s -o %s/spades_output" % (reverse, newPath)
+                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
+                            "--s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
         # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
         os.system(spadesRun)
@@ -127,6 +123,14 @@ def contigFileFormatter(correctedFiles, path, metadata):
             make_path(assemblyPath)
             if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
                 shutil.copy(fileName, assemblyPath)
+        fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
+        lengthCov = 0
+        if os.path.isfile(fileName):
+            for record in SeqIO.parse(open(fileName, "rU"), "fasta"):
+                # lengthCov = 0
+                newID = re.sub("NODE", name, record.id)
+                lengthCov += (float(newID.split("_")[-5]) * float(newID.split("_")[-3]))
+            metadata[name]["2.Assembly"]["totalBasesxCoverage"] = lengthCov
     return metadata
 
 
@@ -150,25 +154,25 @@ def completionist(correctedFiles, path):
 def pipelineMetadata(path, metadata, sampleNames):
     # Update these values as required
     #Quast
-    quastOutput = subprocess.Popen(["/home/blais/Bioinformatics/quast-2.3/quast.py"], stdout=subprocess.PIPE,
+    quastOutput = subprocess.Popen(["quast.py"], stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
     out, err = quastOutput.communicate()
-    quastVer = err.split("\n")[1].strip("Version ").replace(" ,", ",")
+    quastVer = err.split("\n")[1].strip("Version ").replace(" ,", ",").replace(",", ";")
 
     # SMALT
-    smaltOutput = subprocess.Popen(["/bin/smalt"], stdout=subprocess.PIPE,
+    smaltOutput = subprocess.Popen(["smalt"], stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
     out, err = smaltOutput.communicate()
     smaltVer = out.split("\n")[2].strip(" ").strip("(").strip(")").strip("version: ")
 
     # Samtools
-    samOutput = subprocess.Popen(["/usr/bin/samtools"], stdout=subprocess.PIPE,
+    samOutput = subprocess.Popen(["samtools"], stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
     out, err = samOutput.communicate()
     samVer = err.split("\n")[2].strip("Version: ")
 
     # Blast
-    blastnOutput = subprocess.Popen(["/usr/bin/blastn -version"], stdout=subprocess.PIPE,
+    blastnOutput = subprocess.Popen(["blastn -version"], stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE, shell=True)
     out, err = blastnOutput.communicate()
     blastVer = out.split("\n")[0].strip("blastn: ")
@@ -184,20 +188,38 @@ def pipelineMetadata(path, metadata, sampleNames):
                 elif "OS" in line:
                     OS = line.strip("OS: ").rstrip()
 
+        quakeVer = "0.3"
+        commit = "b737e2c52f59c541062a5f71c5e08087ee238c1e 2015-02-17 Adam Koziol"
 
-        versions = open("%s/%s/programVersions.txt" % (path, name), "wb")
-        versions.write("spadesVersion\tquastVersion\tquakeVersion\tSmaltVersion\tSamtools\tBlastVersion\t"
-                   "PythonVersion\tOS\t")
-        # print name, quastVer, smaltVer, samVer, blastVer, spadesVer, pythonVer, OS
-        metadata[name]["7.Pipeline"]["SPAdesVersion"] = spadesVer
-        metadata[name]["7.Pipeline"]["QUASTVersion"] = quastVer
-        metadata[name]["7.Pipeline"]["QuakeVersion"] = "0.3"
-        metadata[name]["7.Pipeline"]["SmaltVersion"] = smaltVer
-        metadata[name]["7.Pipeline"]["SamtoolsVersion"] = samVer
-        metadata[name]["7.Pipeline"]["BlastVersion"] = blastVer
-        metadata[name]["7.Pipeline"]["PythonVersion"] = pythonVer
-        metadata[name]["7.Pipeline"]["OS"] = OS
-        metadata[name]["7.Pipeline"]["PipelineVersion"] = "42c32dfb9a 2014-12-10 Adam Koziol"
+        if not os.path.isfile("%s/%s/%s_programVersions.tsv" % (path, name, name)):
+
+            versions = open("%s/%s/%s_programVersions.tsv" % (path, name, name), "wb")
+            versions.write("spadesVersion\tquastVersion\tquakeVersion\tSmaltVersion\tSamtools\tBlastVersion\t"
+                       "PythonVersion\tOS\tCommit\n")
+            versions.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (spadesVer, quastVer, quakeVer, smaltVer, samVer, blastVer, pythonVer, OS, commit))
+
+            # print name, quastVer, smaltVer, samVer, blastVer, spadesVer, pythonVer, OS
+            metadata[name]["7.Pipeline"]["SPAdesVersion"] = spadesVer
+            metadata[name]["7.Pipeline"]["QUASTVersion"] = quastVer
+            metadata[name]["7.Pipeline"]["QuakeVersion"] = quakeVer
+            metadata[name]["7.Pipeline"]["SmaltVersion"] = smaltVer
+            metadata[name]["7.Pipeline"]["SamtoolsVersion"] = samVer
+            metadata[name]["7.Pipeline"]["BlastVersion"] = blastVer
+            metadata[name]["7.Pipeline"]["PythonVersion"] = pythonVer
+            metadata[name]["7.Pipeline"]["OS"] = OS
+            metadata[name]["7.Pipeline"]["PipelineVersion"] = commit
+        else:
+            pipelineVersions = open("%s/%s/%s_programVersions.tsv" % (path, name, name)).readlines()[1]
+            versions = pipelineVersions.split("\t")
+            metadata[name]["7.Pipeline"]["SPAdesVersion"] = versions[0]
+            metadata[name]["7.Pipeline"]["QUASTVersion"] = versions[1]
+            metadata[name]["7.Pipeline"]["QuakeVersion"] = versions[2]
+            metadata[name]["7.Pipeline"]["SmaltVersion"] = versions[3]
+            metadata[name]["7.Pipeline"]["SamtoolsVersion"] = versions[4]
+            metadata[name]["7.Pipeline"]["BlastVersion"] = versions[5]
+            metadata[name]["7.Pipeline"]["PythonVersion"] = versions[6]
+            metadata[name]["7.Pipeline"]["OS"] = versions[7]
+            metadata[name]["7.Pipeline"]["PipelineVersion"] = versions[8].rstrip()
     return metadata
 
 

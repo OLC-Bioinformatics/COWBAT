@@ -60,11 +60,11 @@ def quasting((name, path)):
     if os.path.isdir("%s/referenceGenome" % newPath):
         referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
         # 1>/dev/null
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py -R %s --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" \
+        quastCall = "quast.py -R %s --gage %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" \
                     % (referenceGenome[0], newPath, name, newPath)
         performQuast(newPath, quastCall)
     else:
-        quastCall = "/home/blais/Bioinformatics/quast-2.3/quast.py %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
+        quastCall = "quast.py %s/%s_filteredAssembled.fasta -o %s/quast_results 1>/dev/null" % (newPath, name, newPath)
         performQuast(newPath, quastCall)
 
 
@@ -132,10 +132,6 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = "N/A"
                         runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = "N/A"
-                        # runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[27]
-                        # runTrimMetadata[name]["2.Assembly"]["NumMismatchesPer100kbp"] = subline[28]
-                        # runTrimMetadata[name]["2.Assembly"]["NumIndelsPer100kbp"] = subline[29]
-                        # runTrimMetadata[name]["2.Assembly"]["LargestAlignment"] = subline[30].rstrip()
                     else:
                         # As above, but since the gage analysis wasn't performed,
                         # populate the dictionary with N/A where appropriate

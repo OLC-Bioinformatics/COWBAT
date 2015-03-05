@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8df50326-f28e-470b-8450-ab77b8c09107" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/geneSeekr.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/offHours.py" />
+    <list default="true" id="8df50326-f28e-470b-8450-ab77b8c09107" name="Default" comment="Minor updates">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SPAdesPipeline.py" afterPath="$PROJECT_DIR$/SPAdesPipeline.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fileExtractionProcessing.py" afterPath="$PROJECT_DIR$/fileExtractionProcessing.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/geneSeekr.py" afterPath="$PROJECT_DIR$/geneSeekr.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/lse.py" afterPath="$PROJECT_DIR$/lse.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/offHours.py" afterPath="$PROJECT_DIR$/offHours.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quakeR.py" afterPath="$PROJECT_DIR$/quakeR.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quastR.py" afterPath="$PROJECT_DIR$/quastR.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rMLST_typer.py" afterPath="$PROJECT_DIR$/rMLST_typer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reportR.py" afterPath="$PROJECT_DIR$/reportR.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runMetadataOptater.py" afterPath="$PROJECT_DIR$/runMetadataOptater.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spadesGoUpper.py" afterPath="$PROJECT_DIR$/spadesGoUpper.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SPAdesPipeline.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -26,8 +27,8 @@
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateMauveAndAppendContigs.coverage" NAME="AutomateMauveAndAppendContigs Coverage Results" MODIFIED="1420568117920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$uniVecScreen.coverage" NAME="uniVecScreen Coverage Results" MODIFIED="1422629228944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/2014-08-06" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper.coverage" NAME="contigPrepper Coverage Results" MODIFIED="1422045534137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp.coverage" NAME="1000bp Coverage Results" MODIFIED="1422988550521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper.coverage" NAME="contigPrepper Coverage Results" MODIFIED="1425068842491" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper__1_.coverage" NAME="contigPrepper (1) Coverage Results" MODIFIED="1422629341716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$combined_metadata.coverage" NAME="combined_metadata Coverage Results" MODIFIED="1415977733159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Reports" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateAbacasAndAppend.coverage" NAME="AutomateAbacasAndAppend Coverage Results" MODIFIED="1417102361545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -37,12 +38,14 @@
     <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP.coverage" NAME="automatekSNP Coverage Results" MODIFIED="1420835445682" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP/Listeria/All" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$autoRunPipeline.coverage" NAME="autoRunPipeline Coverage Results" MODIFIED="1421268560896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$extractCloseSequences.coverage" NAME="extractCloseSequences Coverage Results" MODIFIED="1418919193558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/220000_around_oriC/potentialTargets/BACT000002" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$fastqSampler.coverage" NAME="fastqSampler Coverage Results" MODIFIED="1424892758994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/sandbox" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$tbl2asn.coverage" NAME="tbl2asn Coverage Results" MODIFIED="1422629420124" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/allSequences/tbl2asn" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$group1.coverage" NAME="group1 Coverage Results" MODIFIED="1421331963748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades/Group_1" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp__1_.coverage" NAME="1000bp (1) Coverage Results" MODIFIED="1422993044940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP__1_.coverage" NAME="automatekSNP (1) Coverage Results" MODIFIED="1423514282310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP__1_.coverage" NAME="automatekSNP (1) Coverage Results" MODIFIED="1425308849703" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$offHours.coverage" NAME="offHours Coverage Results" MODIFIED="1419006212816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$SPAdesPipeline.coverage" NAME="SPAdesPipeline Coverage Results" MODIFIED="1423859673936" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$mendelsFirstLaw.coverage" NAME="mendelsFirstLaw Coverage Results" MODIFIED="1424960567238" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$SPAdesPipeline.coverage" NAME="SPAdesPipeline Coverage Results" MODIFIED="1425068280232" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -59,28 +62,50 @@
       <file leaf-file-name="SPAdesPipeline.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1746">
-              <caret line="56" column="10" selection-start-line="56" selection-start-column="10" selection-end-line="56" selection-end-column="10" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="812" max-vertical-offset="1926">
+              <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modellingMultiprocessing.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$USER_HOME$/git/geneSippr/modellingMultiprocessing.py">
+      <file leaf-file-name="fileExtractionProcessing.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.3891213" vertical-offset="2268" max-vertical-offset="8892">
-              <caret line="36" column="116" selection-start-line="36" selection-start-column="116" selection-end-line="36" selection-end-column="116" />
+            <state vertical-scroll-proportion="-3.2833333" vertical-offset="1657" max-vertical-offset="2502">
+              <caret line="103" column="20" selection-start-line="103" selection-start-column="15" selection-end-line="103" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="reportR.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/reportR.py">
+      <file leaf-file-name="rMLST_typer.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rMLST_typer.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="1350">
-              <caret line="50" column="42" selection-start-line="50" selection-start-column="42" selection-end-line="50" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="10242">
+              <caret line="421" column="4" selection-start-line="421" selection-start-column="4" selection-end-line="421" selection-end-column="4" />
+              <folding>
+                <element signature="e#254#310#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="runMetadataOptater.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/runMetadataOptater.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="7.65" vertical-offset="2403" max-vertical-offset="3312">
+              <caret line="111" column="42" selection-start-line="111" selection-start-column="42" selection-end-line="111" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contigPrepper.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/git/genomeAnnouncements/contigPrepper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1476">
+              <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
               <folding />
             </state>
           </provider>
@@ -89,21 +114,9 @@
       <file leaf-file-name="automatekSNP.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file:///media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1332">
-              <caret line="14" column="90" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="1638">
+              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="spadesGoUpper.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/spadesGoUpper.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.75" vertical-offset="3141" max-vertical-offset="3906">
-              <caret line="177" column="56" selection-start-line="177" selection-start-column="56" selection-end-line="177" selection-end-column="56" />
-              <folding>
-                <element signature="e#24#33#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -111,18 +124,8 @@
       <file leaf-file-name="quastR.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/quastR.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.85" vertical-offset="1215" max-vertical-offset="3294">
-              <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="lse.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lse.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.5166667" vertical-offset="3443" max-vertical-offset="4788">
-              <caret line="203" column="60" selection-start-line="203" selection-start-column="60" selection-end-line="203" selection-end-column="60" />
+            <state vertical-scroll-proportion="-2.9833333" vertical-offset="1495" max-vertical-offset="3222">
+              <caret line="102" column="83" selection-start-line="102" selection-start-column="64" selection-end-line="102" selection-end-column="83" />
               <folding />
             </state>
           </provider>
@@ -131,30 +134,30 @@
       <file leaf-file-name="quakeR.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/quakeR.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.25" vertical-offset="2367" max-vertical-offset="4824">
-              <caret line="145" column="32" selection-start-line="145" selection-start-column="31" selection-end-line="145" selection-end-column="32" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="2736" max-vertical-offset="5148">
+              <caret line="152" column="13" selection-start-line="152" selection-start-column="13" selection-end-line="152" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runMetadataOptater.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runMetadataOptater.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.15" vertical-offset="2907" max-vertical-offset="3438">
-              <caret line="175" column="9" selection-start-line="175" selection-start-column="9" selection-end-line="175" selection-end-column="9" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="geneSeekr.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="geneSeekr.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/geneSeekr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-2.6166666" vertical-offset="9311" max-vertical-offset="9918">
-              <caret line="526" column="37" selection-start-line="526" selection-start-column="37" selection-end-line="526" selection-end-column="37" />
+            <state vertical-scroll-proportion="0.03869654" vertical-offset="1367" max-vertical-offset="9792">
+              <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="spadesGoUpper.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/spadesGoUpper.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-13.2" vertical-offset="0" max-vertical-offset="4302">
+              <caret line="44" column="21" selection-start-line="44" selection-start-column="21" selection-end-line="44" selection-end-column="21" />
               <folding>
-                <element signature="e#24#56#0" expanded="true" />
+                <element signature="e#24#33#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -187,15 +190,11 @@
         <option value="/media/nas/akoziol/Collaborations/Austin/QC_OptimisationTimeTrial/2014-12-09/folders.py" />
         <option value="$PROJECT_DIR$/AutomateMauveAndAppendContigs.py" />
         <option value="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP/Listeria/All/automatekSNP.py" />
-        <option value="$PROJECT_DIR$/quakeR.py" />
-        <option value="$PROJECT_DIR$/fileExtractionProcessing.py" />
         <option value="/media/nas/akoziol/WGS_Spades/Group_1/group1.py" />
-        <option value="$PROJECT_DIR$/rMLST_typer.py" />
         <option value="/media/nas/akoziol/WGS_Spades/autoRunPipeline.py" />
         <option value="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/contigPrepper.py" />
         <option value="/media/nas/akoziol/GeneSipping/NCBI_submission/SRA/interleaveFastq.py" />
         <option value="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/2014-08-06/uniVecScreen.py" />
-        <option value="$USER_HOME$/git/genomeAnnouncements/contigPrepper.py" />
         <option value="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/allSequences/tbl2asn/tbl2asn.py" />
         <option value="$USER_HOME$/git/genomeAnnouncements/README.md" />
         <option value="$USER_HOME$/git/genomeAnnouncements/tbl2asn.py" />
@@ -205,24 +204,31 @@
         <option value="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406/1000bp.py" />
         <option value="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/1000bp.py" />
         <option value="/media/nas/SPAdes-3.5.0-Linux/bin/spades.py" />
-        <option value="$PROJECT_DIR$/offHours.py" />
-        <option value="$PROJECT_DIR$/reportR.py" />
-        <option value="$PROJECT_DIR$/geneSeekr.py" />
         <option value="/media/nas/SPAdes-3.5.0-Linux/share/spades/spades_pipeline/spades_logic.py" />
+        <option value="$PROJECT_DIR$/reportR.py" />
         <option value="$PROJECT_DIR$/quastR.py" />
-        <option value="$PROJECT_DIR$/runMetadataOptater.py" />
         <option value="$PROJECT_DIR$/lse.py" />
-        <option value="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py" />
+        <option value="$PROJECT_DIR$/quakeR.py" />
+        <option value="$PROJECT_DIR$/offHours.py" />
+        <option value="$PROJECT_DIR$/geneSeekr.py" />
+        <option value="$PROJECT_DIR$/fileExtractionProcessing.py" />
+        <option value="/media/nas/akoziol/sandbox/fastqSampler.py" />
+        <option value="$PROJECT_DIR$/mendelsFirstLaw.py" />
+        <option value="$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw/mendelsFirstLaw.py" />
+        <option value="$PROJECT_DIR$/rMLST_typer.py" />
+        <option value="$PROJECT_DIR$/runMetadataOptater.py" />
         <option value="$PROJECT_DIR$/spadesGoUpper.py" />
+        <option value="$USER_HOME$/git/genomeAnnouncements/contigPrepper.py" />
+        <option value="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py" />
         <option value="$PROJECT_DIR$/SPAdesPipeline.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1985" />
-    <option name="y" value="-4" />
-    <option name="width" value="1855" />
-    <option name="height" value="1084" />
+    <option name="x" value="3905" />
+    <option name="y" value="79" />
+    <option name="width" value="1845" />
+    <option name="height" value="1054" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -278,7 +284,7 @@
     <property name="last_opened_file_path" value="$USER_HOME$/Bioinformatics/SPAdes-3.1.1-Linux/bin/spades.py" />
     <property name="FullScreen" value="false" />
     <property name="SearchEverywhereHistory" value="" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
+    <property name="options.lastSelected" value="PyConsoleConfigurable.Python Console" />
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="options.splitter.details.proportions" value="0.2" />
     <property name="options.searchVisible" value="true" />
@@ -287,10 +293,13 @@
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
-      <console-settings />
+      <console-settings module-name="SPAdesPipeline" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="SPAdesPipeline" />
+      </console-settings>
     </option>
   </component>
-  <component name="RunManager" selected="Python.SPAdesPipeline">
+  <component name="RunManager" selected="Python.automatekSNP (1)">
     <configuration default="false" name="automatekSNP (1)" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -305,44 +314,6 @@
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py" />
-      <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="tbl2asn" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/allSequences/tbl2asn" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/allSequences/tbl2asn/tbl2asn.py" />
-      <option name="PARAMETERS" value="" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="1000bp" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406/1000bp.py" />
       <option name="PARAMETERS" value="" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
@@ -381,10 +352,48 @@
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SPAdesPipeline.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/WGS_Spades/2015-02-06" />
       <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="mendelsFirstLaw" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw/mendelsFirstLaw.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="contigPrepper" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/genomeAnnouncements" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/git/genomeAnnouncements/contigPrepper.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -538,20 +547,40 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.automatekSNP (1)" />
-      <item index="1" class="java.lang.String" itemvalue="Python.tbl2asn" />
-      <item index="2" class="java.lang.String" itemvalue="Python.1000bp" />
-      <item index="3" class="java.lang.String" itemvalue="Python.1000bp (1)" />
-      <item index="4" class="java.lang.String" itemvalue="Python.SPAdesPipeline" />
+    <configuration default="false" name="fastqSampler" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/sandbox" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="/media/nas/akoziol/sandbox/fastqSampler.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/sandbox" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="Python.fastqSampler" />
+      <item index="1" class="java.lang.String" itemvalue="Python.automatekSNP (1)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.1000bp (1)" />
+      <item index="3" class="java.lang.String" itemvalue="Python.SPAdesPipeline" />
+      <item index="4" class="java.lang.String" itemvalue="Python.mendelsFirstLaw" />
+      <item index="5" class="java.lang.String" itemvalue="Python.contigPrepper" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.SPAdesPipeline" />
-        <item index="1" class="java.lang.String" itemvalue="Python.automatekSNP (1)" />
-        <item index="2" class="java.lang.String" itemvalue="Python.1000bp (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Python.1000bp" />
-        <item index="4" class="java.lang.String" itemvalue="Python.tbl2asn" />
+        <item index="0" class="java.lang.String" itemvalue="Python.automatekSNP (1)" />
+        <item index="1" class="java.lang.String" itemvalue="Python.contigPrepper" />
+        <item index="2" class="java.lang.String" itemvalue="Python.SPAdesPipeline" />
+        <item index="3" class="java.lang.String" itemvalue="Python.mendelsFirstLaw" />
+        <item index="4" class="java.lang.String" itemvalue="Python.1000bp (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -680,7 +709,7 @@
     <option name="localTasksCounter" value="29" />
     <servers />
   </component>
-  <component name="TodoView" selected-index="2">
+  <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
       <are-packages-shown value="false" />
       <are-modules-shown value="false" />
@@ -701,15 +730,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1985" y="-4" width="1855" height="1084" extended-state="6" />
+    <frame x="3905" y="79" width="1845" height="1054" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14151464" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15008338" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32890365" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.42872456" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21040975" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
@@ -724,6 +753,27 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+    <layout-to-restore>
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31404072" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3279743" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.14151464" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39978564" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+    </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -740,7 +790,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="Pulls values from SampleSheet.csv, RunInfo.xml, and GenerateFASTQRunStatistics.xml, and returns a dictionary with all values supplied for all sequenced strains." />
     <MESSAGE value="Moved run metadata functions to runMetadataOptater and added a call to this module in SPAdesPipeline" />
     <MESSAGE value="Added fileExtractionsProcessing to move and extract .gz files" />
     <MESSAGE value="quakeR exists - it should perform error correction on fastq reads. Hopefully it will soon." />
@@ -765,7 +814,8 @@
     <MESSAGE value="Added proper string manipulations for populating metadata." />
     <MESSAGE value="Updates all around" />
     <MESSAGE value="More metadata" />
-    <option name="LAST_COMMIT_MESSAGE" value="More metadata" />
+    <MESSAGE value="Minor updates" />
+    <option name="LAST_COMMIT_MESSAGE" value="Minor updates" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -773,39 +823,13 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../SipprModeling/modellingClasses.py">
+    <entry file="file://$PROJECT_DIR$/spadesGoUpper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../YAMLreports/yamlReporter.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../SipprModeling/modellingMultiprocessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../SipprModeling/modellingClasses.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="60" max-vertical-offset="4158">
+          <caret line="4" column="10" selection-start-line="4" selection-start-column="10" selection-end-line="4" selection-end-column="10" />
+          <folding>
+            <element signature="e#24#33#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -852,13 +876,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="539" max-vertical-offset="1134">
           <caret line="49" column="0" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file:///usr/lib/python2.7/xml/etree/ElementTree.py">
@@ -890,13 +914,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/insertsizes.R">
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.866242" vertical-offset="879" max-vertical-offset="1350">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
+      </provider>
+      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
+        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../SipprModeling/SipprModellingMultiprocessingMultifile.py">
@@ -970,20 +994,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../geneSippr/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="524">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/git/genomeAnnouncements/contigPrepper.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1440">
-          <caret line="19" column="20" selection-start-line="19" selection-start-column="20" selection-end-line="19" selection-end-column="20" />
-        </state>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file:///media/nas/akoziol/GeneSipping/NCBI_submission/SRA/interleaveFastq.py">
@@ -994,13 +1011,13 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/git/genomeAnnouncements/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.103053436" vertical-offset="0" max-vertical-offset="524">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/git/genomeAnnouncements/tbl2asn.py">
@@ -1011,13 +1028,13 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/git/geneSippr/README.md">
-      <provider editor-type-id="MarkdownPreviewEditor">
-        <state />
-      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="893" max-vertical-offset="1764">
           <caret line="68" column="50" selection-start-line="68" selection-start-column="50" selection-end-line="68" selection-end-column="50" />
         </state>
+      </provider>
+      <provider editor-type-id="MarkdownPreviewEditor">
+        <state />
       </provider>
     </entry>
     <entry file="file:///media/nas/akoziol/Collaborations/Ashley/Enterobacter/1000bp.py">
@@ -1038,39 +1055,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="720">
           <caret line="30" column="24" selection-start-line="30" selection-start-column="4" selection-end-line="30" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/offHours.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1412" max-vertical-offset="1890">
-          <caret line="79" column="24" selection-start-line="79" selection-start-column="24" selection-end-line="79" selection-end-column="24" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rMLST_typer.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.25" vertical-offset="3627" max-vertical-offset="6966">
-          <caret line="214" column="92" selection-start-line="214" selection-start-column="90" selection-end-line="214" selection-end-column="92" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.3166666" vertical-offset="995" max-vertical-offset="1854">
-          <caret line="63" column="29" selection-start-line="63" selection-start-column="28" selection-end-line="63" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reportR.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1350">
-          <caret line="50" column="42" selection-start-line="50" selection-start-column="42" selection-end-line="50" selection-end-column="42" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1078,90 +1062,156 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-9.954839" vertical-offset="4629" max-vertical-offset="5904">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file:///media/nas/SPAdes-3.5.0-Linux/share/spades/spades_pipeline/spades_logic.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.3166666" vertical-offset="4271" max-vertical-offset="4824">
+        <state vertical-scroll-proportion="0.32131147" vertical-offset="4214" max-vertical-offset="4824">
           <caret line="253" column="59" selection-start-line="253" selection-start-column="54" selection-end-line="253" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/git/geneSippr/modellingMultiprocessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="8892">
+          <caret line="38" column="0" selection-start-line="38" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/venv/lib/python2.7/re.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.63993454" vertical-offset="2893" max-vertical-offset="5958">
+          <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/offHours.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1231" max-vertical-offset="1890">
+          <caret line="77" column="56" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/reportR.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="686" max-vertical-offset="1296">
+          <caret line="63" column="0" selection-start-line="63" selection-start-column="0" selection-end-line="72" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.5166667" vertical-offset="3443" max-vertical-offset="4788">
-          <caret line="203" column="60" selection-start-line="203" selection-start-column="60" selection-end-line="203" selection-end-column="60" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="324" max-vertical-offset="4590">
+          <caret line="30" column="0" selection-start-line="30" selection-start-column="0" selection-end-line="43" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/geneSeekr.py">
+    <entry file="file:///media/nas/akoziol/sandbox/fastqSampler.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.6166666" vertical-offset="9311" max-vertical-offset="9918">
-          <caret line="526" column="37" selection-start-line="526" selection-start-column="37" selection-end-line="526" selection-end-column="37" />
-          <folding>
-            <element signature="e#24#56#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/quastR.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.85" vertical-offset="1215" max-vertical-offset="3294">
-          <caret line="86" column="0" selection-start-line="86" selection-start-column="0" selection-end-line="86" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="524" max-vertical-offset="1206">
+          <caret line="42" column="45" selection-start-line="42" selection-start-column="45" selection-end-line="42" selection-end-column="45" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runMetadataOptater.py">
+    <entry file="file://$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw/mendelsFirstLaw.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.15" vertical-offset="2907" max-vertical-offset="3438">
-          <caret line="175" column="9" selection-start-line="175" selection-start-column="9" selection-end-line="175" selection-end-column="9" />
-          <folding />
+        <state vertical-scroll-proportion="0.14173229" vertical-offset="0" max-vertical-offset="1422">
+          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/quakeR.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.25" vertical-offset="2367" max-vertical-offset="4824">
-          <caret line="145" column="32" selection-start-line="145" selection-start-column="31" selection-end-line="145" selection-end-column="32" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="2736" max-vertical-offset="5148">
+          <caret line="152" column="13" selection-start-line="152" selection-start-column="13" selection-end-line="152" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file:///media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py">
+    <entry file="file:///media/nas/docker/docker-programs/quast-2.3/quast.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="1332">
-          <caret line="14" column="90" selection-start-line="14" selection-start-column="90" selection-end-line="14" selection-end-column="90" />
+        <state vertical-scroll-proportion="0.6744186" vertical-offset="9581" max-vertical-offset="12690">
+          <caret line="554" column="32" selection-start-line="554" selection-start-column="28" selection-end-line="554" selection-end-column="32" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rMLST_typer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="540" max-vertical-offset="10242">
+          <caret line="421" column="4" selection-start-line="421" selection-start-column="4" selection-end-line="421" selection-end-column="4" />
+          <folding>
+            <element signature="e#254#310#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-3.2833333" vertical-offset="1657" max-vertical-offset="2502">
+          <caret line="103" column="20" selection-start-line="103" selection-start-column="15" selection-end-line="103" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/git/genomeAnnouncements/contigPrepper.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1476">
+          <caret line="32" column="27" selection-start-line="32" selection-start-column="27" selection-end-line="32" selection-end-column="27" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/spadesGoUpper.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.75" vertical-offset="3141" max-vertical-offset="3906">
-          <caret line="177" column="56" selection-start-line="177" selection-start-column="56" selection-end-line="177" selection-end-column="56" />
+        <state vertical-scroll-proportion="-13.2" vertical-offset="0" max-vertical-offset="4302">
+          <caret line="44" column="21" selection-start-line="44" selection-start-column="21" selection-end-line="44" selection-end-column="21" />
           <folding>
             <element signature="e#24#33#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
+    <entry file="file://$PROJECT_DIR$/quastR.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1746">
-          <caret line="56" column="10" selection-start-line="56" selection-start-column="10" selection-end-line="56" selection-end-column="10" />
+        <state vertical-scroll-proportion="-2.9833333" vertical-offset="1495" max-vertical-offset="3222">
+          <caret line="102" column="83" selection-start-line="102" selection-start-column="64" selection-end-line="102" selection-end-column="83" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/git/geneSippr/modellingMultiprocessing.py">
+    <entry file="file://$PROJECT_DIR$/runMetadataOptater.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.3891213" vertical-offset="2268" max-vertical-offset="8892">
-          <caret line="36" column="116" selection-start-line="36" selection-start-column="116" selection-end-line="36" selection-end-column="116" />
+        <state vertical-scroll-proportion="7.65" vertical-offset="2403" max-vertical-offset="3312">
+          <caret line="111" column="42" selection-start-line="111" selection-start-column="42" selection-end-line="111" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///media/nas/akoziol/Pipeline_development/ePFGE/kSNP/automatekSNP.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="54" max-vertical-offset="1638">
+          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="812" max-vertical-offset="1926">
+          <caret line="48" column="0" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/geneSeekr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.03869654" vertical-offset="1367" max-vertical-offset="9792">
+          <caret line="81" column="0" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
           <folding />
         </state>
       </provider>

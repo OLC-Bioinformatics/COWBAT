@@ -62,14 +62,23 @@ def univecScreen(name, path, refFilePath):
     make_path("%s/%s/univecscreen" % (path, name))
     # If the analysis hasn't already been performed
     if not os.path.isfile(out):
-        # Using a system call rather than the Biopython NCBI module because there are many options specified
-        # and I don't know how to use each of the options with NcbiblastnCommandline
-        # I'm running this with an evalue of 10 - the default VecScreen parameters call for an evalue of 700,
-        # but since this is a reduced database, I reduced the evalue as well
-        blastCall = "blastall -p blastn -i %s -d %s " \
-            "-q -5 -G 3 -E 3 -F 'm D' -e 10 -Y 1.75e12 -m 8 -o %s" % (query, primers, out)
-        # Run it
-        os.system(blastCall)
+        # I'm running this with an evalue of 0.1 - the default VecScreen parameters call for an evalue of 700,
+        # but since this is a reduced database, I reduced the evalue as well. I'm also using -task blastn-short
+        # instead of blastn, as all the probes are very short. Additionally, as it was causing blast to return
+        # no results, I removed -searchsp 1750000000000 from the call
+        blastn = NcbiblastnCommandline(task="blastn-short",
+                                       query=query,
+                                       db=primers,
+                                       reward=1,
+                                       penalty=-5,
+                                       gapopen=3,
+                                       gapextend=3,
+                                       dust="yes",
+                                       soft_masking="true",
+                                       evalue=0.1,
+                                       outfmt=6,
+                                       out=out)
+        stdout, stderr = blastn()
 
 
 def vtyper(name, path, refFilePath):
@@ -103,24 +112,24 @@ def vtyper(name, path, refFilePath):
         # -m 10000 (Set variability for STS size for lookup), -n 1 (Set max allowed mismatches per primer for lookup)
         # -g 0 (Set max allowed indels per primer for lookup), -G (Print alignments in comments), -o {output file}
         ePCR = "re-PCR -S %s/%s.hash -r + -m 10000 -n 1 -g 0 -G -q -o %s/%s.txt %s 2>/dev/null" \
-           % (vtyperPath, name, vtyperPath, name, primers)
+            % (vtyperPath, name, vtyperPath, name, primers)
         os.system(ePCR)
     # This populates vtyperResults with the verotoxin subtypes
-    list1 =[]
+    list1 = []
     if os.path.isfile("%s/%s.txt" % (vtyperPath, name)):
         ePCRresults = open("%s/%s.txt" % (vtyperPath, name), "r")
         for result in ePCRresults:
             # Only the lines without a # contain results
-            if not ("#") in result:
+            if not "#" in result:
                 count += 1
                 # Split on \t
                 data = result.split("\t")
                 # The subtyping primer pair is the first entry on lines with results
                 vttype = data[0].split("_")[0]
                 # Push the name of the primer pair - stripped of anything after a _ to the dictionary
-                # vtyperResults[name][vttype] = count
                 if vttype not in list1:
                     list1.append(vttype)
+    # Create a string of the entries in list1 joined with ";"
     string = ";".join(list1)
     metadata[name] = string
     # print json.dumps(metadata, sort_keys=True, indent=4, separators=(',', ': '))
@@ -183,9 +192,6 @@ def performBlast(name, path, targets, analysis, dictionary, refFilePath):
                             # Initiate the subtyping module
                             if "VT" in targetName:
                                 output = vtyper(name, path, refFilePath)
-                            # else:
-                                # output = metadata
-                                # output[name]["1.General"]["verotoxinProfile"] = "N/A"
                         # Otherwise, populate the dictionary indicating that the target was not found in the genome
                         else:
                             # Because O-typing has multiple targets per file, this populating of negative results would
@@ -220,16 +226,20 @@ def performBlast(name, path, targets, analysis, dictionary, refFilePath):
             # percent identity is written
             else:
                 report.write("%s\t" % dictionary[name][target][tName])
-    # print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
     outputGeneSeekr = {}
     if geneSeekrList:
         string = ";".join(geneSeekrList)
     else:
         string = "N/A"
     outputGeneSeekr[name] = string
-    # print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
     # if output:
     return output, outputGeneSeekr
+
+import threading
+threadlock = threading.Lock()
+# threadlock.acquire()
+# threadlock.release()
+
 
 
 def performMLST(name, path, refFilePath, genus):
@@ -311,8 +321,11 @@ def performMLST(name, path, refFilePath, genus):
                             PI = "%.2f" % (100 * (float(hsp.identities)/float(alignment.length)))
                             # Populate the dictionary with the results
                             MLSTresults[name][alleleName][alignment.title.split(" ")[0].split("-")[1]] = PI
+        else:
+            MLSTresults[name][alleleName]["N/A"] = 0
         # Close the file
         result_handle.close()
+    # print json.dumps(MLSTresults, sort_keys=True, indent=4, separators=(',', ': '))
     # Iterate through profileData and MLSTresults and find out how many matches to each sequence type occur
     # name is already defined in the function
     for alleleName in sorted(MLSTresults[name]):
@@ -326,15 +339,19 @@ def performMLST(name, path, refFilePath, genus):
                 if title == refAllele:
                     # populate MLSTseqType with the appropriate information regarding that match
                     MLSTseqType[sequenceType][name][alleleName] = "%s (%s%%)" % (title, MLSTresults[name][alleleName][title])
-    # Iterate through MLSRseqType - if the number of matches between sequence type and the strain are equal to len(header)
+    # print json.dumps(MLSTseqType, sort_keys=True, indent=4, separators=(',', ': '))
+    # Iterate through MLSTseqType - if the number of matches between sequence type and the strain are equal to len(header)
     # (the total number of genes), then the strain is that sequence type
-    if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
-        os.remove("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
+    # if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
+    #     os.remove("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
+
     for sequenceType in sorted(MLSTseqType):
         for name in MLSTseqType[sequenceType]:
             # If there are seven matches out of a possible seven, then strain and sequence type are identical
             if len(MLSTseqType[sequenceType][name]) == len(header) - 1:
                 # Write the match results to file
+                threadlock.acquire()
+
                 MLSTreport = open("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name), "wb")
                 # Including name, as there will be a summary report where these data will be useful
                 MLSTreport.write("Name\t")
@@ -351,33 +368,46 @@ def performMLST(name, path, refFilePath, genus):
                 # Populate the allele number information
                 for alleleName in MLSTseqType[sequenceType][name]:
                     MLSTreport.write("%s\t" % MLSTseqType[sequenceType][name][alleleName])
-                MLSTreport.close()
+                # MLSTreport.close()
                 outputString = "(%s) %s" % (genus, sequenceType)
                 metadata[name] = outputString
+                # print name, outputString
+                MLSTreport.close()
+                threadlock.release()
                 # metadata[name]["1.General"]["MLST_sequenceType"] = outputString
-    if not os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
-        # metadata[name]["1.General"]["MLST_sequenceType"] = "N/A"
-        for name in MLSTresults:
-            print "mismatch! ", name
-            # Write the match results to file
+    fileSize = ""
+    if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
+        fileSize = os.stat("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
+    if fileSize:
+        if fileSize.st_size == 0:
+            threadlock.acquire()
+            # if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
+            #     os.remove("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
+
             MLSTreport = open("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name), "wb")
-            # Including name, as there will be a summary report where these data will be useful
-            MLSTreport.write("Name\t")
-            # Going back to header to get the gene names
-            for entry in header:
-                # Expand ST to SequenceType for clarity
-                if "ST" in entry:
-                    entry = "SequenceType"
-                # Write it to file
-                MLSTreport.write("%s\t" % entry)
-            MLSTreport.write("\n")
-            # Get the strain name, and sequence type information into the report
-            MLSTreport.write("%s\tN/A\t" % name)
-            # Populate the allele number information
-            for alleleName in MLSTresults[name]:
-                for title, PI in MLSTresults[name][alleleName].iteritems():
-                    MLSTreport.write("%s (%s%%)\t" % (title, PI))
+            for name in MLSTresults:
+                # print name
+                metadata[name] = "N/A"
+                # Write the match results to file
+                # Including name, as there will be a summary report where these data will be useful
+                MLSTreport.write("Name\t")
+                # Going back to header to get the gene names
+                for entry in header:
+                    # Expand ST to SequenceType for clarity
+                    if "ST" in entry:
+                        entry = "SequenceType"
+                    # Write it to file
+                    MLSTreport.write("%s\t" % entry)
+                MLSTreport.write("\n")
+                # Get the strain name, and sequence type information into the report
+                MLSTreport.write("%s\tN/A\t" % name)
+                # Populate the allele number information
+                for alleleName in MLSTresults[name]:
+                    # print alleleName
+                    for title, PI in MLSTresults[name][alleleName].iteritems():
+                        MLSTreport.write("%s (%s%%)\t" % (title, PI))
             MLSTreport.close()
+            threadlock.release()
 
     # Create a summary report of all MLST findings
     # Only attempt to append to the summary report if the strain has a MLST report
@@ -396,12 +426,13 @@ def performMLST(name, path, refFilePath, genus):
             MLSTsummaryReport.close()
         # Get the results from the report - [1] means get the data from the second row
         MLSTsummary = open("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)).readlines()[1]
+        metadata[name] = MLSTsummary.split("\t")[1]
         # Open the file again, but this time to append results
         MLSTsummaryReportData = open("%s/reports/%s_MLSTresults.tsv" % (path, genus), "ab")
         # Write results
         MLSTsummaryReportData.write("%s\n" % MLSTsummary)
         MLSTsummaryReportData.close()
-    # print json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
+    # # print json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
     if metadata:
         return metadata
 
@@ -410,9 +441,6 @@ def geneSeekrPrepProcesses(sampleName, path, assemblyMetadata, refFilePath):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     geneSeekrPrepArgs = []
     output = {}
-    # outputMLST = {}
-    # outputList = []
-    # outputMLSTList = []
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
     if __name__ == 'geneSeekr':
@@ -422,16 +450,6 @@ def geneSeekrPrepProcesses(sampleName, path, assemblyMetadata, refFilePath):
             geneSeekrPrepArgs.append((name, path, assemblyMetadata, refFilePath))
         # This map function allows for multi-processing
         output = createGeneSeekrPool.map(runGeneSeekr, geneSeekrPrepArgs)
-        # Look for invalid entries in output
-        # for i in output:
-        #     # If i is not None type, then append it to outputList
-        #     if i is not None:
-        #         outputList.append(i)
-        # for i in outputMLST:
-        #     # If i is not None type, then append it to outputList
-        #     if i is not None:
-        #         outputMLSTList.append(i)
-        # print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
     return output
 
 
@@ -458,31 +476,11 @@ def runGeneSeekr((name, path, metadata, refFilePath)):
             make_path("%s/%s/geneSeekr/tmp" % (path, name))
             # Run GeneSeekr
             output, geneSeekrOutput = performBlast(name, path, targets, "geneSeekr", geneSeekrResults, refFilePath)
-            # if not output:
-                # output = metadata
-                # output[name]["1.General"]["verotoxinProfile"] = "N/A"
-            # print json.dumps(geneSeekrOutput, sort_keys=True, indent=4, separators=(',', ': '))
             # Run the MLST_typer
             outputMLST = performMLST(name, path, refFilePath, genus)
-    #         if not outputMLST:
-    #             if not output:
-    #                 outputMLST = metadata
-    #                 outputMLST[name]["1.General"]["MLST_sequenceType"] = "N/A"
-    #             else:
-    #                 outputMLST = output
-    #                 outputMLST[name]["1.General"]["MLST_sequenceType"] = "N/A"
-    #     else:
-    #         outputMLST = metadata
-    #         outputMLST[name]["1.General"]["MLST_sequenceType"] = "N/A"
-    #         outputMLST[name]["1.General"]["verotoxinProfile"] = "N/A"
-    # else:
-    #     outputMLST = metadata
-    #     outputMLST[name]["1.General"]["MLST_sequenceType"] = "N/A"
-    #     outputMLST[name]["1.General"]["verotoxinProfile"] = "N/A"
-    # Only return output if it has been populated
-    # print json.dumps(outputMLST[name], sort_keys=True, indent=4, separators=(',', ': '))
+    # As there's no checks above to populate the dictionary if there are no results, the if statements below not only
+    # populate the dictionary with the appropriate metadata headings, and return negative results
     if output:
-        # print output[name]
         metadataOutput[name]["1.General"]["verotoxinProfile"] = output[name]
     else:
         metadataOutput[name]["1.General"]["verotoxinProfile"] = "N/A"
@@ -497,7 +495,6 @@ def runGeneSeekr((name, path, metadata, refFilePath)):
         metadataOutput[name]["1.General"]["geneSeekrProfile"] = geneSeekrOutput[name]
     else:
         metadataOutput[name]["1.General"]["geneSeekrProfile"] = "N/A"
-    # print json.dumps(metadata, sort_keys=True, indent=4, separators=(',', ': '))
     return metadataOutput
 
 
@@ -512,27 +509,27 @@ def reportRemover(path):
             os.remove("%s/reports/%s_MLSTresults.tsv" % (path, genus))
 
 
-def metadataFiller(assembledFiles, path, metadata, geneSeekrList):
-    """Properly populates the metadata file"""
+def metadataFiller(metadata, geneSeekrList):
+    """Properly populates the metadata dictionary - when I tried to populate the metadata dictionary within the
+     multi-processed functions, it was returned as a list (likely due to how the files were returned. This essentially
+     iterates through the list, and populates a dictionary appropriately"""
+    # Make a copy of the metadata dictionary
     geneSeekrMetadata = metadata
-    # print json.dumps(metadata, sort_keys=True, indent=4, separators=(',', ': '))
-    # print geneSeekrList
+    # Iterate through geneSeekrList
     for item in geneSeekrList:
-        # geneSeekrMetadata = item
-        # print json.dumps(item, sort_keys=True, indent=4, separators=(',', ': '))
+        # each item in geneSeekrList is a dictionary entry
+        # iterate through all the dictionaries
         for name in item:
+            # The way the dictionaries were created, they should have the format:
+            # metadataOutput[name]["1.General"]["geneSeekrProfile"] = geneSeekrOutput[name], so
+            # e.g. "1.General"
             for generalCategory in item[name]:
+                # e.g. "geneSeekrProfile"
                 for specificCategory in item[name][generalCategory]:
-                    # print name, generalCategory, specificCategory, item[name][generalCategory][specificCategory]
+                    # Populate the dictionary
                     geneSeekrMetadata[name][generalCategory][specificCategory] = str(item[name][generalCategory][specificCategory])
-    # for name in assembledFiles:
-    #     newpath = "%s/%s" % (path, name)
-        # print newpath
-        # print geneSeekrList
-    # print json.dumps(geneSeekrMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+    # Return the beautifully-populated dictionary
     return geneSeekrMetadata
-
-
 
 
 def functionsGoNOW(assembledFiles, path, assemblyMetadata, refFilePath):
@@ -542,5 +539,5 @@ def functionsGoNOW(assembledFiles, path, assemblyMetadata, refFilePath):
     # Do everything - uniVec screening, geneSeeking, V-typing, and MLST analysis
     geneSeekrMetadataList = geneSeekrPrepProcesses(assembledFiles, path, assemblyMetadata, refFilePath)
     # print json.dumps(geneSeekrMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-    geneSeekrMetadata = metadataFiller(assembledFiles, path, assemblyMetadata, geneSeekrMetadataList)
+    geneSeekrMetadata = metadataFiller(assemblyMetadata, geneSeekrMetadataList)
     return geneSeekrMetadata

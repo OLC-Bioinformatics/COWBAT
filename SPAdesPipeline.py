@@ -26,13 +26,27 @@ import reportR
 # Perform GeneSeeking analysis
 import geneSeekr
 import json
+# Argument parser for user-inputted values, and a nifty help menu
+from argparse import ArgumentParser
 
-# TODO Move the rMLST and the referenceGenomes folders to a central location
-# TODO Figure out how to avoid using absolute paths for called scripts
-# TODO Locate MiSeq mount and copy files to a new folder in the nas using the date of the run as the file name
-# TODO Think about getting this pipeline into docker
+#Parser for arguments
+parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
+parser.add_argument('-v', '--version', action='version', version='%(prog)s commit b737e2c52f59c541062')
+parser.add_argument('-p', '--path', required=True, help='Specify path')
+parser.add_argument('-t', '--threads', required=False, help='Number of threads to use. Defaults to the number of cores in your system')
+
+# Get the arguments into a list
+args = vars(parser.parse_args())
+
+# Define variables from the arguments - there may be a more streamlined way to do this
+path = args['path']
+cpus = args['threads']
+os.chdir(path)
+
 # TODO Look at filtering at 10X coverage in SpadesGoUpper
-# TODO Add the ability to dynamically determine the versions of all third-party software
+# I haven't implemented this, as sometimes, it's better to have coverage below 10X than deleting all the contigs
+
+# TODO add pxz of fastq files at end
 
 refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
 
@@ -43,17 +57,15 @@ start = time.time()
 print("Welcome to the CFIA SPAdes Assembly Pipeline.")
 
 # Count the CPUs in the system
-cpus = os.popen("awk '/^processor/ { N++} END { print N }' /proc/cpuinfo").read().rstrip()
+if not cpus:
+    cpus = os.popen("awk '/^processor/ { N++} END { print N }' /proc/cpuinfo").read().rstrip()
 print("There are %s CPUs in your system" % cpus)
 
 def pipeline():
     """All the functions for running the pipeline"""
     # Off-hours module
     # offHours.run()
-    path = os.getcwd()
-    # path = "/media/nas/akoziol/WGS_Spades/2014-05-30"
-    # path = "/media/nas/akoziol/WGS_Spades/2015-02-10"
-    # os.chdir(path)
+    # path = os.getcwd()
     # Import the metadata gathered from GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv
     print("Extracting metadata from sequencing run.")
     runMetadata, sampleNames, experimentDate, fLength = runMetadataOptater.functionsGoNOW(path)
@@ -75,10 +87,8 @@ def pipeline():
     # print json.dumps(runTrimAssemblyMLSTQuastMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Library size estimation
     runTrimAssemblyMLSTQuastInsertMetadata = lse.functionsGoNOW(assembledFiles, path, runTrimAssemblyMLSTQuastMetadata)
-    # Univec screening
-
     # Mobile element screening
-    # print json.dumps(runTrimMLSTAssemblyInsertMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+    # Not implemented yet
     # GeneSeeking
     runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata = geneSeekr.functionsGoNOW(assembledFiles, path, runTrimAssemblyMLSTQuastInsertMetadata, refFilePath)
     # print json.dumps(runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata, sort_keys=True, indent=4, separators=(',', ': '))

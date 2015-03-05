@@ -71,13 +71,13 @@ def run():
 
     # Copy over the necessary files to perform metadata analyses
     if not os.path.isfile("%s/%s/SampleSheet.csv" % (backupPath, folderofInterest)):
-        shutil.copy("%s/%s/SampleSheet.csv" % (miSeqPath, folderofInterest),
-                    "%s/%s/SampleSheet.csv" % (backupPath, folderofInterest))
         shutil.copy("%s/%s/RunInfo.xml" % (miSeqPath, folderofInterest),
                     "%s/%s/RunInfo.xml" % (backupPath, folderofInterest))
         if os.path.isfile("%s/%s/GenerateFASTQRunStatistics.xml" % (miSeqPath, folderofInterest)):
             shutil.copy("%s/%s/GenerateFASTQRunStatistics.xml" % (miSeqPath, folderofInterest),
                         "%s/%s/GenerateFASTQRunStatistics.xml" % (backupPath, folderofInterest))
+        shutil.copy("%s/%s/SampleSheet.csv" % (miSeqPath, folderofInterest),
+                    "%s/%s/SampleSheet.csv" % (backupPath, folderofInterest))
 
     analysisFiles = glob.glob("%s/%s/*" % (backupPath, folderofInterest))
 

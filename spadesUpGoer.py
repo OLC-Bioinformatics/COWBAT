@@ -8,9 +8,6 @@ from Bio import SeqIO
 import shutil
 import errno
 import subprocess
-# add spades.py to PYTHONPATH and interact directly
-# import spades
-import glob
 
 
 def make_path(inPath):
@@ -29,7 +26,7 @@ def spadesPrepProcesses(sampleName, path, fLength):
     spadesPrepArgs = []
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
-    if __name__ == 'spadesGoUpper':
+    if __name__ == 'spadesUpGoer':
         createSpadesPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
@@ -44,14 +41,12 @@ def runSpades((name, path, fLength)):
     # contigsFile = "contigs.fasta"
     newPath = path + "/" + name
     forward = ""
-    reverse = ""
     # Check for the existence of the scaffolds file - hopefully this will be created at the end of the run
     if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
         # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
         # be located. Maybe the $PATH needs to be updated?
         # --continue
-        forward = "%s/%s_R1_001.cor.fastq" % (newPath, name)
-        reverse = "%s/%s_R2_001.cor.fastq" % (newPath, name)
+        forward = "%s/%s.fastq" % (newPath, name)
         # forwardFile = glob.glob("%s/*1.cor.fastq" % newPath)
         # if forwardFile:
         #     forward = forwardFile[0]
@@ -63,22 +58,23 @@ def runSpades((name, path, fLength)):
         # There's an option to continue from checkpoints if the assembly is terminated prematurely within SPAdes,
         #  but the output directory must exist - if this directory exists, --continue, else don't --continue
         # /home/blais/Bioinformatics/SPAdes-3.1.1-Linux/bin/
+        # 1>/dev/null
         if fLength > 50:
             if os.path.isdir("%s/spades_output" % name):
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
-                            "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
+                            "--only-assembler --s1 %s -o %s/spades_output" % (forward, newPath)
 
             else:
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
-                            "--pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
+                            "--s1 %s -o %s/spades_output" % (forward, newPath)
         else:
             if os.path.isdir("%s/spades_output" % name):
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
-                            "--only-assembler --s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
+                            "--only-assembler --s1 %s -o %s/spades_output" % (forward, newPath)
 
             else:
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
-                            "--s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
+                            "--s1 %s -o %s/spades_output" % (forward, newPath)
         # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
         os.system(spadesRun)
@@ -220,15 +216,25 @@ def pipelineMetadata(path, metadata, sampleNames):
             metadata[name]["7.Pipeline"]["PythonVersion"] = versions[6]
             metadata[name]["7.Pipeline"]["OS"] = versions[7]
             metadata[name]["7.Pipeline"]["PipelineVersion"] = versions[8].rstrip()
+        metadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ForwardValidatedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ForwardCorrectedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ForwardTrimmedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ForwardTrimmedOnlyReads"] = "N/A"
+        metadata[name]["4.Correction"]["ForwardRemovedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ReverseValidatedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ReverseCorrectedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ReverseTrimmedReads"] = "N/A"
+        metadata[name]["4.Correction"]["ReverseTrimmedOnlyReads"] = "N/A"
+        metadata[name]["4.Correction"]["ReverseRemovedReads"] = "N/A"
     return metadata
 
 
 
-def functionsGoNOW(correctedFiles, path, metadata, fLength):
-    """Run the helper function"""
-    print("\nAssembling reads.")
-    spadesPrepProcesses(correctedFiles, path, fLength)
-    updatedMetadata = contigFileFormatter(correctedFiles, path, metadata)
-    assembledFiles = completionist(correctedFiles, path)
+def functionsGoNow(files, path, metadata, fLength):
+    # print path, fLength
+    spadesPrepProcesses(files, path, fLength)
+    updatedMetadata = contigFileFormatter(files, path, metadata)
+    assembledFiles = completionist(files, path)
     moreMetadata = pipelineMetadata(path, updatedMetadata, assembledFiles)
     return moreMetadata, assembledFiles

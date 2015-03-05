@@ -15,6 +15,7 @@ import fileExtractionProcessing
 import quakeR
 # Run SPAdes
 import spadesGoUpper
+import spadesUpGoer
 # Perform typing using rMLST to determine best reference genome
 import rMLST_typer
 # quastR
@@ -33,6 +34,8 @@ from argparse import ArgumentParser
 parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
 parser.add_argument('-v', '--version', action='version', version='%(prog)s commit b737e2c52f59c541062')
 parser.add_argument('-p', '--path', required=True, help='Specify path')
+parser.add_argument('-n', '--numReads', required=False, default=2,
+                    help='Specify the number of reads. Paired-reads: 2, unpaired-reads:1. Default is paired-end (2)')
 parser.add_argument('-t', '--threads', required=False, help='Number of threads to use. Defaults to the number of cores in your system')
 
 # Get the arguments into a list
@@ -41,8 +44,8 @@ args = vars(parser.parse_args())
 # Define variables from the arguments - there may be a more streamlined way to do this
 path = args['path']
 cpus = args['threads']
+numReads = args['numReads']
 os.chdir(path)
-
 # TODO Look at filtering at 10X coverage in SpadesGoUpper
 # I haven't implemented this, as sometimes, it's better to have coverage below 10X than deleting all the contigs
 
@@ -72,12 +75,15 @@ def pipeline():
     # print json.dumps(runMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Pre-process archives
     fileExtractionProcessing.functionsGoNOW(sampleNames, path)
-    # quakify
-    correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata, fLength)
-    # print json.dumps(runTrimMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-    # SPAdesify
-    runTrimAssemblyMetadata, assembledFiles = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata, fLength)
-    # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+    if int(numReads) == 1:
+        runTrimAssemblyMetadata, assembledFiles = spadesUpGoer.functionsGoNow(sampleNames, path, runMetadata, fLength)
+    else:
+        # quakify
+        correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata, fLength)
+        # print json.dumps(runTrimMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+        # SPAdesify
+        runTrimAssemblyMetadata, assembledFiles = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata, fLength)
+        # print json.dumps(runTrimAssemblyMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Typing
     runTrimAssemblyMLSTMetadata = rMLST_typer.functionsGoNOW(assembledFiles, path, experimentDate, runTrimAssemblyMetadata, refFilePath)
     # print json.dumps(runTrimAssemblyMLSTMetadata, sort_keys=True, indent=4, separators=(',', ': '))

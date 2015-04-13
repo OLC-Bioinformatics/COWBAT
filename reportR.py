@@ -7,7 +7,7 @@ import shutil
 import re
 from types import *
 import glob
-
+import jsonReportR
 def make_path(inPath):
     """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
     does what is indicated by the URL"""
@@ -18,6 +18,7 @@ def make_path(inPath):
         if exception.errno != errno.EEXIST:
             raise
 
+
 def functionsGoNOW(sampleNames, metadata, path):
     """As outputting a JSON file is so straightforward, helper functions were unnecessary"""
     print "\nCreating reports."
@@ -27,24 +28,27 @@ def functionsGoNOW(sampleNames, metadata, path):
     combinedReport = open("%s/%s_CombinedMetadataReport.tsv" % (reportPath, folderName), "wb")
     headings = ["SampleName", "fileName", "N50", "NumContigs", "TotalLength", "MeanInsertSize", "averageDepthofCov",
                 "referenceGenome", "NumIdenticalAlleles", "rMLSTSequenceType", "rMLSTIdenticalAlleles", "Date",
+                "NumPredictedGenes", "NumPredictedGenes>500bp", "NumPredictedGenes>1000bp", "NumPredictedGenes>3000bp",
                 "geneSeekrProfile", "verotoxinProfile", "MLST_sequenceType", "percentGC", "Investigator",
                 "NumberOfClustersPF", "PercentOfClusters", "TotalClustersinRun", "LengthofFirstRead",
                 "LengthofSecondRead", "Project", "PipelineVersion"]
     reportHeadings = ["1.General", "2.Assembly", "3.Run", "4.Correction",
-                      "5.rMLST", "6.rMLSTmatchestoRef", "7.Pipeline"]
+                      "5.rMLST", "6.rMLSTmatchestoRef", "7.PipelineCommands", "8.PipelineVersions"]
     combinedReport.write("\t".join(headings))
     combinedReport.write("\n")
+    jsonReportR.jsonR(sampleNames, path, metadata, "Report")
+    # for name in sampleNames:
+    #     newPath = path + "/" + name
+    #     reportName = "%s_metadataReport.json" % name
+    #     JSONreport = open("%s/%s" % (newPath, reportName), "wb")
+    #     # Print the JSON data to file
+    #     output = json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
+    #     JSONreport.write(output)
+    #     JSONreport.close()
+    #     # Move all the reports to a common directory
+    #     shutil.copy("%s/%s" % (newPath, reportName), reportPath)
     for name in sampleNames:
         newPath = path + "/" + name
-        reportName = "%s_metadataReport.json" % name
-        JSONreport = open("%s/%s" % (newPath, reportName), "wb")
-        # Print the JSON data to file
-        output = json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
-        JSONreport.write(output)
-        JSONreport.close()
-        # Move all the reports to a common directory
-        shutil.copy("%s/%s" % (newPath, reportName), reportPath)
-        #
         for heading in headings:
             value = "NA"
             for rHeading in reportHeadings:
@@ -71,3 +75,7 @@ def functionsGoNOW(sampleNames, metadata, path):
         qcts = "%s/%s_fastqFiles.txt.qcts" % (newPath, name)
         if os.path.isfile(qcts):
             os.remove(qcts)
+        jsonCollection = glob.glob("%s/reports/*Collection.json" % path)
+        for jsonFile in jsonCollection:
+            if os.path.isfile(jsonFile):
+                os.remove(jsonFile)

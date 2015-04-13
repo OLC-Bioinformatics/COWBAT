@@ -7,25 +7,28 @@ import re
 import glob
 from multiprocessing import Pool
 import json
-
+import metadataFiller
+import jsonReportR
 # Initialise variables
 corrected = []
 
-def quakePrepProcesses(sampleName, path, fLength):
+def quakePrepProcesses(sampleName, path, fLength, metadata, commands):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     quakePrepArgs = []
+    output = {}
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
     if __name__ == 'quakeR':
         createQuakePool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            quakePrepArgs.append((name, path, fLength))
+            quakePrepArgs.append((name, path, fLength, metadata, commands))
         # This map function allows for multi-processing
-        createQuakePool.map(runQuakeMP, quakePrepArgs)
+        output = createQuakePool.map(runQuakeMP, quakePrepArgs)
+    return output
 
 
-def runQuakeMP((name, path, fLength)):
+def runQuakeMP((name, path, fLength, metadata, commands)):
     """Multiprocessed version of runQuake"""
     # Initialise the variables for the forward and reverse reads
     forward = name + "_R1_001.fastq"
@@ -36,8 +39,9 @@ def runQuakeMP((name, path, fLength)):
     reverseGlob = glob.glob("%s/*2.fastq" % newPath)
     # The counts file and its associated stats are required
     countsFile = name + "_counts.txt"
+    countSize = 0
     if os.path.isfile("%s/%s" % (newPath, countsFile)):
-        countSize = os.stat("%s/%s" % (newPath, countsFile))
+        countSize = os.stat("%s/%s" % (newPath, countsFile)).st_size
     # Create the list of fastq files required by quake
     fastqList = open("%s/%s_fastqFiles.txt" % (newPath, name), "wb")
     # fastqList.write("%s\t%s" % (forward, reverse))
@@ -47,113 +51,138 @@ def runQuakeMP((name, path, fLength)):
         fastqList.write("%s/%s" % (newPath, reverse))
     fastqList.close()
     # if not os.path.isfile("%s/%s" % (newPath, countsFile))
-    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
-        if not os.path.isfile("%s/%s" % (newPath, countsFile)) or countSize.st_size == 0 and len(reverseGlob) > 0:
+    if not commands[name]["QuakeQmersCorrectCommand"]:
+        # if not os.path.isfile("%s/%s" % (newPath, countsFile)) or countSize == 0 and len(reverseGlob) > 0:
             # Looks for the reverse file, if it doesn't exist, try again, by a more general regex glob
-            if not os.path.isfile("%s/%s" % (newPath, reverse)) and forwardGlob and reverseGlob:
-                forwardPath = forwardGlob[0]
-                forward = os.path.split(forwardPath)[1]
-                reversePath = reverseGlob[0]
-                reverse = os.path.split(reversePath)[1]
-            # Quake run command - using a kmer size of 15 because that is what the developers recommended for
-            # microbial genomes. Also using 24 processors.
-            #   2>/dev/null -q 33 -k 15
-            if fLength > 50:
-                quakeRun = "cat %s/%s %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
-                           % (newPath, forward, newPath, reverse, newPath, countsFile)
-            else:
-                quakeRun = "cat %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
-                           % (newPath, reverse, newPath, countsFile)
-            # Run the command
-            os.system(quakeRun)
-            sys.stdout.write('.')
+        if not os.path.isfile("%s/%s" % (newPath, reverse)) and forwardGlob and reverseGlob:
+            forwardPath = forwardGlob[0]
+            forward = os.path.split(forwardPath)[1]
+            reversePath = reverseGlob[0]
+            reverse = os.path.split(reversePath)[1]
+        # Quake run command - using a kmer size of 15 because that is what the developers recommended for
+        # microbial genomes. Also using 24 processors.
+        #   2>/dev/null -q 33 -k 15
+        if fLength > 50:
+            quakeRun = "cat %s/%s %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
+                       % (newPath, forward, newPath, reverse, newPath, countsFile)
+            metadata[name]["7.PipelineCommands"]["QuakeQmersCorrectCommand"] = quakeRun
         else:
-            sys.stdout.write('.')
+            quakeRun = "cat %s/%s | count-qmers -q 33 -k 15 > %s/%s" \
+                       % (newPath, reverse, newPath, countsFile)
+            metadata[name]["7.PipelineCommands"]["QuakeQmersCorrectCommand"] = quakeRun
+        # Run the command
+        os.system(quakeRun)
+        sys.stdout.write('.')
+        return metadata
+        # else:
+        #     sys.stdout.write('.')
+        #     metadata[name]["7.PipelineCommandsCommands"]["QuakeQmersCommand"] = commands[name]["QuakeQmersCorrectCommand"]
+        #     return metadata
     else:
         sys.stdout.write('.')
+        metadata[name]["7.PipelineCommands"]["QuakeQmersCorrectCommand"] = commands[name]["QuakeQmersCorrectCommand"]
+        return metadata
 
 
-def quakeCutOffProcesses(sampleName, path):
+def quakeCutOffProcesses(sampleName, path, metadata, commands):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     quakeCutArgs = []
+    output = {}
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
     if __name__ == 'quakeR':
         createQuakeCutPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            quakeCutArgs.append((name, path))
+            quakeCutArgs.append((name, path, metadata, commands))
         # This map function allows for multi-processing
-        createQuakeCutPool.map(cutQuakeMP, quakeCutArgs)
+        output = createQuakeCutPool.map(cutQuakeMP, quakeCutArgs)
+    return output
 
 
-def cutQuakeMP((name, path)):
+def cutQuakeMP((name, path, metadata, commands)):
     """Multiprocessed version of runQuake"""
+    countSize = 0
     countsFile = name + "_counts.txt"
     newPath = path + "/" + name
     if os.path.isfile("%s/%s" % (newPath, countsFile)):
-        countSize = os.stat("%s/%s" % (newPath, countsFile))
+        countSize = os.stat("%s/%s" % (newPath, countsFile)).st_size
     # Check for the existence of the assembled contigs - if this file exists, then skip
-    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
+    if not commands[name]["QuakeCutCommand"]:
         # If cutoff.txt doesn't exist, or counts.txt was not populated properly (or yet), then
-        if not os.path.isfile("%s/cutoff.txt" % newPath) or countSize.st_size == 0:
-            # I made edits to the cov_model.py script, and the R script called by cov_model.py to allow
-            # for multi-processing. Essentially, I modified the scripts to include a path variable, so that
-            # all files searched for and created are in 'newPath' instead of the path
-            quakeCut = "cov_model.py --path %s %s/%s 2>/dev/null" % (newPath, newPath, countsFile)
-            # Run the command
-            os.system(quakeCut)
-            sys.stdout.write('.')
-        else:
-            sys.stdout.write('.')
-    else:
+        # if not os.path.isfile("%s/cutoff.txt" % newPath) or countSize == 0:
+        # I made edits to the cov_model.py script, and the R script called by cov_model.py to allow
+        # for multi-processing. Essentially, I modified the scripts to include a path variable, so that
+        # all files searched for and created are in 'newPath' instead of the path
+        quakeCut = "cov_model.py --path %s %s/%s 2>/dev/null" % (newPath, newPath, countsFile)
+        # Run the command
+        os.system(quakeCut)
+        metadata[name]["7.PipelineCommands"]["QuakeCutCommand"] = quakeCut
         sys.stdout.write('.')
+        return metadata
+        # else:
+        #     sys.stdout.write('.')
+        #     metadata[name]["7.PipelineCommands"]["QuakeCutCommand"] = commands[name]["QuakeCutCommand"]
+        #     return metadata
+    else:
+        metadata[name]["7.PipelineCommands"]["QuakeCutCommand"] = commands[name]["QuakeCutCommand"]
+        sys.stdout.write('.')
+        return metadata
 
 
-def quakeCorrectProcesses(sampleName, path, fLength):
+def quakeCorrectProcesses(sampleName, path, fLength, metadata, commands):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     quakeCorrectArgs = []
+    output = {}
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
     if __name__ == 'quakeR':
         createQuakeCorrectPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            quakeCorrectArgs.append((name, path, fLength))
+            quakeCorrectArgs.append((name, path, fLength, metadata, commands))
         # This map function allows for multi-processing
-        createQuakeCorrectPool.map(correctQuakeMP, quakeCorrectArgs)
+        output = createQuakeCorrectPool.map(correctQuakeMP, quakeCorrectArgs)
+    # print json.dumps(output, sort_keys=True, indent=4, separators=(',', ': '))
+    return output
 
 
-def correctQuakeMP((name, path, fLength)):
+def correctQuakeMP((name, path, fLength, metadata, commands)):
     """Multiprocessed version of runQuake"""
     newPath = path + "/" + name
-
+    cutoffSize = 0
     cutoffFile = "%s/cutoff.txt" % newPath
     if os.path.isfile(cutoffFile):
-        cutoffSize = os.stat(cutoffFile)
+        cutoffSize = os.stat(cutoffFile).st_size
 
     corFile = glob.glob("%s/*cor.fastq" % newPath)
     # os.path.isfile("%s/cutoff.txt" % newPath)
-    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
+    if not commands[name]["QuakeCorrectCommand"]:
         # As part of the assembly of GeneSippr data, only one of the two paired end reads are necessary
         if fLength > 50:
             necessaryNoCorFiles = 2
         else:
             necessaryNoCorFiles = 1
-        if os.path.isfile(cutoffFile) and cutoffSize != 0 and len(corFile) < necessaryNoCorFiles:
-            cutoff = open('%s/cutoff.txt' % newPath).readline().rstrip()
-            # microbial genomes. Also using 24 processors.
-            #  2>/dev/null  -q 33 -k 15
-            quakeCorrect = "correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
-            # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
-            # Run the command
-            # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-            os.system(quakeCorrect)
-            sys.stdout.write('.')
-        else:
-            sys.stdout.write('.')
-    else:
+        # if os.path.isfile(cutoffFile) and cutoffSize != 0 and len(corFile) < necessaryNoCorFiles:
+        cutoff = open('%s/cutoff.txt' % newPath).readline().rstrip()
+        # microbial genomes. Also using 24 processors.
+        #  2>/dev/null  -q 33 -k 15
+        quakeCorrect = "correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
+        # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
+        # Run the command
+        # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        os.system(quakeCorrect)
+        metadata[name]["7.PipelineCommands"]["QuakeCorrectCommand"] = quakeCorrect
         sys.stdout.write('.')
+        return metadata
+        # else:
+        #     metadata[name]["7.PipelineCommands"]["QuakeCorrectCommand"] = commands[name]["QuakeCorrectCommand"]
+        #     sys.stdout.write('.')
+        #     return metadata
+    else:
+        metadata[name]["7.PipelineCommands"]["QuakeCorrectCommand"] = commands[name]["QuakeCorrectCommand"]
+        sys.stdout.write('.')
+        return metadata
 
 
 def completionist(sampleNames, path, runMetadata, fLength):
@@ -258,23 +287,27 @@ def tmpFileRemover(path, correctedList):
             os.remove(qcts)
 
 
-def functionsGoNOW(sampleNames, path, runMetadata, fLength):
+def functionsGoNOW(sampleNames, path, runMetadata, fLength, commands):
     """Run the functions"""
     print('\nPerforming error correction on fastq files.')
     # Removed the multiprocessing aspect of this function - it seemed to be unreliable.
     # Sometimes, fastq files with more data would not be corrected.
     os.chdir(path)
     print "Preparing fastq files for processing"
-    quakePrepProcesses(sampleNames, path, fLength)
+    prepList = quakePrepProcesses(sampleNames, path, fLength, runMetadata, commands)
+    prepMetadata = metadataFiller.filler(runMetadata, prepList)
     print "Determining cut-off values for error correction"
-    quakeCutOffProcesses(sampleNames, path)
+    cutoffList = quakeCutOffProcesses(sampleNames, path, prepMetadata, commands)
+    cutoffMetadata = metadataFiller.filler(prepMetadata, cutoffList)
     print "Correcting errors"
-    quakeCorrectProcesses(sampleNames, path, fLength)
+    correctList = quakeCorrectProcesses(sampleNames, path, fLength, cutoffMetadata, commands)
+    correctMetadata = metadataFiller.filler(runMetadata, correctList)
     # runQuake(sampleNames, path)
     os.chdir(path)
     # Run completionist to determine unprocessable files, and acquire metadata
-    runTrimMetadata, correctedList = completionist(sampleNames, path, runMetadata, fLength)
+    runTrimMetadata, correctedList = completionist(sampleNames, path, correctMetadata, fLength)
     # Clean up tmp files
     tmpFileRemover(path, correctedList)
     # Return important variables
+    jsonReportR.jsonR(correctedList, path, runTrimMetadata, "Collection")
     return correctedList, runTrimMetadata

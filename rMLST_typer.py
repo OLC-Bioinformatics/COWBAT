@@ -11,7 +11,7 @@ from threading import Thread
 from Queue import Queue
 from collections import defaultdict
 import subprocess, os, glob, time, sys, shlex, re, threading, json, mmap, shutil, errno
-
+import jsonReportR
 # Initialise variables
 count = 0
 dqueue = Queue()
@@ -380,8 +380,9 @@ def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
         for reference in sorted(strainTypes[strain]):
             # Copy the reference genome to the referenceGenome subfolder in the strain directory
             shutil.copy("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
-            # print json.dumps(strainTypes[strain][reference], sort_keys=True, indent=4, separators=(',', ': '))
+
             metadata[strainTrimmed]["6.rMLSTmatchestoRef"] = strainTypes[strain][reference]
+            # print strainTypes[strain][reference]
             # metadata[strainTrimmed]["6.rMLSTmatchestoRef"]["NumIdenticalAlleles"] = bestCount
     return metadata
 
@@ -560,4 +561,5 @@ def functionsGoNOW(sampleNames, path, date, metadata, refFilesPath):
     allMetadata = rMLSTsizer(moreMetadata, sampleNames)
     # print json.dumps(genomeCovered, sort_keys=True, indent=4, separators=(',', ': '))
     # print json.dumps(testDict, sort_keys=True, indent=4, separators=(',', ': '))
+    jsonReportR.jsonR(sampleNames, path, allMetadata, "Collection")
     return allMetadata

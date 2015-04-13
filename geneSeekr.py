@@ -5,7 +5,8 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 from collections import defaultdict
 from Bio.Blast import NCBIXML
 import errno, os, glob, json, sys, shutil
-
+import metadataFiller
+import jsonReportR
 # Import ElementTree - try first to import the faster C version, if that doesn't
 # work, try to import the regular version
 try:
@@ -51,9 +52,10 @@ def make_path(inPath):
             raise
 
 
-def univecScreen(name, path, refFilePath):
+def univecScreen(name, path, refFilePath, command):
     """Runs all the sequences through the Illumina-specific UniVec database - output is a .tsv file
     in the path/name/univecscreen folder"""
+    univecCommand = defaultdict(make_dict)
     # Set the primer, query, and out variables for the BLAST search
     primers = "%s/illuminaPrimers/IlluminaPrimers.fa" % refFilePath
     out = "%s/%s/univecscreen/%s.tsv" % (path, name, name)
@@ -61,7 +63,7 @@ def univecScreen(name, path, refFilePath):
     # Make the path (if necessary)
     make_path("%s/%s/univecscreen" % (path, name))
     # If the analysis hasn't already been performed
-    if not os.path.isfile(out):
+    if not command[name]["UnivecCommand"]:
         # I'm running this with an evalue of 0.1 - the default VecScreen parameters call for an evalue of 700,
         # but since this is a reduced database, I reduced the evalue as well. I'm also using -task blastn-short
         # instead of blastn, as all the probes are very short. Additionally, as it was causing blast to return
@@ -79,11 +81,15 @@ def univecScreen(name, path, refFilePath):
                                        outfmt=6,
                                        out=out)
         stdout, stderr = blastn()
+        univecCommand[name]["7.PipelineCommands"]["UnivecCommand"] = str(blastn)
+    else:
+        univecCommand[name]["7.PipelineCommands"]["UnivecCommand"] = command[name]["UnivecCommand"]
+    return univecCommand
 
-
-def vtyper(name, path, refFilePath):
+def vtyper(name, path, refFilePath, commands):
     """Uses ePCR to subtype genomic verotoxin sequences"""
     metadata = defaultdict(make_dict)
+    vtCommands = defaultdict(make_dict)
     # Because this is a multi-processed function, getting this dictionary to be properly formatted was difficult
     # in the end, I used if output, return output statements in the appropriate functions
     # global vtyperResults
@@ -99,14 +105,20 @@ def vtyper(name, path, refFilePath):
     # For ease of processing set the contigs file as a variable
     query = "%s/%s_filteredAssembled.fasta" % (vtyperPath, name)
     # File checks to save re-performing processes
-    if not os.path.isfile("%s/%s.famap" % (vtyperPath, name)):
+    if not commands[name]["v-typerFamapCommand"]:
         # famap and fahash are pre-processing steps performed on the query file
         famap = "famap -b %s/%s.famap %s 2>/dev/null" % (vtyperPath, name, query)
         os.system(famap)
-    if not os.path.isfile("%s/%s.hash" % (vtyperPath, name)):
+        vtCommands[name]["7.PipelineCommands"]["v-typerFamapCommand"] = famap
+    else:
+        vtCommands[name]["7.PipelineCommands"]["v-typerFamapCommand"] = commands[name]["v-typerFamapCommand"]
+    if not commands[name]["v-typerFahashCommand"]:
         fahash = "fahash -b %s/%s.hash %s/%s.famap 2>/dev/null" % (vtyperPath, name, vtyperPath, name)
         os.system(fahash)
-    if not os.path.isfile("%s/%s.txt" % (vtyperPath, name)):
+        vtCommands[name]["7.PipelineCommands"]["v-typerFahashCommand"] = fahash
+    else:
+        vtCommands[name]["7.PipelineCommands"]["v-typerFahashCommand"] = commands[name]["v-typerFahashCommand"]
+    if not commands[name]["v-typerEPCRCommand"]:
         # re-PCR uses the subtyping primers list to search the contigs file using the following parameters
         # -S {hash file} (Perform STS lookup using hash-file), -r + (Enable/disable reverse STS lookup)
         # -m 10000 (Set variability for STS size for lookup), -n 1 (Set max allowed mismatches per primer for lookup)
@@ -114,6 +126,9 @@ def vtyper(name, path, refFilePath):
         ePCR = "re-PCR -S %s/%s.hash -r + -m 10000 -n 1 -g 0 -G -q -o %s/%s.txt %s 2>/dev/null" \
             % (vtyperPath, name, vtyperPath, name, primers)
         os.system(ePCR)
+        vtCommands[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = ePCR
+    else:
+        vtCommands[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = commands[name]["v-typerEPCRCommand"]
     # This populates vtyperResults with the verotoxin subtypes
     list1 = []
     if os.path.isfile("%s/%s.txt" % (vtyperPath, name)):
@@ -132,77 +147,89 @@ def vtyper(name, path, refFilePath):
     # Create a string of the entries in list1 joined with ";"
     string = ";".join(list1)
     metadata[name] = string
-    # print json.dumps(metadata, sort_keys=True, indent=4, separators=(',', ': '))
-    return metadata
+    # print json.dumps(vtCommands, sort_keys=True, indent=4, separators=(',', ': '))
+    return metadata, vtCommands
 
 
-def performBlast(name, path, targets, analysis, dictionary, refFilePath):
+def performBlast(name, path, targets, analysis, dictionary, refFilePath, commands):
     """Runs the BLAST analysis and subsequent parsing of output files for GeneSeekr analysis"""
     output = {}
+    vtCommands = defaultdict(make_dict)
+    geneSeekrCommands = defaultdict(make_dict)
     geneSeekrList = []
-    # GeneSeekr targets passed into the function
-    for target in targets:
-        # target is the full path and file name with extension - targetName removes path and extension
-        targetName = os.path.split(target)[1].split(".")[0]
-        # Set the out and query variables for the blastn command used below
-        out = "%s/%s/geneSeekr/tmp/%s_%s.xml" % (path, name, name, targetName)
-        query = "%s/%s/%s_filteredAssembled.fasta" % (path, name, name)
-        # Perform a check to see if the files already exist, skip BLAST if they do
-        if not os.path.isfile(out):
+    if not commands[name]["GeneSeekrBlast"]:
+        # GeneSeekr targets passed into the function
+        for target in targets:
+            # target is the full path and file name with extension - targetName removes path and extension
+            targetName = os.path.split(target)[1].split(".")[0]
+            # Set the out and query variables for the blastn command used below
+            out = "%s/%s/geneSeekr/tmp/%s_%s.xml" % (path, name, name, targetName)
+            query = "%s/%s/%s_filteredAssembled.fasta" % (path, name, name)
+            # Perform a check to see if the files already exist, skip BLAST if they do
+            # if not os.path.isfile(out):
             # NcbiblastnCommandline runs a command line-like BLAST without actually invoking a system call
             blastn = NcbiblastnCommandline(query=query, db=target, outfmt=5, evalue=1e-10, out=out)
             stdout, stderr = blastn()
-        # Parse the results
-        result_handle = open(out)
-        # Use the NCBIXML.parse functionality to rapidly parse the output files
-        records = NCBIXML.parse(result_handle)
-        # Counts the number of high-scoring pairs (HSPs) present in the output file
-        numhsp = sum(line.count('<Hsp>') for line in iter(result_handle.readline, ""))
-        # Skip if there are no HSPs
-        if numhsp >= 1:
-            # Since we scanned through result_handle looking for HSPs, the position of the read/write pointer
-            # within the file is at the end. To reset it back to the beginning, .seek(0) is used
-            result_handle.seek(0)
-            # Go through each BLAST record
-            for record in records:
-                # print record.database_letters
-                # Proceed iteratively through each alignment
-                for alignment in record.alignments:
-                    # And through each hsp in each alignment
-                    for hsp in alignment.hsps:
-                        # Since O-Typing requires a higher cutoff value in order to properly discriminate between
-                        # o-types, a higher percent identity cutoff is specified
-                        if "OType" in targetName:
-                            percentIdentity = 1
-                        # Otherwise, a cutoff of 80% should be fine
-                        else:
-                            percentIdentity = 0.8
-                        # Invoke the percent identity cutoff. If the number of identities in the HSP is greater of equal
-                        # to the total length of the subject sequence (multiplied by the cutoff), then the HSP passes
-                        if hsp.identities >= alignment.length * percentIdentity:
-                            # Calculate and format the percent identity of the match
-                            PI = "%.2f" % (100 * (float(hsp.identities)/float(alignment.length)))
-                            # Populate the dictionary with the results
-                            # Note that since O-typing can have multiple 100% hits, I'm only taking one results - the
-                            # way that the dictionary is populated, the H antigen is removed, so multiple results with
-                            # different H antigens stop being unique
-                            dictionary[name][targetName][alignment.title.split(" ")[0].split("_")[0]] = PI
-                            if not alignment.title.split(" ")[0].split("_")[0] in geneSeekrList:
-                                geneSeekrList.append(alignment.title.split(" ")[0].split("_")[0])
-                            # Initiate the subtyping module
-                            if "VT" in targetName:
-                                output = vtyper(name, path, refFilePath)
-                        # Otherwise, populate the dictionary indicating that the target was not found in the genome
-                        else:
-                            # Because O-typing has multiple targets per file, this populating of negative results would
-                            # make a very bloated report - therefore don't populate negative results for each O-type
-                            if not "OType" in targetName:
-                                dictionary[name][targetName][alignment.title.split(" ")[0]] = "-"
-        # If there are no HSPs, then there are no possible matches, so the target is not in the genome
-        else:
-            dictionary[name][targetName][targetName] = "-"
-        # Close the file
-        result_handle.close()
+            geneSeekrCommands[name]["7.PipelineCommands"]["GeneSeekrBlast"] = str(blastn)
+            # else:
+            #     geneSeekrCommands[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
+            # Parse the results
+            result_handle = open(out)
+            # Use the NCBIXML.parse functionality to rapidly parse the output files
+            records = NCBIXML.parse(result_handle)
+            # Counts the number of high-scoring pairs (HSPs) present in the output file
+            numhsp = sum(line.count('<Hsp>') for line in iter(result_handle.readline, ""))
+            # Skip if there are no HSPs
+            if numhsp >= 1:
+                # Since we scanned through result_handle looking for HSPs, the position of the read/write pointer
+                # within the file is at the end. To reset it back to the beginning, .seek(0) is used
+                result_handle.seek(0)
+                # Go through each BLAST record
+                for record in records:
+                    # print record.database_letters
+                    # Proceed iteratively through each alignment
+                    for alignment in record.alignments:
+                        # And through each hsp in each alignment
+                        for hsp in alignment.hsps:
+                            # Since O-Typing requires a higher cutoff value in order to properly discriminate between
+                            # o-types, a higher percent identity cutoff is specified
+                            if "OType" in targetName:
+                                percentIdentity = 1
+                            # Otherwise, a cutoff of 80% should be fine
+                            else:
+                                percentIdentity = 0.8
+                            # Invoke the percent identity cutoff. If the number of identities in the HSP is greater of equal
+                            # to the total length of the subject sequence (multiplied by the cutoff), then the HSP passes
+                            if hsp.identities >= alignment.length * percentIdentity:
+                                # Calculate and format the percent identity of the match
+                                PI = "%.2f" % (100 * (float(hsp.identities)/float(alignment.length)))
+                                # Populate the dictionary with the results
+                                # Note that since O-typing can have multiple 100% hits, I'm only taking one results - the
+                                # way that the dictionary is populated, the H antigen is removed, so multiple results with
+                                # different H antigens stop being unique
+                                dictionary[name][targetName][alignment.title.split(" ")[0].split("_")[0]] = PI
+                                if not alignment.title.split(" ")[0].split("_")[0] in geneSeekrList:
+                                    geneSeekrList.append(alignment.title.split(" ")[0].split("_")[0])
+                                # Initiate the subtyping module
+                                # In order to keep the program from initiating the subtyping module multiple times,
+                                # if the vtyper directory already exists for that strain, skip
+                                vtyperPath = "%s/%s/vtyper" % (path, name)
+                                if "VT" in targetName and not os.path.isdir(vtyperPath):
+                                    output, vtCommands = vtyper(name, path, refFilePath, commands)
+                                    # print name, path, refFilePath
+                            # Otherwise, populate the dictionary indicating that the target was not found in the genome
+                            else:
+                                # Because O-typing has multiple targets per file, this populating of negative results would
+                                # make a very bloated report - therefore don't populate negative results for each O-type
+                                if not "OType" in targetName:
+                                    dictionary[name][targetName][alignment.title.split(" ")[0]] = "-"
+            # If there are no HSPs, then there are no possible matches, so the target is not in the genome
+            else:
+                dictionary[name][targetName][targetName] = "-"
+            # Close the file
+            result_handle.close()
+    else:
+        geneSeekrCommands[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
     # Create the report
     report = open("%s/%s/geneSeekr/%s_%sResults.tsv" % (path, name, name, analysis), "wb")
     # Populate appropriately
@@ -233,7 +260,7 @@ def performBlast(name, path, targets, analysis, dictionary, refFilePath):
         string = "N/A"
     outputGeneSeekr[name] = string
     # if output:
-    return output, outputGeneSeekr
+    return output, outputGeneSeekr, vtCommands, geneSeekrCommands
 
 import threading
 threadlock = threading.Lock()
@@ -241,11 +268,11 @@ threadlock = threading.Lock()
 # threadlock.release()
 
 
-
-def performMLST(name, path, refFilePath, genus):
+def performMLST(name, path, refFilePath, genus, commands):
     """Performs MLST analyses on strains with reference genomes that have a genus of Escherichia, Listeria
     or Salmonella"""
     metadata = {}
+    MLSTcommands = defaultdict(make_dict)
     # print json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
     # Set the percent identity required for a successful match to an allele
     percentIdentity = 0.98
@@ -297,6 +324,9 @@ def performMLST(name, path, refFilePath, genus):
             # NcbiblastnCommandline runs a command line-like BLAST without actually invoking a system call
             blastn = NcbiblastnCommandline(query=query, db=allele, outfmt=5, evalue=1e-10, max_target_seqs=1, out=out)
             stdout, stderr = blastn()
+            MLSTcommands[name]["7.PipelineCommands"]["MLSTBlastCommand"] = str(blastn)
+        else:
+            MLSTcommands[name]["7.PipelineCommands"]["MLSTBlastCommand"] = commands[name]["MLSTBlastCommand"]
         result_handle = open(out)
         # Use the NCBIXML.parse functionality to rapidly parse the output files
         records = NCBIXML.parse(result_handle)
@@ -366,7 +396,8 @@ def performMLST(name, path, refFilePath, genus):
                 # Get the strain name, and sequence type information into the report
                 MLSTreport.write("%s\t%s\t" % (name, sequenceType))
                 # Populate the allele number information
-                for alleleName in MLSTseqType[sequenceType][name]:
+                for alleleName in sorted(MLSTseqType[sequenceType][name]):
+                    #print alleleName, MLSTseqType[sequenceType][name][alleleName]
                     MLSTreport.write("%s\t" % MLSTseqType[sequenceType][name][alleleName])
                 # MLSTreport.close()
                 outputString = "(%s) %s" % (genus, sequenceType)
@@ -374,7 +405,31 @@ def performMLST(name, path, refFilePath, genus):
                 # print name, outputString
                 MLSTreport.close()
                 threadlock.release()
-                # metadata[name]["1.General"]["MLST_sequenceType"] = outputString
+                # print name, outputString
+    # for sequenceType in sorted(MLSTseqType):
+    if name not in metadata:
+        threadlock.acquire()
+        MLSTreport = open("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name), "wb")
+        MLSTreport.write("Name\t")
+        for entry in header:
+            # Expand ST to SequenceType for clarity
+            if "ST" in entry:
+                entry = "SequenceType"
+                # Write it to file
+            MLSTreport.write("%s\t" % entry)
+        MLSTreport.write("\n")
+        MLSTreport.write("%s\tN/A\t" % name)
+        for alleleName in sorted(MLSTresults[name]):
+            # Going back to header to get the gene names
+            # Title is the allele number
+            for title in sorted(MLSTresults[name][alleleName]):
+                if title:
+                    MLSTreport.write("%s (%s%%)\t" % (title, MLSTresults[name][alleleName][title]))
+        MLSTreport.close()
+        threadlock.release()
+        # print name, len(MLSTseqType[sequenceType][name])
+            # metadata[name]["1.General"]["MLST_sequenceType"] = outputString
+    # print name
     fileSize = ""
     if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
         fileSize = os.stat("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
@@ -383,10 +438,9 @@ def performMLST(name, path, refFilePath, genus):
             threadlock.acquire()
             # if os.path.isfile("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name)):
             #     os.remove("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name))
-
             MLSTreport = open("%s/%s/MLST/%s_MLSTreport.tsv" % (path, name, name), "wb")
             for name in MLSTresults:
-                # print name
+                print name
                 metadata[name] = "N/A"
                 # Write the match results to file
                 # Including name, as there will be a summary report where these data will be useful
@@ -434,10 +488,12 @@ def performMLST(name, path, refFilePath, genus):
         MLSTsummaryReportData.close()
     # # print json.dumps(metadata[name], sort_keys=True, indent=4, separators=(',', ': '))
     if metadata:
-        return metadata
+        return metadata, MLSTcommands
+    else:
+        return MLSTcommands
 
 
-def geneSeekrPrepProcesses(sampleName, path, assemblyMetadata, refFilePath):
+def geneSeekrPrepProcesses(sampleName, path, assemblyMetadata, refFilePath, commands):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     geneSeekrPrepArgs = []
     output = {}
@@ -447,22 +503,26 @@ def geneSeekrPrepProcesses(sampleName, path, assemblyMetadata, refFilePath):
         createGeneSeekrPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            geneSeekrPrepArgs.append((name, path, assemblyMetadata, refFilePath))
+            geneSeekrPrepArgs.append((name, path, assemblyMetadata, refFilePath, commands))
         # This map function allows for multi-processing
         output = createGeneSeekrPool.map(runGeneSeekr, geneSeekrPrepArgs)
     return output
 
 
-def runGeneSeekr((name, path, metadata, refFilePath)):
+def runGeneSeekr((name, path, metadata, refFilePath, commands)):
     """This function gathers relevant files, and calls appropriate functions - either GeneSeekr or MLST"""
     output = {}
     outputMLST = {}
     geneSeekrOutput = {}
+    vtCommands = {}
+    univecCommand = {}
+    MLSTCommands = {}
+    geneSeekrCommands = {}
     metadataOutput = defaultdict(make_dict)
     # Print a dot for each strain processed
     dotter()
     # All sequences are screened with the Illumina-specific UniVec database
-    univecScreen(name, path, refFilePath)
+    univecCommand = univecScreen(name, path, refFilePath, commands)
     # Checks to ensure that the rMLST module has determined a closest reference genome - if not, then this
     # function will skip, as it is necessary to know the genus of the strain
     if os.path.isdir("%s/%s/referenceGenome" % (path, name)):
@@ -475,9 +535,9 @@ def runGeneSeekr((name, path, metadata, refFilePath)):
             # Make the directory
             make_path("%s/%s/geneSeekr/tmp" % (path, name))
             # Run GeneSeekr
-            output, geneSeekrOutput = performBlast(name, path, targets, "geneSeekr", geneSeekrResults, refFilePath)
+            output, geneSeekrOutput, vtCommands, geneSeekrCommands = performBlast(name, path, targets, "geneSeekr", geneSeekrResults, refFilePath, commands)
             # Run the MLST_typer
-            outputMLST = performMLST(name, path, refFilePath, genus)
+            outputMLST, MLSTCommands = performMLST(name, path, refFilePath, genus, commands)
     # As there's no checks above to populate the dictionary if there are no results, the if statements below not only
     # populate the dictionary with the appropriate metadata headings, and return negative results
     if output:
@@ -495,6 +555,26 @@ def runGeneSeekr((name, path, metadata, refFilePath)):
         metadataOutput[name]["1.General"]["geneSeekrProfile"] = geneSeekrOutput[name]
     else:
         metadataOutput[name]["1.General"]["geneSeekrProfile"] = "N/A"
+    if vtCommands:
+        metadataOutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = vtCommands[name]["7.PipelineCommands"]["v-typerEPCRCommand"]
+        metadataOutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = vtCommands[name]["7.PipelineCommands"]["v-typerFahashCommand"]
+        metadataOutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = vtCommands[name]["7.PipelineCommands"]["v-typerFamapCommand"]
+    else:
+        metadataOutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = commands[name]["v-typerEPCRCommand"]
+        metadataOutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = commands[name]["v-typerFahashCommand"]
+        metadataOutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = commands[name]["v-typerFamapCommand"]
+    if geneSeekrCommands:
+        metadataOutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = geneSeekrCommands[name]["7.PipelineCommands"]["GeneSeekrBlast"]
+    else:
+        metadataOutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
+    if univecCommand:
+        metadataOutput[name]["7.PipelineCommands"]["UnivecCommand"] = univecCommand[name]["7.PipelineCommands"]["UnivecCommand"]
+    else:
+        metadataOutput[name]["7.PipelineCommands"]["UnivecCommand"] = commands[name]["UnivecCommand"]
+    if MLSTCommands:
+        metadataOutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = MLSTCommands[name]["7.PipelineCommands"]["MLSTBlastCommand"]
+    else:
+        metadataOutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = commands[name]["MLSTBlastCommand"]
     return metadataOutput
 
 
@@ -509,35 +589,13 @@ def reportRemover(path):
             os.remove("%s/reports/%s_MLSTresults.tsv" % (path, genus))
 
 
-def metadataFiller(metadata, geneSeekrList):
-    """Properly populates the metadata dictionary - when I tried to populate the metadata dictionary within the
-     multi-processed functions, it was returned as a list (likely due to how the files were returned. This essentially
-     iterates through the list, and populates a dictionary appropriately"""
-    # Make a copy of the metadata dictionary
-    geneSeekrMetadata = metadata
-    # Iterate through geneSeekrList
-    for item in geneSeekrList:
-        # each item in geneSeekrList is a dictionary entry
-        # iterate through all the dictionaries
-        for name in item:
-            # The way the dictionaries were created, they should have the format:
-            # metadataOutput[name]["1.General"]["geneSeekrProfile"] = geneSeekrOutput[name], so
-            # e.g. "1.General"
-            for generalCategory in item[name]:
-                # e.g. "geneSeekrProfile"
-                for specificCategory in item[name][generalCategory]:
-                    # Populate the dictionary
-                    geneSeekrMetadata[name][generalCategory][specificCategory] = str(item[name][generalCategory][specificCategory])
-    # Return the beautifully-populated dictionary
-    return geneSeekrMetadata
-
-
-def functionsGoNOW(assembledFiles, path, assemblyMetadata, refFilePath):
+def functionsGoNOW(assembledFiles, path, assemblyMetadata, refFilePath, commands):
     print "\nPerforming GeneSeekr analysis"
     # Clear out any summary reports from a previous iteration of the pipeline
     reportRemover(path)
     # Do everything - uniVec screening, geneSeeking, V-typing, and MLST analysis
-    geneSeekrMetadataList = geneSeekrPrepProcesses(assembledFiles, path, assemblyMetadata, refFilePath)
+    geneSeekrMetadataList = geneSeekrPrepProcesses(assembledFiles, path, assemblyMetadata, refFilePath, commands)
     # print json.dumps(geneSeekrMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-    geneSeekrMetadata = metadataFiller(assemblyMetadata, geneSeekrMetadataList)
+    geneSeekrMetadata = metadataFiller.filler(assemblyMetadata, geneSeekrMetadataList)
+    jsonReportR.jsonR(assembledFiles, path, geneSeekrMetadata, "Collection")
     return geneSeekrMetadata

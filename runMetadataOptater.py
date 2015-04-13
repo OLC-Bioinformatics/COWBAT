@@ -34,12 +34,16 @@ def parseRunInfo():
     global flowcell
     global instrument
     # Use elementTree to get the xml file into memory
-    runInfo = ET.ElementTree(file="RunInfo.xml")
-    # pull the text from flowcell and instrument values using the .iter(tag="X") function
-    for elem in runInfo.iter(tag="Flowcell"):
-        flowcell = elem.text
-    for elem in runInfo.iter(tag="Instrument"):
-        instrument = elem.text
+    if os.path.isfile("RunInfo.xml"):
+        runInfo = ET.ElementTree(file="RunInfo.xml")
+        # pull the text from flowcell and instrument values using the .iter(tag="X") function
+        for elem in runInfo.iter(tag="Flowcell"):
+            flowcell = elem.text
+        for elem in runInfo.iter(tag="Instrument"):
+            instrument = elem.text
+    else:
+        flowcell = "N/A"
+        instrument = "N/A"
 
 
 def parseSampleSheet():
@@ -81,7 +85,7 @@ def parseSampleSheet():
                 subdata = subline.split(",")
                 # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
                 sampleID = subdata[0]
-                strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
+                strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
                 returnData[strain]["3.Run"]["SampleName"] = subdata[0].rstrip()
                 returnData[strain]["3.Run"]["I7IndexID"] = subdata[4].rstrip()
                 returnData[strain]["3.Run"]["index1"] = subdata[5].rstrip()
@@ -125,7 +129,7 @@ def parseRunStats(passedMetadata):
         # (Sample_ID, Sample_Name, Sample_Number are already in the dictionary. Add #clusterPF,
         # totalClustersPF, and % of total readsPF
         # strain = subdata[1].rstrip().replace(" ", "-").replace(".", "-").replace("---", "-").replace("--", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "")
-        strain = elementData[2].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
+        strain = elementData[2].rstrip().replace(" ", "-").replace(".", "-").replace("=", "-").replace("+", "").replace("/", "-").replace("#", "").replace("---", "-").replace("--", "-")
         passedMetadata[strain]["3.Run"]["SampleNumber"] = elementData[0]
         passedMetadata[strain]["3.Run"]["NumberOfClustersPF"] = elementData[3]
         passedMetadata[strain]["3.Run"]["TotalClustersinRun"] = totalClustersPF
@@ -175,7 +179,6 @@ def functionsGoNOW(path):
     if os.path.isfile("%s/GenerateFASTQRunStatistics.xml" % path):
         moreMetadata = parseRunStats(metadata)
         return moreMetadata, sampleNames, date, fLength
-
     else:
         increasedMetadata = indexingQC(metadata)
         return increasedMetadata, samples, date, fLength

@@ -8,10 +8,13 @@ from Bio import SeqIO
 import shutil
 import errno
 import subprocess
+import metadataFiller
 # add spades.py to PYTHONPATH and interact directly
 # import spades
+import json
+from collections import defaultdict
 import glob
-
+import jsonReportR
 
 def make_path(inPath):
     """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
@@ -24,21 +27,32 @@ def make_path(inPath):
             raise
 
 
-def spadesPrepProcesses(sampleName, path, fLength):
+def make_dict():
+    """Makes Perl-style dictionaries"""
+    return defaultdict(make_dict)
+
+flagMetadata = defaultdict(make_dict)
+
+
+def spadesPrepProcesses(sampleName, path, fLength, metadata, commands):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     spadesPrepArgs = []
+    flagMetadata = {}
     # This used to check to see if the __name__ == '__main__', but since this is run as a module, the __name__
     # must equal the name of the script
     if __name__ == 'spadesGoUpper':
         createSpadesPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            spadesPrepArgs.append((name, path, fLength))
+            spadesPrepArgs.append((name, path, fLength, metadata, commands))
         # This map function allows for multi-processing
-        createSpadesPool.map(runSpades, spadesPrepArgs)
+        flagMetadata = createSpadesPool.map(runSpades, spadesPrepArgs)
+    #flagMetadata = metadata
+    # for item in flagMetadata:
+    return flagMetadata
 
 
-def runSpades((name, path, fLength)):
+def runSpades((name, path, fLength, metadata, commands)):
     """Performs necessary checks and runs SPAdes"""
     # Set up variables to keep commands clean looking
     # contigsFile = "contigs.fasta"
@@ -46,10 +60,11 @@ def runSpades((name, path, fLength)):
     forward = ""
     reverse = ""
     # Check for the existence of the scaffolds file - hopefully this will be created at the end of the run
-    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)):
-        # This is using a hard-coded path, as for some reason, when run within pycharm, spades.py could not
-        # be located. Maybe the $PATH needs to be updated?
-        # --continue
+    if not os.path.isfile("%s/%s_filteredAssembled.fasta" % (newPath, name)) or not commands[name]["SPAdesCommand"]:
+        # # As this now re-runs previously assembled strains lacking the appropriate command in the metadata, the output file must
+        # # be removed prior to
+        # if os.path.isdir("%s/%s/spades_output" % (path, name)):
+        #     shutil.rmtree("%s/%s/spades_output" % (path, name))
         forward = "%s/%s_R1_001.cor.fastq" % (newPath, name)
         reverse = "%s/%s_R2_001.cor.fastq" % (newPath, name)
         # forwardFile = glob.glob("%s/*1.cor.fastq" % newPath)
@@ -67,25 +82,30 @@ def runSpades((name, path, fLength)):
             if os.path.isdir("%s/spades_output" % name):
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
                             "--only-assembler --pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
-
+                metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
             else:
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
                             "--pe1-1 %s --pe1-2 %s -o %s/spades_output 1>/dev/null" % (forward, reverse, newPath)
+                metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
         else:
             if os.path.isdir("%s/spades_output" % name):
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
                             "--only-assembler --s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
-
+                metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
             else:
                 spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
                             "--s1 %s -o %s/spades_output 1>/dev/null" % (reverse, newPath)
+                metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
         # Run the command - subprocess.call would not run this command properly - no idea why - so using os.system instead
         # added 1>/dev/null to keep terminal output from being printed to screen
         os.system(spadesRun)
         # Print dots as per usual
         sys.stdout.write('.')
+        return metadata
     else:
         sys.stdout.write('.')
+        metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = commands[name]["SPAdesCommand"]
+        return metadata
 
 
 def contigFileFormatter(correctedFiles, path, metadata):
@@ -150,7 +170,6 @@ def completionist(correctedFiles, path):
     return assembledFiles
 
 
-
 def pipelineMetadata(path, metadata, sampleNames):
     # Update these values as required
     #Quast
@@ -173,7 +192,7 @@ def pipelineMetadata(path, metadata, sampleNames):
 
     # Blast
     blastnOutput = subprocess.Popen(["blastn -version"], stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE, shell=True)
+                                stderr=subprocess.PIPE, shell=True)
     out, err = blastnOutput.communicate()
     blastVer = out.split("\n")[0].strip("blastn: ")
 
@@ -199,36 +218,38 @@ def pipelineMetadata(path, metadata, sampleNames):
             versions.write("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n" % (spadesVer, quastVer, quakeVer, smaltVer, samVer, blastVer, pythonVer, OS, commit))
 
             # print name, quastVer, smaltVer, samVer, blastVer, spadesVer, pythonVer, OS
-            metadata[name]["7.Pipeline"]["SPAdesVersion"] = spadesVer
-            metadata[name]["7.Pipeline"]["QUASTVersion"] = quastVer
-            metadata[name]["7.Pipeline"]["QuakeVersion"] = quakeVer
-            metadata[name]["7.Pipeline"]["SmaltVersion"] = smaltVer
-            metadata[name]["7.Pipeline"]["SamtoolsVersion"] = samVer
-            metadata[name]["7.Pipeline"]["BlastVersion"] = blastVer
-            metadata[name]["7.Pipeline"]["PythonVersion"] = pythonVer
-            metadata[name]["7.Pipeline"]["OS"] = OS
-            metadata[name]["7.Pipeline"]["PipelineVersion"] = commit
+            metadata[name]["8.PipelineVersions"]["SPAdesVersion"] = spadesVer
+            metadata[name]["8.PipelineVersions"]["QUASTVersion"] = quastVer
+            metadata[name]["8.PipelineVersions"]["QuakeVersion"] = quakeVer
+            metadata[name]["8.PipelineVersions"]["SmaltVersion"] = smaltVer
+            metadata[name]["8.PipelineVersions"]["SamtoolsVersion"] = samVer
+            metadata[name]["8.PipelineVersions"]["BlastVersion"] = blastVer
+            metadata[name]["8.PipelineVersions"]["PythonVersion"] = pythonVer
+            metadata[name]["8.PipelineVersions"]["OS"] = OS
+            metadata[name]["8.PipelineVersions"]["PipelineVersion"] = commit
         else:
             pipelineVersions = open("%s/%s/%s_programVersions.tsv" % (path, name, name)).readlines()[1]
             versions = pipelineVersions.split("\t")
-            metadata[name]["7.Pipeline"]["SPAdesVersion"] = versions[0]
-            metadata[name]["7.Pipeline"]["QUASTVersion"] = versions[1]
-            metadata[name]["7.Pipeline"]["QuakeVersion"] = versions[2]
-            metadata[name]["7.Pipeline"]["SmaltVersion"] = versions[3]
-            metadata[name]["7.Pipeline"]["SamtoolsVersion"] = versions[4]
-            metadata[name]["7.Pipeline"]["BlastVersion"] = versions[5]
-            metadata[name]["7.Pipeline"]["PythonVersion"] = versions[6]
-            metadata[name]["7.Pipeline"]["OS"] = versions[7]
-            metadata[name]["7.Pipeline"]["PipelineVersion"] = versions[8].rstrip()
+            metadata[name]["8.PipelineVersions"]["SPAdesVersion"] = versions[0]
+            metadata[name]["8.PipelineVersions"]["QUASTVersion"] = versions[1]
+            metadata[name]["8.PipelineVersions"]["QuakeVersion"] = versions[2]
+            metadata[name]["8.PipelineVersions"]["SmaltVersion"] = versions[3]
+            metadata[name]["8.PipelineVersions"]["SamtoolsVersion"] = versions[4]
+            metadata[name]["8.PipelineVersions"]["BlastVersion"] = versions[5]
+            metadata[name]["8.PipelineVersions"]["PythonVersion"] = versions[6]
+            metadata[name]["8.PipelineVersions"]["OS"] = versions[7]
+            metadata[name]["8.PipelineVersions"]["PipelineVersion"] = versions[8].rstrip()
     return metadata
 
 
-
-def functionsGoNOW(correctedFiles, path, metadata, fLength):
+def functionsGoNOW(correctedFiles, path, metadata, fLength, commands):
     """Run the helper function"""
     print("\nAssembling reads.")
-    spadesPrepProcesses(correctedFiles, path, fLength)
-    updatedMetadata = contigFileFormatter(correctedFiles, path, metadata)
+    flagMetadataList = spadesPrepProcesses(correctedFiles, path, fLength, metadata, commands)
+    flagMetadata = metadataFiller.filler(metadata, flagMetadataList)
+    updatedMetadata = contigFileFormatter(correctedFiles, path, flagMetadata)
     assembledFiles = completionist(correctedFiles, path)
     moreMetadata = pipelineMetadata(path, updatedMetadata, assembledFiles)
+    # print json.dumps(moreMetadata, sort_keys=True, indent=4, separators=(',', ': '))
+    jsonReportR.jsonR(correctedFiles, path, moreMetadata, "Collection")
     return moreMetadata, assembledFiles

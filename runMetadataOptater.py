@@ -94,7 +94,7 @@ def parseSampleSheet():
                 returnData[strain]["3.Run"]["Project"] = subdata[8].rstrip()
                 returnData[strain]["3.Run"]["Investigator"] = investigator
                 returnData[strain]["3.Run"]["Experiment"] = experiment
-                returnData[strain]["3.Run"]["Date"] = date
+                returnData[strain]["3.Run"]["SequencingDate"] = date
                 returnData[strain]["3.Run"]["AdapterSequence"] = adapter
                 returnData[strain]["3.Run"]["LengthofFirstRead"] = forwardLength
                 returnData[strain]["3.Run"]["LengthofSecondRead"] = reverseLength

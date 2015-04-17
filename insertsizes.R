@@ -3,7 +3,7 @@
 # http://www.cbs.dtu.dk/courses/27626/Exercises/Alignment_exercise.php
 # samtools view HG00418_A.bam | cut -f9 > OLC-795_insertsizes.txt
 
-library("ggplot2", lib.loc="/usr/local/lib/R/site-library")
+library("ggplot2")
 
 # The arguments from the calling python script are passed in using the commandArgs function
 # these arguments include the path to use as well as the name of the strain

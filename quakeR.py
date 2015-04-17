@@ -51,7 +51,7 @@ def runQuakeMP((name, path, fLength, metadata, commands)):
         fastqList.write("%s/%s" % (newPath, reverse))
     fastqList.close()
     # if not os.path.isfile("%s/%s" % (newPath, countsFile))
-    if not commands[name]["QuakeQmersCorrectCommand"]:
+    if not commands[name]["QuakeQmersCorrectCommand"] or countSize != 0:
         # if not os.path.isfile("%s/%s" % (newPath, countsFile)) or countSize == 0 and len(reverseGlob) > 0:
             # Looks for the reverse file, if it doesn't exist, try again, by a more general regex glob
         if not os.path.isfile("%s/%s" % (newPath, reverse)) and forwardGlob and reverseGlob:
@@ -108,7 +108,7 @@ def cutQuakeMP((name, path, metadata, commands)):
     if os.path.isfile("%s/%s" % (newPath, countsFile)):
         countSize = os.stat("%s/%s" % (newPath, countsFile)).st_size
     # Check for the existence of the assembled contigs - if this file exists, then skip
-    if not commands[name]["QuakeCutCommand"]:
+    if not commands[name]["QuakeCutCommand"] or countSize != 0:
         # If cutoff.txt doesn't exist, or counts.txt was not populated properly (or yet), then
         # if not os.path.isfile("%s/cutoff.txt" % newPath) or countSize == 0:
         # I made edits to the cov_model.py script, and the R script called by cov_model.py to allow
@@ -157,7 +157,7 @@ def correctQuakeMP((name, path, fLength, metadata, commands)):
 
     corFile = glob.glob("%s/*cor.fastq" % newPath)
     # os.path.isfile("%s/cutoff.txt" % newPath)
-    if not commands[name]["QuakeCorrectCommand"]:
+    if not commands[name]["QuakeCorrectCommand"] or cutoffSize != 0:
         # As part of the assembly of GeneSippr data, only one of the two paired end reads are necessary
         if fLength > 50:
             necessaryNoCorFiles = 2

@@ -55,6 +55,7 @@ def dotter():
         sys.stdout.write('\n[%s].' % (time.strftime("%H:%M:%S")))
         count = 0
 
+
 def make_path(inPath):
     """from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
     does what is indicated by the URL"""
@@ -192,7 +193,7 @@ class blastparser(threading.Thread):  # records, genomes):
                                         if alignment.length > hsp.identities >= alignment.length * 0.95:
                                         # if gene == "BACT000048":
                                         #     PI = (hsp.identities / alignment.length) * 100
-                                            print gene, genome, alignment.title.split(" ")[0], hsp.identities, alignment.length
+                                        #     print gene, genome, alignment.title.split(" ")[0], hsp.identities, alignment.length
                                             colPI = (hsp.identities / alignment.length) * 100
                                             if genome not in plusdict:
                                                 plusdict[genome] = defaultdict(str)
@@ -388,7 +389,7 @@ def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
 
 
 def profileUpdater(plusdict, path, metadata, refFilesPath, genomes, lastEntry, strainTypesMLST):
-    print "Adding rMLST profiles."
+    print "\nAdding rMLST profiles."
     testDictionary = {}
     # new_dict = defaultdict(list)
     new_list = []
@@ -468,6 +469,7 @@ def profileUpdater(plusdict, path, metadata, refFilesPath, genomes, lastEntry, s
                 strainTypesMLST[genome].clear()
                 strainTypesMLST[genome][str(sType)]["rMLSTIdenticalAlleles"] = bestCount
     return strainTypesMLST
+
 
 def determineSubtype(plusdict, path, metadata, refFilesPath):
     """Same as above (determineReferenceGenome), but this determines the rMLST sequence type

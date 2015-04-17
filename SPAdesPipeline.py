@@ -42,6 +42,8 @@ parser.add_argument('-t', '--threads', required=False, help='Number of threads t
                     'cores in your system')
 parser.add_argument('-o', '--offHours', required=False, help='Optionally run the off-hours module, which will '
                     'search the MiSeq for folders with data that has not been assembled')
+parser.add_argument('-r', '--referenceFilePath', required=False, default="/spades_pipeline/SPAdesPipelineFiles",
+                    help="Provide the location of the folder containing the pipeline accessory files (reference genomes, MLST data, etc.")
 
 # Get the arguments into a list
 args = vars(parser.parse_args())
@@ -51,7 +53,9 @@ path = args['path']
 cpus = args['threads']
 numReads = args['numReads']
 offhours = args['offHours']
+refFilePath = args['referenceFilePath']
 os.chdir(path)
+
 # TODO Look at filtering at 10X coverage in SpadesGoUpper
 # TODO Save discarded contigs in file
 
@@ -59,7 +63,7 @@ os.chdir(path)
 
 # TODO add pxz of fastq files at end
 
-refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
+# refFilePath = "/spades_pipeline/SPAdesPipelineFiles"
 
 # Start time
 start = time.time()
@@ -84,16 +88,16 @@ def pipeline():
     print("Extracting metadata from sequencing run.")
     runMetadata, sampleNames, experimentDate, fLength = runMetadataOptater.functionsGoNOW(path)
     # print json.dumps(runMetadata, sort_keys=True, indent=4, separators=(',', ': '))
-    commands = commandFile.commands(sampleNames, path)
+    commands, versions, reads, commandMetadata = commandFile.commands(sampleNames, path, numReads, runMetadata)
     # Pre-process archives if int(numReads) == 1:
-    if int(numReads) == 1:
+    if int(numReads) == 1 or reads == "single":
         singleReadsExtraction.functionsGoNOW(sampleNames, path)
         # Run the special single read Spades assembly function
-        runTrimAssemblyMetadata, assembledFiles = spadesUpGoer.functionsGoNow(sampleNames, path, runMetadata, fLength, commands)
+        runTrimAssemblyMetadata, assembledFiles = spadesUpGoer.functionsGoNow(sampleNames, path, commandMetadata, fLength, commands)
     else:
         fileExtractionProcessing.functionsGoNOW(sampleNames, path)
         # quakify
-        correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, runMetadata, fLength, commands)
+        correctedFiles, runTrimMetadata = quakeR.functionsGoNOW(sampleNames, path, commandMetadata, fLength, commands)
         # print json.dumps(runTrimMetadata, sort_keys=True, indent=4, separators=(',', ': '))
         # SPAdesify
         runTrimAssemblyMetadata, assembledFiles = spadesGoUpper.functionsGoNOW(correctedFiles, path, runTrimMetadata, fLength, commands)

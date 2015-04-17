@@ -70,7 +70,6 @@ def moveExtract(strain, gzFiles, path, newPath, seqNum):
     if seqNum:
         # print strain, gzFiles[0]
     # if os.path.isfile("%s/%s" % (path, gzFiles[0])) and os.path.isfile("%s/%s" % (path, gzFiles[1])) and len(uncompressedFiles) < 2:
-    #     print "bort"
     # if gzFiles[0]:
         shutil.move("%s/%s" % (newPath, gzFiles[0]), "%s/%s/%s.gz" % (path, strain, forward))
     # if gzFiles[1]:

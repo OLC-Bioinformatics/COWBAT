@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8df50326-f28e-470b-8450-ab77b8c09107" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/versionIdentifyR.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SPAdesPipeline.py" afterPath="$PROJECT_DIR$/SPAdesPipeline.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/commandFile.py" afterPath="$PROJECT_DIR$/commandFile.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fileExtractionProcessing.py" afterPath="$PROJECT_DIR$/fileExtractionProcessing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/insertsizes.R" afterPath="$PROJECT_DIR$/insertsizes.R" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quakeR.py" afterPath="$PROJECT_DIR$/quakeR.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rMLST_typer.py" afterPath="$PROJECT_DIR$/rMLST_typer.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/reportR.py" afterPath="$PROJECT_DIR$/reportR.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runMetadataOptater.py" afterPath="$PROJECT_DIR$/runMetadataOptater.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spadesGoUpper.py" afterPath="$PROJECT_DIR$/spadesGoUpper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/spadesUpGoer.py" afterPath="$PROJECT_DIR$/spadesUpGoer.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SPAdesPipeline.iws" />
@@ -69,7 +59,7 @@
       <file leaf-file-name="SPAdesPipeline.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="1356" max-vertical-offset="2358">
+            <state vertical-scroll-proportion="0.0" vertical-offset="702" max-vertical-offset="2358">
               <caret line="93" column="16" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
               <folding />
             </state>
@@ -101,18 +91,8 @@
       <file leaf-file-name="fileExtractionProcessing.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.5833335" vertical-offset="1825" max-vertical-offset="2520">
+            <state vertical-scroll-proportion="-8.283334" vertical-offset="1663" max-vertical-offset="2520">
               <caret line="120" column="28" selection-start-line="120" selection-start-column="27" selection-end-line="120" selection-end-column="28" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="versionIdentifyR.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/versionIdentifyR.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="814" max-vertical-offset="2070">
-              <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -141,8 +121,18 @@
       <file leaf-file-name="quakeR.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/quakeR.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.3109405" vertical-offset="3564" max-vertical-offset="5598">
-              <caret line="215" column="42" selection-start-line="215" selection-start-column="42" selection-end-line="215" selection-end-column="42" />
+            <state vertical-scroll-proportion="0.21686748" vertical-offset="2592" max-vertical-offset="5598">
+              <caret line="159" column="64" selection-start-line="159" selection-start-column="64" selection-end-line="159" selection-end-column="64" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="offHours.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/offHours.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1890">
+              <caret line="77" column="56" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -812,7 +802,11 @@
       <created>1428938332441</created>
       <updated>1428938332441</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Metadata fixes">
+      <created>1429284167785</created>
+      <updated>1429284167785</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -840,8 +834,9 @@
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15865119" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15865119" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3735849" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31832796" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -851,7 +846,6 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39977852" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -896,7 +890,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="quakeR exists - it should perform error correction on fastq reads. Hopefully it will soon." />
     <MESSAGE value="quakeR is functional. Error correction is performed, and metadata from correction is collected. Strains that could not be processed by quake are recorded." />
     <MESSAGE value="spadesGoUpper now assembles corrected fastq files using SPAdes. It might need a few additions depending on what the outputs look like." />
     <MESSAGE value="quastR exists. It doesn't do anything yet." />
@@ -921,7 +914,8 @@
     <MESSAGE value="Minor updates" />
     <MESSAGE value="Added the ability to run on single-end reads" />
     <MESSAGE value="Modified the pipeline to use the json metadata file to get the commands used when running 3rd party software. Additionally, the pipeline now has an accessory script that combines geneSipper (creates fastq files directly from the MiSeq) and the pipeline." />
-    <option name="LAST_COMMIT_MESSAGE" value="Modified the pipeline to use the json metadata file to get the commands used when running 3rd party software. Additionally, the pipeline now has an accessory script that combines geneSipper (creates fastq files directly from the MiSeq) and the pipeline." />
+    <MESSAGE value="Metadata fixes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Metadata fixes" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1080,13 +1074,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.63993454" vertical-offset="2893" max-vertical-offset="5958">
           <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/offHours.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1231" max-vertical-offset="1890">
-          <caret line="77" column="56" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
         </state>
       </provider>
     </entry>
@@ -1263,14 +1250,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="1356" max-vertical-offset="2358">
-          <caret line="93" column="16" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/singleReadsExtraction.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1997" max-vertical-offset="2556">
@@ -1308,14 +1287,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.5833335" vertical-offset="1825" max-vertical-offset="2520">
-          <caret line="120" column="28" selection-start-line="120" selection-start-column="27" selection-end-line="120" selection-end-column="28" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rMLST_typer.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.11666667" vertical-offset="7027" max-vertical-offset="10206">
@@ -1324,10 +1295,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/offHours.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1890">
+          <caret line="77" column="56" selection-start-line="77" selection-start-column="56" selection-end-line="77" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fileExtractionProcessing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.283334" vertical-offset="1663" max-vertical-offset="2520">
+          <caret line="120" column="28" selection-start-line="120" selection-start-column="27" selection-end-line="120" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SPAdesPipeline.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="702" max-vertical-offset="2358">
+          <caret line="93" column="16" selection-start-line="93" selection-start-column="16" selection-end-line="93" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/quakeR.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3109405" vertical-offset="3564" max-vertical-offset="5598">
-          <caret line="215" column="42" selection-start-line="215" selection-start-column="42" selection-end-line="215" selection-end-column="42" />
+        <state vertical-scroll-proportion="0.21686748" vertical-offset="2592" max-vertical-offset="5598">
+          <caret line="159" column="64" selection-start-line="159" selection-start-column="64" selection-end-line="159" selection-end-column="64" />
           <folding />
         </state>
       </provider>

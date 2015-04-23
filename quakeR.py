@@ -157,7 +157,7 @@ def correctQuakeMP((name, path, fLength, metadata, commands)):
 
     corFile = glob.glob("%s/*cor.fastq" % newPath)
     # os.path.isfile("%s/cutoff.txt" % newPath)
-    if not commands[name]["QuakeCorrectCommand"] or cutoffSize != 0:
+    if not commands[name]["QuakeCorrectCommand"] or cutoffSize == 0:
         # As part of the assembly of GeneSippr data, only one of the two paired end reads are necessary
         if fLength > 50:
             necessaryNoCorFiles = 2

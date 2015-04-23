@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8df50326-f28e-470b-8450-ab77b8c09107" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/quakeR.py" afterPath="$PROJECT_DIR$/quakeR.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="SPAdesPipeline.iws" />
@@ -810,7 +809,11 @@
       <created>1429796498727</created>
       <updated>1429796498727</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Actually fixed  typo (I hope).">
+      <created>1429796858605</created>
+      <updated>1429796858605</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -838,7 +841,7 @@
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3295325" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15865119" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.15865119" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3735849" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
@@ -894,7 +897,6 @@
     <option name="myTodoPanelSettings">
       <TodoPanelSettings />
     </option>
-    <MESSAGE value="spadesGoUpper now assembles corrected fastq files using SPAdes. It might need a few additions depending on what the outputs look like." />
     <MESSAGE value="quastR exists. It doesn't do anything yet." />
     <MESSAGE value="quastR now is functional. Still waiting on the rMLST module to perform rMLST analyses, and find the best reference genome for quast." />
     <MESSAGE value="Small fixes to metadata dictionary structure and population schemes. quastR now works." />
@@ -919,7 +921,8 @@
     <MESSAGE value="Modified the pipeline to use the json metadata file to get the commands used when running 3rd party software. Additionally, the pipeline now has an accessory script that combines geneSipper (creates fastq files directly from the MiSeq) and the pipeline." />
     <MESSAGE value="Metadata fixes" />
     <MESSAGE value="Fixed small typo." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fixed small typo." />
+    <MESSAGE value="Actually fixed  typo (I hope)." />
+    <option name="LAST_COMMIT_MESSAGE" value="Actually fixed  typo (I hope)." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -61,7 +61,7 @@ def make_path(inPath):
     does what is indicated by the URL"""
     try:
         os.makedirs(inPath)
-        os.chmod(inPath, 0777)
+        # os.chmod(inPath, 0777)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
@@ -380,7 +380,7 @@ def determineReferenceGenome(plusdict, path, metadata, refFilesPath):
         make_path("%s/%s/referenceGenome" % (path, strainTrimmed))
         for reference in sorted(strainTypes[strain]):
             # Copy the reference genome to the referenceGenome subfolder in the strain directory
-            shutil.copy("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome" % (path, strainTrimmed))
+            shutil.copyfile("%s/referenceGenomes/%s.fasta" % (refFilesPath, reference), "%s/%s/referenceGenome/%s.fasta" % (path, strainTrimmed, reference))
 
             metadata[strainTrimmed]["6.rMLSTmatchestoRef"] = strainTypes[strain][reference]
             # print strainTypes[strain][reference]

@@ -136,7 +136,7 @@ def contigFileFormatter(correctedFiles, path, metadata):
             assemblyPath = "%s/BestAssemblies" % path
             make_path(assemblyPath)
             if not os.path.isfile("%s/%s" % (assemblyPath, fileName)):
-                shutil.copy(fileName, assemblyPath)
+                shutil.copyfile(fileName, "%s/%s_filteredAssembled.fasta" % (assemblyPath, name))
         fileName = "%s/%s_filteredAssembled.fasta" % (newPath, name)
         lengthCov = 0
         if os.path.isfile(fileName):

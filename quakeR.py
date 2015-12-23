@@ -50,8 +50,9 @@ def runQuakeMP((name, path, fLength, metadata, commands)):
     else:
         fastqList.write("%s/%s" % (newPath, reverse))
     fastqList.close()
+    corFile = glob.glob("%s/*cor.fastq" % newPath)
     # if not os.path.isfile("%s/%s" % (newPath, countsFile))
-    if not commands[name]["QuakeQmersCorrectCommand"] or countSize != 0:
+    if not commands[name]["QuakeQmersCorrectCommand"] and countSize == 0 and not corFile:
         # if not os.path.isfile("%s/%s" % (newPath, countsFile)) or countSize == 0 and len(reverseGlob) > 0:
             # Looks for the reverse file, if it doesn't exist, try again, by a more general regex glob
         if not os.path.isfile("%s/%s" % (newPath, reverse)) and forwardGlob and reverseGlob:
@@ -107,14 +108,16 @@ def cutQuakeMP((name, path, metadata, commands)):
     newPath = path + "/" + name
     if os.path.isfile("%s/%s" % (newPath, countsFile)):
         countSize = os.stat("%s/%s" % (newPath, countsFile)).st_size
+    corFile = glob.glob("%s/*cor.fastq" % newPath)
     # Check for the existence of the assembled contigs - if this file exists, then skip
-    if not commands[name]["QuakeCutCommand"] or countSize != 0:
+    if not commands[name]["QuakeCutCommand"] and countSize != 0 and not corFile:
         # If cutoff.txt doesn't exist, or counts.txt was not populated properly (or yet), then
         # if not os.path.isfile("%s/cutoff.txt" % newPath) or countSize == 0:
         # I made edits to the cov_model.py script, and the R script called by cov_model.py to allow
         # for multi-processing. Essentially, I modified the scripts to include a path variable, so that
         # all files searched for and created are in 'newPath' instead of the path
         quakeCut = "cov_model.py --path %s %s/%s 2>/dev/null" % (newPath, newPath, countsFile)
+        # print quakeCut
         # Run the command
         os.system(quakeCut)
         metadata[name]["7.PipelineCommands"]["QuakeCutCommand"] = quakeCut
@@ -157,20 +160,27 @@ def correctQuakeMP((name, path, fLength, metadata, commands)):
 
     corFile = glob.glob("%s/*cor.fastq" % newPath)
     # os.path.isfile("%s/cutoff.txt" % newPath)
-    if not commands[name]["QuakeCorrectCommand"] and cutoffSize != 0:
+    if not commands[name]["QuakeCorrectCommand"] and cutoffSize != 0 and not corFile:
         # As part of the assembly of GeneSippr data, only one of the two paired end reads are necessary
         if fLength > 50:
             necessaryNoCorFiles = 2
         else:
             necessaryNoCorFiles = 1
-        # if os.path.isfile(cutoffFile) and cutoffSize != 0 and len(corFile) < necessaryNoCorFiles:
-        cutoff = open('%s/cutoff.txt' % newPath).readline().rstrip()
+        # if os.path.isfile(cutoffFile) and cutoffSize == 0 and len(corFile) < necessaryNoCorFiles:
+        if os.path.isfile('%s/cutoff.txt' % newPath):
+            cutoff = open('%s/cutoff.txt' % newPath).readline().rstrip()
+            if cutoff == "Inf":
+                cutoff = 1
+        else:
+            # Otherwise set the cutoff to 1 if the cutoff command failed
+            cutoff = 1
         # microbial genomes. Also using 24 processors.
         #  2>/dev/null  -q 33 -k 15
         quakeCorrect = "correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
         # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
         # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+        # print quakeCorrect
         os.system(quakeCorrect)
         metadata[name]["7.PipelineCommands"]["QuakeCorrectCommand"] = quakeCorrect
         sys.stdout.write('.')

@@ -75,8 +75,11 @@ def moveExtract(strain, gzFiles, path, seqNum):
         shutil.move(gzFiles[0], "%s/%s/%s.gz" % (path, strain, forward))
     # if gzFiles[1]:
     else:
-
-        shutil.move(forward, "%s/%s/" % (path, strain))
+        if ".gz" not in gzFiles:
+            shutil.move(forward, "%s/%s/" % (path, strain))
+        else:
+            print gzFiles, "%s/%s/%s.gz" % (path, strain, forward)
+            shutil.move(gzFiles, "%s/%s/%s.gz" % (path, strain, forward))
     #     shutil.move(gzFiles[1], "%s/%s/%s.gz" % (path, strain, reverse))
     #     sys.stdout.write('.')
     if not os.path.isfile("%s/%s/%s" % (path, strain, forward)):
@@ -97,15 +100,15 @@ def folderer((name, path)):
 
     seqNum = ""
     # gzCheck = glob.glob("%s\w+.fastq.gz" % name)
-
-    # print gzCheck
     if not gzCheck:
-        # print("Processing files.")
     #     # for strain in sampleNames:
         newPath = "%s/%s" % (path, name)
+        make_path(newPath)
         folderCheck = [f for f in os.listdir(newPath) if re.search("%s.fastq.gz" % name, f)]
     #     # os.chdir("%s/%s" % (path, strain))
-    #     # gzFiles = glob.glob("%s*.gz" % name)
+        gzFiles = glob.glob("%s*.gz" % name)[0]
+        if gzFiles:
+            moveExtract(name, gzFiles, path, seqNum)
     #     # if not gzFiles:
     #     #     pass
         if folderCheck:

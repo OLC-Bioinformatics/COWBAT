@@ -21,7 +21,7 @@ def make_path(inPath):
             raise
 
 
-def spadesPrepProcesses(sampleName, path, fLength, metadata, commands):
+def spadesPrepProcesses(sampleName, path, fLength, metadata, commands, kmers):
     """A helper function to make a pool of processes to allow for a multi-processed approach to error correction"""
     spadesPrepArgs = []
     commandMetadata = {}
@@ -31,13 +31,13 @@ def spadesPrepProcesses(sampleName, path, fLength, metadata, commands):
         createSpadesPool = Pool()
         # Prepare a tuple of the arguments (strainName and path)
         for name in sampleName:
-            spadesPrepArgs.append((name, path, fLength, metadata, commands))
+            spadesPrepArgs.append((name, path, fLength, metadata, commands, kmers))
         # This map function allows for multi-processing
         commandMetadata = createSpadesPool.map(runSpades, spadesPrepArgs)
     return commandMetadata
 
 
-def runSpades((name, path, fLength, metadata, commands)):
+def runSpades((name, path, fLength, metadata, commands, kmers)):
     """Performs necessary checks and runs SPAdes"""
     # Set up variables to keep commands clean looking
     # contigsFile = "contigs.fasta"
@@ -63,12 +63,12 @@ def runSpades((name, path, fLength, metadata, commands)):
         # 1>/dev/null
         if fLength > 50:
             if os.path.isdir("%s/spades_output" % name):
-                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --continue " \
-                            "--only-assembler --s1 %s -o %s/spades_output" % (forward, newPath)
+                spadesRun = "spades.py -k %s --careful --continue " \
+                            "--only-assembler --s1 %s -o %s/spades_output" % (kmers, forward, newPath)
                 metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
             else:
-                spadesRun = "spades.py -k 21,33,55,77,99,127 --careful --only-assembler " \
-                            "--s1 %s -o %s/spades_output" % (forward, newPath)
+                spadesRun = "spades.py -k %s --careful --only-assembler " \
+                            "--s1 %s -o %s/spades_output" % (kmers, forward, newPath)
                 metadata[name]["7.PipelineCommands"]["SPAdesCommand"] = spadesRun
         else:
             if os.path.isdir("%s/spades_output" % name):
@@ -153,9 +153,9 @@ def completionist(correctedFiles, path):
     return assembledFiles
 
 
-def functionsGoNow(files, path, metadata, fLength, commands):
+def functionsGoNow(files, path, metadata, fLength, commands, kmers):
     # print path, fLength
-    commandList = spadesPrepProcesses(files, path, fLength, metadata, commands)
+    commandList = spadesPrepProcesses(files, path, fLength, metadata, commands, kmers)
     commandMetadata = metadataFiller.filler(metadata, commandList)
     updatedMetadata = contigFileFormatter(files, path, commandMetadata)
     assembledFiles = completionist(files, path)

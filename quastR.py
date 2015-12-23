@@ -55,7 +55,7 @@ def quasting((name, path, metadata, commands)):
             referenceGenome = glob.glob("%s/referenceGenome/*" % newPath)
             # 1>/dev/null
             quastCall = "quast.py -R %s --gage %s/%s_filteredAssembled.fasta --gene-finding --gene-thresholds 0,500,1000,3000 " \
-                        "-o %s/quast_results 1>/dev/null" % (referenceGenome[0], newPath, name, newPath)
+                        "-o %s/quast_results" % (referenceGenome[0], newPath, name, newPath)
             os.system(quastCall)
             metadata[name]["7.PipelineCommands"]["QuastCommand"] = quastCall
             sys.stdout.write('.')

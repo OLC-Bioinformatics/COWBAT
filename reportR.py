@@ -15,7 +15,7 @@ def make_path(inPath):
     does what is indicated by the URL"""
     try:
         os.makedirs(inPath)
-        os.chmod(inPath, 0777)
+        # os.chmod(inPath, 0777)
     except OSError as exception:
         if exception.errno != errno.EEXIST:
             raise
@@ -87,13 +87,13 @@ def reportWriter(sampleNames, metadata, path):
                 os.remove(jsonFile)
 
         # Move assemblies and reports to appropriate Master repositories
-        shutil.copy("%s/%s/%s_filteredAssembled.fasta" % (path, name, name),
+        shutil.copyfile("%s/%s/%s_filteredAssembled.fasta" % (path, name, name),
                     "%s/AssemblyData/Assemblies/%s_filteredAssembled.fasta" % (repositoryPath, name))
-        shutil.copy("%s/%s/%s_metadataReport.json" % (path, name, name),
+        shutil.copyfile("%s/%s/%s_metadataReport.json" % (path, name, name),
                     "%s/AssemblyData/JsonReports/%s_metadataReport.json" % (repositoryPath, name))
     # Move the metadata spreadsheet
     combinedReport.close()
-    shutil.copy("%s/%s_CombinedMetadataReport.tsv" % (reportPath, folderName),
+    shutil.copyfile("%s/%s_CombinedMetadataReport.tsv" % (reportPath, folderName),
                 "%s/AssemblyData/SummaryReports/%s_CombinedMetadataReport.tsv" % (repositoryPath, folderName))
 
 

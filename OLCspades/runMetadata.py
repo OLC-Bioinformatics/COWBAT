@@ -18,7 +18,7 @@ class Metadata(object):
         NA values are substituted"""
         # Check if the RunInfo.xml file is provided, otherwise, yield N/A
         try:
-            runinfo = ElementTree.ElementTree(file="%sRunInfo.xml" % self.path)
+            runinfo = ElementTree.ElementTree(file="{}RunInfo.xml".format(self.path))
             # pull the text from flowcell and instrument values using the .iter(tag="X") function
             for elem in runinfo.iter(tag="Flowcell"):
                 self.flowcell = elem.text
@@ -38,7 +38,7 @@ class Metadata(object):
         # Create and start to populate the header object
         header = GenObject()
         # Open the sample sheet
-        with open("%s/SampleSheet.csv" % self.path, "rb") as samplesheet:
+        with open(self.samplesheet, "rb") as samplesheet:
             # Iterate through the sample sheet
             for line in samplesheet:
                 # Remove new lines, and split on commas
@@ -91,11 +91,11 @@ class Metadata(object):
         the copied tables from the Indexing QC tab of the run on Basespace"""
         # metadata = GenObject()
         # If the default file GenerateFASTQRunStatistics.xml is present, parse it
-        if os.path.isfile("%sGenerateFASTQRunStatistics.xml" % self.path):
+        if os.path.isfile("{}GenerateFASTQRunStatistics.xml".format(self.path)):
             # Create a list of keys for which values are to be extracted
             datalist = ["SampleNumber", "SampleID", "SampleName", "NumberOfClustersPF"]
             # Load the file as an xml ElementTree object
-            runstatistics = ElementTree.ElementTree(file="%sGenerateFASTQRunStatistics.xml" % self.path)
+            runstatistics = ElementTree.ElementTree(file="{}GenerateFASTQRunStatistics.xml".format(self.path))
             # Iterate through all the elements in the object
             # .iterfind() allow for the matching and iterating though matches
             # This is stored as a float to allow subsequent calculations
@@ -108,7 +108,7 @@ class Metadata(object):
                 # Try and replicate the Illumina rules to create file names from "Sample_Name"
                 samplename = samplenamer(straindata)
                 # Calculate the percentage of clusters associated with each strain
-                percentperstrain = "%.2f" % (float(straindata[3]) / tclusterspf * 100)
+                percentperstrain = "{:.2f}".format((float(straindata[3]) / tclusterspf * 100))
                 # Use the sample number -1 as the index in the list of objects created in parsesamplesheet
                 strainindex = int(straindata[0]) - 1
                 # Set run to the .run object of self.samples[index]
@@ -116,7 +116,7 @@ class Metadata(object):
                 # An assertion that compares the sample computer above to the previously entered sample name
                 # to ensure that the samples are the same
                 assert self.samples[strainindex].name == samplename, \
-                    "Sample name does not match object name %r" % straindata[1]
+                    "Sample name does not match object name {0!r:s}".format(straindata[1])
                 # Add the appropriate values to the strain metadata object
                 run.SampleNumber = straindata[0]
                 run.NumberofClustersPF = straindata[3]
@@ -124,12 +124,12 @@ class Metadata(object):
                 run.PercentOfClusters = percentperstrain
                 run.flowcell = self.flowcell
                 run.instrument = self.instrument
-        elif os.path.isfile("%sindexingQC.txt" % self.path):
+        elif os.path.isfile("{}indexingQC.txt".format(self.path)):
             from linecache import getline
             # Grab the first element from the second line in the file
-            tclusterspf = float(getline("%sindexingQC.txt" % self.path, 2).split("\t")[0])
+            tclusterspf = float(getline("{}indexingQC.txt".format(self.path), 2).split("\t")[0])
             # Open the file and extract the relevant data
-            with open("%sindexingQC.txt" % self.path) as indexqc:
+            with open("{}indexingQC.txt".format(self.path)) as indexqc:
                 # Iterate through the file
                 for line in indexqc:
                     # Once "Index" is encountered, iterate through the rest of the file
@@ -145,9 +145,10 @@ class Metadata(object):
                             # An assertion that compares the sample computer above to the previously entered sample name
                             # to ensure that the samples are the same
                             assert self.samples[strainindex].name == samplename, \
-                                "Sample name does not match object name %r" % straindata[1]
+                                "Sample name {} does not match object name {}" \
+                                .format(self.samples[strainindex].name, samplename)
                             # Extract and format the percent of reads (passing filter) associated with each sample
-                            percentperstrain = float("%.2f" % float(straindata[5]))
+                            percentperstrain = float("{:.2f}".format(float(straindata[5])))
                             # Calculate the number of reads passing filter associated with each sample:
                             # percentage of reads per strain times the total reads passing filter divided by 100
                             numberofclusterspf = int(percentperstrain * tclusterspf / 100)
@@ -167,6 +168,13 @@ class Metadata(object):
         self.samples = []
         self.ids = []
         self.date = ""
+        # If a custom sample sheet has been provided, use it
+        if passed.customsamplesheet:
+            self.samplesheet = passed.customsamplesheet
+            assert os.path.isfile(self.samplesheet), u'Could not find CustomSampleSheet as entered: {0!r:s}'\
+                .format(self.samplesheet)
+        else:
+            self.samplesheet = "{}SampleSheet.csv".format(self.path)
         # Extract data from SampleSheet.csv
         self.parsesamplesheet()
 

@@ -96,7 +96,6 @@ def folderer((name, path)):
 
     # print gzCheck
     if not gzCheck:
-        # print("Processing files.")
     #     # for strain in sampleNames:
         newPath = "%s/%s" % (path, name)
         folderCheck = [f for f in os.listdir(newPath) if re.search("%s\w+.fastq.gz" % name, f)]

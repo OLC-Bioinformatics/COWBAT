@@ -1,11 +1,38 @@
 #!/usr/bin/env python
-from collections import defaultdict
 __author__ = 'adamkoziol'
+
+
+def make_path(inpath):
+    """
+    from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \
+    does what is indicated by the URL
+    :param inpath: string of the supplied path
+    """
+    import os
+    import errno
+    try:
+        # os.makedirs makes parental folders as required
+        os.makedirs(inpath)
+    # Except os errors
+    except OSError as exception:
+        # If the os error is anything but directory exists, then raise
+        if exception.errno != errno.EEXIST:
+            raise
 
 
 def make_dict():
     """Makes Perl-style dictionaries"""
+    from collections import defaultdict
     return defaultdict(make_dict)
+
+
+def printtime(string, start):
+    """Prints a string in bold with the elapsed time
+    :param string: a string to be printed in bold
+    :param start: integer of the starting time
+    """
+    import time
+    print('\n\033[1m' + "[Elapsed Time: {:.2f} seconds] {}".format(time.time() - start, string) + '\033[0m')
 
 
 class GenObject(object):

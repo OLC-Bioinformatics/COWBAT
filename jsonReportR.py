@@ -26,4 +26,4 @@ def jsonR(sampleNames, path, metadata, fileType):
             JSONreport.write(output)
             JSONreport.close()
             # Move all the reports to a common directory
-            shutil.copy("%s/%s" % (newPath, reportName), "%s/%s" % (reportPath, reportName))
+            shutil.copyfile("%s/%s" % (newPath, reportName), "%s/%s" % (reportPath, reportName))

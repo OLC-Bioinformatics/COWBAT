@@ -32,7 +32,7 @@ import commandFile
 # Argument parser for user-inputted values, and a nifty help menu
 from argparse import ArgumentParser
 
-#Parser for arguments
+# Parser for arguments
 parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
 parser.add_argument('-v', '--version', action='version', version='%(prog)s commit 5c63c82cd21e9e1883cd0d69e91a93ccff329b9c')
 parser.add_argument('-p', '--path', required=True, help='Specify path')
@@ -44,6 +44,8 @@ parser.add_argument('-o', '--offHours', required=False, help='Optionally run the
                     'search the MiSeq for folders with data that has not been assembled')
 parser.add_argument('-r', '--referenceFilePath', required=False, default="/spades_pipeline/SPAdesPipelineFiles",
                     help="Provide the location of the folder containing the pipeline accessory files (reference genomes, MLST data, etc.")
+parser.add_argument('-k', '--kmerRange', required=False, default='21,33,55,77,99,127',
+                    help='The range of kmers used in SPAdes assembly. Default is 21,33,55,77,99,127')
 
 # Get the arguments into a list
 args = vars(parser.parse_args())
@@ -54,10 +56,17 @@ cpus = args['threads']
 numReads = args['numReads']
 offhours = args['offHours']
 refFilePath = args['referenceFilePath']
+kmers = args['kmerRange']
 os.chdir(path)
 
-# TODO Look at filtering at 10X coverage in SpadesGoUpper
+# TODO Look at filtering at 2X coverage in SpadesGoUpper
 # TODO Save discarded contigs in file
+# TODO pull 'Description' field from SampleSheet to determine if samples are from a metagenome, and process samples appropriately
+# TODO pull 'Sample_Plate' field from SampleSheet to use in renaming assemblies only in BestAssemblies folder
+# TODO look into getting the dictionaries in geneSeekr.py to not have issues with sample names that are integers
+# TODO Add a flag to allow for assembly of runs with either an incomplete fileset, or allowing for the manual input of names
+
+
 
 # I haven't implemented this, as sometimes, it's better to have coverage below 10X than deleting all the contigs
 
@@ -91,9 +100,9 @@ def pipeline():
     commands, versions, reads, commandMetadata = commandFile.commands(sampleNames, path, numReads, runMetadata)
     # Pre-process archives if int(numReads) == 1:
     if int(numReads) == 1 or reads == "single":
-        singleReadsExtraction.functionsGoNOW(sampleNames, path)
+        # singleReadsExtraction.functionsGoNOW(sampleNames, path)
         # Run the special single read Spades assembly function
-        runTrimAssemblyMetadata, assembledFiles = spadesUpGoer.functionsGoNow(sampleNames, path, commandMetadata, fLength, commands)
+        runTrimAssemblyMetadata, assembledFiles = spadesUpGoer.functionsGoNow(sampleNames, path, commandMetadata, fLength, commands, kmers)
     else:
         fileExtractionProcessing.functionsGoNOW(sampleNames, path)
         # quakify

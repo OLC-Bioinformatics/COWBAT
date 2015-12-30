@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from subprocess import Popen, PIPE, STDOUT
 __author__ = 'adamkoziol'
 
 
@@ -33,6 +34,54 @@ def printtime(string, start):
     """
     import time
     print('\n\033[1m' + "[Elapsed Time: {:.2f} seconds] {}".format(time.time() - start, string) + '\033[0m')
+
+
+def execute(command, outfile="", waittime=11):
+    """
+    Allows for dots to be printed to the terminal while waiting for a long system call to run
+    :param command: the command to be executed
+    :param outfile: optional string of an output file
+    :param waittime: integer of how often to print a dot to the screen - uses modulo, so iteration % waittime with a
+    time of 11 will print every 11 iterations
+    from https://stackoverflow.com/questions/4417546/constantly-print-subprocess-output-while-process-is-running
+    """
+    import sys
+    import time
+    # Initialise counts
+    count = 0
+    printcount = 0
+    # Run the commands - direct stdout to PIPE and stderr to stdout
+    process = Popen(command, shell=True, stdout=PIPE, stderr=STDOUT)
+    # Write the initial time
+    print command
+    sys.stdout.write('[{:}]'.format(time.strftime('%H:%M:%S')))
+    # Create the output file - if not provided, then nothing should happen
+    writeout = open(outfile, "ab+") if outfile else ""
+    # Poll process for new output until finished
+    while True:
+        # If an output file name is provided
+        if outfile:
+            # Get stdout into a variable
+            nextline = process.stdout.readline()
+            # Print stdout to the file
+            writeout.write(nextline)
+        # Break from the loop if the command is finished
+        if process.poll() is not None:
+            break
+        # Adding sleep commands slowed down this method when there was lots of output. Using modulo instead.
+        if not printcount % waittime:
+            # Print up to 80 dots on a line, with a one second delay between each dot
+            if count <= 80:
+                sys.stdout.write('.')
+                count += 1
+            # Once there are 80 dots on a line, start a new line with the the time
+            else:
+                sys.stdout.write('\n[{:}] .'.format(time.strftime('%H:%M:%S')))
+                count = 1
+        printcount += 1
+    # Close the output file
+    writeout.close() if outfile else ""
+    sys.stdout.write('\n')
 
 
 class GenObject(object):

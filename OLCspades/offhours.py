@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import accessoryFunctions
+from accessoryFunctions import printtime
 from glob import glob
 import os
 __author__ = 'adamkoziol'
@@ -7,32 +7,42 @@ __author__ = 'adamkoziol'
 
 class Offhours(object):
 
-    def numberofsamples(self):
-        """Count the number of samples is the samplesheet"""
+    def assertpathsandfiles(self):
+        """Assertions to make sure that arguments are at least mostly valid"""
+        # Assertion to ensure that the MiSeq path exists
+        assert os.path.isdir(self.miseqpath), u'MiSeqPath is not a valid directory {0!r:s}'.format(self.miseqpath)
         # If the miseq folder name is not provided, the default of the most recent run will be used
         if not self.miseqfolder:
             # Get a list of folders
             miseqfolders = glob('{}*/'.format(self.miseqpath))
             self.miseqfolder = sorted(miseqfolders)[-1]
+            # Create :miseqfoldername to store the name of this folder by splitting the path and taking the second
+            # last piece (it's not the last piece because the folder has a trailing slash)
+            self.miseqfoldername = self.miseqfolder.split("/")[-2]
         # Otherwise add the folder to the miseq path to yield the destination folder
         else:
-            self.miseqfolder = self.miseqpath + self.miseqfolder
+            # Set the folder name before adding the path to the miseq path
+            self.miseqfoldername = self.miseqfolder
+            self.miseqfolder = self.miseqpath + self.miseqfolder + "/"
             # Assert to ensure that the folder exists
             assert os.path.isdir(self.miseqfolder), u'MiSeqFolder is not a valid directory {0!r:s}'\
                 .format(self.miseqfolder)
         # Pull the data from the SampleSheet.csv
         if self.customsamplesheet:
-            samplesheet = self.customsamplesheet
+            self.samplesheet = self.customsamplesheet
             assert os.path.isfile(self.customsamplesheet), u'Could not find CustomSampleSheet as entered: {0!r:s}'\
                 .format(self.customsamplesheet)
         # Otherwise use the SampleSheet.csv located in :self.miseqfolder
         else:
-            samplesheet = self.miseqfolder + "SampleSheet.csv"
+            self.samplesheet = self.miseqfolder + "/SampleSheet.csv"
+
+    def numberofsamples(self):
+        """Count the number of samples is the samplesheet"""
         # Initialise variables to store line data
         idline = 0
         linenumber = 0
         # Parse the sample sheet to find the number of samples
-        with open(samplesheet, "rb") as ssheet:
+        with open(self.samplesheet, "rb") as ssheet:
             # Use enumerate to iterate through the lines in the sample sheet to retrieve the line number and the data
             for linenumber, entry in enumerate(ssheet):
                 # Once Sample_ID is encountered
@@ -41,13 +51,12 @@ class Offhours(object):
                     idline = linenumber
         # :samplecount is the last line number in the file minus the line number of Sample_ID
         self.samplecount = linenumber - idline
-        accessoryFunctions.printtime('There are {} samples in this run. '
-                                     'Running off-hours module with the following parameters:\n'
-                                     'MiSeqPath: {},\n'
-                                     'MiSeqFolder: {},\n'
-                                     'SampleSheet: {}'
-                                     .format(self.samplecount, self.miseqpath, self.miseqfolder, samplesheet),
-                                     self.start)
+        printtime('There are {} samples in this run. '
+                  'Running off-hours module with the following parameters:\n'
+                  'MiSeqPath: {},\n'
+                  'MiSeqFolder: {},\n'
+                  'SampleSheet: {}'.format(self.samplecount, self.miseqpath, self.miseqfolder, self.samplesheet),
+                  self.start)
         # Run the fastqmover module now that the number of sequences is known
         self.fastqlinker()
 
@@ -58,12 +67,12 @@ class Offhours(object):
         import re
         import shutil
         # Glob for .gz files in the appropriate subfolder of :miseqfolder. Discard 'Undetermined' files
-        gzfiles = [gzfile for gzfile in glob('{}Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
+        gzfiles = [gzfile for gzfile in glob('{}/Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
                    if "Undetermined" not in gzfile]
         # While loop to wait until run is complete - two .gz files are created for each sample
         while len(gzfiles) < 2 * self.samplecount:
-            accessoryFunctions.printtime('Waiting for run to finish. Currently, {} out of a total of {} fastq.gz files '
-                                         'have been created'.format(len(gzfiles), 2 * self.samplecount), self.start)
+            printtime('Waiting for run to finish. Currently, {} out of a total of {} fastq.gz files '
+                      'have been created'.format(len(gzfiles), 2 * self.samplecount), self.start)
             # Sleep for five minutes
             time.sleep(300)
             # Check the number of .gz files again
@@ -80,7 +89,7 @@ class Offhours(object):
             # Else x (I'm not sure what this does, or why it was required) all mapped to each entry in :gzfiles
             else x, gzfiles)
         # Copy the GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv to self.path
-        map(lambda x: shutil.copyfile('{}{}'.format(self.miseqfolder, x), '{}{}'.format(self.path, x))
+        map(lambda x: shutil.copyfile('{}/{}'.format(self.miseqfolder, x), '{}{}'.format(self.path, x))
             # Don't copy if the file is already present
             if not os.path.isfile('{}{}'.format(self.path, x)) else x,
             # List of the files of interest
@@ -90,18 +99,19 @@ class Offhours(object):
         """Initialise variables"""
         import sys
         self.path = inputobject.path
-        self.inputobject = inputobject
         self.miseqfolder = inputobject.args['f']
+        self.miseqfoldername = ""
         self.customsamplesheet = inputobject.customsamplesheet
-        self.start = self.inputobject.starttime
+        self.start = inputobject.starttime
         self.samplecount = 0
+        self.samplesheet = ""
         try:
             self.miseqpath = os.path.join(inputobject.args['m'], "")
         except AttributeError:
             print('MiSeqPath argument is required in order to use the off-hours module. Please provide this argument '
                   'and run the script again.')
             sys.exit()
-        # Assertion to ensure that the MiSeq path exists
-        assert os.path.isdir(self.miseqpath), u'MiSeqPath is not a valid directory {0!r:s}'.format(self.miseqpath)
-        # Determine the number of samples to process by parsing the sample sheet
-        self.numberofsamples()
+        # # Assert that provided arguments are valid
+        # self.assertpathsandfiles()
+        # # Determine the number of samples to process by parsing the sample sheet
+        # self.numberofsamples()

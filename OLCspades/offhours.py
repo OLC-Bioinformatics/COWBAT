@@ -34,7 +34,7 @@ class Offhours(object):
                 .format(self.customsamplesheet)
         # Otherwise use the SampleSheet.csv located in :self.miseqfolder
         else:
-            self.samplesheet = self.miseqfolder + "/SampleSheet.csv"
+            self.samplesheet = self.miseqfolder + "SampleSheet.csv"
 
     def numberofsamples(self):
         """Count the number of samples is the samplesheet"""
@@ -66,8 +66,10 @@ class Offhours(object):
         import time
         import re
         import shutil
+        import errno
+        from accessoryFunctions import make_path
         # Glob for .gz files in the appropriate subfolder of :miseqfolder. Discard 'Undetermined' files
-        gzfiles = [gzfile for gzfile in glob('{}/Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
+        gzfiles = [gzfile for gzfile in glob('{}Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
                    if "Undetermined" not in gzfile]
         # While loop to wait until run is complete - two .gz files are created for each sample
         while len(gzfiles) < 2 * self.samplecount:
@@ -76,18 +78,31 @@ class Offhours(object):
             # Sleep for five minutes
             time.sleep(300)
             # Check the number of .gz files again
-            gzfiles = [gzfile for gzfile in glob('{}/Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
+            gzfiles = [gzfile for gzfile in glob('{}Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
                        if "Undetermined" not in gzfile]
-        # Link the .gz files to :self.path
-        # Map the lambda function of symlinking each .gz file to :self.path/filename.fastq.gz
-        map(lambda x: os.symlink(x, '{}{}'.format(self.path, os.path.basename(x)))
-            # Don't link if the file is already present
-            if not os.path.isfile('{}{}'.format(self.path, os.path.basename(x))) and
-            # Don't link if a folder with a portion of the file name is present
-            # e.g. 2015-SEQ-0385_S1_L001_R1_001.fastq.gz would not be linked if a folder named 2015-SEQ-0385 was present
-            not os.path.isdir('{}{}'.format(self.path, re.split("_S\d+_L001", os.path.basename(x))[0]))
-            # Else x (I'm not sure what this does, or why it was required) all mapped to each entry in :gzfiles
-            else x, gzfiles)
+        # Iterate through each .gz file
+        for gzfile in sorted(gzfiles):
+            # Extract the strain name from the .gz file
+            filename = re.split("_S\d+_L001", os.path.basename(gzfile))[0]
+            # Make the outputdir variable
+            outputdir = '{}{}'.format(self.path, filename)
+            make_path(outputdir)
+            # Don't link the files if they have already been linked
+            if len(glob('{}/*fastq*'.format(outputdir))) < self.numreads:
+                try:
+                    # Link the .gz files to :self.path/:filename
+                    os.symlink(gzfile, '{}/{}'.format(outputdir, os.path.basename(gzfile)))
+                # Except os errors
+                except OSError as exception:
+                    # If there is an exception other than the file exists, raise it
+                    if exception.errno != errno.EEXIST:
+                        raise
+        # Add the location/name of the fastq files to the metadata object
+        for sample in self.metadata.runmetadata.samples:
+            # Find any fastq files with the sample name
+            fastqfiles = sorted(glob('{}{}/{}*.fastq*'.format(self.path, sample.name, sample.name)))
+            # Update the metadata with the path/name of the fastq files
+            sample.general.fastqfiles = fastqfiles
         # Copy the GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv to self.path
         map(lambda x: shutil.copyfile('{}/{}'.format(self.miseqfolder, x), '{}{}'.format(self.path, x))
             # Don't copy if the file is already present
@@ -105,6 +120,8 @@ class Offhours(object):
         self.start = inputobject.starttime
         self.samplecount = 0
         self.samplesheet = ""
+        self.numreads = inputobject.numreads
+        self.metadata = inputobject
         try:
             self.miseqpath = os.path.join(inputobject.args['m'], "")
         except AttributeError:

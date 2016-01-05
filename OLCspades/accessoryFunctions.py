@@ -54,7 +54,7 @@ def execute(command, outfile="", waittime=11):
     process = Popen(command, shell=True, stdout=PIPE, stderr=STDOUT)
     # Write the initial time
     print command
-    sys.stdout.write('[{:}]'.format(time.strftime('%H:%M:%S')))
+    sys.stdout.write('[{:}] '.format(time.strftime('%H:%M:%S')))
     # Create the output file - if not provided, then nothing should happen
     writeout = open(outfile, "ab+") if outfile else ""
     # Poll process for new output until finished

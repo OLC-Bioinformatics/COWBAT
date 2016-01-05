@@ -5,6 +5,7 @@ import runMetadata
 import offhours
 import fastqCreator
 import json
+import metadataprinter
 __author__ = 'adamkoziol'
 
 
@@ -14,14 +15,10 @@ class KeyboardInterruptError(Exception):
 
 class RunSpades(object):
     def assembly(self):
+        from accessoryFunctions import GenObject
+        import fastqmover
         """Performs the assembly"""
-        print("Extracting metadata from sequencing run.")
-        # Run the offhours fastq linking script
-        if self.offhours:
-            offhoursobj = offhours.Offhours(self)
-            offhoursobj.assertpathsandfiles()
-            offhoursobj.numberofsamples()
-        # Run the fastq creation script
+        # Run the fastq creation script - if argument is provided
         if self.fastqcreation:
             self.runmetadata = fastqCreator.CreateFastq(self)
         else:
@@ -32,12 +29,25 @@ class RunSpades(object):
             self.runmetadata.parseruninfo()
             # Populate the lack of bclcall and nohup call into the metadata sheet
             for sample in self.runmetadata.samples:
+                sample.commands = GenObject()
                 sample.commands.nohupcall = 'NA'
                 sample.commands.bclcall = 'NA'
-        # print json.dumps([x.dump() for x in self.runmetadata.samples],
-        #                  sort_keys=True, indent=4, separators=(',', ': '))
+            # Run the offhours fastq linking script - if argument
+            if self.offhours:
+                offhoursobj = offhours.Offhours(self)
+                offhoursobj.assertpathsandfiles()
+                offhoursobj.numberofsamples()
+            # Move the files
+            else:
+                fastqmover.FastqMover(self)
 
-    def __init__(self, args):
+
+        print json.dumps([x.dump() for x in self.runmetadata.samples],
+                         sort_keys=True, indent=4, separators=(',', ': '))
+        # metadataprinter.MetadataPrinter(self)
+
+
+    def __init__(self, args, pipelinecommit):
         """
         :param args: list of arguments passed to the script
         Initialises the variables required for this class
@@ -49,11 +59,11 @@ class RunSpades(object):
         self.numreads = args['n']
         self.offhours = args['offHours']
         self.fastqcreation = args['FastqCreation']
-        self.fastqdestination = args['destinationfastq']
+        self.fastqdestination = args['d']
         self.reffilepath = os.path.join(args['r'], "")
         self.forwardlength = args['r1']
         self.reverselength = args['r2']
-        # self.projectname = args['P']
+        self.numreads = 1 if self.reverselength == 0 else 2
         self.kmers = args['k']
         self.customsamplesheet = args['c']
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
@@ -65,6 +75,7 @@ class RunSpades(object):
         assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
         assert os.path.isdir(self.reffilepath), u'Output location is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
+        self.commit = pipelinecommit
         # Initialise the metadata object
         self.runmetadata = ""
         # Define the start time
@@ -79,7 +90,7 @@ if __name__ == '__main__':
     # Find the commit of the script by running a command to change to the directory containing the script and run
     # a git command to return the short version of the commit hash
     commit = subprocess.Popen('cd {} && git rev-parse --short HEAD'.format(homepath),
-                              shell=True, stdout=subprocess.PIPE).communicate()[0]
+                              shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
     from argparse import ArgumentParser
     # Parser for arguments
     parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
@@ -93,8 +104,8 @@ if __name__ == '__main__':
     parser.add_argument('-F', '--FastqCreation', action='store_true', help='Optionally run the fastq creation module'
                         'that will search for MiSeq runs in progress, run bcl2fastq to create fastq files, and '
                         'assemble the run')
-    parser.add_argument('-d', '--destinationfastq', help='Optional folder path to store .fastq files created using the '
-                        'fastqCreation module. Defaults to path/miseqfolder')
+    parser.add_argument('-d', metavar='destinationfastq', help='Optional folder path to store .fastq files created '
+                        'using the fastqCreation module. Defaults to path/miseqfolder')
     parser.add_argument('-m', metavar='miSeqPath', help='Path of the folder containing MiSeq run data folder')
     parser.add_argument('-f', metavar='miseqfolder', help='Name of the folder containing MiSeq run data')
     parser.add_argument('-r1', metavar='readLengthForward', default='full', help='Length of forward reads to use. Can '
@@ -120,5 +131,5 @@ if __name__ == '__main__':
     arguments = vars(parser.parse_args())
 
     # Run the pipeline
-    output = RunSpades(arguments)
+    output = RunSpades(arguments, commit)
     output.assembly()

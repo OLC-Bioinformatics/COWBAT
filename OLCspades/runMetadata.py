@@ -35,6 +35,8 @@ class Metadata(object):
         import copy
         # Initialise variables
         reads = []
+        # Create and start to populate the header object
+        header = GenObject()
         # Open the sample sheet
         with open(self.samplesheet, "rb") as samplesheet:
             # Iterate through the sample sheet
@@ -43,11 +45,11 @@ class Metadata(object):
                 data = line.rstrip().split(",")
                 # Pull out the desired information from the sample sheet
                 if "Investigator" in line:
-                    self.header.investigator = data[1]
+                    header.investigator = data[1]
                 if "Experiment" in line:
-                    self.header.experiment = data[1].replace("  ", " ")
+                    header.experiment = data[1].replace("  ", " ")
                 if "Date" in line:
-                    self.header.date = data[1]
+                    header.date = data[1]
                 # Iterate through the file until [Reads] is encountered, then go until [Settings]
                 if "Reads" in line:
                     for subline in samplesheet:
@@ -57,11 +59,13 @@ class Metadata(object):
                         # Append the forward and reverse reads to the list
                         reads.append(subline.rstrip().split(",")[0])
                     # Extract the read lengths from the list of reads
-                    self.header.forwardlength = int(reads[0])
-                    self.header.reverselength = int(reads[1])
+                    header.forwardlength = int(reads[0])
+                    header.reverselength = int(reads[1])
                 if "Adapter" in line:
-                    self.header.adapter = data[1]
+                    header.adapter = data[1]
                 if "Sample_ID" in line:
+                    # Initialise the count to store the SampleNumber
+                    count = 1
                     for subline in samplesheet:
                         subdata = [x.rstrip() for x in subline.rstrip().split(",")]
                         # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
@@ -72,16 +76,27 @@ class Metadata(object):
                         # Set the sample name in the object
                         strainmetadata.name = samplename
                         # Add the header object to strainmetadata
-                        strainmetadata.run = GenObject(copy.copy(self.header.datastore))
+                        strainmetadata.run = GenObject(copy.copy(header.datastore))
                         # Create the run object, so it will be easier to populate the object (eg run.SampleName = ...
                         # instead of strainmetadata.run.SampleName = ...
                         run = strainmetadata.run
                         run.SampleName = subdata[0]
                         # Comprehension to populate the run object from a stretch of subdata
-                        run.I7IndexID, run.index1, run.I5IndexID, run.index2, \
-                            run.Project, run.Description = subdata[4:10]
+                        run.I7IndexID, run.index1, run.I5IndexID, run.index2, run.Project, run.Description \
+                            = subdata[4:10]
+                        # Add the sample number
+                        run.SampleNumber = count
+                        # Increment the count
+                        count += 1
+                        # Create the 'General' category for strainmetadata
+                        strainmetadata.general = GenObject()
+                        # Add the output directory to the general category
+                        strainmetadata.general.outputdirectory = self.path + samplename
+                        strainmetadata.general.pipelinecommit = self.commit
                         # Append the strainmetadata object to a list
                         self.samples.append(strainmetadata)
+
+        # import json
         # print json.dumps([x.dump() for x in self.samples], sort_keys=True, indent=4, separators=(',', ': '))
 
     def parserunstats(self):
@@ -167,8 +182,7 @@ class Metadata(object):
         self.samples = []
         self.ids = []
         self.date = ""
-        # Create and start to populate the header object
-        self.header = GenObject()
+        self.commit = passed.commit
         # If a custom sample sheet has been provided, use it
         if passed.customsamplesheet:
             self.samplesheet = passed.customsamplesheet

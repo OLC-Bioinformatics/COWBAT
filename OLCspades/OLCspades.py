@@ -4,7 +4,7 @@ import subprocess
 import runMetadata
 import offhours
 import fastqCreator
-import json
+# import json
 import metadataprinter
 __author__ = 'adamkoziol'
 
@@ -14,16 +14,21 @@ class KeyboardInterruptError(Exception):
 
 
 class RunSpades(object):
-    def assembly(self):
+    def filemanipulation(self):
         from accessoryFunctions import GenObject
         import fastqmover
-        """Performs the assembly"""
+        """Helper function for file creation (if desired), manipulation, quality assessment,
+        and trimming as well as the assembly"""
         # Run the fastq creation script - if argument is provided
         if self.fastqcreation:
             self.runmetadata = fastqCreator.CreateFastq(self)
+        # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
+        elif self.basicassembly:
+            self.runmetadata = Basic(self)
         else:
             # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
             # RunInfo.xml files
+            self.runinfo = "{}RunInfo.xml".format(self.path)
             self.runmetadata = runMetadata.Metadata(self)
             # Extract the flowcell ID and the instrument name if the RunInfo.xml file was provided
             self.runmetadata.parseruninfo()
@@ -40,19 +45,33 @@ class RunSpades(object):
             # Move the files
             else:
                 fastqmover.FastqMover(self)
+        # Run the quality trimming module
+        self.quality()
 
+        # import json
+        # print json.dumps([x.dump() for x in self.runmetadata.samples],
+        #                  sort_keys=True, indent=4, separators=(',', ': '))
 
-        print json.dumps([x.dump() for x in self.runmetadata.samples],
-                         sort_keys=True, indent=4, separators=(',', ': '))
-        # metadataprinter.MetadataPrinter(self)
+    def quality(self):
+        """Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
+        supplied sequences"""
+        import quality
+        # Create the quality object
+        qualityobject = quality.Quality(self)
+        # Run FastQC on the unprocessed fastq files
+        qualityobject.fastqcthreader('Raw')
+        # Perform quality trimming and FastQC on the trimmed files
+        qualityobject.trimquality()
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
 
+    # TODO Dictreader - tsv to dictionary
 
-    def __init__(self, args, pipelinecommit):
+    def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """
         :param args: list of arguments passed to the script
         Initialises the variables required for this class
         """
-        import time
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args['path'], "")
@@ -66,6 +85,7 @@ class RunSpades(object):
         self.numreads = 1 if self.reverselength == 0 else 2
         self.kmers = args['k']
         self.customsamplesheet = args['c']
+        self.basicassembly = args['basicAssembly']
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
         self.cpus = args['t'] if args['t'] else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
                                                                      "/proc/cpuinfo", shell=True,
@@ -76,17 +96,65 @@ class RunSpades(object):
         assert os.path.isdir(self.reffilepath), u'Output location is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
         self.commit = pipelinecommit
+        self.homepath = scriptpath
+        self.runinfo = ""
         # Initialise the metadata object
         self.runmetadata = ""
         # Define the start time
-        self.starttime = time.time()
+        self.starttime = startingtime
+
+
+class Basic(object):
+    def basic(self):
+        from accessoryFunctions import GenObject, MetadataObject, filer, make_path
+        from glob import glob
+        import os
+        import errno
+        # Grab any .fastq files in the path
+        fastqfiles = glob('{}*fastq*'.format(self.path))
+        # Extract the base name of the globbed name + path provided
+        fastqnames = map(lambda x: os.path.split(x)[1], filer(fastqfiles))
+        # Iterate through the names of the fastq files
+        for fastqname in fastqnames:
+            # Set the name
+            metadata = MetadataObject()
+            metadata.name = fastqname
+            # Set the destination folder
+            outputdir = '{}{}'.format(self.path, fastqname)
+            # Make the destination folder
+            make_path(outputdir)
+            # Get the fastq files specific to the fastqname
+            specificfastq = glob('{}{}*fastq*'.format(self.path, fastqname))
+            # Link the files to the output folder
+            try:
+                # Link the .gz files to :self.path/:filename
+                map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+            # Except os errors
+            except OSError as exception:
+                # If there is an exception other than the file exists, raise it
+                if exception.errno != errno.EEXIST:
+                    raise
+            # Initialise the general category
+            metadata.general = GenObject()
+            # Populate the .fastqfiles category of :self.metadata
+            metadata.general.fastqfiles = glob('{}/{}*fastq*'.format(outputdir, fastqname))
+            # Add the output directory to the metadata
+            metadata.general.outputdirectory = outputdir
+            # Append the metadata to the list of samples
+            self.samples.append(metadata)
+
+    def __init__(self, inputobject):
+        self.samples = []
+        self.path = inputobject.path
+        self.basic()
 
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
+    from time import time
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
-    homepath = os.path.split(__file__)[0]
+    homepath = os.path.split(os.path.abspath(__file__))[0]
     # Find the commit of the script by running a command to change to the directory containing the script and run
     # a git command to return the short version of the commit hash
     commit = subprocess.Popen('cd {} && git rev-parse --short HEAD'.format(homepath),
@@ -126,10 +194,14 @@ if __name__ == '__main__':
     parser.add_argument('-c', metavar='customSampleSheet', help='Path of folder containing a custom sample '
                         'sheet and name of sample sheet file e.g. /home/name/folder/BackupSampleSheet.csv. Note that '
                         'this sheet must still have the same format of Illumina SampleSheet.csv files')
+    parser.add_argument('-b', '--basicAssembly', action='store_true', help='Performs a basic de novo assembly, '
+                        'and does not collect metadata')
 
     # Get the arguments into a list
     arguments = vars(parser.parse_args())
 
+    starttime = time()
     # Run the pipeline
-    output = RunSpades(arguments, commit)
-    output.assembly()
+    output = RunSpades(arguments, commit, starttime, homepath)
+    output.filemanipulation()
+    print "\nElapsed Time: {:.2f} seconds".format(time() - starttime)

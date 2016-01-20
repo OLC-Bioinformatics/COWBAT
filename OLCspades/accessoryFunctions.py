@@ -35,25 +35,43 @@ def printtime(string, start):
     import time
     print('\n\033[1m' + "[Elapsed Time: {:.2f} seconds] {}".format(time.time() - start, string) + '\033[0m')
 
+# Initialise globalcount
+globalcount = 0
 
-def execute(command, outfile="", waittime=11):
+
+def dotter():
+    """Prints formatted time to stdout at the start of a line, as well as a "."
+    whenever the length of the line is equal or lesser than 80 "." long"""
+    import time
+    import sys
+    # Use a global variable
+    global globalcount
+    if globalcount <= 80:
+        sys.stdout.write('.')
+        globalcount += 1
+    else:
+        sys.stdout.write('\n[%s] .' % (time.strftime("%H:%M:%S")))
+        globalcount = 1
+
+
+def execute(command, outfile=""):
     """
     Allows for dots to be printed to the terminal while waiting for a long system call to run
     :param command: the command to be executed
     :param outfile: optional string of an output file
-    :param waittime: integer of how often to print a dot to the screen - uses modulo, so iteration % waittime with a
-    time of 11 will print every 11 iterations
     from https://stackoverflow.com/questions/4417546/constantly-print-subprocess-output-while-process-is-running
     """
     import sys
     import time
-    # Initialise counts
+    # Initialise count
     count = 0
-    printcount = 0
+    # Initialise the starting time
+    start = int(time.time())
+    maxtime = 0
+    print command
     # Run the commands - direct stdout to PIPE and stderr to stdout
     process = Popen(command, shell=True, stdout=PIPE, stderr=STDOUT)
     # Write the initial time
-    print command
     sys.stdout.write('[{:}] '.format(time.strftime('%H:%M:%S')))
     # Create the output file - if not provided, then nothing should happen
     writeout = open(outfile, "ab+") if outfile else ""
@@ -68,8 +86,12 @@ def execute(command, outfile="", waittime=11):
         # Break from the loop if the command is finished
         if process.poll() is not None:
             break
-        # Adding sleep commands slowed down this method when there was lots of output. Using modulo instead.
-        if not printcount % waittime:
+        # Adding sleep commands slowed down this method when there was lots of output. Difference between the start time
+        # of the analysis and the current time. Action on each second passed
+        currenttime = int(time.time())
+        if currenttime - start > maxtime:
+            # Set the max time for each iteration
+            maxtime = currenttime - start
             # Print up to 80 dots on a line, with a one second delay between each dot
             if count <= 80:
                 sys.stdout.write('.')
@@ -78,10 +100,41 @@ def execute(command, outfile="", waittime=11):
             else:
                 sys.stdout.write('\n[{:}] .'.format(time.strftime('%H:%M:%S')))
                 count = 1
-        printcount += 1
     # Close the output file
     writeout.close() if outfile else ""
     sys.stdout.write('\n')
+
+
+def filer(filelist):
+    """
+    Helper script that creates a set of the stain names created by stripping off parts of the filename.
+    Hopefully handles different naming conventions (e.g. 2015-SEQ-001_S1_L001_R1_001.fastq(.gz),
+    2015-SEQ-001_R1_001.fastq.gz, 2015-SEQ-001_R1.fastq.gz, 2015-SEQ-001_1.fastq.gz, and 2015-SEQ-001_1.fastq.gz
+    all become 2015-SEQ-001)
+    :param filelist: List of files to parse
+    """
+    import re
+    # Initialise the set
+    fileset = set()
+    for seqfile in filelist:
+        # Search for the conventional motifs present following strain names
+        # _S\d+_L001_R\d_001.fastq(.gz) is a typical unprocessed Illumina fastq file
+        if re.search("_S\d+_L001", seqfile):
+            fileset.add(re.split("_S\d+_L001", seqfile)[0])
+        # Files with _R\d_001.fastq(.gz) are created in the SPAdes assembly pipeline
+        elif re.search("_R\d_001", seqfile):
+            fileset.add(re.split("_R\d_001", seqfile)[0])
+        # _R\d.fastq(.gz) represents a simple naming scheme for paired end reads
+        elif re.search("R\d.fastq", seqfile):
+            fileset.add(re.split("_R\d.fastq", seqfile)[0])
+        # _\d.fastq is always possible
+        elif re.search("[-_]\d.fastq", seqfile):
+            fileset.add(re.split("[-_]\d.fastq", seqfile)[0])
+        # .fastq is the last option
+        else:
+            fileset.add(re.split(".fastq", seqfile)[0])
+        dotter()
+    return fileset
 
 
 class GenObject(object):

@@ -18,7 +18,15 @@ class Metadata(object):
         NA values are substituted"""
         # Check if the RunInfo.xml file is provided, otherwise, yield N/A
         try:
-            runinfo = ElementTree.ElementTree(file="{}RunInfo.xml".format(self.path))
+            runinfo = ElementTree.ElementTree(file=self.runinfo)
+            # Get the run id from the
+            for elem in runinfo.iter():
+                for run in elem:
+                    try:
+                        self.runid = run.attrib['Id']
+                        self.runnumber = run.attrib['Number']
+                    except KeyError:
+                        break
             # pull the text from flowcell and instrument values using the .iter(tag="X") function
             for elem in runinfo.iter(tag="Flowcell"):
                 self.flowcell = elem.text
@@ -35,8 +43,6 @@ class Metadata(object):
         import copy
         # Initialise variables
         reads = []
-        # Create and start to populate the header object
-        header = GenObject()
         # Open the sample sheet
         with open(self.samplesheet, "rb") as samplesheet:
             # Iterate through the sample sheet
@@ -45,11 +51,12 @@ class Metadata(object):
                 data = line.rstrip().split(",")
                 # Pull out the desired information from the sample sheet
                 if "Investigator" in line:
-                    header.investigator = data[1]
+                    self.header.investigator = data[1]
                 if "Experiment" in line:
-                    header.experiment = data[1].replace("  ", " ")
+                    self.header.experiment = data[1].replace("  ", " ")
                 if "Date" in line:
-                    header.date = data[1]
+                    self.header.date = data[1]
+                    self.date = data[1]
                 # Iterate through the file until [Reads] is encountered, then go until [Settings]
                 if "Reads" in line:
                     for subline in samplesheet:
@@ -59,10 +66,11 @@ class Metadata(object):
                         # Append the forward and reverse reads to the list
                         reads.append(subline.rstrip().split(",")[0])
                     # Extract the read lengths from the list of reads
-                    header.forwardlength = int(reads[0])
-                    header.reverselength = int(reads[1])
+                    self.header.forwardlength = int(reads[0])
+                    self.header.reverselength = int(reads[1])
+                    self.totalreads = int(reads[0]) + int(reads[1]) + 16
                 if "Adapter" in line:
-                    header.adapter = data[1]
+                    self.header.adapter = data[1]
                 if "Sample_ID" in line:
                     # Initialise the count to store the SampleNumber
                     count = 1
@@ -76,7 +84,7 @@ class Metadata(object):
                         # Set the sample name in the object
                         strainmetadata.name = samplename
                         # Add the header object to strainmetadata
-                        strainmetadata.run = GenObject(copy.copy(header.datastore))
+                        strainmetadata.run = GenObject(copy.copy(self.header.datastore))
                         # Create the run object, so it will be easier to populate the object (eg run.SampleName = ...
                         # instead of strainmetadata.run.SampleName = ...
                         run = strainmetadata.run
@@ -173,16 +181,36 @@ class Metadata(object):
                             run.PercentOfClusters = percentperstrain
                             run.flowcell = self.flowcell
                             run.instrument = self.instrument
+        else:
+            strainindex = 0
+            for i in range(len(self.samples)):
+                # Set run to the .run object of self.samples[index]
+                run = self.samples[strainindex].run
+                # Update the object with the variables
+                run.SampleNumber = strainindex + 1
+                run.NumberofClustersPF = 'NA'
+                run.TotalClustersinRun = 'NA'
+                run.PercentOfClusters = 'NA'
+                run.flowcell = self.flowcell
+                run.instrument = self.instrument
+                strainindex += 1
 
     def __init__(self, passed):
         """Initialise variables"""
         self.path = passed.path
+        self.runinfo = passed.runinfo
         self.flowcell = "NA"
         self.instrument = "NA"
         self.samples = []
         self.ids = []
         self.date = ""
+        self.totalreads = 0
+        self.runid = ""
+        self.runnumber = ""
         self.commit = passed.commit
+
+        # Create and start to populate the header object
+        self.header = GenObject()
         # If a custom sample sheet has been provided, use it
         if passed.customsamplesheet:
             self.samplesheet = passed.customsamplesheet

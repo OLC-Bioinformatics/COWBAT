@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 from subprocess import Popen, PIPE, STDOUT
+import os
+import errno
 __author__ = 'adamkoziol'
 
 
@@ -9,8 +11,6 @@ def make_path(inpath):
     does what is indicated by the URL
     :param inpath: string of the supplied path
     """
-    import os
-    import errno
     try:
         # os.makedirs makes parental folders as required
         os.makedirs(inpath)
@@ -137,10 +137,31 @@ def filer(filelist):
     return fileset
 
 
+def relativesymlink(src_file, dest_file):
+    """
+    https://stackoverflow.com/questions/9793631/creating-a-relative-symlink-in-python-without-using-os-chdir
+    :param src_file: the file to be linked
+    :param dest_file: the path and filename to which the file is to be linked
+    """
+    # Perform relative symlinking
+    try:
+        os.symlink(
+            # Find the relative path for the source file and the destination file
+            os.path.relpath(src_file),
+            os.path.relpath(dest_file)
+        )
+    # Except os errors
+    except OSError as exception:
+        # If the os error is anything but directory exists, then raise
+        if exception.errno != errno.EEXIST:
+            raise
+
+
 class GenObject(object):
     """Object to store static variables"""
     def __init__(self, x=None):
-        start = (lambda y: y if y else {})(x)
+        start = x if x else {}
+        # start = (lambda y: y if y else {})(x)
         super(GenObject, self).__setattr__('datastore', start)
 
     def __getattr__(self, key):
@@ -173,7 +194,7 @@ class MetadataObject(object):
             self.datastore[key] = value
 
     def dump(self):
-        """Print only the nested dictionary values; removes __methods__ and __members__ attributes"""
+        """Prints only the nested dictionary values; removes __methods__ and __members__ attributes"""
         metadata = {}
         for attr in self.datastore:
             metadata[attr] = {}

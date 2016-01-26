@@ -32,12 +32,6 @@ class Quality(object):
                 except KeyError:
                     fastqfiles = ""
                     pass
-            elif level == 'Corrected':
-                try:
-                    fastqfiles = sample.general.correctedfastqfiles
-                except KeyError:
-                    fastqfiles = ""
-                    pass
             else:
                 fastqfiles = sample.general.fastqfiles
             # As the metadata can be populated with 'NA' (string) if there are no fastq files, only process if

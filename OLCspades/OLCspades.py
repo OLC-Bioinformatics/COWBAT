@@ -6,24 +6,24 @@ import offhours
 import fastqCreator
 # import json
 import metadataprinter
+import spadesRun
 __author__ = 'adamkoziol'
 
 
-class KeyboardInterruptError(Exception):
-    pass
-
-
 class RunSpades(object):
-    def filemanipulation(self):
-        from accessoryFunctions import GenObject
-        import fastqmover
+    def assembly(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
         and trimming as well as the assembly"""
+        from accessoryFunctions import GenObject
+        import fastqmover
         # Run the fastq creation script - if argument is provided
         if self.fastqcreation:
             self.runmetadata = fastqCreator.CreateFastq(self)
+            import sys
+            sys.exit()
         # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
         elif self.basicassembly:
+            from basicAssembly import Basic
             self.runmetadata = Basic(self)
         else:
             # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
@@ -47,7 +47,10 @@ class RunSpades(object):
                 fastqmover.FastqMover(self)
         # Run the quality trimming module
         self.quality()
-
+        spadesRun.Spades(self)
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
+        # metadataReader.metadataReader(self)
         # import json
         # print json.dumps([x.dump() for x in self.runmetadata.samples],
         #                  sort_keys=True, indent=4, separators=(',', ': '))
@@ -66,6 +69,20 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
 
     # TODO Dictreader - tsv to dictionary
+
+    # TODO SPAdes as library
+    # TODO quast as library
+    # TODO Figure out what to do about GeneMark license keys
+    """
+    Running GeneMark...
+    WARNING: License period for GeneMark has ended!
+    To update license, please visit http://topaz.gatech.edu/license_download.cgi page and fill in the form.
+    You should choose GeneMarkS tool and your operating system (note that GeneMark is free for non-commercial use).
+    Download the license key and replace your ~/.gm_key with the updated version. After that you can restart QUAST.
+    """
+    """WARNING: Can't draw plots: please install python-matplotlib."""
+
+    # TODO CGE
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """
@@ -88,8 +105,7 @@ class RunSpades(object):
         self.basicassembly = args['basicAssembly']
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
         self.cpus = args['t'] if args['t'] else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
-                                                                     "/proc/cpuinfo", shell=True,
-                                                                     stdout=subprocess.PIPE)
+                                                    "/proc/cpuinfo", shell=True, stdout=subprocess.PIPE)
                                                     .communicate()[0].rstrip())
         # Assertions to ensure that the provided variables are valid
         assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
@@ -102,56 +118,13 @@ class RunSpades(object):
         self.runmetadata = ""
         # Define the start time
         self.starttime = startingtime
-
-
-class Basic(object):
-    def basic(self):
-        from accessoryFunctions import GenObject, MetadataObject, filer, make_path
-        from glob import glob
-        import os
-        import errno
-        # Grab any .fastq files in the path
-        fastqfiles = glob('{}*fastq*'.format(self.path))
-        # Extract the base name of the globbed name + path provided
-        fastqnames = map(lambda x: os.path.split(x)[1], filer(fastqfiles))
-        # Iterate through the names of the fastq files
-        for fastqname in fastqnames:
-            # Set the name
-            metadata = MetadataObject()
-            metadata.name = fastqname
-            # Set the destination folder
-            outputdir = '{}{}'.format(self.path, fastqname)
-            # Make the destination folder
-            make_path(outputdir)
-            # Get the fastq files specific to the fastqname
-            specificfastq = glob('{}{}*fastq*'.format(self.path, fastqname))
-            # Link the files to the output folder
-            try:
-                # Link the .gz files to :self.path/:filename
-                map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
-            # Except os errors
-            except OSError as exception:
-                # If there is an exception other than the file exists, raise it
-                if exception.errno != errno.EEXIST:
-                    raise
-            # Initialise the general category
-            metadata.general = GenObject()
-            # Populate the .fastqfiles category of :self.metadata
-            metadata.general.fastqfiles = glob('{}/{}*fastq*'.format(outputdir, fastqname))
-            # Add the output directory to the metadata
-            metadata.general.outputdirectory = outputdir
-            # Append the metadata to the list of samples
-            self.samples.append(metadata)
-
-    def __init__(self, inputobject):
-        self.samples = []
-        self.path = inputobject.path
-        self.basic()
+        self.assembly()
 
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
     from time import time
+    from accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]
@@ -182,10 +155,6 @@ if __name__ == '__main__':
     parser.add_argument('-r2', metavar='readLengthReverse', default='full', help='Length of reverse reads to use. '
                         'Can specify "full" to take the full length of reverse reads specified on the SampleSheet. '
                         'Defaults to full')
-    # parser.add_argument('-P', metavar='projectName', help='A name for the analyses. If nothing is provided, then '
-    #                     'the "Sample_Project" field in the provided sample sheet will be used. Please note that '
-    #                     'bcl2fastq creates subfolders using the project name, so if multiple names are provided, the '
-    #                     'results will be split as into multiple projects')
     parser.add_argument('-r', metavar='referenceFilePath', default="/spades_pipeline/SPAdesPipelineFiles",
                         help='Provide the location of the folder containing the pipeline accessory files '
                         '(reference genomes, MLST data, etc.')
@@ -202,6 +171,5 @@ if __name__ == '__main__':
 
     starttime = time()
     # Run the pipeline
-    output = RunSpades(arguments, commit, starttime, homepath)
-    output.filemanipulation()
-    print "\nElapsed Time: {:.2f} seconds".format(time() - starttime)
+    RunSpades(arguments, commit, starttime, homepath)
+    printtime('Analysis complete', starttime)

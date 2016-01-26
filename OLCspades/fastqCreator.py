@@ -232,7 +232,5 @@ class CreateFastq(object):
         self.ids = self.metadata.ids
         self.date = self.metadata.date
         self.totalreads = self.metadata.totalreads
-        # import json
-        # print json.dumps(self.metadata., sort_keys=True, indent=4, separators=(',', ': '))
         # Create fastq files
         self.createfastq()

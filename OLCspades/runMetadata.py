@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from accessoryFunctions import MetadataObject, GenObject
+import metadataReader
 import os
 # Import ElementTree - try first to import the faster C version, if that doesn't
 # work, try to import the regular version
@@ -103,7 +104,10 @@ class Metadata(object):
                         strainmetadata.general.pipelinecommit = self.commit
                         # Append the strainmetadata object to a list
                         self.samples.append(strainmetadata)
-
+        # Grab metadata from previous runs
+        metadata = metadataReader.MetadataReader(self)
+        # Update self.samples
+        self.samples = metadata.samples
         # import json
         # print json.dumps([x.dump() for x in self.samples], sort_keys=True, indent=4, separators=(',', ': '))
 
@@ -131,21 +135,24 @@ class Metadata(object):
                 samplename = samplenamer(straindata, 1)
                 # Calculate the percentage of clusters associated with each strain
                 percentperstrain = "{:.2f}".format((float(straindata[3]) / tclusterspf * 100))
-                # Use the sample number -1 as the index in the list of objects created in parsesamplesheet
-                strainindex = int(straindata[0]) - 1
-                # Set run to the .run object of self.samples[index]
-                run = self.samples[strainindex].run
-                # An assertion that compares the sample computer above to the previously entered sample name
-                # to ensure that the samples are the same
-                assert self.samples[strainindex].name == samplename, \
-                    "Sample name does not match object name {0!r:s}".format(straindata[1])
-                # Add the appropriate values to the strain metadata object
-                run.SampleNumber = straindata[0]
-                run.NumberofClustersPF = straindata[3]
-                run.TotalClustersinRun = tclusterspf
-                run.PercentOfClusters = percentperstrain
-                run.flowcell = self.flowcell
-                run.instrument = self.instrument
+                try:
+                    # Use the sample number -1 as the index in the list of objects created in parsesamplesheet
+                    strainindex = int(straindata[0]) - 1
+                    # Set run to the .run object of self.samples[index]
+                    run = self.samples[strainindex].run
+                    # An assertion that compares the sample computer above to the previously entered sample name
+                    # to ensure that the samples are the same
+                    assert self.samples[strainindex].name == samplename, \
+                        "Sample name does not match object name {0!r:s}".format(straindata[1])
+                    # Add the appropriate values to the strain metadata object
+                    run.SampleNumber = straindata[0]
+                    run.NumberofClustersPF = straindata[3]
+                    run.TotalClustersinRun = tclusterspf
+                    run.PercentOfClusters = percentperstrain
+                    run.flowcell = self.flowcell
+                    run.instrument = self.instrument
+                except IndexError:
+                    pass
         elif os.path.isfile("{}indexingQC.txt".format(self.path)):
             from linecache import getline
             # Grab the first element from the second line in the file

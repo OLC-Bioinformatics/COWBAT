@@ -11,6 +11,7 @@ class FastqMover(object):
         import shutil
         import os
         import time
+        from accessoryFunctions import relativesymlink
         print "\r[{:}] Moving fastq files".format(time.strftime("%H:%M:%S"))
         # Iterate through each sample
         for sample in self.metadata.runmetadata.samples:
@@ -22,7 +23,8 @@ class FastqMover(object):
             if fastqfiles:
                 make_path(outputdir)
                 # Move the fastq files to the directory
-                map(lambda x: shutil.move(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
+                # map(lambda x: shutil.move(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
+                map(lambda x: relativesymlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
                 # Find any fastq files with the sample name
                 fastqfiles = [fastq for fastq in sorted(glob('{}/{}*.fastq*'.format(outputdir, sample.name)))
                               if 'trimmed' not in fastq]

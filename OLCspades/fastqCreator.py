@@ -176,9 +176,7 @@ class CreateFastq(object):
                         # 2015-SEQ-1283_S1_L001_R1_001.fastq.gz
                         make_path(outputdir)
                         os.symlink(fastq, '{}/{}'.format(outputdir, os.path.basename(sub('\w{8}-\w{8}',
-                                                                                         'S{}'.format(
-                                                                                                 sample.run.SampleNumber
-                                                                                         ), fastq))))
+                                   'S{}'.format(sample.run.SampleNumber), fastq))))
                     # Except os errors
                     except OSError as exception:
                         # If there is an exception other than the file exists, raise it

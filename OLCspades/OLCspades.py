@@ -45,15 +45,6 @@ class RunSpades(object):
             # Move the files
             else:
                 fastqmover.FastqMover(self)
-        # Run the quality trimming module
-        self.quality()
-        spadesRun.Spades(self)
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        # metadataReader.metadataReader(self)
-        # import json
-        # print json.dumps([x.dump() for x in self.runmetadata.samples],
-        #                  sort_keys=True, indent=4, separators=(',', ': '))
 
     def quality(self):
         """Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
@@ -67,6 +58,12 @@ class RunSpades(object):
         qualityobject.trimquality()
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
+
+    def typing(self):
+        import mMLST
+        # blaster(path, cutoff, sequencepath, allelepath, organismpath, scheme, organism)
+        # mMLST.blaster(self.path, 98, self, '/spades_pipeline/SPAdesPipelineFiles/rMLST', '', '', '')
+        mMLST.PipelineInit(self, 'rmlst')
 
     # TODO Dictreader - tsv to dictionary
 
@@ -103,14 +100,17 @@ class RunSpades(object):
         self.kmers = args['k']
         self.customsamplesheet = args['c']
         self.basicassembly = args['basicAssembly']
+        self.pipelinefilepath = os.path.join(args['P'], "")
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
         self.cpus = args['t'] if args['t'] else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
                                                     "/proc/cpuinfo", shell=True, stdout=subprocess.PIPE)
                                                     .communicate()[0].rstrip())
         # Assertions to ensure that the provided variables are valid
         assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
-        assert os.path.isdir(self.reffilepath), u'Output location is not a valid directory {0!r:s}'\
+        assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
+        assert os.path.isdir(self.pipelinefilepath), u'Pipeline file path is not a valid directory {0!r:s}'\
+            .format(self.pipelinefilepath)
         self.commit = pipelinecommit
         self.homepath = scriptpath
         self.runinfo = ""
@@ -118,7 +118,19 @@ class RunSpades(object):
         self.runmetadata = ""
         # Define the start time
         self.starttime = startingtime
+        # Start the assembly
         self.assembly()
+        # Run the quality trimming module
+        self.quality()
+        # Run spades
+        spadesRun.Spades(self)
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
+        #
+        self.typing()
+        # import json
+        # print json.dumps([x.dump() for x in self.runmetadata.samples],
+        #                  sort_keys=True, indent=4, separators=(',', ': '))
 
 
 # If the script is called from the command line, then call the argument parser
@@ -165,6 +177,9 @@ if __name__ == '__main__':
                         'this sheet must still have the same format of Illumina SampleSheet.csv files')
     parser.add_argument('-b', '--basicAssembly', action='store_true', help='Performs a basic de novo assembly, '
                         'and does not collect metadata')
+    parser.add_argument('-P', metavar='pipelinefilepath', default='/spades_pipeline/SPAdesPipelineFiles', help='Path'
+                        'to folder containing necessary files for sample typing. Default is '
+                        '/spades_pipeline/SPAdesPipelineFiles')
 
     # Get the arguments into a list
     arguments = vars(parser.parse_args())

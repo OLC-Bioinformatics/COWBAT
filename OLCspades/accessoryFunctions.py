@@ -105,13 +105,14 @@ def execute(command, outfile=""):
     sys.stdout.write('\n')
 
 
-def filer(filelist):
+def filer(filelist, extension='fastq'):
     """
     Helper script that creates a set of the stain names created by stripping off parts of the filename.
     Hopefully handles different naming conventions (e.g. 2015-SEQ-001_S1_L001_R1_001.fastq(.gz),
     2015-SEQ-001_R1_001.fastq.gz, 2015-SEQ-001_R1.fastq.gz, 2015-SEQ-001_1.fastq.gz, and 2015-SEQ-001_1.fastq.gz
     all become 2015-SEQ-001)
     :param filelist: List of files to parse
+    :param extension: the file extension to use. Default value is 'fastq
     """
     import re
     # Initialise the set
@@ -125,14 +126,14 @@ def filer(filelist):
         elif re.search("_R\d_001", seqfile):
             fileset.add(re.split("_R\d_001", seqfile)[0])
         # _R\d.fastq(.gz) represents a simple naming scheme for paired end reads
-        elif re.search("R\d.fastq", seqfile):
-            fileset.add(re.split("_R\d.fastq", seqfile)[0])
+        elif re.search("R\d.{}".format(extension), seqfile):
+            fileset.add(re.split("_R\d.{}".format(extension), seqfile)[0])
         # _\d.fastq is always possible
-        elif re.search("[-_]\d.fastq", seqfile):
-            fileset.add(re.split("[-_]\d.fastq", seqfile)[0])
+        elif re.search("[-_]\d.{}".format(extension), seqfile):
+            fileset.add(re.split("[-_]\d.{}".format(extension), seqfile)[0])
         # .fastq is the last option
         else:
-            fileset.add(re.split(".fastq", seqfile)[0])
+            fileset.add(re.split(".{}".format(extension), seqfile)[0])
         dotter()
     return fileset
 

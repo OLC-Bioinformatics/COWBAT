@@ -39,10 +39,16 @@ def printtime(string, start):
 globalcount = 0
 
 
+def globalcounter():
+    """Resets the globalcount to 0"""
+    global globalcount
+    globalcount = 0
+
+
 def dotter():
     """Prints formatted time to stdout at the start of a line, as well as a "."
     whenever the length of the line is equal or lesser than 80 "." long"""
-    import time
+    # import time
     import sys
     # Use a global variable
     global globalcount
@@ -50,7 +56,8 @@ def dotter():
         sys.stdout.write('.')
         globalcount += 1
     else:
-        sys.stdout.write('\n[%s] .' % (time.strftime("%H:%M:%S")))
+        # sys.stdout.write('\n[%s] .' % (time.strftime("%H:%M:%S")))
+        sys.stdout.write('\n.')
         globalcount = 1
 
 
@@ -134,7 +141,6 @@ def filer(filelist, extension='fastq'):
         # .fastq is the last option
         else:
             fileset.add(re.split(".{}".format(extension), seqfile)[0])
-        dotter()
     return fileset
 
 
@@ -170,6 +176,8 @@ class GenObject(object):
 
     def __setattr__(self, key, value):
         if value:
+            self.datastore[key] = value
+        elif value is False:
             self.datastore[key] = value
         else:
             self.datastore[key] = "NA"

@@ -22,8 +22,9 @@ RUN apt-get update -y -qq && apt-get install -y --force-yes \
 	libbz2-dev \
 	software-properties-common \
 	nano \
-	xsltproc
-RUN echo 'hello'
+	xsltproc \
+	python-numpy \
+	python-dev
 
 # Install bcl2fastq
 ADD accessoryfiles /accessoryfiles
@@ -56,6 +57,14 @@ ENV PATH /accessoryfiles/FastQC:$PATH
 # Install SPAdes
 ENV PATH /accessoryfiles/spades:$PATH
 
+# Install biopython
+RUN python /accessoryfiles/get-pip.py
+RUN easy_install -f http://biopython.org/DIST/ biopython
+
+# Install NCBI Blast+
+RUN apt-get update -qq -y && apt-get install -y --force-yes \
+	ncbi-blast+
+
 # Mount NAS:
 # must run container in privileged mode (--privileged)
 RUN locale-gen en_US en_US.UTF-8
@@ -73,3 +82,4 @@ ENTRYPOINT ["/root/mount_nfs.sh"]
 #docker rm pythondocker
 
 # python /spades/OLCspades/OLCspades.py -m /media/miseq/MiSeqOutput -F /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -f 151218_M02466_0126_000000000-AKF4P -r1 25 -r2 25 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/
+# python /spades/OLCspades/OLCspades.py /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/

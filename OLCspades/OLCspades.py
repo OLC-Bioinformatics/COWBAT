@@ -19,8 +19,6 @@ class RunSpades(object):
         # Run the fastq creation script - if argument is provided
         if self.fastqcreation:
             self.runmetadata = fastqCreator.CreateFastq(self)
-            import sys
-            sys.exit()
         # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
         elif self.basicassembly:
             from basicAssembly import Basic
@@ -64,6 +62,8 @@ class RunSpades(object):
         # blaster(path, cutoff, sequencepath, allelepath, organismpath, scheme, organism)
         # mMLST.blaster(self.path, 98, self, '/spades_pipeline/SPAdesPipelineFiles/rMLST', '', '', '')
         mMLST.PipelineInit(self, 'rmlst')
+        # for sample in self.runmetadata.samples:
+        #     print sample.mlst.datastore
 
     # TODO Dictreader - tsv to dictionary
 
@@ -88,34 +88,33 @@ class RunSpades(object):
         """
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
-        self.path = os.path.join(args['path'], "")
-        self.numreads = args['n']
-        self.offhours = args['offHours']
-        self.fastqcreation = args['FastqCreation']
-        self.fastqdestination = args['d']
-        self.reffilepath = os.path.join(args['r'], "")
-        self.forwardlength = args['r1']
-        self.reverselength = args['r2']
+        self.path = os.path.join(args.path, '')
+        # self.numreads = args['n']
+        self.numreads = args.numreads
+        self.offhours = args.offhours
+        self.fastqcreation = args.fastqcreation
+        self.fastqdestination = args.destinationfastq
+        self.reffilepath = os.path.join(args.referencefilepath, '')
+        self.forwardlength = args.readlengthforward
+        self.reverselength = args.readlengthreverse
         self.numreads = 1 if self.reverselength == 0 else 2
-        self.kmers = args['k']
-        self.customsamplesheet = args['c']
-        self.basicassembly = args['basicAssembly']
-        self.pipelinefilepath = os.path.join(args['P'], "")
+        self.kmers = args.kmerrange
+        self.customsamplesheet = args.customsamplesheet
+        self.basicassembly = args.basicassembly
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
-        self.cpus = args['t'] if args['t'] else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
-                                                    "/proc/cpuinfo", shell=True, stdout=subprocess.PIPE)
-                                                    .communicate()[0].rstrip())
+        self.cpus = args.threads if args.threads else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
+                                                          "/proc/cpuinfo", shell=True, stdout=subprocess.PIPE)
+                                                          .communicate()[0].rstrip())
         # Assertions to ensure that the provided variables are valid
         assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
+        self.reportpath = '{}reports'.format(self.path)
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        assert os.path.isdir(self.pipelinefilepath), u'Pipeline file path is not a valid directory {0!r:s}'\
-            .format(self.pipelinefilepath)
         self.commit = pipelinecommit
         self.homepath = scriptpath
-        self.runinfo = ""
+        self.runinfo = ''
         # Initialise the metadata object
-        self.runmetadata = ""
+        self.runmetadata = ''
         # Define the start time
         self.starttime = startingtime
         # Start the assembly
@@ -126,7 +125,7 @@ class RunSpades(object):
         spadesRun.Spades(self)
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
-        #
+        # Perform typing of assemblies
         self.typing()
         # import json
         # print json.dumps([x.dump() for x in self.runmetadata.samples],
@@ -149,42 +148,39 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
     parser.add_argument('-v', '--version', action='version', version='%(prog)s commit {}'.format(commit))
     parser.add_argument('path',  help='Specify path')
-    parser.add_argument('-n', metavar='numreads', default=2, type=int, help='Specify the number of reads. Paired-reads:'
+    parser.add_argument('-n', '--numreads', default=2, type=int, help='Specify the number of reads. Paired-reads:'
                         ' 2, unpaired-reads: 1. Default is paired-end')
-    parser.add_argument('-t', metavar='threads', help='Number of threads. Default is the number of cores in the system')
-    parser.add_argument('-o', '--offHours', action='store_true', help='Optionally run the off-hours module that will '
+    parser.add_argument('-t', '--threads', help='Number of threads. Default is the number of cores in the system')
+    parser.add_argument('-o', '--offhours', action='store_true', help='Optionally run the off-hours module that will '
                         'search for MiSeq runs in progress, wait until the run is complete, and assemble the run')
-    parser.add_argument('-F', '--FastqCreation', action='store_true', help='Optionally run the fastq creation module'
+    parser.add_argument('-F', '--fastqcreation', action='store_true', help='Optionally run the fastq creation module'
                         'that will search for MiSeq runs in progress, run bcl2fastq to create fastq files, and '
                         'assemble the run')
-    parser.add_argument('-d', metavar='destinationfastq', help='Optional folder path to store .fastq files created '
+    parser.add_argument('-d', '--destinationfastq', help='Optional folder path to store .fastq files created '
                         'using the fastqCreation module. Defaults to path/miseqfolder')
-    parser.add_argument('-m', metavar='miSeqPath', help='Path of the folder containing MiSeq run data folder')
-    parser.add_argument('-f', metavar='miseqfolder', help='Name of the folder containing MiSeq run data')
-    parser.add_argument('-r1', metavar='readLengthForward', default='full', help='Length of forward reads to use. Can '
+    parser.add_argument('-m', '--miseqpath', help='Path of the folder containing MiSeq run data folder')
+    parser.add_argument('-f', '--miseqfolder', help='Name of the folder containing MiSeq run data')
+    parser.add_argument('-r1', '--readlengthforward', default='full', help='Length of forward reads to use. Can '
                         'specify "full" to take the full length of forward reads specified on the SampleSheet. '
                         'Defaults to full')
-    parser.add_argument('-r2', metavar='readLengthReverse', default='full', help='Length of reverse reads to use. '
+    parser.add_argument('-r2', '--readlengthreverse', default='full', help='Length of reverse reads to use. '
                         'Can specify "full" to take the full length of reverse reads specified on the SampleSheet. '
                         'Defaults to full')
-    parser.add_argument('-r', metavar='referenceFilePath', default="/spades_pipeline/SPAdesPipelineFiles",
+    parser.add_argument('-r', '--referencefilepath', default="/spades_pipeline/SPAdesPipelineFiles",
                         help='Provide the location of the folder containing the pipeline accessory files '
                         '(reference genomes, MLST data, etc.')
-    parser.add_argument('-k', metavar='kmerRange', default='21,33,55,77,99,127',
+    parser.add_argument('-k', '--kmerrange', default='21,33,55,77,99,127',
                         help='The range of kmers used in SPAdes assembly. Default is 21,33,55,77,99,127')
-    parser.add_argument('-c', metavar='customSampleSheet', help='Path of folder containing a custom sample '
+    parser.add_argument('-c', '--customsamplesheet', help='Path of folder containing a custom sample '
                         'sheet and name of sample sheet file e.g. /home/name/folder/BackupSampleSheet.csv. Note that '
                         'this sheet must still have the same format of Illumina SampleSheet.csv files')
-    parser.add_argument('-b', '--basicAssembly', action='store_true', help='Performs a basic de novo assembly, '
+    parser.add_argument('-b', '--basicassembly', action='store_true', help='Performs a basic de novo assembly, '
                         'and does not collect metadata')
-    parser.add_argument('-P', metavar='pipelinefilepath', default='/spades_pipeline/SPAdesPipelineFiles', help='Path'
-                        'to folder containing necessary files for sample typing. Default is '
-                        '/spades_pipeline/SPAdesPipelineFiles')
 
     # Get the arguments into a list
-    arguments = vars(parser.parse_args())
-
+    # arguments = vars(parser.parse_args())
+    arguments = parser.parse_args()
     starttime = time()
     # Run the pipeline
     RunSpades(arguments, commit, starttime, homepath)
-    printtime('Analysis complete', starttime)
+    printtime('Assembly and characterisation complete', starttime)

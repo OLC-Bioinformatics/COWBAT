@@ -703,8 +703,9 @@ if __name__ == '__main__':
             if self.allelepath:
                 # Remove and previously created blast database files
                 blastdatabaseclearer(self.allelepath)
-                # Create lists of the alleles, and the profile
+                # Create lists of the alleles, combined alleles, and the profile
                 self.alleles = glob('{}/*.tfa'.format(self.allelepath))
+                self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
                 # Get the .txt profile file name and path into a variable
                 self.profile = glob('{}/*.txt'.format(self.allelepath))
             else:
@@ -749,9 +750,6 @@ if __name__ == '__main__':
                     self.allelepath = sorted(schemelist)[int(schemeresponse)]
                     # noinspection PyTypeChecker
                     self.scheme = os.path.split(self.allelepath)[1]
-                    # Optionally get the newest profiles and alleles from pubmlst
-                    if self.getmlst:
-                        self.getmlsthelper()
                 else:
                     # Otherwise set scheme as follows:
                     self.allelepath = '{}/{}'.format(self.organismpath, self.scheme)
@@ -790,10 +788,11 @@ if __name__ == '__main__':
                     # Set the combined alleles file name and path
                     self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
             # Add the appropriate variables to the metadata object for each sample
+            self.scheme = self.scheme if self.scheme else self.analysistype
             for sample in self.samples:
                 sample.mlst.alleles = {self.scheme: self.alleles}
                 sample.mlst.allelenames = {self.scheme: [os.path.split(x)[1].split('.')[0] for x in self.alleles]}
-                sample.mlst.alleledir = {self.scheme: '{}/'.format(self.allelepath)}
+                sample.mlst.alleledir = {self.scheme: self.allelepath}
                 sample.mlst.profile = {self.scheme: self.profile}
                 sample.mlst.analysistype = {self.scheme: self.scheme}
                 sample.mlst.reportdir = {self.scheme: self.reportpath}
@@ -803,6 +802,7 @@ if __name__ == '__main__':
         def getmlsthelper(self):
             """Prepares to run the getmlst.py script provided in SRST2"""
             from accessoryFunctions import GenObject
+            printtime('Downloading {} MLST scheme from pubmlst.org'.format(self.organism), self.start)
             # Initialise a set to for the organism(s) for which new alleles and profiles are desired
             organismset = set()
             organismdictionary = {'Escherichia': 'Escherichia coli#1',
@@ -821,7 +821,7 @@ if __name__ == '__main__':
                 getmlstargs.species = organism
                 getmlstargs.repository_url = 'http://pubmlst.org/data/dbases.xml'
                 getmlstargs.force_scheme_name = False
-                getmlstargs.path = '/home/blais/PycharmProjects/MLST/organism/{}/{}'.format(self.organism, self.scheme)
+                getmlstargs.path = '{}{}/{}'.format(self.path, self.organism, self.scheme)
                 # Create the path to store the downloaded
                 make_path(getmlstargs.path)
                 getmlst.main(getmlstargs)
@@ -837,48 +837,72 @@ if __name__ == '__main__':
                                                 '-O /home/blais/PycharmProjects/MLST/Organism '
                                                 '-o Vibrio '
                                                 '-S MLST')
-            parser.add_argument('-p', '--path', required=False, default=os.getcwd(),
+            parser.add_argument('-p', '--path',
+                                required=False,
+                                default=os.getcwd(),
                                 help='Specify path for custom folder locations. If you don\'t supply additional paths'
                                      'e.g. sequencepath, allelepath, or organismpath, then the program will look for '
                                      'MLST files in .../path/Organism, and the query sequences in ../path/sequences. '
                                      'If you don\'t input a path, then the current working directory will be used.')
-            parser.add_argument('-c', '--cutoff', required=False, default=98,
+            parser.add_argument('-c', '--cutoff',
+                                required=False,
+                                default=98,
                                 help='The percent identity cutoff value for BLAST matches. Default is 98%)')
-            parser.add_argument('-s', '--sequencepath', required=False,
+            parser.add_argument('-s', '--sequencepath',
+                                required=False,
                                 default='/home/blais/PycharmProjects/MLST/sequences',
                                 help='The location of the query sequence files')
-            parser.add_argument('-a', '--alleleprofilepath', required=False,
+            parser.add_argument('-a', '--alleleprofilepath',
+                                required=False,
                                 help='The path of the folder containing the two folders containing '
                                      'the allele files, and the profile file e.g. /folder/path/Organism/Vibrio/cgMLST'
                                      'Please note the requirements for the profile database in the readme')
-            parser.add_argument('-O', '--organismpath', required=False,
+            parser.add_argument('-O', '--organismpath',
+                                required=False,
                                 help='The path of the folder containing the organism folders e.g. folder/path/Organism')
-            parser.add_argument('-o', '--organism', required=False,
+            parser.add_argument('-o', '--organism',
+                                required=False,
                                 help='The name of the organism you wish to type. Must match the folder name containing '
                                      'the schemes e.g. Salmonella')
-            parser.add_argument('-S', '--scheme', required=False,
+            parser.add_argument('-S', '--scheme',
+                                required=False,
                                 help='The scheme you wish to use. Must match the folder name containing the scheme e.g.'
                                      ' cgMLST. Furthermore, this folder must contain two folders: "alleles" and '
                                      '"profile". The alleles folder contains the allele files in .fasta format, and the'
                                      ' profile folder contains the profile in .txt format. Please note the requirements'
                                      ' for the profile in the readme')
-            parser.add_argument('-u', '--updateprofilefalse', required=False, action='store_false', default=True,
-                                help='By default, the program automatically creates new sequence profiles and appends '
-                                     'these profiles to the profile file. If, instead, you wish to wish to see the '
-                                     'closest match of a query genome to known reference profiles, set this to False.')
-            parser.add_argument('-U', '--updateallelefalse', required=False, action='store_false', default=True,
-                                help='By default, the program automatically creates new alleles and appends these '
-                                     'alleles to the appropriate file. If, instead, you wish to wish to see the '
-                                     'closest match of a query genome to known reference alleles, set this to False.')
-            parser.add_argument('-r', '--reportdirectory', default='{}/reports'.format(os.getcwd()),
+            parser.add_argument('-u', '--updateprofilefalse',
+                                required=False,
+                                action='store_true',
+                                default=False,
+                                help='By default, the program does not create new sequence profiles and appends '
+                                     'these profiles to the profile file. Including this flag enables this '
+                                     'functionality.')
+            parser.add_argument('-U', '--updateallelefalse',
+                                required=False,
+                                action='store_true',
+                                default=False,
+                                help='By default, the program does not create new alleles and appends these '
+                                     'alleles to the appropriate file. Including this flag enables this functionality')
+            parser.add_argument('-r', '--reportdirectory',
+                                default='{}/reports'.format(os.getcwd()),
                                 help='Path to store the reports defaults to os.getcwd()/reports')
-            parser.add_argument('-d', '--dumpdata', action='store_true', help='Optionally dump :self.resultprofile'
-                                'dictionary to file. Useful when creating a reference database against which novel'
-                                'sequences can be compared. The .json file will be placed in the reports folder ')
+            parser.add_argument('-d', '--dumpdata',
+                                action='store_true',
+                                help='Optionally dump :self.resultprofile dictionary to file. Useful when creating a '
+                                     'reference database against which novel sequences can be compared. '
+                                     'The .json file will be placed in the reports folder ')
             parser.add_argument('-g', '--getmlst', action='store_true', help='Optionally get the newest profile'
                                 'and alleles for your analysis from pubmlst.org')
-            parser.add_argument('-b', '--bestreferencegenome', action='store_true', help='Optionally find the refseq '
-                                'genome with the largest number of rMLST alleles in common with the strain of interest')
+            parser.add_argument('-b', '--bestreferencegenome',
+                                action='store_true',
+                                help='Optionally find the refseq genome with the largest number of rMLST alleles in '
+                                     'common with the strain of interest')
+            parser.add_argument('-t', '--type',
+                                required=False,
+                                default='MLST',
+                                help='Specify the analysis type (MLST or rMLST now. More types of analysis may become'
+                                     'available in the future')
 
             # Get the arguments into an object
             args = parser.parse_args()
@@ -897,6 +921,7 @@ if __name__ == '__main__':
             self.datadump = args.dumpdata
             self.getmlst = args.getmlst
             self.bestreferencegenome = args.bestreferencegenome
+            self.analysistype = args.type
 
             # Initialise variables
             self.genepath = ''
@@ -905,7 +930,7 @@ if __name__ == '__main__':
             self.profile = ''
             self.strains = []
             self.samples = []
-            # self.schemepath = ''
+            self.start = time.time()
             # Get a list of the sequence files
             self.strainer()
             self.organismchooser()
@@ -917,8 +942,8 @@ if __name__ == '__main__':
             self.runmetadata = Parser()
             # Get the appropriate variables from the metadata file
             self.path = self.runmetadata.path
-            self.start = time.time()
-            self.analysistype = self.runmetadata.scheme
+            self.start = self.runmetadata.start
+            self.analysistype = self.runmetadata.scheme if self.runmetadata.scheme else self.runmetadata.analysistype
             self.alleles = self.runmetadata.alleles
             self.profile = self.runmetadata.profile
             self.cutoff = self.runmetadata.cutoff
@@ -981,3 +1006,6 @@ class PipelineInit(object):
         # Get the alleles and profile into the metadata
         self.strainer()
         MLST(self)
+
+# -a /home/blais/PycharmProjects/MLST/organism/Escherichia/MLST -s /home/blais/PycharmProjects/MLST/sequences
+

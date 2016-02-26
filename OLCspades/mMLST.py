@@ -347,17 +347,15 @@ class MLST(object):
                                             .keys()[0])][sortedrefallele] = str(self.bestdict[genome][gene].values()[0])
                                 else:
                                     self.resultprofile[genome][sequencetype][sortedmatches][gene][
-                                        self.bestdict[genome][gene]
-                                            .keys()[0]] = str(self.bestdict[genome][gene].values()[0])
+                                        self.bestdict[genome][gene].keys()[0]] \
+                                        = str(self.bestdict[genome][gene].values()[0])
                     # Add the new profile to the profile file (if the option is enabled)
                     if self.updateprofile:
                         self.reprofiler(int(header), sample.mlst.profile[self.analysistype][0], genome)
                 elif sortedmatches == 0:
                     for gene in sample.mlst.genelist[self.analysistype]:
                         # Populate the profile of results with 'negative' values for sequence type and sorted matches
-                        self.resultprofile[genome]['0'][sortedmatches][gene][self.bestdict[genome][gene]
-                                                                             .keys()[0]] = str(self.bestdict[genome]
-                                                                                               [gene].values()[0])
+                        self.resultprofile[genome]['NA'][sortedmatches][gene]['NA'] = 0
                     # Add the new profile to the profile file (if the option is enabled)
                     if self.updateprofile:
                         self.reprofiler(int(header), sample.mlst.profile[self.analysistype][0], genome)
@@ -512,7 +510,7 @@ class MLST(object):
                         # Set the allele and percent id from the dictionary's keys and values, respectively
                         allele = self.resultprofile[sample.name][seqtype][matches][gene].keys()[0]
                         percentid = self.resultprofile[sample.name][seqtype][matches][gene].values()[0]
-                        if refallele != allele:
+                        if refallele and refallele != allele:
                             if 0 < percentid < 100:
                                 row += '{} ({}%),'.format(allele, percentid)
                             else:
@@ -678,6 +676,8 @@ if __name__ == '__main__':
             # Populate the metadata object. This object will be populated to mirror the objects created in the
             # genome assembly pipeline. This way this script will be able to be used as a stand-alone, or as part
             # of a pipeline
+            assert self.strains, 'Could not find any files with an extension starting with "fa" in {}. Please check' \
+                                 'to ensure that your sequence path is correct'.format(self.sequencepath)
             for sample in self.strains:
                 # Create the object
                 metadata = MetadataObject()
@@ -695,73 +695,38 @@ if __name__ == '__main__':
                 self.samples.append(metadata)
 
         def organismchooser(self):
-            """Allows the user to choose which organism to be used in the analyses"""
-            # Initialise a count variable to be used in extracting the desired entry from a list of organisms
-            orgcount = 0
-            schemecount = 0
-            # If the path of the folder containing the allele and profile subfolders is provided
-            if self.allelepath:
-                # Remove and previously created blast database files
-                blastdatabaseclearer(self.allelepath)
+            """Find the alleles and profiles based on inputs"""
+            if self.analysistype == 'MLST':
+                if not self.allelepath:
+                    # If the name of the organism to analyse was provided
+                    assert self.organism, 'Need to provide either a path to the alleles or an organism name'
+                    self.allelepath = '{}{}'.format(self.path, self.organism)
+                    assert os.path.isdir(self.allelepath), 'Cannot find {}. Please ensure that the folder exists, or ' \
+                                                           'use the -g option to download the {} MLST scheme'\
+                        .format(self.allelepath, self.organism)
+                # If the -g flag was included, download the appropriate MLST scheme for the organism
+                if self.getmlst and self.organism:
+                    self.getmlsthelper()
+                # Tries to get the organism name for the folder containing the alleles
+                self.organism = self.organism if self.organism else os.path.split(self.allelepath)[-1]
+                if self.cleardatabases:
+                    # Remove and previously created blast database files (if desired)
+                    blastdatabaseclearer(self.allelepath)
                 # Create lists of the alleles, combined alleles, and the profile
                 self.alleles = glob('{}/*.tfa'.format(self.allelepath))
                 self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
                 # Get the .txt profile file name and path into a variable
                 self.profile = glob('{}/*.txt'.format(self.allelepath))
+            # rMLST analyses are slightly different; alleles cannot be downloaded in the same fashion as MLST alleles,
+            # and the alleles have different file extensions
             else:
-                # If the name of the organism to analyse was provided
-                if not self.organism:
-                    # Get a list of the organisms in the (default) Organism subfolder
-                    if not self.organismpath:
-                        organismlist = glob('{}organism/*'.format(self.path))
-                    elif self.organismpath:
-                        organismlist = glob('{}*'.format(self.organismpath))
-                    else:
-                        organismlist = []
-                    # Iterate through the sorted list
-                    for folder in sorted(organismlist):
-                        # Ensure that folder is, in actuality, a folder
-                        if os.path.isdir(folder):
-                            # Print out the folder names and the count
-                            print "[{}]: {}".format(orgcount, os.path.split(folder)[1])
-                            orgcount += 1
-                    # Get the user input - the number entered corresponds to the list index
-                    response = input("Please select an organism: ")
-                    # Get the organism path into a variable
-                    organism = sorted(organismlist)[int(response)]
-                    self.organism = os.path.split(organism)[1]
-                    self.organismpath = self.organismpath if self.organismpath else '{}organism/{}' \
-                        .format(self.path, self.organism)
-                # If the name wasn't provided
-                else:
-                    # Set the organism path as the path + Organism + organism name
-                    self.organismpath = '{}organism/{}'.format(self.path, self.organism)
-                if not self.scheme:
-                    schemelist = glob('{}/*'.format(self.organismpath))
-                    # Iterate through the sorted list
-                    for folder in sorted(schemelist):
-                        # Ensure that folder is, in actuality, a folder
-                        if os.path.isdir(folder):
-                            # Print out the folder names and the count
-                            print '[{}]: {}'.format(schemecount, os.path.split(folder)[1])
-                            schemecount += 1
-                    # Same as above
-                    schemeresponse = input("Please select a typing scheme:")
-                    self.allelepath = sorted(schemelist)[int(schemeresponse)]
-                    # noinspection PyTypeChecker
-                    self.scheme = os.path.split(self.allelepath)[1]
-                else:
-                    # Otherwise set scheme as follows:
-                    self.allelepath = '{}/{}'.format(self.organismpath, self.scheme)
-                # Set the variables as above
-                blastdatabaseclearer(self.allelepath)
-                # Optionally get the newest profiles and alleles from pubmlst
-                if self.getmlst and self.organism:
-                    self.getmlsthelper()
-                # Create lists of the alleles, and the profile
-                self.alleles = glob('{}/*.tfa'.format(self.allelepath))
-                # Set the name and path of the profile file
-                self.profile = glob('{}/*.txt'.format(self.allelepath))
+                if not self.allelepath:
+                    self.allelepath = '{}rMLST'.format(self.path)
+                    # If the name of the organism to analyse was provided
+                    assert os.path.isdir(self.allelepath), 'Cannot find directory containing rMLST alleles and ' \
+                                                           'profile in {}'.format(self.path)
+                # Create lists of the alleles, combined alleles, and the profile
+                self.alleles = glob('{}/*.fas'.format(self.allelepath))
                 self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
                 # If the combined alleles files doesn't exist
                 size = 0
@@ -769,7 +734,8 @@ if __name__ == '__main__':
                     size = os.stat(self.combinedalleles[0]).st_size
                 if not self.combinedalleles or size == 0:
                     # Open the combined allele file to write
-                    with open('{}/{}_combined.fasta'.format(self.allelepath, self.scheme), 'wb') as combinedfile:
+                    printtime('Creating combined rMLST allele file', self.start)
+                    with open('{}/rMLST_combined.fasta'.format(self.allelepath), 'wb') as combinedfile:
                         # Open each allele file
                         for allele in sorted(self.alleles):
                             # with open(allele, 'rU') as fasta:
@@ -787,6 +753,8 @@ if __name__ == '__main__':
                                 SeqIO.write(record, combinedfile, 'fasta')
                     # Set the combined alleles file name and path
                     self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
+                    # Get the .txt profile file name and path into a variable
+                    self.profile = glob('{}/*.txt'.format(self.allelepath))
             # Add the appropriate variables to the metadata object for each sample
             self.scheme = self.scheme if self.scheme else self.analysistype
             for sample in self.samples:
@@ -805,23 +773,25 @@ if __name__ == '__main__':
             printtime('Downloading {} MLST scheme from pubmlst.org'.format(self.organism), self.start)
             # Initialise a set to for the organism(s) for which new alleles and profiles are desired
             organismset = set()
+            # As there are multiple profiles for certain organisms, this dictionary has the schemes I use as values
             organismdictionary = {'Escherichia': 'Escherichia coli#1',
                                   'Vibrio': 'Vibrio parahaemolyticus',
-                                  'Listeria': 'Listeria',
-                                  'Campylobacter': 'Campylobacter jejuni',
-                                  'Salmonella': 'Salmonella',
-                                  'Staphylococcus': 'Staphylococcus'}
+                                  'Campylobacter': 'Campylobacter jejuni'}
             # rMLST alleles cannot be fetched in the same way
             if self.scheme != 'rMLST':
-                # Add the organism to the set
-                organismset.add(organismdictionary[self.organism])
+                # Allow for a genus not in the dictionary being specified
+                try:
+                    organismset.add(organismdictionary[self.organism])
+                except KeyError:
+                    # Add the organism to the set
+                    organismset.add(self.organism)
             for organism in organismset:
                 # Create the object to store the argument attributes to feed to getmlst
                 getmlstargs = GenObject()
                 getmlstargs.species = organism
                 getmlstargs.repository_url = 'http://pubmlst.org/data/dbases.xml'
                 getmlstargs.force_scheme_name = False
-                getmlstargs.path = '{}{}/{}'.format(self.path, self.organism, self.scheme)
+                getmlstargs.path = '{}{}'.format(self.path, self.organism)
                 # Create the path to store the downloaded
                 make_path(getmlstargs.path)
                 getmlst.main(getmlstargs)
@@ -832,56 +802,45 @@ if __name__ == '__main__':
                                                 'query, and types genome based on typing profile. Adds novel alleles '
                                                 'and profiles to the appropriate files. '
                                                 'Example command: '
-                                                '-p /home/blais/PycharmProjects/MLST  '
-                                                '-s /home/blais/PycharmProjects/MLST/sequences '
-                                                '-O /home/blais/PycharmProjects/MLST/Organism '
+                                                'python mMLST.py'
+                                                '-p /home/git/MLST  '
+                                                '-s /home/git/MLST/sequences '
+                                                '-O /home/git/MLST/Organism '
                                                 '-o Vibrio '
                                                 '-S MLST')
             parser.add_argument('-p', '--path',
-                                required=False,
                                 default=os.getcwd(),
                                 help='Specify path for custom folder locations. If you don\'t supply additional paths'
                                      'e.g. sequencepath, allelepath, or organismpath, then the program will look for '
                                      'MLST files in .../path/Organism, and the query sequences in ../path/sequences. '
                                      'If you don\'t input a path, then the current working directory will be used.')
             parser.add_argument('-c', '--cutoff',
-                                required=False,
                                 default=98,
                                 help='The percent identity cutoff value for BLAST matches. Default is 98%)')
             parser.add_argument('-s', '--sequencepath',
-                                required=False,
-                                default='/home/blais/PycharmProjects/MLST/sequences',
                                 help='The location of the query sequence files')
             parser.add_argument('-a', '--alleleprofilepath',
-                                required=False,
                                 help='The path of the folder containing the two folders containing '
                                      'the allele files, and the profile file e.g. /folder/path/Organism/Vibrio/cgMLST'
                                      'Please note the requirements for the profile database in the readme')
             parser.add_argument('-O', '--organismpath',
-                                required=False,
                                 help='The path of the folder containing the organism folders e.g. folder/path/Organism')
             parser.add_argument('-o', '--organism',
-                                required=False,
                                 help='The name of the organism you wish to type. Must match the folder name containing '
-                                     'the schemes e.g. Salmonella')
+                                     'the schemes e.g. Salmonella or "Clostridium botulinum" (note the quotes')
             parser.add_argument('-S', '--scheme',
-                                required=False,
                                 help='The scheme you wish to use. Must match the folder name containing the scheme e.g.'
                                      ' cgMLST. Furthermore, this folder must contain two folders: "alleles" and '
                                      '"profile". The alleles folder contains the allele files in .fasta format, and the'
                                      ' profile folder contains the profile in .txt format. Please note the requirements'
                                      ' for the profile in the readme')
             parser.add_argument('-u', '--updateprofilefalse',
-                                required=False,
                                 action='store_true',
-                                default=False,
                                 help='By default, the program does not create new sequence profiles and appends '
                                      'these profiles to the profile file. Including this flag enables this '
                                      'functionality.')
             parser.add_argument('-U', '--updateallelefalse',
-                                required=False,
                                 action='store_true',
-                                default=False,
                                 help='By default, the program does not create new alleles and appends these '
                                      'alleles to the appropriate file. Including this flag enables this functionality')
             parser.add_argument('-r', '--reportdirectory',
@@ -899,10 +858,14 @@ if __name__ == '__main__':
                                 help='Optionally find the refseq genome with the largest number of rMLST alleles in '
                                      'common with the strain of interest')
             parser.add_argument('-t', '--type',
-                                required=False,
                                 default='MLST',
                                 help='Specify the analysis type (MLST or rMLST now. More types of analysis may become'
                                      'available in the future')
+            parser.add_argument('-C', '--clearblastdatabases',
+                                action='store_true',
+                                help='By default, the BLAST database for your analysis are not deleted prior the '
+                                     'analyses. Potentially, the most up-to-date allele definitions will not be used. '
+                                     'Use the -C flag to enable the deletion of the databases')
 
             # Get the arguments into an object
             args = parser.parse_args()
@@ -911,7 +874,8 @@ if __name__ == '__main__':
             self.path = os.path.join(args.path, '')
             self.reportpath = os.path.join(args.reportdirectory, '')
             self.cutoff = float(args.cutoff)
-            self.sequencepath = os.path.join(args.sequencepath, '') if args.sequencepath else ''
+            self.sequencepath = os.path.join(args.sequencepath, '') if args.sequencepath else '{}sequences/'\
+                .format(self.path) if os.path.isdir('{}sequences'.format(self.path)) else self.path
             self.allelepath = os.path.join(args.alleleprofilepath, '') if args.alleleprofilepath else ''
             self.organismpath = os.path.join(args.organismpath, '') if args.organismpath else ''
             self.scheme = args.scheme
@@ -922,6 +886,7 @@ if __name__ == '__main__':
             self.getmlst = args.getmlst
             self.bestreferencegenome = args.bestreferencegenome
             self.analysistype = args.type
+            self.cleardatabases = args.clearblastdatabases
 
             # Initialise variables
             self.genepath = ''
@@ -1006,6 +971,3 @@ class PipelineInit(object):
         # Get the alleles and profile into the metadata
         self.strainer()
         MLST(self)
-
-# -a /home/blais/PycharmProjects/MLST/organism/Escherichia/MLST -s /home/blais/PycharmProjects/MLST/sequences
-

@@ -1,10 +1,13 @@
 #!/usr/bin/env python
-import os
 from glob import glob
 from subprocess import call
 from threading import Thread
-from accessoryFunctions import dotter, printtime
-__author__ = 'adamkoziol'
+from accessoryFunctions import *
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+__author__ = 'mike knowles, adamkoziol'
 
 
 class QualiMap(object):
@@ -59,71 +62,120 @@ class QualiMap(object):
     def map(self):
         while True:
             sample = self.mapqueue.get()
-            bamfile = sample.general.filenoext + '.bam'
+            bamfile = sample.general.filenoext + '_sorted'
+            sample.mapping.BamFile = sample.general.filenoext + '_sorted.bam'
             sample.general.bamfile = bamfile
             # Map the fastq file(s) to the assemblies
-            if not os.path.isfile(bamfile):
-                # Define the mapping call
-                if len(sample.general.trimmedfastqfiles) == 2:
-                    smaltmap = 'smalt map -o {} -f bam -n 24 -l pe {} {} {}' \
-                               .format(bamfile, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
-                                       sample.general.trimmedfastqfiles[1])
-                else:
-                    smaltmap = 'smalt map -o {} -f bam -n 24 {} {}' \
-                               .format(bamfile, sample.general.filenoext, sample.general.trimmedfastqfiles[0])
+            # Define the mapping call
+            if len(sample.general.trimmedfastqfiles) == 2:
+                # Paired-end system call. Note that the output from SMALT is piped into samtools sort to prevent
+                # the creation of intermediate, unsorted bam files
+                smaltmap = 'smalt map -f bam -n {} -l pe {} {} {} | samtools sort - {}' \
+                           .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
+                                   sample.general.trimmedfastqfiles[1], bamfile)
+            else:
+                smaltmap = 'smalt map -f bam -n {} {} {} | samtools sort - {}' \
+                           .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
+                                   bamfile)
+            # Populate metadata
+            sample.software.SMALT = self.smaltversion
+            sample.software.samtools = self.samversion
+            sample.commands.smaltsamtools = smaltmap
+            # Run the call if the sorted bam file doesn't exist
+            if not os.path.isfile(sample.mapping.BamFile):
                 # Run the command
                 call(smaltmap, shell=True, stdout=self.fnull, stderr=self.fnull)
             # Print a dot for each mapped file
             dotter()
             self.mapqueue.task_done()
 
-    def samtoolssort(self):
-        # Run the indexing threads
-        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile])):
-            # Send the threads to the merge method. :args is empty as I'm using
-            threads = Thread(target=self.sort, args=())
+    def __call__(self):
+        """Execute Qualimap on call"""
+        printtime('Reading BAM file for Qualimap output', self.start)
+        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != "NA"])):
+            # Send the threads to the merge method. :args is empty
+            threads = Thread(target=self.mapper, args=())
             # Set the daemon to true - something to do with thread management
             threads.setDaemon(True)
             # Start the threading
             threads.start()
         for sample in self.metadata:
-            # Index the assembly files
-            self.sortqueue.put(sample)
-        self.sortqueue.join()
+            if sample.general.bestassemblyfile != "NA":
+                # Set the results folder
+                sample.general.QualimapResults = '{}/qualimap_results'.format(sample.general.outputdirectory)
+                # Create this results folder if necessary
+                make_path(sample.general.QualimapResults)
+                sample.software.Qualimap = self.version
+                # Define the Qualimap call
+                sample.commands.Qualimap = 'qualimap bamqc -bam {} -outdir {}'. \
+                    format(sample.mapping.BamFile, sample.general.QualimapResults)
+                self.qqueue.put(sample)
+            else:
+                sample.commands.Qualimap = "NA"
+        self.qqueue.join()
 
-    def sort(self):
-        from Bio.Sequencing.Applications import SamtoolsMpileupCommandline
+    def mapper(self):
         while True:
-            sample = self.sortqueue.get()
-            sortedbamfile = sample.general.filenoext + '_sorted.bam'
-            sample.general.sortedbamfile = sortedbamfile
-            # Map the fastq file(s) to the assemblies
-            if not os.path.isfile(sortedbamfile):
-                pass
-                # Define the sorting call
-                # sortcall =
-            # Print a dot for each mapped file
-            dotter()
-            self.sortqueue.task_done()
+            sample = self.qqueue.get()
+            if sample.general.bestassemblyfile != "NA":
+                # Define the Qualimap log and report files
+                log = os.path.join(sample.general.QualimapResults, "qualimap.log")
+                reportfile = os.path.join(sample.general.QualimapResults, 'genome_results.txt')
+                # Initialise a dictionary to hold the Qualimap results
+                qdict = dict()
+                # If the report file doesn't exist, run Qualimap, and print logs to the log file
+                if not os.path.isfile(reportfile):
+                    execute(sample.commands.Qualimap, log)
+                # Otherwise open the report
+                else:
+                    with open(reportfile) as report:
+                        # Read the report
+                        for line in report:
+                            # Sanitise the keys and values using self.analyze
+                            key, value = self.analyze(line)
+                            # If the keys and values exist, enter them into the dictionary
+                            if (key, value) != (None, None):
+                                qdict[key] = value
+                # If there are values in the dictionary
+                if qdict:
+                    # Make new category for Qualimap results and populate this category with the report data
+                    setattr(sample, "mapping", GenObject(qdict))
+            self.qqueue.task_done()
+
+    @staticmethod
+    def analyze(line):
+        # Split on ' = '
+        if ' = ' in line:
+            key, value = line.split(' = ')
+            # Replace occurrences of
+            key = key.replace('number of ', "").replace("'", "").title().replace(" ", "")
+            # Should we keep comma separation?
+            value = value.replace(",", "").replace(" ", "").rstrip()
+        # Otherwise set the keys and values to None
+        else:
+            key, value = None, None
+        return key, value
 
     def __init__(self, inputobject):
         from Queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.start
+        self.cpus = inputobject.cpus
         # Define /dev/null
         self.fnull = open(os.devnull, 'wb')
+        self.smaltversion = get_version(['smalt', 'version']).split('\n')[2].split()[1]
+        self.samversion = get_version(['samtools']).split('\n')[2].split()[1]
+        self.version = get_version(['qualimap', '--help']).split('\n')[4].split()[1]
         # Initialise queues
         self.indexqueue = Queue()
         self.mapqueue = Queue()
         self.sortqueue = Queue()
+        self.qqueue = Queue()
         # Run smalt
         printtime('Indexing assemblies', self.start)
         self.smaltindex()
         printtime('Performing reference mapping', self.start)
         self.smaltmap()
-        # Sort the bam files
-        printtime('Sorting bam files', self.start)
-        self.samtoolssort()
 
 
 if __name__ == '__main__':
@@ -154,11 +206,14 @@ if __name__ == '__main__':
                 metadata.general.bestassembliespath = self.assemblypath
                 # Populate the .fastqfiles category of :self.metadata
                 metadata.general.trimmedfastqfiles = fastq
+                # Create the output directory path
+                metadata.general.outputdirectory = '{}{}'.format(self.path, strainname)
                 # Append the metadata for each sample to the list of samples
                 self.samples.append(metadata)
 
         def __init__(self):
             from argparse import ArgumentParser
+            import subprocess
             parser = ArgumentParser(description='Calculates coverage depth by mapping FASTQ reads against assemblies')
             parser.add_argument('-p', '--path',
                                 default=os.getcwd(),
@@ -170,7 +225,8 @@ if __name__ == '__main__':
             parser.add_argument('-f', '--fastq',
                                 help='Path to a folder of fastq files. If not provided, the script will look for '
                                      'fastq or .fastq.gz files in the path')
-
+            parser.add_argument('-t', '--threads',
+                                help='Number of threads. Default is the number of cores in the system')
             # Get the arguments into an object
             args = parser.parse_args()
             # Define variables from the arguments - there may be a more streamlined way to do this
@@ -178,7 +234,12 @@ if __name__ == '__main__':
             self.path = os.path.join(args.path, '')
             self.assemblypath = os.path.join(args.assemblies, '') if args.assemblies else self.path
             self.fastqpath = os.path.join(args.fastq, '') if args.fastq else self.path
-
+            # Use the argument for the number of threads to use, or default to the number of cpus in the system
+            self.cpus = args.threads if args.threads else int(subprocess.Popen("awk '/^processor/ { N++} END "
+                                                                               "{ print N }' /proc/cpuinfo",
+                                                                               shell=True,
+                                                                               stdout=subprocess.PIPE)
+                                                              .communicate()[0].rstrip())
             # Initialise variables
             self.strains = []
             self.samples = []
@@ -195,8 +256,9 @@ if __name__ == '__main__':
             self.assemblypath = self.runmetadata.assemblypath
             self.fastqpath = self.runmetadata.fastqpath
             self.start = start
-            # Run the analyses
-            QualiMap(self)
+            self.cpus = self.runmetadata.cpus
+            # Run the analyses - the extra set of parentheses is due to using the __call__ method in the class
+            QualiMap(self)()
 
     # Run the class
     from time import time

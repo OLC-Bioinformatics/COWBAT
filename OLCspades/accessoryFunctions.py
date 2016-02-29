@@ -5,6 +5,18 @@ import errno
 __author__ = 'adamkoziol'
 
 
+def get_version(exe):
+    """
+    :param exe: :type list required
+    """
+    assert isinstance(exe, list)
+    return Popen(exe, stdout=PIPE, stderr=STDOUT).stdout.read()
+
+
+def logstr(*args):
+    yield "{}\n".__add__("-".__mul__(60)).__mul__(len(args)).format(*args)
+
+
 def make_path(inpath):
     """
     from: http://stackoverflow.com/questions/273192/check-if-a-directory-exists-and-create-it-if-necessary \

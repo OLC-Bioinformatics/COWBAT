@@ -11,6 +11,8 @@ __author__ = 'adamkoziol'
 class Quality(object):
 
     def fastqcthreader(self, level):
+        from accessoryFunctions import GenObject, get_version
+        from glob import glob
         printtime('Running quality control on {} fastq files'.format(level), self.start)
         for sample in self.metadata:
             if type(sample.general.fastqfiles) is list:
@@ -32,13 +34,23 @@ class Quality(object):
                 except KeyError:
                     fastqfiles = ""
                     pass
+            elif level == 'trimmedcorrected':
+                # Add the location of the corrected fastq files
+                sample.general.trimmedcorrectedfastqfiles = sorted(glob('{}/corrected/*trimmed*.gz'
+                                                                        .format(sample.general.spadesoutput)))
+                # Try except loop to allow for missing samples
+                try:
+                    fastqfiles = sample.general.trimmedcorrectedfastqfiles
+                except KeyError:
+                    fastqfiles = ""
+                    pass
             else:
                 fastqfiles = sample.general.fastqfiles
             # As the metadata can be populated with 'NA' (string) if there are no fastq files, only process if
             # :fastqfiles is a list
             if type(fastqfiles) is list:
                 # Set the output directory location
-                outdir = '{}/fastqc/fastqc{}'.format(os.path.split(fastqfiles[0])[0], level)
+                outdir = '{}/fastqc/fastqc{}'.format(sample.general.outputdirectory, level)
                 # Separate system calls for paired and unpaired fastq files
                 if len(fastqfiles) == 2:
                     # Call fastqc with -q (quiet), -o (output directory), -d (where to store temp files) flags, and
@@ -48,6 +60,10 @@ class Quality(object):
                     fastqccall = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
                 # Add the arguments to the queue
                 self.qcqueue.put((fastqccall, outdir))
+                # Create the .software attribute for the metadata
+                sample.software = GenObject()
+                sample.software.fastqc = get_version(['fastqc', '-v']).split('\n')[0].split()[1]
+                sample.commands.fastqccall = {level: fastqccall}
         # Wait on the trimqueue until everything has been processed
         self.qcqueue.join()
         self.qcqueue = Queue()
@@ -98,12 +114,13 @@ class Quality(object):
                 # http://seqanswers.com/forums/showthread.php?t=42776
                 if len(fastqfiles) == 2:
                     cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
-                    bbdukcall = "bbduk.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=r " \
-                        "k=25 mink=11 ref={}/resources/adapters.fa hdist=1 tpe tbo"\
+                    bbdukcall = "bbduk.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
+                        "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
                         .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
                 elif len(fastqfiles) == 1:
-                    bbdukcall = "bbduk.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=r k=25 mink=11 " \
-                        "ref={}/resources/adapters.fa hdist=1".format(fastqfiles[0], cleanforward, self.bbduklocation)
+                    bbdukcall = "bbduk.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                        "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                        .format(fastqfiles[0], cleanforward, self.bbduklocation)
                 else:
                     bbdukcall = ""
                 # Add the arguments to the queue

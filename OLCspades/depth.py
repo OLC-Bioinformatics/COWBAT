@@ -14,7 +14,7 @@ class QualiMap(object):
 
     def smaltindex(self):
         # Run the indexing threads
-        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile])):
+        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile])):
             # Send the threads to the merge method. :args is empty as I'm using
             threads = Thread(target=self.index, args=())
             # Set the daemon to true - something to do with thread management
@@ -30,16 +30,17 @@ class QualiMap(object):
         while True:
             sample = self.indexqueue.get()
             # Set the name of the indexed file name
-            filenoext = sample.general.bestassemblyfile.split('.')[0]
+            filenoext = sample.general.filteredfile.split('.')[0]
             sample.general.filenoext = filenoext
             smifile = filenoext + '.smi'
+            # Define the indexing command
+            indexcommand = 'cd {} && smalt index {} {}'\
+                .format(sample.general.bestassembliespath, filenoext, sample.general.filteredfile)
             # Index the appropriate files if they do not exist
             if not os.path.isfile(smifile):
-                # Define the indexing command
-                indexcommand = 'cd {} && smalt index {} {}'\
-                    .format(sample.general.bestassembliespath, filenoext, sample.general.bestassemblyfile)
                 # Run the command
                 call(indexcommand, shell=True, stdout=self.fnull, stderr=self.fnull)
+            sample.commands.smaltindex = indexcommand
             # Print a dot for each indexed file
             dotter()
             # Signal that the thread's task is complete
@@ -47,7 +48,7 @@ class QualiMap(object):
 
     def smaltmap(self):
         # Run the indexing threads
-        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile])):
+        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile])):
             # Send the threads to the merge method. :args is empty as I'm using
             threads = Thread(target=self.map, args=())
             # Set the daemon to true - something to do with thread management
@@ -67,22 +68,25 @@ class QualiMap(object):
             sample.general.bamfile = bamfile
             # Map the fastq file(s) to the assemblies
             # Define the mapping call
-            if len(sample.general.trimmedfastqfiles) == 2:
+            if len(sample.general.fastqfiles) == 2:
                 # Paired-end system call. Note that the output from SMALT is piped into samtools sort to prevent
                 # the creation of intermediate, unsorted bam files
-                smaltmap = 'smalt map -f bam -n {} -l pe {} {} {} | samtools sort - {}' \
-                           .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
-                                   sample.general.trimmedfastqfiles[1], bamfile)
+                smaltmap = 'smalt map -f bam -n {} -x {} {} {} | samtools sort - {}' \
+                           .format(self.cpus, sample.general.filenoext, sample.general.fastqfiles[0],
+                                   sample.general.fastqfiles[1], bamfile)
             else:
                 smaltmap = 'smalt map -f bam -n {} {} {} | samtools sort - {}' \
-                           .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
+                           .format(self.cpus, sample.general.filenoext, sample.general.fastqfiles[0],
                                    bamfile)
             # Populate metadata
             sample.software.SMALT = self.smaltversion
             sample.software.samtools = self.samversion
             sample.commands.smaltsamtools = smaltmap
             # Run the call if the sorted bam file doesn't exist
-            if not os.path.isfile(sample.mapping.BamFile):
+            size = 0
+            if os.path.isfile(sample.mapping.BamFile):
+                size = os.stat(sample.mapping.BamFile[0]).st_size
+            if not os.path.isfile(sample.mapping.BamFile) or size == 0:
                 # Run the command
                 call(smaltmap, shell=True, stdout=self.fnull, stderr=self.fnull)
             # Print a dot for each mapped file
@@ -92,7 +96,7 @@ class QualiMap(object):
     def __call__(self):
         """Execute Qualimap on call"""
         printtime('Reading BAM file for Qualimap output', self.start)
-        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != "NA"])):
+        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile != "NA"])):
             # Send the threads to the merge method. :args is empty
             threads = Thread(target=self.mapper, args=())
             # Set the daemon to true - something to do with thread management
@@ -100,7 +104,7 @@ class QualiMap(object):
             # Start the threading
             threads.start()
         for sample in self.metadata:
-            if sample.general.bestassemblyfile != "NA":
+            if sample.general.filteredfile != "NA":
                 # Set the results folder
                 sample.general.QualimapResults = '{}/qualimap_results'.format(sample.general.outputdirectory)
                 # Create this results folder if necessary
@@ -117,7 +121,7 @@ class QualiMap(object):
     def mapper(self):
         while True:
             sample = self.qqueue.get()
-            if sample.general.bestassemblyfile != "NA":
+            if sample.general.filteredfile != "NA":
                 # Define the Qualimap log and report files
                 log = os.path.join(sample.general.QualimapResults, "qualimap.log")
                 reportfile = os.path.join(sample.general.QualimapResults, 'genome_results.txt')
@@ -159,7 +163,7 @@ class QualiMap(object):
     def __init__(self, inputobject):
         from Queue import Queue
         self.metadata = inputobject.runmetadata.samples
-        self.start = inputobject.start
+        self.start = inputobject.starttime
         self.cpus = inputobject.cpus
         # Define /dev/null
         self.fnull = open(os.devnull, 'wb')
@@ -200,8 +204,8 @@ if __name__ == '__main__':
                 metadata.name = strainname
                 # Create the .general attribute
                 metadata.general = GenObject()
-                # Set the .general.bestassembly file to be the name and path of the sequence file
-                metadata.general.bestassemblyfile = strain
+                # Set the .general.filteredfile file to be the name and path of the sequence file
+                metadata.general.filteredfile = strain
                 # Set the path of the assembly file
                 metadata.general.bestassembliespath = self.assemblypath
                 # Populate the .fastqfiles category of :self.metadata
@@ -255,7 +259,7 @@ if __name__ == '__main__':
             self.path = self.runmetadata.path
             self.assemblypath = self.runmetadata.assemblypath
             self.fastqpath = self.runmetadata.fastqpath
-            self.start = start
+            self.starttime = start
             self.cpus = self.runmetadata.cpus
             # Run the analyses - the extra set of parentheses is due to using the __call__ method in the class
             QualiMap(self)()

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from accessoryFunctions import printtime, execute
+from accessoryFunctions import *
 import os
 __author__ = 'adamkoziol'
 
@@ -68,6 +68,8 @@ class Spades(object):
             self.assemblequeue.put((spadescommand, sample.general.spadesoutput))
             # Add the command to the metadata
             sample.commands.spadescall = spadescommand
+            # Add the version to the metadata
+            sample.software.spades = get_version(['spades.py']).split('\n')[0].split()[3]
         # Join the threads
         self.assemblequeue.join()
         # Filter contigs shorter than 1000 bp, and rename remaining contigs with sample.name
@@ -116,6 +118,8 @@ class Spades(object):
                     SeqIO.write(over1000bp, formatted, 'fasta')
             # If the filtered file was successfully created, copy it to the BestAssemblies folder
             if os.path.isfile(filteredfile):
+                # Add the name and path of the filtered file to the metadata
+                sample.general.filteredfile = filteredfile
                 # Set the assemblies path
                 sample.general.bestassembliespath = '{}BestAssemblies'.format(self.path)
                 # Make the path (if necessary)

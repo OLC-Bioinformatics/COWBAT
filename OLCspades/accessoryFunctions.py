@@ -87,9 +87,17 @@ def execute(command, outfile=""):
     # Initialise the starting time
     start = int(time.time())
     maxtime = 0
-    print command
+    # Removing Shell=True to prevent excess memory use thus shlex split if needed
+    if type(command) is not list:
+        import shlex
+        command = shlex.split(command)
     # Run the commands - direct stdout to PIPE and stderr to stdout
-    process = Popen(command, shell=True, stdout=PIPE, stderr=STDOUT)
+    # DO NOT USE subprocess.PIPE if not writing it!
+    if outfile:
+        process = Popen(command, stdout=PIPE, stderr=STDOUT)
+    else:
+        devnull = open(os.devnull, 'wb')
+        process = Popen(command, stdout=devnull, stderr=STDOUT)
     # Write the initial time
     sys.stdout.write('[{:}] '.format(time.strftime('%H:%M:%S')))
     # Create the output file - if not provided, then nothing should happen
@@ -194,6 +202,9 @@ class GenObject(object):
         else:
             self.datastore[key] = "NA"
 
+    def __delattr__(self, key):
+        del self.datastore[key]
+
 
 class MetadataObject(object):
     """Object to store static variables"""
@@ -214,6 +225,9 @@ class MetadataObject(object):
         else:
             self.datastore[key] = value
 
+    def __getitem__(self, item):
+        return self.datastore[item]
+
     def dump(self):
         """Prints only the nested dictionary values; removes __methods__ and __members__ attributes"""
         metadata = {}
@@ -223,5 +237,8 @@ class MetadataObject(object):
                 if isinstance(self.datastore[attr], str):
                     metadata[attr] = self.datastore[attr]
                 else:
-                    metadata[attr] = self.datastore[attr].datastore
+                    try:
+                        metadata[attr] = self.datastore[attr].datastore
+                    except AttributeError:
+                        print attr
         return metadata

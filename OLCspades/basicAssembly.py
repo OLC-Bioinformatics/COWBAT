@@ -36,8 +36,9 @@ class Basic(object):
                 # If there is an exception other than the file exists, raise it
                 if exception.errno != errno.EEXIST:
                     raise
-            # Initialise the general category
+            # Initialise the general and run categories
             metadata.general = GenObject()
+            metadata.run = GenObject()
             # Populate the .fastqfiles category of :self.metadata
             metadata.general.fastqfiles = [fastq for fastq in glob('{}/{}*.fastq*'.format(outputdir, fastqname))
                                            if 'trimmed' not in fastq]
@@ -46,9 +47,11 @@ class Basic(object):
             # Append the metadata to the list of samples
             self.samples.append(metadata)
         # Grab metadata from previous runs
-        metadata = metadataReader.MetadataReader(self)
-        # Update self.samples
-        self.samples = metadata.samples
+        previousmetadata = metadataReader.MetadataReader(self)
+        # Update self.samples (if required)
+        if previousmetadata.samples:
+            self.samples = previousmetadata.samples
+        # Run the read length method
         self.readlength()
 
     def readlength(self):
@@ -57,8 +60,11 @@ class Basic(object):
         from accessoryFunctions import GenObject
         # Iterate through the samples
         for sample in self.samples:
-            # Only perform this step if the forward and reverse lengths have not been loaded into the metadata
-            if not sample.run.forwardlength and not sample.run.reverselength:
+            try:
+                # Only perform this step if the forward and reverse lengths have not been loaded into the metadata
+                len(sample.run.forwardlength)
+                len(sample.run.reverselength)
+            except (TypeError, KeyError):
                 # Initialise the .header attribute for each sample
                 sample.header = GenObject()
                 sample.commands = GenObject()

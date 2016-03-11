@@ -2,6 +2,7 @@
 from subprocess import Popen, PIPE, STDOUT
 import os
 import errno
+from Bio.Application import _Option, AbstractCommandline, _Switch
 __author__ = 'adamkoziol'
 
 
@@ -242,3 +243,64 @@ class MetadataObject(object):
                     except AttributeError:
                         print attr
         return metadata
+
+
+class MakeBlastDB(AbstractCommandline):
+    """Base makeblastdb wrapper"""
+    def __init__(self, cmd='makeblastdb', **kwargs):
+        assert cmd is not None
+        extra_parameters = [
+            # Core:
+            _Switch(["-h", "h"],
+                    "Print USAGE and DESCRIPTION;  ignore other arguments."),
+            _Switch(["-help", "help"],
+                    "Print USAGE, DESCRIPTION and ARGUMENTS description; "
+                    "ignore other arguments."),
+            _Switch(["-version", "version"],
+                    "Print version number;  ignore other arguments."),
+            # Output configuration options
+            _Option(["-out", "out"],
+                    "Output file prefix for db.",
+                    filename=True,
+                    equate=False),
+            _Option(["-in", "db"],
+                    "The sequence create db with.",
+                    filename=True,
+                    equate=False),  # Should this be required?
+            _Option(["-dbtype", "dbtype"],
+                    "Molecule type of target db (string, 'nucl' or 'prot').",
+                    equate=False)]
+        try:
+            # Insert extra parameters - at the start just in case there
+            # are any arguments which must come last:
+            self.parameters = extra_parameters + self.parameters
+        except AttributeError:
+            # Should we raise an error?  The subclass should have set this up!
+            self.parameters = extra_parameters
+        AbstractCommandline.__init__(self, cmd, **kwargs)
+
+
+def combinetargets(targets, targetpath):
+    """
+    :param targets: fasta gene targets to combine
+    :param targetpath: folder containing the targets
+    """
+    from Bio import SeqIO
+    make_path(targetpath)
+    # Open the combined allele file to write
+    with open('{}/combinedtargets.tfa'.format(targetpath), 'wb') as combinedfile:
+        # Open each target file
+        for target in sorted(targets):
+            # with open(allele, 'rU') as fasta:
+            for record in SeqIO.parse(open(target, 'rU'), 'fasta'):
+                # Extract the sequence record from each entry in the multifasta
+                # Replace and dashes in the record.id with underscores
+                record.id = record.id.replace('-', '_')
+                # Remove and dashes or 'N's from the sequence data - makeblastdb can't handle sequences
+                # with gaps
+                record.seq._data = record.seq._data.replace('-', '').replace('N', '')
+                # Clear the name and description attributes of the record
+                record.name = ''
+                record.description = ''
+                # Write each record to the combined file
+                SeqIO.write(record, combinedfile, 'fasta')

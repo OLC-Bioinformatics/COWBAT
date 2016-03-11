@@ -59,6 +59,7 @@ class RunSpades(object):
     def typing(self):
         import mMLST
         import quast
+        import GeneSeekr
         mMLST.PipelineInit(self, 'rmlst')
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
@@ -70,6 +71,14 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
         mMLST.PipelineInit(self, 'mlst')
         metadataprinter.MetadataPrinter(self)
+        # helper(args['marker'], args['input'], args['output'], args['cutoff'], args['anti'], args['threads'])
+        # GeneSeekr.helper('/home/blais/PycharmProjects/pythonGeneSeekr/Organism/Escherichia/query_genes/bait/'
+        #                  'customBait.fa',
+        #                  '/home/blais/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159',
+        #                  '/home/blais/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159/geneseekr',
+        #                  70,
+        #                  24)
+        GeneSeekr.PipelineInit(self, 'geneseekr')
 
 
     # TODO Dictreader - tsv to dictionary

@@ -56,7 +56,7 @@ class MLST(object):
             printtime('{} reference profile dump complete'.format(self.analysistype), self.start)
         # Optionally determine the closest reference genome from a pre-computed profile (this profile would have been
         # created using self.datadump
-        if self.bestreferencegenome and self.analysistype == 'rmlst':
+        if self.bestreferencegenome and self.analysistype.lower() == 'rmlst':
             printtime('Finding closest reference genomes'.format(self.analysistype), self.start)
             self.referencegenomefinder()
         # Remove the attributes from the object; they take up too much room on the .json report
@@ -150,6 +150,7 @@ class MLST(object):
             fnull = open(os.devnull, 'w')  # define /dev/null
             if not os.path.isfile(str(nhr)):  # if check for already existing dbs
                 # Create the databases
+                # TODO use MakeBLASTdb class
                 subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
                                             .format(fastapath, db)), stdout=fnull, stderr=fnull)
             dotter()
@@ -213,8 +214,9 @@ class MLST(object):
         for row in blastdict:
             # Calculate the percent identity and extract the bitscore from the row
             # Percent identity is the (length of the alignment - number of mismatches) / total subject length
-            percentidentity = (float(row['positives']) - float(row['gaps'])) / float(row['subject_length']) * 100
-            bitscore = float(row['bit_score'])
+            if row['subject_length'] is not None:
+                percentidentity = (float(row['positives']) - float(row['gaps'])) / float(row['subject_length']) * 100
+                bitscore = float(row['bit_score'])
             # Find the allele number and the text before the number for different formats
             allelenumber, gene = allelesplitter(row['subject_id'])
             # If the percent identity is 100, and there are no mismatches, the allele is a perfect match
@@ -231,7 +233,7 @@ class MLST(object):
                     # (not for rMLST analyses, which are allowed multiple allele matches)
                     else:
                         if bitscore > self.plusdict[sample.name][gene].values()[0].values() and \
-                                self.analysistype != 'rMLST':
+                                self.analysistype.lower() != 'rmlst':
                             # Clear the previous match
                             self.plusdict[sample.name][gene].clear()
                             # Populate the new match
@@ -658,6 +660,7 @@ class MLST(object):
                             sample.name][gene].keys()[0]] = '{:.2f}'.format(self.bestdict[
                                 sample.name][gene].values()[0])
                         sample[self.analysistype].referencegenome = sortedmatches[0]
+                        sample.general.referencegenus = sortedmatches[0].split('_')[0]
                         sample[self.analysistype].matchestoreferencegenome = sortedmatches[1]
                         sample[self.analysistype].mismatchestoreferencegenome = [0]
             dotter()
@@ -836,10 +839,10 @@ if __name__ == '__main__':
                                 record.description = ''
                                 # Write each record to the combined file
                                 SeqIO.write(record, combinedfile, 'fasta')
-                    # Set the combined alleles file name and path
-                    self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
-                    # Get the .txt profile file name and path into a variable
-                    self.profile = glob('{}/*.txt'.format(self.allelepath))
+                # Set the combined alleles file name and path
+                self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
+                # Get the .txt profile file name and path into a variable
+                self.profile = glob('{}/*.txt'.format(self.allelepath))
             # Add the appropriate variables to the metadata object for each sample
             self.scheme = self.scheme if self.scheme else self.analysistype
             for sample in self.samples:
@@ -863,7 +866,7 @@ if __name__ == '__main__':
                                   'Vibrio': 'Vibrio parahaemolyticus',
                                   'Campylobacter': 'Campylobacter jejuni'}
             # rMLST alleles cannot be fetched in the same way
-            if self.scheme != 'rMLST':
+            if self.scheme.lower() != 'rmlst':
                 # Allow for a genus not in the dictionary being specified
                 try:
                     organismset.add(organismdictionary[self.organism])
@@ -968,9 +971,10 @@ if __name__ == '__main__':
             self.organismpath = os.path.join(args.organismpath, '') if args.organismpath else ''
             self.referenceprofilepath = os.path.join(args.referenceprofile, '') if args.referenceprofile else \
                 '{}referenceGenomes/'.format(self.path)
-            assert os.path.isdir(self.referenceprofilepath), 'Cannot find {}. Please double check that you provided ' \
-                                                             'the proper path to the reference profile folder'\
-                                                             .format(self.referenceprofilepath)
+            if args.bestreferencegenome:
+                assert os.path.isdir(self.referenceprofilepath), 'Cannot find {}. Please double check that you ' \
+                                                                 'provided the proper path to the reference profile ' \
+                                                                 'folder'.format(self.referenceprofilepath)
             self.scheme = args.scheme
             self.organism = args.organism
             self.updateprofile = args.updateprofilefalse
@@ -1026,17 +1030,17 @@ class PipelineInit(object):
         for sample in self.runmetadata.samples:
             if sample.general.bestassemblyfile != 'NA':
                 setattr(sample, self.analysistype, GenObject())
-                if self.analysistype == 'rmlst':
+                if self.analysistype.lower() == 'rmlst':
                     self.alleles = glob('{}rMLST/*.fas'.format(self.referencefilepath))
                     self.profile = glob('{}rMLST/*.txt'.format(self.referencefilepath))
                     self.combinedalleles = glob('{}rMLST/*.fasta'.format(self.referencefilepath))
                     # Set the metadata file appropriately
                     sample[self.analysistype].alleledir = '{}rMLST/alleles/'.format(self.referencefilepath)
                 else:
-                    self.alleles = glob('{}{}/*.tfa'.format(self.referencefilepath, sample.general.referencegenus))
-                    self.profile = glob('{}{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
-                    self.combinedalleles = glob('{}{}/*.fasta'.format(self.referencefilepath,
-                                                                      sample.general.referencegenus))
+                    self.alleles = glob('{}MLST/{}/*.tfa'.format(self.referencefilepath, sample.general.referencegenus))
+                    self.profile = glob('{}MLST/{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
+                    self.combinedalleles = glob('{}MLST/{}/*.fasta'.format(self.referencefilepath,
+                                                                           sample.general.referencegenus))
                     sample[self.analysistype].alleledir = '{}{}/alleles/'.format(self.referencefilepath,
                                                                                  sample.general.referencegenus)
                 sample[self.analysistype].alleles = self.alleles

@@ -665,10 +665,11 @@ class MLST(object):
                         sample[self.analysistype].mismatchestoreferencegenome = [0]
         # Print the results to file
         with open('{}referencegenomes.csv'.format(self.reportpath), 'wb') as referencegenomereport:
-            row = 'Strain,referencegenome\n'
+            row = 'Strain,referencegenome,numberofmatches\n'
             for sample in self.metadata:
                 if sample[self.analysistype].reportdir != 'NA':
-                    row += '{},{}\n'.format(sample.name, sample[self.analysistype].referencegenome)
+                    row += '{},{},{}\n'.format(sample.name, sample[self.analysistype].referencegenome,
+                                               sample[self.analysistype].matchestoreferencegenome)
             referencegenomereport.write(row)
             dotter()
 

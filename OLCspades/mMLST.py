@@ -663,6 +663,13 @@ class MLST(object):
                         sample.general.referencegenus = sortedmatches[0].split('_')[0]
                         sample[self.analysistype].matchestoreferencegenome = sortedmatches[1]
                         sample[self.analysistype].mismatchestoreferencegenome = [0]
+        # Print the results to file
+        with open('{}referencegenomes.csv'.format(self.reportpath), 'wb') as referencegenomereport:
+            row = 'Strain,referencegenome\n'
+            for sample in self.metadata:
+                if sample[self.analysistype].reportdir != 'NA':
+                    row += '{},{}\n'.format(sample.name, sample[self.analysistype].referencegenome)
+            referencegenomereport.write(row)
             dotter()
 
     def __init__(self, inputobject):

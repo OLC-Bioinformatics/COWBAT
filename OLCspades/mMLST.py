@@ -660,6 +660,8 @@ class MLST(object):
                             sample.name][gene].keys()[0]] = '{:.2f}'.format(self.bestdict[
                                 sample.name][gene].values()[0])
                         sample[self.analysistype].referencegenome = sortedmatches[0]
+                        sample[self.analysistype].referencegenomepath = '{}{}.fa'\
+                            .format(self.referenceprofilepath, sortedmatches[0])
                         sample.general.referencegenus = sortedmatches[0].split('_')[0]
                         sample[self.analysistype].matchestoreferencegenome = sortedmatches[1]
                         sample[self.analysistype].mismatchestoreferencegenome = [0]

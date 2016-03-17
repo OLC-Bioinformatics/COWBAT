@@ -60,25 +60,57 @@ class RunSpades(object):
         import mMLST
         import quast
         import GeneSeekr
-        mMLST.PipelineInit(self, 'rmlst')
+        import sixteenS
+        import univec
+        import prophages
+        import plasmidfinder
+        import serotype
+        import virulence
+        import armi
+        import vtyper
+        # mMLST.PipelineInit(self, 'rmlst')
+        # # Print the metadata to file
+        # metadataprinter.MetadataPrinter(self)
+        # # Run quast assembly metrics
+        # quast.Quast(self)
+        # # Calculate the depth of coverage as well as other quality metrics using Qualimap
+        # depth.QualiMap(self)()
         # Print the metadata to file
+        # metadataprinter.MetadataPrinter(self)
+        # mMLST.PipelineInit(self, 'mlst')
+        # metadataprinter.MetadataPrinter(self)
+        # #
+        # geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 70)
+        # GeneSeekr.GeneSeekr(geneseekr)
+        # metadataprinter.MetadataPrinter(self)
+        # sixteens = GeneSeekr.PipelineInit(self, '16s', False, 95)
+        # sixteenS.SixteenS(sixteens)
+        # metadataprinter.MetadataPrinter(self)
+        # uni = univec.PipelineInit(self, 'univec', False, 80)
+        # univec.Univec(uni)
+        # metadataprinter.MetadataPrinter(self)
+        # pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80)
+        # prophages.Prophages(pro)
+        # metadataprinter.MetadataPrinter(self)
+        # plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80)
+        # plasmidfinder.PlasmidFinder(plasmid)
+        # metadataprinter.MetadataPrinter(self)
+        # sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95)
+        # serotype.Serotype(sero)
+        # metadataprinter.MetadataPrinter(self)
+        # vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
+        # virulence.Virulence(vir)
+        # metadataprinter.MetadataPrinter(self)
+        # armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
+        # armi.ARMI(armiobject)
+        # metadataprinter.MetadataPrinter(self)
+        vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
-        # Run quast assembly metrics
-        quast.Quast(self)
-        # Calculate the depth of coverage as well as other quality metrics using Qualimap
-        depth.QualiMap(self)()
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        mMLST.PipelineInit(self, 'mlst')
-        metadataprinter.MetadataPrinter(self)
-        # helper(args['marker'], args['input'], args['output'], args['cutoff'], args['anti'], args['threads'])
-        # GeneSeekr.helper('/home/blais/PycharmProjects/pythonGeneSeekr/Organism/Escherichia/query_genes/bait/'
-        #                  'customBait.fa',
-        #                  '/home/blais/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159',
-        #                  '/home/blais/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159/geneseekr',
-        #                  70,
-        #                  24)
-        GeneSeekr.PipelineInit(self, 'geneseekr')
+
+
+
+
+
 
 
     # TODO Dictreader - tsv to dictionary

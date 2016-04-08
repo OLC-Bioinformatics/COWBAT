@@ -78,10 +78,13 @@ class Spades(object):
 
     def assemble(self):
         """Run the assembly command in a multi-threaded fashion"""
+        from subprocess import call
         while True:
             (command, output) = self.assemblequeue.get()
             if command and not os.path.isfile('{}/contigs.fasta'.format(output)):
-                execute(command)
+                # execute(command)
+                call(command, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            dotter()
             # Signal to the queue that the job is done
             self.assemblequeue.task_done()
 
@@ -132,7 +135,7 @@ class Spades(object):
                 if not os.path.isfile(bestassemblyfile):
                     shutil.copyfile(filteredfile, bestassemblyfile)
             else:
-                sample.general.bestassemblyfile = ''
+                sample.general.bestassemblyfile = 'NA'
 
     def insertsize(self):
         """Extracts the insert size and its deviation from the spades.log file"""

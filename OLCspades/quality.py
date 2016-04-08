@@ -25,6 +25,9 @@ class Quality(object):
                 threads.start()
         # Iterate through strains with fastq files to set variables to add to the multithreading queue
         for sample in self.metadata:
+            # Create the .software attribute for the metadata
+            sample.software = GenObject()
+            sample.software.fastqc = get_version(['fastqc', '-v']).split('\n')[0].split()[1]
             fastqccall = ""
             # Check to see if the fastq files exist
             if level == 'Trimmed':
@@ -36,7 +39,7 @@ class Quality(object):
                     pass
             elif level == 'trimmedcorrected':
                 # Add the location of the corrected fastq files
-                sample.general.trimmedcorrectedfastqfiles = sorted(glob('{}/corrected/*trimmed*.gz'
+                sample.general.trimmedcorrectedfastqfiles = sorted(glob('{}/corrected/*trimmed*.gz*'
                                                                         .format(sample.general.spadesoutput)))
                 # Try except loop to allow for missing samples
                 try:
@@ -59,11 +62,8 @@ class Quality(object):
                 elif len(fastqfiles) == 1:
                     fastqccall = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
                 # Add the arguments to the queue
+                sample.commands.fastqccall = fastqccall
                 self.qcqueue.put((fastqccall, outdir))
-                # Create the .software attribute for the metadata
-                sample.software = GenObject()
-                sample.software.fastqc = get_version(['fastqc', '-v']).split('\n')[0].split()[1]
-                sample.commands.fastqccall = {level: fastqccall}
         # Wait on the trimqueue until everything has been processed
         self.qcqueue.join()
         self.qcqueue = Queue()
@@ -123,6 +123,7 @@ class Quality(object):
                         .format(fastqfiles[0], cleanforward, self.bbduklocation)
                 else:
                     bbdukcall = ""
+                sample.commands.bbduk = bbdukcall
                 # Add the arguments to the queue
                 self.trimqueue.put((bbdukcall, cleanforward))
         # Wait on the trimqueue until everything has been processed
@@ -133,6 +134,8 @@ class Quality(object):
             outputdir = sample.general.outputdirectory
             # Add the trimmed fastq files to a list
             trimmedfastqfiles = glob('{}/*trimmed.fastq'.format(outputdir, sample.name))
+            if not trimmedfastqfiles:
+                trimmedfastqfiles = glob('{}/*trimmed.fastq.bz2'.format(outputdir, sample.name))
             # Populate the metadata if the files exist
             sample.general.trimmedfastqfiles = trimmedfastqfiles if trimmedfastqfiles else 'NA'
         print "\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S"))
@@ -144,7 +147,7 @@ class Quality(object):
             # Unpack the variables from the queue
             (systemcall, forwardname) = self.trimqueue.get()
             # Check to see if the forward file already exists
-            if not os.path.isfile(forwardname):
+            if not os.path.isfile(forwardname) and not os.path.isfile('{}.bz2'.format(forwardname)):
                 call(systemcall, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
             # Signal to trimqueue that job is done
             self.trimqueue.task_done()

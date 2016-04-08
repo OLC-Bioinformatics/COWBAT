@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from glob import glob
+from threading import Lock
 from subprocess import call
 from threading import Thread
 from accessoryFunctions import *
@@ -7,6 +8,8 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+
+threadlock = Lock()
 __author__ = 'mike knowles, adamkoziol'
 
 
@@ -14,7 +17,7 @@ class QualiMap(object):
 
     def smaltindex(self):
         # Run the indexing threads
-        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile])):
+        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != 'NA'])):
             # Send the threads to the merge method. :args is empty as I'm using
             threads = Thread(target=self.index, args=())
             # Set the daemon to true - something to do with thread management
@@ -23,7 +26,8 @@ class QualiMap(object):
             threads.start()
         for sample in self.metadata:
             # Index the assembly files
-            self.indexqueue.put(sample)
+            if sample.general.bestassemblyfile != 'NA':
+                self.indexqueue.put(sample)
         self.indexqueue.join()
 
     def index(self):
@@ -35,7 +39,7 @@ class QualiMap(object):
             smifile = filenoext + '.smi'
             # Define the indexing command
             indexcommand = 'cd {} && smalt index {} {}'\
-                .format(sample.general.bestassembliespath, filenoext, sample.general.filteredfile)
+                .format(sample.general.bestassembliespath, filenoext, sample.general.bestassemblyfile)
             # Index the appropriate files if they do not exist
             if not os.path.isfile(smifile):
                 # Run the command
@@ -48,7 +52,7 @@ class QualiMap(object):
 
     def smaltmap(self):
         # Run the indexing threads
-        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile])):
+        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != 'NA'])):
             # Send the threads to the merge method. :args is empty as I'm using
             threads = Thread(target=self.map, args=())
             # Set the daemon to true - something to do with thread management
@@ -57,94 +61,83 @@ class QualiMap(object):
             threads.start()
         for sample in self.metadata:
             # Index the assembly files
-            self.mapqueue.put(sample)
+            if sample.general.bestassemblyfile != 'NA':
+                self.mapqueue.put(sample)
         self.mapqueue.join()
 
     def map(self):
         while True:
             sample = self.mapqueue.get()
-            bamfile = sample.general.filenoext + '_sorted'
-            sample.mapping.BamFile = sample.general.filenoext + '_sorted.bam'
-            sample.general.bamfile = bamfile
             # Map the fastq file(s) to the assemblies
             # Define the mapping call
+            sample.general.bamfile = sample.general.filenoext + '_sorted'
+            sample.general.sortedbam = sample.general.filenoext + '_sorted.bam'
+            bz2bam = sample.general.sortedbam + '.bz2'
+            #  = bamfile
             if len(sample.general.fastqfiles) == 2:
                 # Paired-end system call. Note that the output from SMALT is piped into samtools sort to prevent
                 # the creation of intermediate, unsorted bam files
-                smaltmap = 'smalt map -f bam -n {} -x {} {} {} | samtools sort - {}' \
-                           .format(self.cpus, sample.general.filenoext, sample.general.fastqfiles[0],
-                                   sample.general.fastqfiles[1], bamfile)
+                sample.commands.smaltmap = 'smalt map -f bam -n {} -x {} {} {} | samtools sort -o {} -O bam -@ {} -' \
+                    .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
+                            sample.general.trimmedfastqfiles[1], sample.general.sortedbam, self.cpus)
             else:
-                smaltmap = 'smalt map -f bam -n {} {} {} | samtools sort - {}' \
-                           .format(self.cpus, sample.general.filenoext, sample.general.fastqfiles[0],
-                                   bamfile)
+                sample.commands.smaltmap = 'smalt map -f bam -n {} {} {} | samtools sort -o {} -O bam -@ {} -' \
+                    .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
+                            sample.general.sortedbam, self.cpus)
             # Populate metadata
             sample.software.SMALT = self.smaltversion
             sample.software.samtools = self.samversion
-            sample.commands.smaltsamtools = smaltmap
+            # Set the results folder
+            sample.general.QualimapResults = '{}/qualimap_results'.format(sample.general.outputdirectory)
+            # Create this results folder if necessary
+            make_path(sample.general.QualimapResults)
+            sample.software.Qualimap = self.version
             # Run the call if the sorted bam file doesn't exist
             size = 0
-            if os.path.isfile(sample.mapping.BamFile):
-                size = os.stat(sample.mapping.BamFile[0]).st_size
-            if not os.path.isfile(sample.mapping.BamFile) or size == 0:
+            if os.path.isfile(sample.general.sortedbam):
+                size = os.stat(sample.general.sortedbam[0]).st_size
+            elif os.path.isfile(bz2bam):
+                size = os.stat(bz2bam).st_size
+            if not os.path.isfile(sample.general.sortedbam) and not os.path.isfile(bz2bam) or size < 100:
                 # Run the command
-                call(smaltmap, shell=True, stdout=self.fnull, stderr=self.fnull)
+                call(sample.commands.smaltmap, shell=True, stdout=self.fnull, stderr=self.fnull)
+            self.mapper(sample)
             # Print a dot for each mapped file
             dotter()
             self.mapqueue.task_done()
 
-    def __call__(self):
-        """Execute Qualimap on call"""
-        printtime('Reading BAM file for Qualimap output', self.start)
-        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile != "NA"])):
-            # Send the threads to the merge method. :args is empty
-            threads = Thread(target=self.mapper, args=())
-            # Set the daemon to true - something to do with thread management
-            threads.setDaemon(True)
-            # Start the threading
-            threads.start()
-        for sample in self.metadata:
-            if sample.general.filteredfile != "NA":
-                # Set the results folder
-                sample.general.QualimapResults = '{}/qualimap_results'.format(sample.general.outputdirectory)
-                # Create this results folder if necessary
-                make_path(sample.general.QualimapResults)
-                sample.software.Qualimap = self.version
-                # Define the Qualimap call
-                sample.commands.Qualimap = 'qualimap bamqc -bam {} -outdir {}'. \
-                    format(sample.mapping.BamFile, sample.general.QualimapResults)
-                self.qqueue.put(sample)
-            else:
-                sample.commands.Qualimap = "NA"
-        self.qqueue.join()
+    def mapper(self, sample):
+        if sample.general.bestassemblyfile != "NA":
+            # Define the Qualimap log and report files
+            reportfile = os.path.join(sample.general.QualimapResults, 'genome_results.txt')
+            # Define the Qualimap call
+            qualimapcall = 'qualimap bamqc -bam {} -outdir {}'.format(sample.general.sortedbam,
+                                                                      sample.general.QualimapResults)
+            sample.commands.qualimap = qualimapcall
+            # Initialise a dictionary to hold the Qualimap results
+            qdict = dict()
+            # If the report file doesn't exist, run Qualimap, and print logs to the log file
+            if not os.path.isfile(reportfile):
+                # execute(sample.commands.qualimap, log)
+                call(sample.commands.qualimap, shell=True, stdout=self.fnull, stderr=self.fnull)
+            try:
+                with open(reportfile) as report:
+                    # Read the report
+                    for line in report:
+                        # Sanitise the keys and values using self.analyze
+                        key, value = self.analyze(line)
+                        # If the keys and values exist, enter them into the dictionary
+                        if (key, value) != (None, None):
+                            qdict[key] = value
+            except IOError:
+                self.mapqueue.task_done()
+                self.mapqueue.join()
+                raise
 
-    def mapper(self):
-        while True:
-            sample = self.qqueue.get()
-            if sample.general.filteredfile != "NA":
-                # Define the Qualimap log and report files
-                log = os.path.join(sample.general.QualimapResults, "qualimap.log")
-                reportfile = os.path.join(sample.general.QualimapResults, 'genome_results.txt')
-                # Initialise a dictionary to hold the Qualimap results
-                qdict = dict()
-                # If the report file doesn't exist, run Qualimap, and print logs to the log file
-                if not os.path.isfile(reportfile):
-                    execute(sample.commands.Qualimap, log)
-                # Otherwise open the report
-                else:
-                    with open(reportfile) as report:
-                        # Read the report
-                        for line in report:
-                            # Sanitise the keys and values using self.analyze
-                            key, value = self.analyze(line)
-                            # If the keys and values exist, enter them into the dictionary
-                            if (key, value) != (None, None):
-                                qdict[key] = value
-                # If there are values in the dictionary
-                if qdict:
-                    # Make new category for Qualimap results and populate this category with the report data
-                    setattr(sample, "mapping", GenObject(qdict))
-            self.qqueue.task_done()
+            # If there are values in the dictionary
+            if qdict:
+                # Make new category for Qualimap results and populate this category with the report data
+                setattr(sample, "mapping", GenObject(qdict))
 
     @staticmethod
     def analyze(line):
@@ -205,7 +198,7 @@ if __name__ == '__main__':
                 # Create the .general attribute
                 metadata.general = GenObject()
                 # Set the .general.filteredfile file to be the name and path of the sequence file
-                metadata.general.filteredfile = strain
+                # metadata.general.filteredfile = strain
                 # Set the path of the assembly file
                 metadata.general.bestassembliespath = self.assemblypath
                 # Populate the .fastqfiles category of :self.metadata
@@ -262,7 +255,7 @@ if __name__ == '__main__':
             self.starttime = start
             self.cpus = self.runmetadata.cpus
             # Run the analyses - the extra set of parentheses is due to using the __call__ method in the class
-            QualiMap(self)()
+            QualiMap(self)
 
     # Run the class
     from time import time

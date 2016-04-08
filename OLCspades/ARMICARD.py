@@ -156,7 +156,7 @@ def decipher(plusdict, antidict, outputs, metadata, tolc=None):
         outputdict[genome]["genes"].sort(key=lambda tup: tup[0])
         outputdict[genome]["sensitivity"].sort()
     json.dump(outputdict,
-              open("%s/ARMI_CARD_results_%s.json" % (outputs, time.strftime("%Y.%m.%d.%H.%M.%S")), 'w'),
+              open("%s/ARMI_CARD_results.json" % outputs, 'w'),
               sort_keys=True,
               indent=4,
               separators=(',', ': '))
@@ -196,14 +196,15 @@ def decipher(plusdict, antidict, outputs, metadata, tolc=None):
                 antistr += ",-"
         antistr += ",%i" % genomecount
         # Open the report
-        with open('{}{}_{}.csv'.format(sample['ARMI'].reportdir, sample.name, 'ARMI'), 'wb') as report:
-            # Write the row to the report
-            report.write(antihead)
-            report.write(antistr)
+        if sample.general.bestassemblyfile != 'NA':
+            with open('{}{}_{}.csv'.format(sample['ARMI'].reportdir, sample.name, 'ARMI'), 'wb') as report:
+                # Write the row to the report
+                report.write(antihead)
+                report.write(antistr)
 
     antihead += "\nCount"
     for drug in antilist:
         antihead += ",%i" % drugcounter[drug]
     antihead += antistr
-    with open("%s/ARMI_CARD_results_%s.csv" % (outputs, time.strftime("%Y.%m.%d.%H.%M.%S")), 'w') as f:
+    with open("%s/ARMI_CARD_results.csv" % outputs, 'w') as f:
         f.write(antihead)

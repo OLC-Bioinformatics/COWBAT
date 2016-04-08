@@ -60,6 +60,12 @@ class Basic(object):
         from accessoryFunctions import GenObject
         # Iterate through the samples
         for sample in self.samples:
+            sample.run.date = 'NA'
+            sample.run.investigator = 'NA'
+            sample.run.TotalClustersinRun = 'NA'
+            sample.run.NumberofClustersPF = 'NA'
+            sample.run.PercentOfClusters = 'NA'
+            sample.run.Project = 'NA'
             try:
                 # Only perform this step if the forward and reverse lengths have not been loaded into the metadata
                 len(sample.run.forwardlength)

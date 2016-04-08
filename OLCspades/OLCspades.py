@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import subprocess
 import runMetadata
 import offhours
@@ -9,6 +8,7 @@ import metadataprinter
 import spadesRun
 import depth
 import quality
+from accessoryFunctions import *
 __author__ = 'adamkoziol'
 
 
@@ -16,11 +16,12 @@ class RunSpades(object):
     def assembly(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
         and trimming as well as the assembly"""
-        from accessoryFunctions import GenObject
         import fastqmover
         # Run the fastq creation script - if argument is provided
         if self.fastqcreation:
             self.runmetadata = fastqCreator.CreateFastq(self)
+            # Print the metadata to file
+            metadataprinter.MetadataPrinter(self)
         # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
         elif self.basicassembly:
             from basicAssembly import Basic
@@ -45,8 +46,13 @@ class RunSpades(object):
             # Move the files
             else:
                 fastqmover.FastqMover(self)
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
 
     def quality(self):
+        import mMLST
+        import quaster
+        import prodigal
         """Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
         supplied sequences"""
         # Run FastQC on the unprocessed fastq files
@@ -55,10 +61,23 @@ class RunSpades(object):
         self.qualityobject.trimquality()
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
+        # Run spades
+        spadesRun.Spades(self)
+        prodigal.Prodigal(self)
+        metadataprinter.MetadataPrinter(self)
+        mMLST.PipelineInit(self, 'rmlst')
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
+        # Run quast assembly metrics
+        quaster.Quast(self)
+        # Calculate the depth of coverage as well as other quality metrics using Qualimap
+        metadataprinter.MetadataPrinter(self)
+        depth.QualiMap(self)
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
 
     def typing(self):
         import mMLST
-        import quast
         import GeneSeekr
         import sixteenS
         import univec
@@ -68,53 +87,45 @@ class RunSpades(object):
         import virulence
         import armi
         import vtyper
-        # mMLST.PipelineInit(self, 'rmlst')
-        # # Print the metadata to file
-        # metadataprinter.MetadataPrinter(self)
-        # # Run quast assembly metrics
-        # quast.Quast(self)
-        # # Calculate the depth of coverage as well as other quality metrics using Qualimap
-        # depth.QualiMap(self)()
-        # Print the metadata to file
-        # metadataprinter.MetadataPrinter(self)
-        # mMLST.PipelineInit(self, 'mlst')
-        # metadataprinter.MetadataPrinter(self)
-        # #
-        # geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 70)
-        # GeneSeekr.GeneSeekr(geneseekr)
-        # metadataprinter.MetadataPrinter(self)
-        # sixteens = GeneSeekr.PipelineInit(self, '16s', False, 95)
-        # sixteenS.SixteenS(sixteens)
-        # metadataprinter.MetadataPrinter(self)
-        # uni = univec.PipelineInit(self, 'univec', False, 80)
-        # univec.Univec(uni)
-        # metadataprinter.MetadataPrinter(self)
-        # pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80)
-        # prophages.Prophages(pro)
-        # metadataprinter.MetadataPrinter(self)
-        # plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80)
-        # plasmidfinder.PlasmidFinder(plasmid)
-        # metadataprinter.MetadataPrinter(self)
-        # sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95)
-        # serotype.Serotype(sero)
-        # metadataprinter.MetadataPrinter(self)
-        # vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
-        # virulence.Virulence(vir)
-        # metadataprinter.MetadataPrinter(self)
-        # armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
-        # armi.ARMI(armiobject)
-        # metadataprinter.MetadataPrinter(self)
+        import coregenome
+        import resfinder
+        mMLST.PipelineInit(self, 'mlst')
+        metadataprinter.MetadataPrinter(self)
+        #
+        geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50)
+        GeneSeekr.GeneSeekr(geneseekr)
+        metadataprinter.MetadataPrinter(self)
+        sixteens = GeneSeekr.PipelineInit(self, '16s', False, 95)
+        sixteenS.SixteenS(sixteens)
+        metadataprinter.MetadataPrinter(self)
+        uni = univec.PipelineInit(self, 'univec', False, 80)
+        univec.Univec(uni)
+        metadataprinter.MetadataPrinter(self)
+        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80)
+        prophages.Prophages(pro)
+        metadataprinter.MetadataPrinter(self)
+        plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80)
+        plasmidfinder.PlasmidFinder(plasmid)
+        metadataprinter.MetadataPrinter(self)
+        sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95)
+        serotype.Serotype(sero)
+        metadataprinter.MetadataPrinter(self)
+        vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
+        virulence.Virulence(vir)
+        metadataprinter.MetadataPrinter(self)
+        armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
+        armi.ARMI(armiobject)
+        metadataprinter.MetadataPrinter(self)
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
-
-
-
-
-
-
+        core = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
+        coregenome.CoreGenome(core)
+        metadataprinter.MetadataPrinter(self)
+        res = GeneSeekr.PipelineInit(self, 'resfinder', False, 98)
+        resfinder.ResFinder(res)
+        metadataprinter.MetadataPrinter(self)
 
     # TODO Dictreader - tsv to dictionary
-
     # TODO SPAdes as library
     # TODO quast as library
     # TODO Figure out what to do about GeneMark license keys
@@ -128,12 +139,16 @@ class RunSpades(object):
     """WARNING: Can't draw plots: please install python-matplotlib."""
 
     # TODO CGE
+    # TODO Sistr as a module
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """
         :param args: list of arguments passed to the script
         Initialises the variables required for this class
         """
+        import reporter
+        import compress
+        import multiprocessing
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
@@ -147,38 +162,49 @@ class RunSpades(object):
         self.reverselength = args.readlengthreverse
         self.numreads = 1 if self.reverselength == 0 else 2
         self.kmers = args.kmerrange
+        # Define the start time
+        self.starttime = startingtime
         self.customsamplesheet = args.customsamplesheet
+        if self.customsamplesheet:
+            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {}'\
+                .format(self.customsamplesheet)
+
         self.basicassembly = args.basicassembly
+        if not self.customsamplesheet and not os.path.isfile("{}SampleSheet.csv".format(self.path)):
+            self.basicassembly = True
+            printtime('Could not find a sample sheet. Performing basic assembly (no run metadata captured)',
+                      self.starttime)
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
-        self.cpus = args.threads if args.threads else int(subprocess.Popen("awk '/^processor/ { N++} END { print N }' "
-                                                          "/proc/cpuinfo", shell=True, stdout=subprocess.PIPE)
-                                                          .communicate()[0].rstrip())
+        self.cpus = args.threads if args.threads else multiprocessing.cpu_count()
         # Assertions to ensure that the provided variables are valid
+        make_path(self.path)
         assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
         self.reportpath = '{}reports'.format(self.path)
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        self.commit = pipelinecommit
+        self.commit = str(pipelinecommit)
         self.homepath = scriptpath
         self.runinfo = ''
         # Initialise the metadata object
         self.runmetadata = ''
-        # Define the start time
-        self.starttime = startingtime
-        # Start the assembly
-        self.assembly()
-        # Run the quality trimming module
-        # Create the quality object
-        self.qualityobject = quality.Quality(self)
-        self.quality()
-        # Run spades
-        spadesRun.Spades(self)
-        # Run FastQC on the unprocessed fastq files
-        self.qualityobject.fastqcthreader('trimmedcorrected')
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        # Perform typing of assemblies
-        self.typing()
+        try:
+            # Start the assembly
+            self.assembly()
+            # Run the quality trimming module
+            # Create the quality object
+            self.qualityobject = quality.Quality(self)
+            self.quality()
+            # Run FastQC on the unprocessed fastq files
+            self.qualityobject.fastqcthreader('trimmedcorrected')
+            # Print the metadata to file
+            metadataprinter.MetadataPrinter(self)
+            # Perform typing of assemblies
+            self.typing()
+        except KeyboardInterrupt:
+            raise KeyboardInterruptError
+            # Create a report
+        reporter.Reporter(self)
+        compress.Compress(self)
         # import json
         # print json.dumps(self.runmetadata, sort_keys=True, indent=4, separators=(',', ': '))
         # print json.dumps([x.dump() for x in self.runmetadata.samples],
@@ -254,3 +280,5 @@ if __name__ == '__main__':
     # Run the pipeline
     RunSpades(arguments, commit, starttime, homepath)
     printtime('Assembly and characterisation complete', starttime)
+
+# /home/blais/Bioinformatics/0_biorequests/160317 -r /home/blais/Bioinformatics/0_biorequests/assemblypipeline -m /media/miseq/MiSeqOutput -f 160317_M02466_0145_000000000-ALJWU -F

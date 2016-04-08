@@ -101,6 +101,7 @@ class Offhours(object):
         for sample in self.metadata.runmetadata.samples:
             # Find any fastq files with the sample name
             fastqfiles = sorted(glob('{}{}/{}*.fastq*'.format(self.path, sample.name, sample.name)))
+            fastqfiles = [fastq for fastq in fastqfiles if 'trimmed' not in fastq]
             # Update the metadata with the path/name of the fastq files
             sample.general.fastqfiles = fastqfiles
         # Copy the GenerateFASTQRunStatistics.xml, RunInfo.xml, and SampleSheet.csv to self.path
@@ -112,9 +113,8 @@ class Offhours(object):
 
     def __init__(self, inputobject):
         """Initialise variables"""
-        import sys
         self.path = inputobject.path
-        self.miseqfolder = inputobject.args['f']
+        self.miseqfolder = inputobject.args.miseqfolder
         self.miseqfoldername = ""
         self.customsamplesheet = inputobject.customsamplesheet
         self.start = inputobject.starttime
@@ -123,11 +123,11 @@ class Offhours(object):
         self.numreads = inputobject.numreads
         self.metadata = inputobject
         try:
-            self.miseqpath = os.path.join(inputobject.args['m'], "")
+            self.miseqpath = os.path.join(inputobject.args.miseqpath, "")
         except AttributeError:
             print('MiSeqPath argument is required in order to use the off-hours module. Please provide this argument '
                   'and run the script again.')
-            sys.exit()
+            quit()
         # # Assert that provided arguments are valid
         # self.assertpathsandfiles()
         # # Determine the number of samples to process by parsing the sample sheet

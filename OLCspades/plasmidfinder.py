@@ -9,23 +9,30 @@ class PlasmidFinder(Prophages):
         for sample in self.metadata:
             # Populate the header with the appropriate data
             row = 'Contig,PlasmidAccession,PercentIdentity\n'
-            for result in sample[self.analysistype].blastresults.items():
-                contig = list(result)[0]
-                query = list(result)[1].keys()[0]
-                percentid = list(result)[1].values()[0]
-                # Add the data to the row
-                row += '{},{},{}\n'.format(contig, query, percentid)
+            try:
+                for result in sample[self.analysistype].blastresults.items():
+                    contig = list(result)[0]
+                    query = list(result)[1].keys()[0]
+                    percentid = list(result)[1].values()[0]
+                    # Add the data to the row
+                    row += '{},{},{}\n'.format(contig, query, percentid)
+            except KeyError:
+                row = ''
             combinedrow += row
             # If the script is being run as part of the assembly pipeline, make a report for each sample
             if self.pipeline:
-                # Open the report
-                with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                               self.analysistype), 'wb') as report:
-                    # Write the row to the report
-                    report.write(row)
+                if sample.general.bestassemblyfile != 'NA':
+                    # Open the report
+                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                   self.analysistype), 'wb') as report:
+                        # Write the row to the report
+                        report.write(row)
             # Remove the messy blast results from the object
-            delattr(sample[self.analysistype], "blastresults")
+            try:
+                delattr(sample[self.analysistype], "blastresults")
+            except KeyError:
+                pass
         # Create the report containing all the data from all samples
-        with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') \
+        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
                 as combinedreport:
             combinedreport.write(combinedrow)

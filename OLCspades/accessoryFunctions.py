@@ -201,7 +201,10 @@ class GenObject(object):
         elif value is False:
             self.datastore[key] = value
         else:
-            self.datastore[key] = "NA"
+            if value == 0:
+                self.datastore[key] = 0
+            else:
+                self.datastore[key] = "NA"
 
     def __delattr__(self, key):
         del self.datastore[key]
@@ -287,6 +290,7 @@ def combinetargets(targets, targetpath):
     """
     from Bio import SeqIO
     make_path(targetpath)
+    recordlist = []
     # Open the combined allele file to write
     with open('{}/combinedtargets.tfa'.format(targetpath), 'wb') as combinedfile:
         # Open each target file
@@ -302,5 +306,11 @@ def combinetargets(targets, targetpath):
                 # Clear the name and description attributes of the record
                 record.name = ''
                 record.description = ''
-                # Write each record to the combined file
-                SeqIO.write(record, combinedfile, 'fasta')
+                if record.id not in recordlist:
+                    # Write each record to the combined file
+                    SeqIO.write(record, combinedfile, 'fasta')
+                    recordlist.append(record.id)
+
+
+class KeyboardInterruptError(Exception):
+    pass

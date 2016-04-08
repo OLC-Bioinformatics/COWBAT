@@ -5,7 +5,7 @@ MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-COPY sources.list /etc/apt/sources.list
+#COPY sources.list /etc/apt/sources.list
 
 # Install various required softwares
 RUN apt-get update -y -qq && apt-get install -y --force-yes \
@@ -24,11 +24,18 @@ RUN apt-get update -y -qq && apt-get install -y --force-yes \
 	nano \
 	xsltproc \
 	python-numpy \
-	python-dev
+	python-dev \
+	libncurses5-dev \ 
+        pkg-config \ 
+        automake \
+	libtool \
+	build-essential \
+	ncbi-blast+ \
+	autoconf 	
 
 # Install bcl2fastq
 ADD accessoryfiles /accessoryfiles
-RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
+#RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Remove the rpm
 RUN rm /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Edited Config.pm supplied with bcl2fastq to comment out sub _validateEland subroutine that was causing bcl2fastq to fail with compilation errors
@@ -55,31 +62,62 @@ ENV PATH /accessoryfiles/bbmap:$PATH
 ENV PATH /accessoryfiles/FastQC:$PATH
 
 # Install SPAdes
-ENV PATH /accessoryfiles/spades:$PATH
+ENV PATH /accessoryfiles/spades/bin:$PATH
 
 # Install biopython
 RUN python /accessoryfiles/get-pip.py
 RUN easy_install -f http://biopython.org/DIST/ biopython
 
-# Install NCBI Blast+
-RUN apt-get update -qq -y && apt-get install -y --force-yes \
-	ncbi-blast+
+# Install qualimap
+ENV PATH /accessoryfiles/qualimap:$PATH
+
+# Install quast
+ENV PATH /accessoryfiles/quast:$PATH
+
+# Install samtools
+WORKDIR /accessoryfiles/samtools
+RUN make && \ 
+    make prefix=/accessoryfiles/samtools install
+ENV PATH /accessoryfiles/samtools/bin:$PATH
+
+# Install SMALT and bam library
+WORKDIR /accessoryfiles/bambamc
+RUN autoreconf -i -f && \
+    ./configure && \
+    make && \
+    make install
+
+WORKDIR /accessoryfiles/smalt
+RUN ./configure && \
+    make && \
+    make install
+
+# Install Prodigal and ePCR
+ENV PATH /accessoryfiles:$PATH
+
+# Add pipeline to the PATH
+WORKDIR /
+ENV PATH /spades/OLCspades:$PATH
+ENV LD_LIBRARY_PATH /usr/local/lib
 
 # Mount NAS:
 # must run container in privileged mode (--privileged)
-RUN locale-gen en_US en_US.UTF-8
-RUN dpkg-reconfigure locales
+#RUN locale-gen en_US en_US.UTF-8
+#RUN dpkg-reconfigure locales
 
-COPY mount_nfs.sh /root/mount_nfs.sh
+#COPY mount_nfs.sh /root/mount_nfs.sh
 
 # run this script in your cmd or entrypoint script to mount your nfs mounts
-RUN chmod +x /root/mount_nfs.sh
-ENTRYPOINT ["/root/mount_nfs.sh"]
+#RUN chmod +x /root/mount_nfs.sh
+#ENTRYPOINT ["/root/mount_nfs.sh"]
 
 # Useful commands
 #docker build -t remotepythondocker .
-#docker run -e NFS_MOUNT=192.168.1.18:/mnt/zvolume1 --privileged -it -v /home/blais/PycharmProjects/SPAdesPipeline:/spades -v /media/miseq/:/media/miseq -v /home/blais/Downloads/accessoryfiles:/accessoryfiles --name pythondocker remotepythondocker
+# -v /home/blais/Downloads/accessoryfiles:/accessoryfiles
+# -e NFS_MOUNT=192.168.1.18:/mnt/zvolume1 --privileged 
+#docker run -it -v /home/blais/PycharmProjects/SPAdesPipeline:/spades -v /media/miseq/:/media/miseq -v /home/blais/Bioinformatics/0_biorequests/assemblypipeline:/spadespipeline -v /home/blais/Bioinformatics/0_biorequests/6396/dockertest:/spadesrun --name pythondocker remotepythondocker
 #docker rm pythondocker
 
 # python /spades/OLCspades/OLCspades.py -m /media/miseq/MiSeqOutput -F /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -f 151218_M02466_0126_000000000-AKF4P -r1 25 -r2 25 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/
 # python /spades/OLCspades/OLCspades.py /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/
+# OLCspades.py -r /spadespipeline/ /spadesrun/

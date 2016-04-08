@@ -7,7 +7,8 @@ class Quast(object):
 
     def quast(self):
         from threading import Thread
-        for i in range(len([sample.general for sample in self.metadata if sample.general.filteredfile != "NA"])):
+        printtime('Performing Quast analyses', self.start)
+        for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != 'NA'])):
             # Send the threads to the merge method. :args is empty
             threads = Thread(target=self.runquast, args=())
             # Set the daemon to true - something to do with thread management
@@ -15,18 +16,18 @@ class Quast(object):
             # Start the threading
             threads.start()
         for sample in self.metadata:
-            if sample.general.filteredfile != 'NA':
+            if sample.general.bestassemblyfile != 'NA':
                 # Create the quast output directory
                 quastoutputdirectory = '{}/quast_results/'.format(sample.general.outputdirectory)
                 make_path(quastoutputdirectory)
                 # If the best reference genome was identified using rMLST, perform the GAGE analysis
-                if sample['rmlst'].referencegenomepath != 'NA':
-                    quastcall = 'quast.py -R {} --gage {} -o {}'.format(sample['rmlst'].referencegenomepath,
-                                                                        sample.general.filteredfile,
-                                                                        quastoutputdirectory)
+                # if sample['rmlst'].referencegenomepath != 'NA':
+                #     quastcall = 'quast.py -R {} --gage {} -o {}'.format(sample['rmlst'].referencegenomepath,
+                #                                                         sample.general.filteredfile,
+                #                                                         quastoutputdirectory)
                 # Otherwise run quast without GAGE analyses
-                else:
-                    quastcall = 'quast.py {} -o {}'.format(sample.general.filteredfile, quastoutputdirectory)
+                # else:
+                quastcall = 'quast.py {} -o {}'.format(sample.general.filteredfile, quastoutputdirectory)
                 # Add the command to the metadata
                 sample.commands.quast = quastcall
                 self.quastqueue.put((sample, quastoutputdirectory))
@@ -35,11 +36,14 @@ class Quast(object):
         self.quastqueue.join()
 
     def runquast(self):
+        from subprocess import call
         while True:
             sample, quastoutputdirectory = self.quastqueue.get()
+            make_path(quastoutputdirectory)
+            fnull = open(os.devnull, 'wb')
             # Don't re-perform the analysis if the report file exists
             if not os.path.isfile('{}/report.tsv'.format(quastoutputdirectory)):
-                execute(sample.commands.quast)
+                call(sample.commands.quast, shell=True, stdout=fnull, stderr=fnull)
             # Following the analysis, parse the report (if it exists) into the metadata object
             if os.path.isfile('{}/report.tsv'.format(quastoutputdirectory)):
                 self.metaparse(sample, quastoutputdirectory)

@@ -39,7 +39,7 @@ class GeneSeekr(object):
         """
         # Find all the target folders in the analysis and add them to the targetfolders set
         for sample in self.metadata:
-            if sample.general.bestassemblyfile != 'NA':
+            if sample[self.analysistype].combinedtargets != 'NA':
                 self.targetfolders.add(sample[self.analysistype].targetpath)
         # Create and start threads for each fasta file in the list
         for i in range(len(self.targetfolders)):
@@ -71,6 +71,8 @@ class GeneSeekr(object):
                 # TODO use MakeBLASTdb class
                 subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
                                             .format(fastapath, db)), stdout=fnull, stderr=fnull)
+                # os.system('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
+                #           .format(fastapath, db))
             dotter()
             self.dqueue.task_done()  # signals to dqueue job is done
 
@@ -85,7 +87,7 @@ class GeneSeekr(object):
                     threads.start()
         # Populate threads for each gene, genome combination
         for sample in self.metadata:
-            if sample.general.bestassemblyfile != 'NA':
+            if sample[self.analysistype].combinedtargets != 'NA':
                 # Add each fasta file combination to the threads
                 self.blastqueue.put((sample.general.bestassemblyfile, sample[self.analysistype].combinedtargets,
                                      sample))
@@ -98,13 +100,15 @@ class GeneSeekr(object):
             genome = os.path.split(assembly)[1].split('.')[0]
             # Run the BioPython BLASTn module with the genome as query, fasta(target gene) as db.
             # Do not re-perform the BLAST search each time
-            size = 0
             make_path(sample[self.analysistype].reportdir)
             try:
                 report = glob('{}{}*rawresults*'.format(sample[self.analysistype].reportdir, genome))[0]
                 size = os.path.getsize(report)
+                if size == 0:
+                    os.remove(report)
+                    report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
+                                                              time.strftime("%Y.%m.%d.%H.%M.%S"))
             except IndexError:
-
                 report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
                                                           time.strftime("%Y.%m.%d.%H.%M.%S"))
             db = target.split('.')[0]
@@ -116,8 +120,17 @@ class GeneSeekr(object):
                                            outfmt='"6 qseqid sseqid positive mismatch gaps '
                                                   'evalue bitscore slen length"',
                                            out=report)
-            if not os.path.isfile(report) or size == 0:
-                blastn()
+            if not os.path.isfile(report):
+                try:
+                    blastn()
+                except:
+                    self.blastqueue.task_done()
+                    self.blastqueue.join()
+                    try:
+                        os.remove(report)
+                    except IOError:
+                        pass
+                    raise
             # Run the blast parsing module
             self.blastparser(report, sample)
             self.blastqueue.task_done()  # signals to dqueue job is done
@@ -139,36 +152,49 @@ class GeneSeekr(object):
                 # Update the dictionary with the target and percent identity
                 resultdict.update({target: percentidentity})
             sample[self.analysistype].blastresults = resultdict
+        if not resultdict:
+            sample[self.analysistype].blastresults = 'NA'
 
     def csvwriter(self):
         combinedrow = ''
         for sample in self.metadata:
             row = ''
-            # Populate the header with the appropriate data, including all the genes in the list of targets
-            row += 'Strain,{},\n'.format(','.join(sorted(sample[self.analysistype].targetnames)))
-            row += '{},'.format(sample.name)
-            # print sample.name, sample[self.analysistype].targetnames, sample[self.analysistype].blastresults
-            for target in sorted(sample[self.analysistype].targetnames):
-                try:
-                    type(sample[self.analysistype].blastresults[target])
-                    row += '{},'.format(sample[self.analysistype].blastresults[target])
-                except KeyError:
-                    row += 'N,'
-            row += '\n'
-            combinedrow += row
-            # If the length of the number of report directories is greater than 1 (script is being run as part of
-            # the assembly pipeline) make a report for each sample
-            if self.pipeline:
-                # Open the report
-                with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                               self.analysistype), 'wb') as report:
-                    # Write the row to the report
-                    report.write(row)
+            if sample[self.analysistype].targetnames != 'NA':
+                # Populate the header with the appropriate data, including all the genes in the list of targets
+                row += 'Strain,{},\n'.format(','.join(sorted(sample[self.analysistype].targetnames)))
+                row += '{},'.format(sample.name)
+                for target in sorted(sample[self.analysistype].targetnames):
+                    if sample[self.analysistype].blastresults != 'NA':
+                        try:
+                            type(sample[self.analysistype].blastresults[target])
+                            row += '{},'.format(sample[self.analysistype].blastresults[target])
+                        except (KeyError, TypeError):
+                            row += '-,'
+                    else:
+                        row += '-,'
+                row += '\n'
+                combinedrow += row
+                # If the length of the number of report directories is greater than 1 (script is being run as part of
+                # the assembly pipeline) make a report for each sample
+                if self.pipeline:
+                    # Open the report
+                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                   self.analysistype), 'wb') as report:
+                        # Write the row to the report
+                        report.write(row)
+            else:
+                sample[self.analysistype].blastresults = 'NA'
 
         # Create the report containing all the data from all samples
-        with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') \
-                as combinedreport:
-            combinedreport.write(combinedrow)
+        if self.pipeline:
+            with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
+                    as combinedreport:
+                combinedreport.write(combinedrow)
+        else:
+            with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")),
+                      'wb') \
+                    as combinedreport:
+                combinedreport.write(combinedrow)
 
     def __init__(self, inputobject):
         from Queue import Queue
@@ -237,8 +263,7 @@ if __name__ == '__main__':
 
         def __init__(self):
             from argparse import ArgumentParser
-            parser = ArgumentParser(description='Antibiotic Resistance Marker Identifier:\n'
-                                                'Use to find markers for any bacterial genome')
+            parser = ArgumentParser(description='Use to find markers for any bacterial genome')
             parser.add_argument('--version',
                                 action='version',
                                 version='%(prog)s v0.5')
@@ -312,19 +337,29 @@ class PipelineInit(object):
                 else:
                     targetpath = '{}{}/'.format(self.referencefilepath, self.analysistype)
                 targets = glob('{}/*.fa*'.format(targetpath))
-                try:
-                    combinedtargets = glob('{}/*.tfa'.format(targetpath))[0]
-                except IndexError:
-                    combinetargets(targets, targetpath)
-                    combinedtargets = glob('{}/*.tfa'.format(targetpath))[0]
-                sample[self.analysistype].targets = targets
-                sample[self.analysistype].combinedtargets = combinedtargets
-                sample[self.analysistype].targetpath = targetpath
-                sample[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in targets]
-                sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
-                                                                      self.analysistype)
+                targetcheck = glob('{}/*.*fa*'.format(targetpath))
+                if targetcheck:
+                    try:
+                        combinedtargets = glob('{}/*.tfa'.format(targetpath))[0]
+                    except IndexError:
+                        combinetargets(targets, targetpath)
+                        combinedtargets = glob('{}/*.tfa'.format(targetpath))[0]
+                    sample[self.analysistype].targets = targets
+                    sample[self.analysistype].combinedtargets = combinedtargets
+                    sample[self.analysistype].targetpath = targetpath
+                    sample[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in targets]
+                    sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
+                                                                          self.analysistype)
+                else:
+                    # Set the metadata file appropriately
+                    sample[self.analysistype].targets = 'NA'
+                    sample[self.analysistype].combinedtargets = 'NA'
+                    sample[self.analysistype].targetpath = 'NA'
+                    sample[self.analysistype].targetnames = 'NA'
+                    sample[self.analysistype].reportdir = 'NA'
             else:
                 # Set the metadata file appropriately
+                setattr(sample, self.analysistype, GenObject())
                 sample[self.analysistype].targets = 'NA'
                 sample[self.analysistype].combinedtargets = 'NA'
                 sample[self.analysistype].targetpath = 'NA'

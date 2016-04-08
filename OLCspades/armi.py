@@ -90,10 +90,13 @@ class ARMI(GeneSeekr):
         # Set the location of the .dat file - it is inefficiently done for each sample, as I don't have the .targetpath
         # stored anywhere but the metadata
         for sample in self.metadata:
-            aro = '{}aro.dat'.format(sample[self.analysistype].targetpath)
+            if sample[self.analysistype].targetpath != 'NA' and sample.general.bestassemblyfile != 'NA'\
+                    and sample[self.analysistype].reportdir != 'NA':
+                aro = '{}aro.dat'.format(sample[self.analysistype].targetpath)
         # Send the dictionaries and variables to decipher - it will analyse the BLAST results and create reports
-        with open(aro) as anti:
-            decipher(self.plus, pickle.load(anti), self.reportpath, self.metadata, tolc=False)
+        if os.path.isfile(aro):
+            with open(aro) as anti:
+                decipher(self.plus, pickle.load(anti), self.reportpath, self.metadata, tolc=False)
 
     def __init__(self, inputobject):
         # '6 sseqid nident gaps slen qacc qstart qend'

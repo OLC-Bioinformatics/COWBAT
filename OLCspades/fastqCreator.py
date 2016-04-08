@@ -1,10 +1,8 @@
 #!/usr/bin/env python
-import os
-import sys
 from offhours import Offhours
 from glob import glob
 import runMetadata
-from accessoryFunctions import make_path, printtime, execute
+from accessoryFunctions import *
 __author__ = 'adamkoziol'
 
 
@@ -13,6 +11,7 @@ class CreateFastq(object):
     def createfastq(self):
         """Uses bcl2fastq to create .fastq files from a MiSeqRun"""
         from time import sleep
+        from subprocess import call
         # Initialise samplecount
         samplecount = 0
         # If the fastq destination folder is not provided, make the default value of :path/:miseqfoldername
@@ -76,14 +75,18 @@ class CreateFastq(object):
             .format(self.miseqfolder, self.fastqdestination, self.fastqdestination, basemask)
         # Define the nohup system call
         nohupcall = "cd {} && {}".format(self.fastqdestination, nohup)
+        fnull = open(os.devnull, 'wb')
         if not os.path.isdir("{}/Project_{}".format(self.fastqdestination, self.projectname)):
             # Call configureBclToFastq.pl
             printtime('Running bcl2fastq', self.start)
             # Run the commands
-            execute(bclcall, "")
-            execute(nohupcall, '{}/nohup.out'.format(self.fastqdestination))
+            # execute(bclcall, "")
+            call(bclcall, shell=True, stdout=fnull, stderr=fnull)
+            # execute(nohupcall, '{}/nohup.out'.format(self.fastqdestination))
+            call(nohupcall, shell=True, stdout=fnull, stderr=fnull)
         # Populate the metadata
         for sample in self.metadata.samples:
+            sample.commands = GenObject()
             sample.commands.nohupcall = nohupcall
             sample.commands.bclcall = bclcall
         # Link the fastq files to a central folder so they can be processed
@@ -182,10 +185,11 @@ class CreateFastq(object):
                         # If there is an exception other than the file exists, raise it
                         if exception.errno != errno.EEXIST:
                             raise
-                # Repopulate :strainfastqfiles with the freshly-linked files
-                strainfastqfiles = glob('{}/{}*.fastq*'.format(outputdir, sample.name))
+            # Repopulate .strainfastqfiles with the freshly-linked files
+            fastqfiles = glob('{}/{}*.fastq*'.format(outputdir, sample.name))
+            fastqfiles = [fastq for fastq in fastqfiles if 'trimmed' not in fastq]
             # Populate the metadata object with the name/path of the fastq files
-            sample.general.fastqfiles = strainfastqfiles
+            sample.general.fastqfiles = fastqfiles
             # Save the outputdir to the metadata object
             sample.run.outputdirectory = outputdir
 
@@ -204,11 +208,11 @@ class CreateFastq(object):
         self.readsneeded = 0
         self.commit = inputobject.commit
         try:
-            self.miseqpath = os.path.join(inputobject.args['m'], "")
+            self.miseqpath = os.path.join(inputobject.args.miseqpath, "")
         except AttributeError:
             print('MiSeqPath argument is required in order to use the fastq creation module. Please provide this '
                   'argument and run the script again.')
-            sys.exit()
+            quit()
         # Use the assertions module from offhours to validate whether provided arguments are valid
         self.assertions = Offhours(inputobject)
         self.assertions.assertpathsandfiles()

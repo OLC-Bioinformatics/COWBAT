@@ -40,7 +40,16 @@ class Univec(GeneSeekr):
                                                   'evalue bitscore slen length"',
                                            out=report)
             if not os.path.isfile(report) or size == 0:
-                blastn()
+                try:
+                    blastn()
+                except:
+                    self.blastqueue.task_done()
+                    self.blastqueue.join()
+                    try:
+                        os.remove(report)
+                    except IOError:
+                        pass
+                    raise
             # Run the blast parsing module
             self.blastparser(report, sample)
             self.blastqueue.task_done()  # signals to dqueue job is done
@@ -71,26 +80,33 @@ class Univec(GeneSeekr):
             row = ''
             # Populate the header with the appropriate data, including all the genes in the list of targets
             row += 'Contig,Accession,Title,PercentIdentity,Length\n'
-            # Sort the results stored in the object and pull out the best match
-            bestmatch = sorted(sample[self.analysistype].blastresults.items(),
-                               key=operator.itemgetter(1), reverse=True)
-            # Iterate through all the matches in the dictionary
-            for match in bestmatch:
-                # Update the string with the values in each match
-                row += '{},{}'.format(match[0], match[1])
-                row += '\n'
+            try:
+                # Sort the results stored in the object and pull out the best match
+                bestmatch = sorted(sample[self.analysistype].blastresults.items(),
+                                   key=operator.itemgetter(1), reverse=True)
+                # Iterate through all the matches in the dictionary
+                for match in bestmatch:
+                    # Update the string with the values in each match
+                    row += '{},{}'.format(match[0], match[1])
+                    row += '\n'
+            except (AttributeError, KeyError):
+                row = ''
             combinedrow += row
             # If the script is being run as part of the assembly pipeline, make a report for each sample
             if self.pipeline:
-                # Open the report
-                with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                               self.analysistype), 'wb') as report:
-                    # Write the row to the report
-                    report.write(row)
-            # Remove the messy blast results from the object
-            delattr(sample[self.analysistype], "blastresults")
+                if sample.general.bestassemblyfile != 'NA':
+                    # Open the report
+                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                   self.analysistype), 'wb') as report:
+                        # Write the row to the report
+                        report.write(row)
+            try:
+                # Remove the messy blast results from the object
+                delattr(sample[self.analysistype], "blastresults")
+            except KeyError:
+                pass
         # Create the report containing all the data from all samples
-        with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') \
+        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
                 as combinedreport:
             combinedreport.write(combinedrow)
 

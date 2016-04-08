@@ -37,78 +37,133 @@ class Metadata(object):
         # Extract run statistics from either GenerateRunStatistics.xml or indexingQC.txt
         self.parserunstats()
 
-    def parsesamplesheet(self):
-        """Parses the sample sheet (SampleSheet.csv) to determine certain values
-        important for the creation of the assembly report"""
-        import copy
-        # Initialise variables
-        reads = []
-        # Open the sample sheet
-        with open(self.samplesheet, "rb") as samplesheet:
-            # Iterate through the sample sheet
-            for line in samplesheet:
-                # Remove new lines, and split on commas
-                data = line.rstrip().split(",")
-                # Pull out the desired information from the sample sheet
-                if "Investigator" in line:
-                    self.header.investigator = data[1]
-                if "Experiment" in line:
-                    self.header.experiment = data[1].replace("  ", " ")
-                if "Date" in line:
-                    self.header.date = data[1]
-                    self.date = data[1]
-                # Iterate through the file until [Reads] is encountered, then go until [Settings]
-                if "Reads" in line:
-                    for subline in samplesheet:
-                        # Stop reading once "Settings" is encountered
-                        if "Settings" in subline:
-                            break
-                        # Append the forward and reverse reads to the list
-                        reads.append(subline.rstrip().split(",")[0])
-                    # Extract the read lengths from the list of reads
-                    self.header.forwardlength = int(reads[0])
-                    self.header.reverselength = int(reads[1])
-                    self.totalreads = int(reads[0]) + int(reads[1]) + 16
-                if "Adapter" in line:
-                    self.header.adapter = data[1]
-                if "Sample_ID" in line:
-                    # Initialise the count to store the SampleNumber
-                    count = 1
-                    for subline in samplesheet:
-                        subdata = [x.rstrip() for x in subline.rstrip().split(",")]
-                        # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
-                        # Try and replicate the Illumina rules to create file names from "Sample_Name"
-                        samplename = samplenamer(subdata)
-                        # Create an object for storing nested static variables
-                        strainmetadata = MetadataObject()
-                        # Set the sample name in the object
-                        strainmetadata.name = samplename
-                        # Add the header object to strainmetadata
-                        strainmetadata.run = GenObject(copy.copy(self.header.datastore))
-                        # Create the run object, so it will be easier to populate the object (eg run.SampleName = ...
-                        # instead of strainmetadata.run.SampleName = ...
-                        run = strainmetadata.run
-                        run.SampleName = subdata[0]
-                        # Comprehension to populate the run object from a stretch of subdata
-                        run.I7IndexID, run.index1, run.I5IndexID, run.index2, run.Project, run.Description \
-                            = subdata[4:10]
-                        # Add the sample number
-                        run.SampleNumber = count
-                        # Increment the count
-                        count += 1
-                        # Create the 'General' category for strainmetadata
-                        strainmetadata.general = GenObject()
-                        # Add the output directory to the general category
-                        strainmetadata.general.outputdirectory = self.path + samplename
-                        strainmetadata.general.pipelinecommit = self.commit
-                        # Append the strainmetadata object to a list
-                        self.samples.append(strainmetadata)
+    # def parsesamplesheet(self):
+    #     """Parses the sample sheet (SampleSheet.csv) to determine certain values
+    #     important for the creation of the assembly report"""
+    #     import copy
+    #     # Initialise variables
+    #     reads = []
+    #     self.header.investigator = 'NA'
+    #     # Open the sample sheet
+    #     with open(self.samplesheet, "rb") as samplesheet:
+    #         # Iterate through the sample sheet
+    #         for line in samplesheet:
+    #             # Remove new lines, and split on commas
+    #             data = line.rstrip().split(",")
+    #             # Pull out the desired information from the sample sheet
+    #             if "Investigator" in line:
+    #                 self.header.investigator = data[1]
+    #             if "Experiment" in line:
+    #                 self.header.experiment = data[1].replace("  ", " ")
+    #             if "Date" in line:
+    #                 self.header.date = data[1]
+    #                 self.date = data[1]
+    #             # Iterate through the file until [Reads] is encountered, then go until [Settings]
+    #             if "Reads" in line:
+    #                 for subline in samplesheet:
+    #                     # Stop reading once "Settings" is encountered
+    #                     if "Settings" in subline:
+    #                         break
+    #                     # Append the forward and reverse reads to the list
+    #                     reads.append(subline.rstrip().split(",")[0])
+    #                 # Extract the read lengths from the list of reads
+    #                 self.header.forwardlength = int(reads[0])
+    #                 self.header.reverselength = int(reads[1])
+    #                 self.totalreads = int(reads[0]) + int(reads[1]) + 16
+    #             if "Adapter" in line:
+    #                 self.header.adapter = data[1]
+    #             if "Sample_ID" in line:
+    #                 # Initialise the count to store the SampleNumber
+    #                 count = 1
+    #                 for subline in samplesheet:
+    #                     subdata = [x.rstrip() for x in subline.rstrip().split(",")]
+    #                     # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
+    #                     # Try and replicate the Illumina rules to create file names from "Sample_Name"
+    #                     samplename = samplenamer(subdata)
+    #                     # Create an object for storing nested static variables
+    #                     strainmetadata = MetadataObject()
+    #                     # Set the sample name in the object
+    #                     strainmetadata.name = samplename
+    #                     # Add the header object to strainmetadata
+    #                     strainmetadata.run = GenObject(copy.copy(self.header.datastore))
+    #                     # Create the run object, so it will be easier to populate the object (eg run.SampleName = ...
+    #                     # instead of strainmetadata.run.SampleName = ...
+    #                     run = strainmetadata.run
+    #                     run.SampleName = subdata[0]
+    #                     # Comprehension to populate the run object from a stretch of subdata
+    #                     run.I7IndexID, run.index1, run.I5IndexID, run.index2, run.Project, run.Description \
+    #                         = subdata[4:10]
+    #                     # Add the sample number
+    #                     run.SampleNumber = count
+    #                     # Increment the count
+    #                     count += 1
+    #                     # Create the 'General' category for strainmetadata
+    #                     strainmetadata.general = GenObject()
+    #                     # Add the output directory to the general category
+    #                     strainmetadata.general.outputdirectory = self.path + samplename
+    #                     strainmetadata.general.pipelinecommit = self.commit
+    #                     # Append the strainmetadata object to a list
+    #                     self.samples.append(strainmetadata)
         # Grab metadata from previous runs
         # metadata = metadataReader.MetadataReader(self)
         # Update self.samples
         # self.samples = metadata.samples
         # import json
         # print json.dumps([x.dump() for x in self.samples], sort_keys=True, indent=4, separators=(',', ': '))
+
+    def parsesamplesheet(self):
+        """Parses the sample sheet (SampleSheet.csv) to determine certain values
+        important for the creation of the assembly report"""
+        import copy
+        # Open the sample sheet
+        with open(self.samplesheet, "rb") as samplesheet:
+            # Iterate through the sample sheet
+            samples, prev, header = False, 0, []
+            for count, line in enumerate(samplesheet):
+                # Remove new lines, and split on commas
+                data = line.rstrip().split(",")
+                if any(data):
+                    if "[Settings]" in line:
+                        samples = False
+                    if not line.startswith("[") and not samples and not data == ['']:
+                        # Grab an data not in the [Data] Section
+                        setattr(self.header, data[0].replace(" ", ""), "".join(data[1:]))
+                    elif "[Data]" in line or "[Reads]" in line:
+                        samples = True
+                    elif samples and "Sample_ID" in line:
+                        header.extend([x.replace("_", "").replace(' ', "") for x in data])
+                        prev = count
+                    elif header:
+                        # Try and replicate the Illumina rules to create file names from "Sample_Name"
+                        samplename = samplenamer(data)
+                        # Create an object for storing nested static variables
+                        strainmetadata = MetadataObject()
+                        # Set the sample name in the object
+                        strainmetadata.name = samplename
+                        # Add the header object to strainmetadata
+                        # strainmetadata.__setattr__("run", GenObject(dict(self.header)))
+                        strainmetadata.run = GenObject(copy.copy(self.header.datastore))
+                        # Create the run object, so it will be easier to populate the object (eg run.SampleName = ...
+                        # instead of strainmetadata.run.SampleName = ...
+                        run = strainmetadata.run
+                        # Capture Sample_ID, Sample_Name, I7_Index_ID, index1, I5_Index_ID,	index2, Sample_Project
+                        for idx, item in enumerate(data):
+                            setattr(run, header[idx], item) if item else setattr(run, header[idx], "NA")
+                        # Add the sample number
+                        run.SampleNumber = count - prev
+                        # Create the 'General' category for strainmetadata
+                        strainmetadata.general = GenObject({'outputdirectory': os.path.join(self.path, samplename),
+                                                            'pipelinecommit': self.commit})
+                        # Add the output directory to the general category
+                        # Append the strainmetadata object to a list
+                        self.samples.append(strainmetadata)
+                    elif samples:
+                        setattr(self.header, 'forwardlength', data[0]) \
+                            if 'forwardlength' not in self.header.datastore else \
+                            setattr(self.header, 'reverselength', data[0])
+                        self.totalreads += int(data[0])
+        self.date = self.header.Date if "Date" in self.header.datastore else self.date
+        # self.csv = header
 
     def parserunstats(self):
         """Parses the XML run statistics file (GenerateFASTQRunStatistics.xml). In some cases, the file is not
@@ -133,7 +188,7 @@ class Metadata(object):
                 # Try and replicate the Illumina rules to create file names from "Sample_Name"
                 samplename = samplenamer(straindata, 1)
                 # Calculate the percentage of clusters associated with each strain
-                percentperstrain = "{:.2f}".format(str((float(straindata[3]) / tclusterspf * 100)))
+                percentperstrain = "{:.2f}".format((float(straindata[3]) / tclusterspf * 100))
                 try:
                     # Use the sample number -1 as the index in the list of objects created in parsesamplesheet
                     strainindex = int(straindata[0]) - 1

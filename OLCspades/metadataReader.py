@@ -26,6 +26,8 @@ class MetadataReader(object):
                     # Set the name
                     metadata.name = sample.name
                     self.samples.append(metadata)
+            else:
+                self.samples.append(sample)
 
     def __init__(self, inputobject):
         self.metadata = inputobject.samples

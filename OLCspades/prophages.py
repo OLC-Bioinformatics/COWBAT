@@ -32,33 +32,36 @@ class Prophages(GeneSeekr):
                       'start_position_of_prophage', 'end_position_of_prophage', 'length_of_prophage']
         combinedrow = ''
         for sample in self.metadata:
-            # Populate the header with the appropriate data
-            row = 'Contig,ProphageID,Host,PercentIdentity\n'
-            for result in sample[self.analysistype].blastresults.items():
-                # Open the prophage file as a dictionary - I do this here, as if I open it earlier, it looks like the
-                # file remains partially-read through for the next iteration. Something like prophagedata.seek(0) would
-                # probably work, but Dictreader objects don't have a .seek attribute
-                prophagedata = DictReader(open(overview), fieldnames=fieldnames, dialect='excel-tab')
-                # Set variable names for the unsightly stored values
-                contig = list(result)[0]
-                query = list(result)[1].keys()[0]
-                percentid = list(result)[1].values()[0]
-                # Iterate through the phage data in the dictionary
-                for phage in prophagedata:
-                    if phage['id_prophage'] == query:
-                        # Add the data to the row
-                        row += '{},{},{},{}\n'.format(contig, query, phage['host'], percentid)
-            combinedrow += row
-            # If the script is being run as part of the assembly pipeline, make a report for each sample
-            if self.pipeline:
-                # Open the report
-                with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                               self.analysistype), 'wb') as report:
-                    # Write the row to the report
-                    report.write(row)
-            # Remove the messy blast results from the object
-            delattr(sample[self.analysistype], "blastresults")
+            try:
+                # Populate the header with the appropriate data
+                row = 'Contig,ProphageID,Host,PercentIdentity\n'
+                for result in sample[self.analysistype].blastresults.items():
+                    # Open the prophage file as a dictionary - I do this here, as if I open it earlier, it looks like the
+                    # file remains partially-read through for the next iteration. Something like prophagedata.seek(0) would
+                    # probably work, but Dictreader objects don't have a .seek attribute
+                    prophagedata = DictReader(open(overview), fieldnames=fieldnames, dialect='excel-tab')
+                    # Set variable names for the unsightly stored values
+                    contig = list(result)[0]
+                    query = list(result)[1].keys()[0]
+                    percentid = list(result)[1].values()[0]
+                    # Iterate through the phage data in the dictionary
+                    for phage in prophagedata:
+                        if phage['id_prophage'] == query:
+                            # Add the data to the row
+                            row += '{},{},{},{}\n'.format(contig, query, phage['host'], percentid)
+                combinedrow += row
+                # If the script is being run as part of the assembly pipeline, make a report for each sample
+                if self.pipeline:
+                    # Open the report
+                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                   self.analysistype), 'wb') as report:
+                        # Write the row to the report
+                        report.write(row)
+                # Remove the messy blast results from the object
+                delattr(sample[self.analysistype], "blastresults")
+            except (AttributeError, KeyError):
+                pass
         # Create the report containing all the data from all samples
-        with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")), 'wb') \
+        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
                 as combinedreport:
             combinedreport.write(combinedrow)

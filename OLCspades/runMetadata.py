@@ -163,6 +163,9 @@ class Metadata(object):
                             setattr(self.header, 'reverselength', data[0])
                         self.totalreads += int(data[0])
         self.date = self.header.Date if "Date" in self.header.datastore else self.date
+        for sample in self.samples:
+            if 'InvestigatorName' not in sample.run.datastore:
+                sample.run.InvestigatorName = 'NA'
         # self.csv = header
 
     def parserunstats(self):

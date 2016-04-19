@@ -37,13 +37,13 @@ RUN apt-get update -y -qq && apt-get install -y --force-yes \
 ADD accessoryfiles /accessoryfiles
 #RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Remove the rpm
-RUN rm /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
+#RUN rm /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Edited Config.pm supplied with bcl2fastq to comment out sub _validateEland subroutine that was causing bcl2fastq to fail with compilation errors
-COPY Config.pm /usr/local/lib/bcl2fastq-1.8.4/perl/Casava/Alignment/Config.pm
+#COPY Config.pm /usr/local/lib/bcl2fastq-1.8.4/perl/Casava/Alignment/Config.pm
 
 # Install XML:Simple and dependencies for bcl2fastq 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm --mirror http://mirror.csclub.uwaterloo.ca/CPAN/ XML::Simple --mirror-only --force
+#RUN curl -L http://cpanmin.us | perl - App::cpanminus
+#RUN cpanm --mirror http://mirror.csclub.uwaterloo.ca/CPAN/ XML::Simple --mirror-only --force
 
 # Install bbmap and bbduk
 RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
@@ -95,9 +95,13 @@ RUN ./configure && \
 # Install Prodigal and ePCR
 ENV PATH /accessoryfiles:$PATH
 
+# Install bowtie2
+ENV PATH /accessoryfiles/bowtie2:$PATH
+
 # Add pipeline to the PATH
 WORKDIR /
 ENV PATH /spades/OLCspades:$PATH
+ENV PATH /spadesfiles:/spadespipelinefiles:$PATH
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 # Mount NAS:

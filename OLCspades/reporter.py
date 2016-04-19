@@ -17,7 +17,7 @@ class Reporter(object):
                     ('NumContigs', sample.mapping.Contigs),
                     ('TotalLength', sample.mapping.Bases.split('bp')[0]),
                     ('MeanInsertSize', sample.mapping.MeanInsertSize),
-                    ('AverageCoverageDepth', sample.mapping.MeanCoveragedata),
+                    ('AverageCoverageDepth', sample.mapping.MeanCoveragedata.split("X")[0]),
                     ('ReferenceGenome', sample.rmlst.referencegenome),
                     ('RefGenomeAlleleMatches', str(sample.rmlst.matchestoreferencegenome)),
                     ('16sPhylogeny', sample['16s'].taxonomy),

@@ -5,9 +5,50 @@ __author__ = 'adamkoziol'
 
 class ResFinder(GeneSeekr):
 
+    def runblast(self):
+        while True:  # while daemon
+            (assembly, target, sample) = self.blastqueue.get()  # grabs fastapath from dqueue
+            genome = os.path.split(assembly)[1].split('.')[0]
+            # Run the BioPython BLASTn module with the genome as query, fasta(target gene) as db.
+            # Do not re-perform the BLAST search each time
+            make_path(sample[self.analysistype].reportdir)
+            try:
+                report = glob('{}{}*rawresults*'.format(sample[self.analysistype].reportdir, genome))[0]
+                size = os.path.getsize(report)
+                if size == 0:
+                    os.remove(report)
+                    report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
+                                                              time.strftime("%Y.%m.%d.%H.%M.%S"))
+            except IndexError:
+                report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
+                                                          time.strftime("%Y.%m.%d.%H.%M.%S"))
+            db = target.split('.')[0]
+            # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
+            # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
+            # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
+            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
+                                           num_threads=12,
+                                           outfmt='"6 qseqid sseqid positive mismatch gaps '
+                                                  'evalue bitscore slen length qstart qend"',
+                                           out=report)
+            if not os.path.isfile(report):
+                try:
+                    blastn()
+                except:
+                    self.blastqueue.task_done()
+                    self.blastqueue.join()
+                    try:
+                        os.remove(report)
+                    except IOError:
+                        pass
+                    raise
+            # Run the blast parsing module
+            self.blastparser(report, sample)
+            self.blastqueue.task_done()  # signals to dqueue job is done
+
     def blastparser(self, report, sample):
         # Open the sequence profile file as a dictionary
-        blastdict = DictReader(open(report), fieldnames=self.fieldnames, dialect='excel-tab')
+        blastdict = DictReader(open(report), fieldnames=self.resfinderfields, dialect='excel-tab')
         resultdict = {}
         # Go through each BLAST result
         for row in blastdict:
@@ -66,11 +107,12 @@ class ResFinder(GeneSeekr):
             # If the script is being run as part of the assembly pipeline, make a report for each sample
             if self.pipeline:
                 if sample.general.bestassemblyfile != 'NA':
-                    # Open the report
-                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                   self.analysistype), 'wb') as report:
-                        # Write the row to the report
-                        report.write(row)
+                    if sample[self.analysistype].reportdir != 'NA':
+                        # Open the report
+                        with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                       self.analysistype), 'wb') as report:
+                            # Write the row to the report
+                            report.write(row)
             try:
                 # Remove the messy blast results from the object
                 delattr(sample[self.analysistype], "blastresults")
@@ -80,3 +122,9 @@ class ResFinder(GeneSeekr):
         with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
                 as combinedreport:
             combinedreport.write(combinedrow)
+
+    def __init__(self, inputobject):
+        # qseqid sacc stitle positive mismatch gaps evalue bitscore slen length
+        self.resfinderfields = ['query_id', 'subject_id', 'positives', 'mismatches', 'gaps', 'evalue', 'bit_score',
+                                'subject_length', 'alignment_length', 'query_start', 'query_end']
+        GeneSeekr.__init__(self, inputobject)

@@ -121,7 +121,7 @@ class RunSpades(object):
         core = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
         coregenome.CoreGenome(core)
         metadataprinter.MetadataPrinter(self)
-        res = GeneSeekr.PipelineInit(self, 'resfinder', False, 98)
+        res = resfinder.PipelineInit(self, 'resfinder', False, 80)
         resfinder.ResFinder(res)
         metadataprinter.MetadataPrinter(self)
 

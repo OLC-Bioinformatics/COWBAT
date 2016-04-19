@@ -8,7 +8,6 @@ class FastqMover(object):
         """Find .fastq files for each sample and move them to an appropriately named folder"""
         from glob import glob
         from accessoryFunctions import make_path
-        import shutil
         import os
         import time
         # from accessoryFunctions import relativesymlink
@@ -18,7 +17,11 @@ class FastqMover(object):
             # Retrieve the output directory
             outputdir = '{}{}'.format(self.path, sample.name)
             # Find any fastq files with the sample name
-            fastqfiles = sorted(glob('{}{}*.fastq*'.format(self.path, sample.name)))
+            fastqfiles = sorted(glob('{}{}_*.fastq*'.format(self.path, sample.name))) \
+                if sorted(glob('{}{}_*.fastq*'.format(self.path, sample.name))) \
+                else sorted(glob('{}{}.fastq*'.format(self.path, sample.name))) \
+                if sorted(glob('{}{}.fastq*'.format(self.path, sample.name))) \
+                else sorted(glob('{}{}*.fastq*'.format(self.path, sample.name)))
             # Only try and move the files if the files exist
             if fastqfiles:
                 make_path(outputdir)

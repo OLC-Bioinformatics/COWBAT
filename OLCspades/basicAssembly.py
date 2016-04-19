@@ -60,12 +60,12 @@ class Basic(object):
         from accessoryFunctions import GenObject
         # Iterate through the samples
         for sample in self.samples:
-            sample.run.date = 'NA'
-            sample.run.investigator = 'NA'
+            sample.run.Date = 'NA'
+            sample.run.InvestigatorName = 'NA'
             sample.run.TotalClustersinRun = 'NA'
             sample.run.NumberofClustersPF = 'NA'
             sample.run.PercentOfClusters = 'NA'
-            sample.run.Project = 'NA'
+            sample.run.SampleProject = 'NA'
             try:
                 # Only perform this step if the forward and reverse lengths have not been loaded into the metadata
                 len(sample.run.forwardlength)
@@ -79,7 +79,7 @@ class Basic(object):
                 # Only process the samples if the file type is a list
                 if type(sample.general.fastqfiles) is list:
                     # Set the forward fastq to be the first entry in the list
-                    forwardfastq = sample.general.fastqfiles[0]
+                    forwardfastq = sorted(sample.general.fastqfiles)[0]
                     # If the files are gzipped, then zcat must be used instead of cat
                     if '.gz' in forwardfastq:
                         command = 'zcat'
@@ -106,7 +106,7 @@ class Basic(object):
                     sample.run.forwardlength = forwardlength
                     # For paired end analyses, also calculate the length of the reverse reads
                     if len(sample.general.fastqfiles) == 2:
-                        reversefastq = sample.general.fastqfiles[1]
+                        reversefastq = sorted(sample.general.fastqfiles)[1]
                         reversereads = subprocess.Popen("{} {} | head -n 1000".format(command, reversefastq),
                                                         shell=True,
                                                         stdout=subprocess.PIPE,

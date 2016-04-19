@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+from glob import glob
 from threading import Thread
 from Queue import Queue
 import time
@@ -86,7 +87,6 @@ class Quality(object):
 
     def trimquality(self):
         """Uses bbduk from the bbmap tool suite to quality and adapter trim"""
-        from glob import glob
         print "\r[{:}] Trimming fastq files".format(time.strftime("%H:%M:%S"))
         # Create and start threads for each strain with fastq files
         for sample in self.metadata:
@@ -112,32 +112,28 @@ class Quality(object):
                 # Separate system calls for paired and unpaired fastq files
                 # TODO minlen=number - incorporate read length
                 # http://seqanswers.com/forums/showthread.php?t=42776
-                if len(fastqfiles) == 2:
-                    cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
-                    bbdukcall = "bbduk.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
-                        "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
-                        .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
-                elif len(fastqfiles) == 1:
-                    bbdukcall = "bbduk.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
-                        "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
-                        .format(fastqfiles[0], cleanforward, self.bbduklocation)
+                if sample.run.forwardlength > 75 and sample.run.reverselength > 75:
+                    if len(fastqfiles) == 2:
+                        cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
+                        bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
+                            "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
+                            .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
+                    elif len(fastqfiles) == 1:
+                        bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                            "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                            .format(fastqfiles[0], cleanforward, self.bbduklocation)
+                    else:
+                        bbdukcall = ""
                 else:
                     bbdukcall = ""
+                    # sample.general.trimmedfastqfiles = fastqfiles
                 sample.commands.bbduk = bbdukcall
                 # Add the arguments to the queue
-                self.trimqueue.put((bbdukcall, cleanforward))
+                self.trimqueue.put((sample, bbdukcall, cleanforward))
         # Wait on the trimqueue until everything has been processed
         self.trimqueue.join()
         # Add all the trimmed files to the metadata
-        for sample in self.metadata:
-            # Define the output directory
-            outputdir = sample.general.outputdirectory
-            # Add the trimmed fastq files to a list
-            trimmedfastqfiles = glob('{}/*trimmed.fastq'.format(outputdir, sample.name))
-            if not trimmedfastqfiles:
-                trimmedfastqfiles = glob('{}/*trimmed.fastq.bz2'.format(outputdir, sample.name))
-            # Populate the metadata if the files exist
-            sample.general.trimmedfastqfiles = trimmedfastqfiles if trimmedfastqfiles else 'NA'
+
         print "\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S"))
         self.fastqcthreader('Trimmed')
 
@@ -145,10 +141,19 @@ class Quality(object):
         """Run bbduk system calls"""
         while True:  # while daemon
             # Unpack the variables from the queue
-            (systemcall, forwardname) = self.trimqueue.get()
+            (sample, systemcall, forwardname) = self.trimqueue.get()
             # Check to see if the forward file already exists
-            if not os.path.isfile(forwardname) and not os.path.isfile('{}.bz2'.format(forwardname)):
-                call(systemcall, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+            if systemcall:
+                if not os.path.isfile(forwardname) and not os.path.isfile('{}.bz2'.format(forwardname)):
+                    call(systemcall, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+                # Define the output directory
+                outputdir = sample.general.outputdirectory
+                # Add the trimmed fastq files to a list
+                trimmedfastqfiles = sorted(glob('{}/*trimmed.fastq'.format(outputdir, sample.name)))
+                if not trimmedfastqfiles:
+                    trimmedfastqfiles = sorted(glob('{}/*trimmed.fastq.bz2'.format(outputdir, sample.name)))
+                # Populate the metadata if the files exist
+                sample.general.trimmedfastqfiles = trimmedfastqfiles if trimmedfastqfiles else 'NA'
             # Signal to trimqueue that job is done
             self.trimqueue.task_done()
 

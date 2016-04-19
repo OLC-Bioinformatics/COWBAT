@@ -26,15 +26,19 @@ class Spades(object):
             sample.general.kmers = ','.join([kmer for kmer in kmerlist if int(kmer) <= sample.run.forwardlength])
             # Initialise the fastqfiles variable - will store trimmed fastq file names if they exist, and raw fastq
             # file names if trimmed fastq files were not created for whatever reason
-            if type(sample.general.trimmedfastqfiles) is list:
-                fastqfiles = sorted(sample.general.trimmedfastqfiles)
-            elif type(sample.general.fastqfiles) is list:
-                    fastqfiles = sorted(sample.general.fastqfiles)
+            if 'trimmedfastqfiles' in sample.general.datastore:
+                if type(sample.general.trimmedfastqfiles) is list:
+                    fastqfiles = sorted(sample.general.trimmedfastqfiles)
+                elif type(sample.general.fastqfiles) is list:
+                        fastqfiles = sorted(sample.general.fastqfiles)
+                else:
+                    fastqfiles = ''
             else:
-                fastqfiles = ''
+                fastqfiles = sorted(sample.general.fastqfiles)
             # Only proceed if fastq files exists
             if fastqfiles:
                 # Set the the forward fastq files
+                sample.general.assemblyfastq = fastqfiles
                 forward = fastqfiles[0]
                 # Set the output directory
                 sample.general.spadesoutput = '{}/spades_output'.format(sample.general.outputdirectory)
@@ -42,15 +46,25 @@ class Spades(object):
                 if len(fastqfiles) == 2:
                     # Set the reverse fastq name
                     reverse = fastqfiles[1]
-                    # If a previous assembly was partially completed, continue from the most recent checkpoint
-                    if os.path.isdir(sample.general.spadesoutput):
-                        spadescommand = 'spades.py -k {} --careful --continue --pe1-1 {} --pe1-2 {} -o {} -t {}'\
-                                        .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
-                                                self.threads)
+                    if sample.run.forwardlength < 50:
+                        if os.path.isdir(sample.general.spadesoutput):
+                            spadescommand = 'spades.py -k {} --careful --continue --s1 {} -o {} -t {}' \
+                                .format(sample.general.kmers, reverse, sample.general.spadesoutput,
+                                        self.threads)
+                        else:
+                            spadescommand = 'spades.py -k {} --careful --s1 {} -o {} -t {}' \
+                                .format(sample.general.kmers, reverse, sample.general.spadesoutput,
+                                        self.threads)
                     else:
-                        spadescommand = 'spades.py -k {} --careful --pe1-1 {} --pe1-2 {} -o {} -t {}'\
-                                        .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
-                                                self.threads)
+                        # If a previous assembly was partially completed, continue from the most recent checkpoint
+                        if os.path.isdir(sample.general.spadesoutput):
+                            spadescommand = 'spades.py -k {} --careful --continue --pe1-1 {} --pe1-2 {} -o {} -t {}'\
+                                            .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
+                                                    self.threads)
+                        else:
+                            spadescommand = 'spades.py -k {} --careful --pe1-1 {} --pe1-2 {} -o {} -t {}'\
+                                            .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
+                                                    self.threads)
                 # Same as above, but use single read settings for spades
                 else:
                     if os.path.isdir(sample.general.spadesoutput):
@@ -74,7 +88,7 @@ class Spades(object):
         self.assemblequeue.join()
         # Filter contigs shorter than 1000 bp, and rename remaining contigs with sample.name
         self.filter()
-        self.insertsize()
+        # self.insertsize()
 
     def assemble(self):
         """Run the assembly command in a multi-threaded fashion"""
@@ -137,32 +151,32 @@ class Spades(object):
             else:
                 sample.general.bestassemblyfile = 'NA'
 
-    def insertsize(self):
-        """Extracts the insert size and its deviation from the spades.log file"""
-        for sample in self.metadata:
-            # Only look if the spades output folder exists, and if there are two fastq files (can't find the insert
-            # size of single reads
-            if os.path.isdir(sample.general.spadesoutput) and len(sample.general.fastqfiles) == 2:
-                # Set the name of the log file
-                spadeslogfile = '{}/spades.log'.format(sample.general.spadesoutput)
-                # Open the log file
-                with open(spadeslogfile, 'rb') as spadeslog:
-                    # Iterate through the file
-                    for line in spadeslog:
-                        # Find the line with the insert size on it. Will look something like this:
-                        """
-                        0:02:07.605   144M / 9G    INFO    General (pair_info_count.cpp : 191) \
-                        Insert size = 240.514, deviation = 105.257, left quantile = 142, right quantile = 384, \
-                        read length = 301
-                        """
-                        if 'Insert size =' in line:
-                            # Extract the relevant data and add it to the metadata
-                            sample.general.insertsize = line.split('= ')[1].split(',')[0]
-                            sample.general.insertsizestandarddev = line.split('= ')[2].split(',')[0]
-            # Otherwise, populate with NA
-            else:
-                sample.general.insertsize = 'NA'
-                sample.general.insertsizestandarddev = 'NA'
+    # def insertsize(self):
+    #     """Extracts the insert size and its deviation from the spades.log file"""
+    #     for sample in self.metadata:
+    #         # Only look if the spades output folder exists, and if there are two fastq files (can't find the insert
+    #         # size of single reads
+    #         if os.path.isdir(sample.general.spadesoutput) and len(sample.general.fastqfiles) == 2:
+    #             # Set the name of the log file
+    #             spadeslogfile = '{}/spades.log'.format(sample.general.spadesoutput)
+    #             # Open the log file
+    #             with open(spadeslogfile, 'rb') as spadeslog:
+    #                 # Iterate through the file
+    #                 for line in spadeslog:
+    #                     # Find the line with the insert size on it. Will look something like this:
+    #                     """
+    #                     0:02:07.605   144M / 9G    INFO    General (pair_info_count.cpp : 191) \
+    #                     Insert size = 240.514, deviation = 105.257, left quantile = 142, right quantile = 384, \
+    #                     read length = 301
+    #                     """
+    #                     if 'Insert size =' in line:
+    #                         # Extract the relevant data and add it to the metadata
+    #                         sample.general.insertsize = line.split('= ')[1].split(',')[0]
+    #                         sample.general.insertsizestandarddev = line.split('= ')[2].split(',')[0]
+    #         # Otherwise, populate with NA
+    #         else:
+    #             sample.general.insertsize = 'NA'
+    #             sample.general.insertsizestandarddev = 'NA'
 
     def __init__(self, inputobject):
         from Queue import Queue

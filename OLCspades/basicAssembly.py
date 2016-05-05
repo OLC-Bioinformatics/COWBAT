@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 import subprocess
-import os
+
 import metadataReader
+from accessoryFunctions import *
+
 __author__ = 'adamkoziol'
 
 
 class Basic(object):
 
     def basic(self):
-        from accessoryFunctions import GenObject, MetadataObject, filer, make_path
         from glob import glob
-        import os
-        import errno
         # Grab any .fastq files in the path
         fastqfiles = glob('{}*.fastq*'.format(self.path))
         # Extract the base name of the globbed name + path provided
@@ -31,6 +30,9 @@ class Basic(object):
             try:
                 # Link the .gz files to :self.path/:filename
                 map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+                # map(lambda x: relativesymlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+                # print map(lambda x: (x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+                # quit()
             # Except os errors
             except OSError as exception:
                 # If there is an exception other than the file exists, raise it

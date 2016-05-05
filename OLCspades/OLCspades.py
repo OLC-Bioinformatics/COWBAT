@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import subprocess
-import runMetadata
-import offhours
+
 import fastqCreator
+import offhours
+import runMetadata
+
 # import json
 import metadataprinter
 import spadesRun
@@ -280,5 +282,3 @@ if __name__ == '__main__':
     # Run the pipeline
     RunSpades(arguments, commit, starttime, homepath)
     printtime('Assembly and characterisation complete', starttime)
-
-# /home/blais/Bioinformatics/0_biorequests/160317 -r /home/blais/Bioinformatics/0_biorequests/assemblypipeline -m /media/miseq/MiSeqOutput -f 160317_M02466_0145_000000000-ALJWU -F

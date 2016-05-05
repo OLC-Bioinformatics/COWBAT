@@ -16,7 +16,7 @@ class PlasmidFinder(Prophages):
                     percentid = list(result)[1].values()[0]
                     # Add the data to the row
                     row += '{},{},{}\n'.format(contig, query, percentid)
-            except KeyError:
+            except (KeyError, AttributeError):
                 row = ''
             combinedrow += row
             # If the script is being run as part of the assembly pipeline, make a report for each sample

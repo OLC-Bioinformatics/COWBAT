@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 import bz2
 from Queue import Queue
-from threading import Thread
 from glob import glob
+from threading import Thread
+
 from accessoryFunctions import *
+
 __author__ = 'adamkoziol'
 
 
@@ -47,7 +49,7 @@ class Compress(object):
                 if os.path.isfile('{}.bz2'.format(compressfile)):
                     try:
                         os.remove(compressfile)
-                    except OSError:
+                    except (OSError, IOError):
                         pass
             self.compressqueue.task_done()
 

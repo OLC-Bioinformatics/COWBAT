@@ -1,17 +1,19 @@
 #!/usr/bin/env python
+import json
 import operator
 import re
 import shlex
 import subprocess
 import time
-import json
 from Queue import Queue
 from collections import defaultdict
+from csv import DictReader
 from glob import glob
 from threading import Thread
+
 from Bio import SeqIO
 from Bio.Blast.Applications import NcbiblastnCommandline
-from csv import DictReader
+
 import getmlst
 # Import accessory functions
 from accessoryFunctions import *
@@ -25,9 +27,6 @@ Revised with speed improvements
 """
 
 
-# TODO keep CFIA profiles and alleles in separate files
-
-
 class MLST(object):
     def mlst(self):
         # Get the MLST profiles into a dictionary for each sample
@@ -39,7 +38,7 @@ class MLST(object):
         self.makedbthreads(self.allelefolders)
         # Run the blast analyses
         printtime('Running {} blast analyses'.format(self.analysistype), self.start)
-        self.blastnthreads()
+        self.blastnprep()
         globalcounter()
         # Determine sequence types from the analyses
         printtime('Determining {} sequence types'.format(self.analysistype), self.start)
@@ -71,14 +70,18 @@ class MLST(object):
 
     def profiler(self):
         """Creates a dictionary from the profile scheme(s)"""
-        # Initialise the variables
+        # Initialise variables
         profiledata = defaultdict(make_dict)
         profileset = set()
+        supplementalset = ''
         genedict = {}
         # Find all the unique profiles to use with a set
         for sample in self.metadata:
             if sample[self.analysistype].profile != 'NA':
                 profileset.add(sample[self.analysistype].profile[0])
+                if self.analysistype == 'rmlst':
+                    supplementalset = sample[self.analysistype].supplementalprofile
+
         # Extract the profiles for each set
         for sequenceprofile in profileset:
             # Clear the list of genes
@@ -102,6 +105,15 @@ class MLST(object):
                         profiledata[sequenceprofile][row['ST']][gene] = row[gene]
                     except KeyError:
                         profiledata[sequenceprofile][row['rST']][gene] = row[gene]
+            # Load the supplemental profile definitions
+            if self.analysistype == 'rmlst':
+                supplementalprofile = DictReader(open(supplementalset), dialect='excel-tab')
+                # Do the same with the supplemental profile
+                for row in supplementalprofile:
+                    # Iterate through the genes
+                    for gene in genelist:
+                        # Add the sequence profile, and type, the gene name and the allele number to the dictionary
+                        profiledata[sequenceprofile][row['rST']][gene] = row[gene]
             # Add the gene list to a dictionary
             genedict[sequenceprofile] = sorted(genelist)
             # Add the profile data, and gene list to each sample
@@ -109,7 +121,6 @@ class MLST(object):
                 if sequenceprofile == sample[self.analysistype].profile[0]:
                     # Populate the metadata with the profile data
                     sample[self.analysistype].profiledata = profiledata[sample[self.analysistype].profile[0]]
-                    # self.profiledata = {self.analysistype: profiledata[sample[self.analysistype].profile[0]]}
                     # Add the allele directory to a list of directories used in this analysis
                     self.allelefolders.add(sample[self.analysistype].alleledir)
                     dotter()
@@ -130,7 +141,7 @@ class MLST(object):
         # Make blast databases for MLST files (if necessary)
         for alleledir in folder:
             # List comprehension to remove any previously created database files from list
-            allelefiles = glob('{}*.fasta'.format(alleledir))
+            allelefiles = glob('{}/*.fasta'.format(alleledir))
             # For each allele file
             for allelefile in allelefiles:
                 # Add the fasta file to the queue
@@ -144,77 +155,60 @@ class MLST(object):
             # remove the path and the file extension for easier future globbing
             db = fastapath.split('.')[0]
             nhr = '{}.nhr'.format(db)  # add nhr for searching
-            fnull = open(os.devnull, 'w')  # define /dev/null
             if not os.path.isfile(str(nhr)):  # if check for already existing dbs
                 # Create the databases
                 # TODO use MakeBLASTdb class
                 subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
-                                            .format(fastapath, db)), stdout=fnull, stderr=fnull)
+                                            .format(fastapath, db)), stdout=self.fnull, stderr=self.fnull)
             dotter()
             self.dqueue.task_done()  # signals to dqueue job is done
 
-    def blastnthreads(self):
-        """Setup and create  threads for blastn and xml path"""
-        # Create the threads for the BLAST analysis
-        for sample in self.metadata:
-            if sample.general.bestassemblyfile != 'NA':
-                for i in range(len(sample[self.analysistype].combinedalleles)):
-                    threads = Thread(target=self.runblast, args=())
-                    threads.setDaemon(True)
-                    threads.start()
+    def blastnprep(self):
+        """Setup blastn analyses"""
         # Populate threads for each gene, genome combination
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
                 if type(sample[self.analysistype].allelenames) == list:
                     for allele in sample[self.analysistype].combinedalleles:
                         # Add each fasta/allele file combination to the threads
-                        self.blastqueue.put((sample.general.bestassemblyfile, allele, sample))
-        # Join the threads
-        self.blastqueue.join()
-        self.blastqueue.empty()
+                        self.runblast(sample.general.bestassemblyfile, allele, sample)
 
-    def runblast(self):
-        while True:  # while daemon
-            (assembly, allele, sample) = self.blastqueue.get()  # grabs fastapath from dqueue
-            genome = os.path.split(assembly)[1].split('.')[0]
-            # Run the BioPython BLASTn module with the genome as query, fasta(target gene) as db.
-            # Do not re-perform the BLAST search each time
-            make_path(sample[self.analysistype].reportdir)
-            try:
-                report = glob('{}{}*rawresults*'.format(sample[self.analysistype].reportdir, genome))[0]
-                size = os.path.getsize(report)
-                if size == 0:
-                    os.remove(report)
-                    report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
-                                                              time.strftime("%Y.%m.%d.%H.%M.%S"))
-            except IndexError:
-
+    def runblast(self, assembly, allele, sample):
+        """
+        Run the BLAST analyses
+        :param assembly: assembly path/file
+        :param allele: combined allele file
+        :param sample: sample object
+        :return:
+        """
+        genome = os.path.split(assembly)[1].split('.')[0]
+        # Run the BioPython BLASTn module with the genome as query, fasta(target gene) as db.
+        # Do not re-perform the BLAST search each time
+        make_path(sample[self.analysistype].reportdir)
+        try:
+            report = glob('{}{}*rawresults*'.format(sample[self.analysistype].reportdir, genome))[0]
+            size = os.path.getsize(report)
+            if size == 0:
+                os.remove(report)
                 report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
                                                           time.strftime("%Y.%m.%d.%H.%M.%S"))
-            db = allele.split('.')[0]
-            # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
-            # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
-            # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
-            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
-                                           num_threads=12,
-                                           outfmt='"6 qseqid sseqid positive mismatch gaps '
-                                                  'evalue bitscore slen length"',
-                                           out=report)
-            if not os.path.isfile(report):
-                # Note that there is no output file specified -  the search results are currently stored in stdout
-                try:
-                    blastn()
-                except:
-                    self.blastqueue.task_done()
-                    self.blastqueue.join()
-                    try:
-                        os.remove(report)
-                    except IOError:
-                        pass
-                    raise
-            # Run the blast parsing module
-            self.blastparser(report, sample)
-            self.blastqueue.task_done()  # signals to dqueue job is done
+        except IndexError:
+            report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
+                                                      time.strftime("%Y.%m.%d.%H.%M.%S"))
+        db = allele.split('.')[0]
+        # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
+        # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
+        # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
+        blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
+                                       num_threads=12,
+                                       outfmt='"6 qseqid sseqid positive mismatch gaps '
+                                              'evalue bitscore slen length"',
+                                       out=report)
+        if not os.path.isfile(report):
+            # Run BLAST
+            blastn()
+        # Run the blast parsing module
+        self.blastparser(report, sample)
 
     def blastparser(self, report, sample):
         # Open the sequence profile file as a dictionary
@@ -264,10 +258,192 @@ class MLST(object):
                         self.plusdict[sample.name][gene][allelenumber][percentidentity] = bitscore
                 else:
                     self.plusdict[sample.name][gene][allelenumber][percentidentity] = bitscore
+        # Update alleles (if desired)
+        if self.updateallele:
+            # Initialise variables
+            previousallele, percidentity, bitscore, clearallele, geneofinterest = '', '', '', '', ''
+            # Iterate through the all the genes in the analyses
+            for gene in sample[self.analysistype].allelenames:
+                # Find the allele and percent identity + bit score (percent score)
+                for allele, percentscore in self.plusdict[sample.name][gene].items():
+                    # Split the bit score from the percent identity
+                    percentidentity = percentscore.items()[0][0]
+                    # If the percent identity is less than 100%, run the allele updater method
+                    if percentidentity < 100:
+                        geneofinterest, previousallele, percidentity, bitscore = \
+                            self.alleleupdater(sample, gene, allele)
+                self.plusdict[sample.name][geneofinterest].clear()
+                self.plusdict[sample.name][geneofinterest][previousallele][percidentity] = bitscore
         # Populate empty results for genes without any matches
         for gene in sample[self.analysistype].allelenames:
             if gene not in self.plusdict[sample.name]:
                 self.plusdict[sample.name][gene]['N'][0] = 0
+
+    def alleleupdater(self, sample, gene, targetallele):
+        """
+        Updates file of alleles if the new allele passes length and identity checks
+        :param sample: sample object
+        :param gene: name of gene of interest
+        :param targetallele: closest allele in database
+        :return:
+        """
+        from cStringIO import StringIO
+        from Bio.Blast import NCBIXML
+        from Bio.SeqRecord import SeqRecord
+        from Bio.Seq import Seq
+        from Bio.Alphabet import generic_dna
+        # Find the name of the allele file based on whether the gene name is found in the file name
+        genefile = [x for x in sample[self.analysistype].alleles if gene in x][0]
+        # Remove the extension of the gene file for use in makeblastdb and blastn
+        genefilenoext = genefile.split(".")[0]
+        # Create the blast databases every time the method is called
+        subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
+                                    .format(genefile, genefilenoext)), stdout=self.fnull, stderr=self.fnull)
+        # Re-perform BLAST analyses, but using an XML output that stores the alignment
+        blastn = NcbiblastnCommandline(query=sample.general.bestassemblyfile, db=genefilenoext, evalue=0.1, outfmt=5)
+        # Note that there is no output file specified -  the search results are currently stored in stdout
+        stdout, stderr = blastn()
+        # Map the blast record to memory
+        blast_handle = StringIO(stdout)
+        # Open record from memory-mapped file
+        records = NCBIXML.parse(blast_handle)
+        # Iterate through the records in the blast results
+        for record in records:  # This process is just to retrieve HSPs from xml files
+            for alignment in record.alignments:
+                for hsp in alignment.hsps:
+                    # Extract the allele name from the blast result
+                    allele = str(alignment.accession.split("_")[-1])
+                    # The point of this blast is to extract the sequence of the allele
+                    # If the allele name matches the target allele (the closest match e.g. BACT000063_20 -> 20)
+                    if allele == str(targetallele):
+                        # As there is some discrepancy with the capitalisation of terms, make sure it is consistent
+                        analysistype = 'rMLST' if self.analysistype == 'rmlst' else 'MLST'
+                        # Set the directory containing the profile and alleles
+                        alleledir = self.referencefilepath + analysistype
+                        # The name of the supplemental allele file (without and with the .fa extension)
+                        allelefilenoext = '{}/OLC_{}_alleles'.format(alleledir, analysistype)
+                        allelefile = allelefilenoext + '.fa'
+                        # Create the file if it doesn't exist
+                        open(allelefile, 'ab').close()
+                        # Create a list of all the blast database files in the folder
+                        dbfiles = glob('{}.n*'.format(allelefilenoext))
+                        # Remove the database files
+                        map(lambda y: os.remove(y), dbfiles)
+                        # Create the necessary blast database files
+                        subprocess.call(
+                            shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
+                                        .format(allelefile, allelefilenoext)), stdout=self.fnull, stderr=self.fnull)
+
+                        # Perform BLAST analysis using the supplemental allele file as the database
+                        nestedblastn = NcbiblastnCommandline(db=allelefilenoext, evalue=0.1, outfmt=5)
+                        # Note that there is no output file specified; the search results are currently stored in stdout
+                        # Additionally, the sequence from the previous BLAST query is used as stdin in this BLAST
+                        nestedstdout, nestedstderr = nestedblastn(stdin=hsp.query)
+                        # Search stdout for matches - if the term Hsp appears (the .find function will NOT
+                        # return -1), a match has been found, and stdout is written to file
+                        if nestedstdout.find('Hsp') != -1:
+                            nested_blast_handle = StringIO(nestedstdout)
+                            # Open record from memory-mapped file
+                            nestedrecords = NCBIXML.parse(nested_blast_handle)
+                            # Initialise variables
+                            previousallele = ''
+                            bitscore = ''
+                            # Iterate through the records
+                            for nestedrecord in nestedrecords:  # This process is just to retrieve HSPs from xml files
+                                for nestedalignment in nestedrecord.alignments:
+                                    for nestedhsp in nestedalignment.hsps:
+                                        # Calculate the percent identity
+                                        percentidentity = float("%.2f" % float(float(nestedhsp.identities) /
+                                                                               float(nestedalignment.length) * 100))
+                                        # Only set the previous allele and the bitscore if the percent identity is 100%
+                                        if percentidentity == 100:
+                                            # Get the allele number
+                                            previousallele = nestedalignment.accession.split("_")[-1]
+                                            bitscore = nestedhsp.score
+
+                            # If this allele has already been found in the supplemental file, return these data
+                            if previousallele:
+                                return gene, previousallele, 100.0, bitscore
+                            # Otherwise, get the allele sequence into the supplemental file
+                            else:
+                                # Initialise variables
+                                allelelist = []
+                                allelenumber = 1000000
+                                # Open the allele file to append
+                                with open(allelefile, 'ab+') as supplemental:
+                                    for line in supplemental:
+                                        # As there are multiple genes (e.g. BACT000001, BACT000063, etc.) check to
+                                        # see if the gene of interest is in the line
+                                        if gene in line:
+                                            # Append the header to the list
+                                            allelelist.append(line)
+                                    # Find the last allele number from the header
+                                    try:
+                                        allelenumber = int(allelelist[-1].split("_")[1]) + 1
+                                    # If there are no alleles for the gene of interest, then pass
+                                    except IndexError:
+                                        pass
+                                    # Puts the HSP in the correct order -  hits to the negative strand will be
+                                    # reversed compared to what we're looking for
+                                    allelesequence = Seq(hsp.query, generic_dna)
+                                    if hsp.sbjct_start < hsp.sbjct_end:
+                                        end = hsp.sbjct_end
+                                    else:
+                                        end = hsp.sbjct_start
+                                        allelesequence = allelesequence.reverse_complement()
+                                    # Screen out hits that are shorter than the targets
+                                    # Keeping it this format though this statement could be re-written more efficiently
+                                    if end < alignment.length:
+                                        pass
+                                    # The header will be >BACT00001_1000000
+                                    definitionline = '{}_{}'.format(gene, allelenumber)
+                                    # Create a sequence record using BioPython
+                                    fasta = SeqRecord(allelesequence,
+                                                      # If this is not added, the header will not be formatted properly
+                                                      description='',
+                                                      # Use >:definitionline as the header
+                                                      id=definitionline)
+                                    # Use the SeqIO module to properly format the new sequence record
+                                    SeqIO.write(fasta, supplemental, "fasta")
+                                    # Return the necessary values
+                                    return gene, allelenumber, 100.0, hsp.score
+                        # If there are hits in the supplemental allele file
+                        else:
+                            # Initialise variables
+                            allelelist = []
+                            allelenumber = 1000000
+                            # Open the allele file to find the last allele associated with the gene of interest
+                            with open(allelefile, 'ab+') as supplemental:
+                                for line in supplemental:
+                                    if gene in line:
+                                        allelelist.append(line)
+                                try:
+                                    allelenumber = int(allelelist[-1].split("_")[1]) + 1
+                                except IndexError:
+                                    pass
+                                # Puts the HSP in the correct order -  hits to the negative strand will be
+                                # reversed compared to what we're looking for
+                                allelesequence = Seq(hsp.query, generic_dna)
+                                if hsp.sbjct_start < hsp.sbjct_end:
+                                    end = hsp.sbjct_end
+                                else:
+                                    end = hsp.sbjct_start
+                                    allelesequence = allelesequence.reverse_complement()
+                                # Screen out hits that are shorter than the targets
+                                # Keeping this format even though this if statement could be re-written more efficiently
+                                if end < alignment.length:
+                                    pass
+                                definitionline = '{}_{}'.format(gene, allelenumber)
+                                # Create a sequence record using BioPython
+                                fasta = SeqRecord(allelesequence,
+                                                  # If this is not added, the header will not be formatted properly
+                                                  description='',
+                                                  # Use >:definitionline as the header
+                                                  id=definitionline)
+                                # Use the SeqIO module to properly format the new sequence record
+                                SeqIO.write(fasta, supplemental, "fasta")
+                                # Return the appropriate information
+                                return gene, allelenumber, 100.0, hsp.score
 
     def sequencetyper(self):
         for sample in self.metadata:
@@ -310,6 +486,7 @@ class MLST(object):
                                     multipercent.append(0)
                             # For whatever reason, the rMLST profile scheme treat multiple allele hits as 'N's.
                             multiallele = multiallele if len(multiallele) == 1 else 'N'
+                            multipercent = multipercent if len(multiallele) == 1 else [0, 0]
                             # Populate self.bestdict with genome, gene, alleles joined with a space (this was made like
                             # this because allele is a list generated by the .iteritems() above
                             self.bestdict[genome][gene][" ".join(str(allele)
@@ -337,6 +514,13 @@ class MLST(object):
                                     if allele == sortedrefallele:
                                         # Increment the number of matches to each profile
                                         self.bestmatch[genome][sequencetype] += 1
+                                    # Special handling of BACT000060 and BACT000065 genes. When the reference profile
+                                    # has an allele of 'N', and the query allele doesn't, set the allele to 'N', and
+                                    # count it as a match
+                                    elif gene == 'BACT000060' or gene == 'BACT000065':
+                                        if sortedrefallele == 'N' and allele != 'N':
+                                            # Increment the number of matches to each profile
+                                            self.bestmatch[genome][sequencetype] += 1
                         # Get the best number of matches
                         # From: https://stackoverflow.com/questions/613183/sort-a-python-dictionary-by-value
                         try:
@@ -396,14 +580,14 @@ class MLST(object):
                                             sample[self.analysistype].matchestosequencetype = matches
                             # Add the new profile to the profile file (if the option is enabled)
                             if self.updateprofile:
-                                self.reprofiler(int(header), sample[self.analysistype].profile[0], genome)
+                                self.reprofiler(int(header), genome, sample)
                         elif sortedmatches == 0:
                             for gene in sample[self.analysistype].allelenames:
                                 # Populate the results profile with negative values for sequence type and sorted matches
                                 self.resultprofile[genome]['NA'][sortedmatches][gene]['NA'] = 0
                             # Add the new profile to the profile file (if the option is enabled)
                             if self.updateprofile:
-                                self.reprofiler(int(header), sample[self.analysistype].profile[0], genome)
+                                self.reprofiler(int(header), genome, sample)
                             sample[self.analysistype].sequencetype = 'NA'
                             sample[self.analysistype].matchestosequencetype = 'NA'
                             sample[self.analysistype].mismatchestosequencetype = 'NA'
@@ -413,13 +597,13 @@ class MLST(object):
                     sample[self.analysistype].matchestosequencetype = 'NA'
                     sample[self.analysistype].mismatchestosequencetype = 'NA'
 
-    def reprofiler(self, header, profilefile, genome):
+    def reprofiler(self, header, genome, sample):
         # reprofiler(numGenes, profileFile, geneList, genome)
         """
         Creates and appends new profiles as required
         :param header:
-        :param profilefile:
         :param genome:
+        :param sample:
         """
         # Iterate through mlstseqtype - it contains genomes with partial matches to current reference profiles
         # Reset :newprofile
@@ -427,20 +611,15 @@ class MLST(object):
         # Find the last profile entry in the dictionary of profiles
         # Opens uses the command line tool 'tail' to look at the last line of the file (-1). This last line
         # is split on tabs, and only the first entry (the sequence type number) is captured
-        profile = subprocess.check_output(['tail', '-1', profilefile]).split("\t")[0]
-        # Split the _CFIA from the number - if there is no "_", the just use profile as the profile number
-        try:
-            profilenumber = int(profile.split("_")[0])
-        except IndexError:
-            profilenumber = int(profile)
-        # If the number is less than 1000000, then new profiles have not previously been added
-        if profilenumber < 1000000:
-            # Set the new last entry number to be 1000000
-            lastentry = 1000000
-        # If profiles have previously been added
+        if os.path.isfile(sample[self.analysistype].supplementalprofile):
+            try:
+                lastentry = int(subprocess.check_output(['tail', '-1', sample[self.analysistype].supplementalprofile])
+                                .split("\t")[0]) + 1
+            except ValueError:
+                lastentry = 1000000
         else:
-            # Set last entry to the highest profile number plus one
-            lastentry = profilenumber + 1
+            open(sample[self.analysistype].supplementalprofile, 'wb').close()
+            lastentry = 1000000
         # As there can be multiple profiles in MLSTSeqType, this loop only needs to be performed once.
         seqcount = 0
         # Go through the sequence types
@@ -452,7 +631,7 @@ class MLST(object):
         # Only do this once
         if seqcount == 0:
             # Set the :newprofile string to start with the new profile name (e.g. 1000000_CFIA)
-            newprofile = '{}_CFIA'.format(str(lastentry))
+            newprofile = str(lastentry)
             # The number of matches to the reference profile
             nummatches = self.mlstseqtype[genome][sequencetype].keys()[0]
             for sample in self.metadata:
@@ -465,7 +644,7 @@ class MLST(object):
                         newprofile += '\t{}'.format(allele)
                         # Add the MLST results for the query genome as well as the new profile data
                         # to resultProfile
-                        self.resultprofile[genome]['{}_CFIA'.format(str(lastentry))][header][gene][allele] = \
+                        self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
                             self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
                     seqcount += 1
                 sample[self.analysistype].mismatchestosequencetype = 'NA'
@@ -474,7 +653,7 @@ class MLST(object):
         # Only perform the next loop if :newprofile exists
         if newprofile:
             # Open the profile file to append
-            with open(profilefile, 'ab') as appendfile:
+            with open(sample[self.analysistype].supplementalprofile, 'ab') as appendfile:
                 # Append the new profile to the end of the profile file
                 appendfile.write('{}\n'.format(newprofile))
             # Re-run profiler with the updated files
@@ -606,22 +785,35 @@ class MLST(object):
             referenceprofile.write(json.dumps(self.referenceprofile, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def referencegenomefinder(self):
+        """
+        Finds the closest reference genome to the profile of interest
+        """
+        # Initialise dictionaries
         referencematch = defaultdict(make_dict)
         referencehits = defaultdict(make_dict)
+        # Set the name of the reference profile file
         referencegenomeprofile = '{}rMLST_referenceprofile.json'.format(self.referenceprofilepath)
+        # Open the reference profile and load the profile into memory
         with open(referencegenomeprofile) as referencefile:
             referencetypes = json.load(referencefile)
+        # Iterate through the samples
         for sample in self.metadata:
             if sample[self.analysistype].reportdir != 'NA':
+                # Iterate through the reference genomes in the profile
                 for genome in referencetypes:
+                    # Initialise the number of identical alleles between the assembly of interest and the
+                    # reference genome to 0
                     referencehits[sample.name][genome] = 0
+                    # Iterate through all the genes in the analysis
                     for gene in self.bestdict[sample.name]:
+                        # If the alleles match between the assembly of interest and the reference genome, increment
+                        # the number of matches by 1
                         if self.bestdict[sample.name][gene].keys()[0] == referencetypes[genome][gene]:
                             referencematch[sample.name][genome][gene] = 1
                             referencehits[sample.name][genome] += 1
                         else:
                             referencematch[sample.name][genome][gene] = 0
-
+        #
         for sample in self.metadata:
             if sample[self.analysistype].reportdir != 'NA':
                 # Get the best number of matches
@@ -684,12 +876,15 @@ class MLST(object):
             dotter()
 
     def __init__(self, inputobject):
+        from threading import Lock
         self.path = inputobject.path
         self.metadata = inputobject.runmetadata.samples
         self.cutoff = inputobject.cutoff
         self.start = inputobject.start
         self.analysistype = inputobject.analysistype
         self.allelefolders = set()
+        self.fnull = open(os.devnull, 'w')  # define /dev/null
+        self.lock = Lock()
         self.updateallele = inputobject.updateallele
         self.updateprofile = inputobject.updateprofile
         self.updatedb = []
@@ -697,6 +892,7 @@ class MLST(object):
         self.datadump = inputobject.datadump
         self.bestreferencegenome = inputobject.bestreferencegenome
         self.pipeline = inputobject.pipeline
+        self.referencefilepath = inputobject.referencefilepath
         self.referenceprofilepath = inputobject.referenceprofilepath
         # Fields used for custom outfmt 6 BLAST output:
         # "6 qseqid sseqid positive mismatch gaps evalue bitscore slen length"
@@ -765,6 +961,82 @@ def blastdatabaseclearer(genepath):
     # And delete them
     for allele in databaselist:
         os.remove(allele)
+
+
+def combinealleles(start, allelepath, alleles):
+    printtime('Creating combined rMLST allele file', start)
+    with open('{}/rMLST_combined.fasta'.format(allelepath), 'wb') as combinedfile:
+        # Open each allele file
+        for allele in sorted(alleles):
+            # with open(allele, 'rU') as fasta:
+            for record in SeqIO.parse(open(allele, "rU"), "fasta"):
+                # Extract the sequence record from each entry in the multifasta
+                # Replace and dashes in the record.id with underscores
+                record.id = record.id.replace('-', '_')
+                # Remove and dashes or 'N's from the sequence data - makeblastdb can't handle sequences
+                # with gaps
+                # noinspection PyProtectedMember
+                record.seq._data = record.seq._data.replace('-', '').replace('N', '')
+                # Clear the name and description attributes of the record
+                record.name = ''
+                record.description = ''
+                # Write each record to the combined file
+                SeqIO.write(record, combinedfile, 'fasta')
+
+
+def getrmlsthelper(referencefilepath, update, start):
+    """
+    Makes a system call to rest_auth.pl, a Perl script modified from
+    https://github.com/kjolley/BIGSdb/tree/develop/scripts/test
+    And downloads the most up-to-date rMLST profile and alleles
+    """
+    import shutil
+    from datetime import date
+    from subprocess import call
+    # Folders are named based on the download date e.g 2016-04-26
+    # Find all folders (with the trailing / in the glob search) and remove the trailing /
+    lastfolder = sorted(glob('{}rMLST/*/'.format(referencefilepath)))[-1].rstrip('/')
+    # Extract the folder name (date) from the path/name
+    lastupdate = os.path.split(lastfolder)[1]
+    # Calculate the size of the folder by adding the sizes of all the files within the folder together
+    foldersize = sum(os.path.getsize('{}/{}'.format(lastfolder, f)) for f in os.listdir(lastfolder)
+                     if os.path.isfile('{}/{}'.format(lastfolder, f)))
+    # Try to figure out the year, month, and day from the folder name
+    try:
+        (year, month, day) = lastupdate.split("-")
+        # Create a date object variable with the year, month, and day
+        d0 = date(int(year), int(month), int(day))
+    except ValueError:
+        # Set an arbitrary date in the past to force an update
+        d0 = date(2000, 01, 01)
+    # Create a date object with the current date
+    d1 = date(int(time.strftime("%Y")), int(time.strftime("%m")), int(time.strftime("%d")))
+    # Subtract the last update date from the current date
+    delta = d1 - d0
+    # Extract the path of the current script from the full path + file name
+    homepath = os.path.split(os.path.abspath(__file__))[0]
+    # Set the path/name of the folder to contain the new alleles and profile
+    newfolder = '{}rMLST/{}'.format(referencefilepath, d1)
+    # System call
+    rmlstupdatecall = 'cd {} && perl {}/rest_auth.pl'.format(newfolder, homepath)
+    # Three options cause an update: if the last update was over a week ago; if the update is forced from arguments;
+    # if the size of the last update folder is less than 100 bytes, indicating a failed update
+    if delta.days > 7 or update or foldersize < 100:
+        printtime("Last update of rMLST alleles and profiles was {:d} days ago. Updating".format(delta.days), start)
+        # Create the path
+        make_path(newfolder)
+        # Copy over the access token to be used in the authentication
+        shutil.copyfile('{}/access_token'.format(homepath), '{}/access_token'.format(newfolder))
+        # Run rest_auth.pl
+        call(rmlstupdatecall, shell=True)
+        # Get the new alleles into a list, and create the combinedAlleles file
+        alleles = glob('{}/*.tfa'.format(newfolder))
+        combinealleles(start, newfolder, alleles)
+    # If the profile and alleles are up-to-date, set :newfolder to :lastfolder
+    else:
+        newfolder = lastfolder
+    # Return the system call and the folder containing the profile and alleles
+    return rmlstupdatecall, newfolder
 
 
 if __name__ == '__main__':
@@ -839,23 +1111,7 @@ if __name__ == '__main__':
                     size = os.stat(self.combinedalleles[0]).st_size
                 if not self.combinedalleles or size == 0:
                     # Open the combined allele file to write
-                    printtime('Creating combined rMLST allele file', self.start)
-                    with open('{}/rMLST_combined.fasta'.format(self.allelepath), 'wb') as combinedfile:
-                        # Open each allele file
-                        for allele in sorted(self.alleles):
-                            # with open(allele, 'rU') as fasta:
-                            for record in SeqIO.parse(open(allele, "rU"), "fasta"):
-                                # Extract the sequence record from each entry in the multifasta
-                                # Replace and dashes in the record.id with underscores
-                                record.id = record.id.replace('-', '_')
-                                # Remove and dashes or 'N's from the sequence data - makeblastdb can't handle sequences
-                                # with gaps
-                                record.seq._data = record.seq._data.replace('-', '').replace('N', '')
-                                # Clear the name and description attributes of the record
-                                record.name = ''
-                                record.description = ''
-                                # Write each record to the combined file
-                                SeqIO.write(record, combinedfile, 'fasta')
+                    combinealleles(self.start, self.allelepath, self.alleles)
                 # Set the combined alleles file name and path
                 self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
                 # Get the .txt profile file name and path into a variable
@@ -1026,6 +1282,7 @@ if __name__ == '__main__':
             self.analysistype = self.runmetadata.scheme if self.runmetadata.scheme else self.runmetadata.analysistype
             self.alleles = self.runmetadata.alleles
             self.profile = self.runmetadata.profile
+            # self.supplementalprofile = False
             self.cutoff = self.runmetadata.cutoff
             self.updateallele = self.runmetadata.updateallele
             self.updateprofile = self.runmetadata.updateprofile
@@ -1034,6 +1291,7 @@ if __name__ == '__main__':
             self.getmlst = self.runmetadata.getmlst
             self.bestreferencegenome = self.runmetadata.bestreferencegenome
             self.referenceprofilepath = self.runmetadata.referenceprofilepath
+            self.referencefilepath = self.runmetadata.allelepath
             self.pipeline = False
             # Run the analyses
             MLST(self)
@@ -1049,11 +1307,17 @@ class PipelineInit(object):
             if sample.general.bestassemblyfile != 'NA':
                 setattr(sample, self.analysistype, GenObject())
                 if self.analysistype.lower() == 'rmlst':
-                    self.alleles = glob('{}rMLST/*.fas'.format(self.referencefilepath))
-                    self.profile = glob('{}rMLST/*.txt'.format(self.referencefilepath))
-                    self.combinedalleles = glob('{}rMLST/*.fasta'.format(self.referencefilepath))
+                    # Run the allele updater method
+                    updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatermlst, self.start)
+                    # updatecall, allelefolder = '', '{}rMLST/holding'.format(self.referencefilepath)
+                    self.alleles = glob('{}/*.tfa'.format(allelefolder))
+                    # self.alleles = glob('{}/*.fas'.format(allelefolder))
+                    self.profile = glob('{}/*.txt'.format(allelefolder))
+                    self.supplementalprofile = '{}rMLST/OLC_rMLST_profiles.txt'.format(self.referencefilepath)
+                    self.combinedalleles = glob('{}/*.fasta'.format(allelefolder))
                     # Set the metadata file appropriately
-                    sample[self.analysistype].alleledir = '{}rMLST/'.format(self.referencefilepath)
+                    sample[self.analysistype].alleledir = allelefolder
+                    sample[self.analysistype].updatecall = updatecall
                 else:
                     self.alleles = glob('{}MLST/{}/*.tfa'.format(self.referencefilepath, sample.general.referencegenus))
                     self.profile = glob('{}MLST/{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
@@ -1067,6 +1331,7 @@ class PipelineInit(object):
                 sample[self.analysistype].analysistype = self.analysistype
                 sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory, self.analysistype)
                 sample[self.analysistype].combinedalleles = self.combinedalleles
+                sample[self.analysistype].supplementalprofile = self.supplementalprofile
             else:
                 setattr(sample, self.analysistype, GenObject())
                 # Set the metadata file appropriately
@@ -1086,13 +1351,15 @@ class PipelineInit(object):
         self.reportdir = '{}/'.format(inputobject.reportpath)
         self.alleles = ''
         self.profile = ''
+        self.supplementalprofile = ''
         self.combinedalleles = ''
-        self.cutoff = 100
+        self.cutoff = 99
         self.updateallele = True
         self.updateprofile = True
         self.datadump = False
         self.bestreferencegenome = True
         self.pipeline = True
+        self.updatermlst = False
         self.referenceprofilepath = '{}referenceGenomes/'.format(self.referencefilepath)
         # Get the alleles and profile into the metadata
         self.strainer()

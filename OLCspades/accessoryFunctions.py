@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from subprocess import Popen, PIPE, STDOUT
-import os
 import errno
+import os
+from subprocess import Popen, PIPE, STDOUT
+
+# noinspection PyProtectedMember
 from Bio.Application import _Option, AbstractCommandline, _Switch
 __author__ = 'adamkoziol'
 
@@ -69,7 +71,6 @@ def dotter():
         sys.stdout.write('.')
         globalcount += 1
     else:
-        # sys.stdout.write('\n[%s] .' % (time.strftime("%H:%M:%S")))
         sys.stdout.write('\n.')
         globalcount = 1
 
@@ -173,6 +174,7 @@ def relativesymlink(src_file, dest_file):
     """
     # Perform relative symlinking
     try:
+        print os.path.relpath(src_file), os.path.relpath(dest_file)
         os.symlink(
             # Find the relative path for the source file and the destination file
             os.path.relpath(src_file),
@@ -302,6 +304,7 @@ def combinetargets(targets, targetpath):
                 record.id = record.id.replace('-', '_')
                 # Remove and dashes or 'N's from the sequence data - makeblastdb can't handle sequences
                 # with gaps
+                # noinspection PyProtectedMember
                 record.seq._data = record.seq._data.replace('-', '').replace('N', '')
                 # Clear the name and description attributes of the record
                 record.name = ''

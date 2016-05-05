@@ -1,12 +1,14 @@
 #!/usr/bin/env python
-import time
 import shlex
 import subprocess
+import time
+from collections import defaultdict
 from csv import DictReader
 from glob import glob
-from collections import defaultdict
-from Bio.Blast.Applications import NcbiblastnCommandline
 from threading import Thread
+
+from Bio.Blast.Applications import NcbiblastnCommandline
+
 from accessoryFunctions import *
 
 __author__ = 'mike knowles, adamkoziol'
@@ -115,7 +117,7 @@ class GeneSeekr(object):
             # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
             # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
-            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
+            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-10', num_alignments=1000000,
                                            num_threads=12,
                                            outfmt='"6 qseqid sseqid positive mismatch gaps '
                                                   'evalue bitscore slen length"',

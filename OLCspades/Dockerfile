@@ -42,7 +42,7 @@ ADD accessoryfiles /accessoryfiles
 #COPY Config.pm /usr/local/lib/bcl2fastq-1.8.4/perl/Casava/Alignment/Config.pm
 
 # Install XML:Simple and dependencies for bcl2fastq 
-#RUN curl -L http://cpanmin.us | perl - App::cpanminus
+RUN curl -L http://cpanmin.us | perl - App::cpanminus
 #RUN cpanm --mirror http://mirror.csclub.uwaterloo.ca/CPAN/ XML::Simple --mirror-only --force
 
 # Install bbmap and bbduk
@@ -104,16 +104,12 @@ ENV PATH /spades/OLCspades:$PATH
 ENV PATH /spadesfiles:/spadespipelinefiles:$PATH
 ENV LD_LIBRARY_PATH /usr/local/lib
 
-# Mount NAS:
-# must run container in privileged mode (--privileged)
-#RUN locale-gen en_US en_US.UTF-8
-#RUN dpkg-reconfigure locales
+# Install perl modules for rMLST updating
+RUN cpanm Net::OAuth
+RUN cpanm JSON
+RUN cpanm Data::Random
+RUN cpanm Config::Tiny
 
-#COPY mount_nfs.sh /root/mount_nfs.sh
-
-# run this script in your cmd or entrypoint script to mount your nfs mounts
-#RUN chmod +x /root/mount_nfs.sh
-#ENTRYPOINT ["/root/mount_nfs.sh"]
 
 # Useful commands
 #docker build -t remotepythondocker .

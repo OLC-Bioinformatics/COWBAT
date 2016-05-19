@@ -1,8 +1,10 @@
 #!/usr/bin/env python
-from offhours import Offhours
 from glob import glob
+
 import runMetadata
 from accessoryFunctions import *
+from offhours import Offhours
+
 __author__ = 'adamkoziol'
 
 
@@ -26,11 +28,11 @@ class CreateFastq(object):
                 "FCID,Lane,SampleID,SampleRef,Index,Description,Control,Recipe,Operator,SampleProject\n")
             for strain in self.samples:
                 # Create a combined index of index1-index2
-                modifiedindex = '{}-{}'.format(strain.run.index1, strain.run.index2)
+                modifiedindex = '{}-{}'.format(strain.run.index, strain.run.index2)
                 # The list of items to print to each line of the modified sample sheet
                 printlist = [self.flowcell, '1', strain.name, str(strain.run.SampleNumber), modifiedindex,
                              strain.run.Description, 'N', 'NA',
-                             strain.run.investigator, self.projectname]
+                             strain.run.InvestigatorName, self.projectname]
                 modifiedsamplesheet.write('{}\n'.format(",".join(printlist)))
                 samplecount += 1
         # Set :forward/reverse length to :header.forward/reverse length if the argument is not provided, or it's 'full',

@@ -118,6 +118,7 @@ class Metadata(object):
                 # Try and replicate the Illumina rules to create file names from "Sample_Name"
                 samplename = samplenamer(straindata, 1)
                 # Calculate the percentage of clusters associated with each strain
+                # noinspection PyTypeChecker
                 percentperstrain = "{:.2f}".format((float(straindata[3]) / tclusterspf * 100))
                 try:
                     # Use the sample number -1 as the index in the list of objects created in parsesamplesheet
@@ -161,7 +162,8 @@ class Metadata(object):
                                 "Sample name {} does not match object name {}" \
                                 .format(self.samples[strainindex].name, samplename)
                             # Extract and format the percent of reads (passing filter) associated with each sample
-                            percentperstrain = float("{:.2f}".format(str(float(straindata[5]))))
+                            # noinspection PyTypeChecker
+                            percentperstrain = float("{:.2f}".format(float(straindata[5])))
                             # Calculate the number of reads passing filter associated with each sample:
                             # percentage of reads per strain times the total reads passing filter divided by 100
                             numberofclusterspf = int(percentperstrain * tclusterspf / 100)

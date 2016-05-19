@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from accessoryFunctions import *
 import os
-import errno
 from threading import Thread
+
+from accessoryFunctions import *
+
 __author__ = 'adamkoziol'
 
 
@@ -19,7 +20,7 @@ class Vtyper(object):
 
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
-                if sample.general.stx:
+                if 'stx' in sample.general.datastore:
                     setattr(sample, self.analysistype, GenObject())
                     # Get the primers ready
                     sample[self.analysistype].primers = '{}{}/vtx_subtyping_primers.txt'\
@@ -70,7 +71,7 @@ class Vtyper(object):
     def epcrparse(self):
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
-                if sample.general.stx:
+                if 'stx' in sample.general.datastore:
                     # Initialise count - this allows for the population of vtyperresults with unique values
                     uniquecount = 0
                     # This populates vtyperresults with the verotoxin subtypes

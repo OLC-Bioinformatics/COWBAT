@@ -269,7 +269,7 @@ class MLST(object):
                     # Split the bit score from the percent identity
                     percentidentity = percentscore.items()[0][0]
                     # If the percent identity is less than 100%, run the allele updater method
-                    if percentidentity < 100:
+                    if 90 < percentidentity < 100:
                         geneofinterest, previousallele, percidentity, bitscore = \
                             self.alleleupdater(sample, gene, allele)
                 self.plusdict[sample.name][geneofinterest].clear()
@@ -285,7 +285,6 @@ class MLST(object):
         :param sample: sample object
         :param gene: name of gene of interest
         :param targetallele: closest allele in database
-        :return:
         """
         from cStringIO import StringIO
         from Bio.Blast import NCBIXML
@@ -303,84 +302,129 @@ class MLST(object):
         blastn = NcbiblastnCommandline(query=sample.general.bestassemblyfile, db=genefilenoext, evalue=0.1, outfmt=5)
         # Note that there is no output file specified -  the search results are currently stored in stdout
         stdout, stderr = blastn()
-        # Map the blast record to memory
-        blast_handle = StringIO(stdout)
-        # Open record from memory-mapped file
-        records = NCBIXML.parse(blast_handle)
-        # Iterate through the records in the blast results
-        for record in records:  # This process is just to retrieve HSPs from xml files
-            for alignment in record.alignments:
-                for hsp in alignment.hsps:
-                    # Extract the allele name from the blast result
-                    allele = str(alignment.accession.split("_")[-1])
-                    # The point of this blast is to extract the sequence of the allele
-                    # If the allele name matches the target allele (the closest match e.g. BACT000063_20 -> 20)
-                    if allele == str(targetallele):
-                        # As there is some discrepancy with the capitalisation of terms, make sure it is consistent
-                        analysistype = 'rMLST' if self.analysistype == 'rmlst' else 'MLST'
-                        # Set the directory containing the profile and alleles
-                        alleledir = self.referencefilepath + analysistype
-                        # The name of the supplemental allele file (without and with the .fa extension)
-                        allelefilenoext = '{}/OLC_{}_alleles'.format(alleledir, analysistype)
-                        allelefile = allelefilenoext + '.fa'
-                        # Create the file if it doesn't exist
-                        open(allelefile, 'ab').close()
-                        # Create a list of all the blast database files in the folder
-                        dbfiles = glob('{}.n*'.format(allelefilenoext))
-                        # Remove the database files
-                        map(lambda y: os.remove(y), dbfiles)
-                        # Create the necessary blast database files
-                        subprocess.call(
-                            shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
-                                        .format(allelefile, allelefilenoext)), stdout=self.fnull, stderr=self.fnull)
+        if stdout.find('Hsp') != -1:
+            # Map the blast record to memory
+            blast_handle = StringIO(stdout)
+            # Open record from memory-mapped file
+            records = NCBIXML.parse(blast_handle)
+            # Iterate through the records in the blast results
+            for record in records:  # This process is just to retrieve HSPs from xml files
+                for alignment in record.alignments:
+                    for hsp in alignment.hsps:
+                        # Extract the allele name from the blast result
+                        allele = str(alignment.accession.split("_")[-1]) if "_" in alignment.accession else \
+                            str(alignment.accession.split("-")[-1])
+                        # The point of this blast is to extract the sequence of the allele
+                        # If the allele name matches the target allele (the closest match e.g. BACT000063_20 -> 20)
+                        if allele == str(targetallele):
+                            # As there is some discrepancy with the capitalisation of terms, make sure it is consistent
+                            analysistype = 'rMLST' if self.analysistype == 'rmlst' else 'MLST'
+                            # Set the directory containing the profile and alleles
+                            alleledir = self.referencefilepath + analysistype
+                            # The name of the supplemental allele file (without and with the .fa extension)
+                            allelefilenoext = '{}/OLC_{}_alleles'.format(alleledir, analysistype)
+                            allelefile = allelefilenoext + '.fa'
+                            # Create the file if it doesn't exist
+                            open(allelefile, 'ab').close()
+                            # Create a list of all the blast database files in the folder
+                            dbfiles = glob('{}.n*'.format(allelefilenoext))
+                            # Remove the database files
+                            map(lambda y: os.remove(y), dbfiles)
+                            # Create the necessary blast database files
+                            subprocess.call(
+                                shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
+                                            .format(allelefile, allelefilenoext)), stdout=self.fnull, stderr=self.fnull)
 
-                        # Perform BLAST analysis using the supplemental allele file as the database
-                        nestedblastn = NcbiblastnCommandline(db=allelefilenoext, evalue=0.1, outfmt=5)
-                        # Note that there is no output file specified; the search results are currently stored in stdout
-                        # Additionally, the sequence from the previous BLAST query is used as stdin in this BLAST
-                        nestedstdout, nestedstderr = nestedblastn(stdin=hsp.query)
-                        # Search stdout for matches - if the term Hsp appears (the .find function will NOT
-                        # return -1), a match has been found, and stdout is written to file
-                        if nestedstdout.find('Hsp') != -1:
-                            nested_blast_handle = StringIO(nestedstdout)
-                            # Open record from memory-mapped file
-                            nestedrecords = NCBIXML.parse(nested_blast_handle)
-                            # Initialise variables
-                            previousallele = ''
-                            bitscore = ''
-                            # Iterate through the records
-                            for nestedrecord in nestedrecords:  # This process is just to retrieve HSPs from xml files
-                                for nestedalignment in nestedrecord.alignments:
-                                    for nestedhsp in nestedalignment.hsps:
-                                        # Calculate the percent identity
-                                        percentidentity = float("%.2f" % float(float(nestedhsp.identities) /
-                                                                               float(nestedalignment.length) * 100))
-                                        # Only set the previous allele and the bitscore if the percent identity is 100%
-                                        if percentidentity == 100:
-                                            # Get the allele number
-                                            previousallele = nestedalignment.accession.split("_")[-1]
-                                            bitscore = nestedhsp.score
+                            # Perform BLAST analysis using the supplemental allele file as the database
+                            nestedblastn = NcbiblastnCommandline(db=allelefilenoext, evalue=0.1, outfmt=5)
+                            # There is no output file specified; the search results are currently stored in stdout
+                            # Additionally, the sequence from the previous BLAST query is used as stdin in this BLAST
+                            import Bio.Application
+                            try:
+                                nestedstdout, nestedstderr = nestedblastn(stdin=hsp.query)
+                            except Bio.Application.ApplicationError:
+                                nestedstdout = ''
+                                pass
+                            # Search stdout for matches - if the term Hsp appears (the .find function will NOT
+                            # return -1), a match has been found, and stdout is written to file
+                            if nestedstdout.find('Hsp') != -1:
+                                nested_blast_handle = StringIO(nestedstdout)
+                                # Open record from memory-mapped file
+                                nestedrecords = NCBIXML.parse(nested_blast_handle)
+                                # Initialise variables
+                                previousallele = ''
+                                bitscore = ''
+                                # Iterate through the records
+                                for nestedrecord in nestedrecords:
+                                    for nestedalignment in nestedrecord.alignments:
+                                        for nestedhsp in nestedalignment.hsps:
+                                            # Calculate the percent identity
+                                            percentidentity = float("%.2f" % float(float(nestedhsp.identities) /
+                                                                                   float(nestedalignment.length) * 100))
+                                            # Only set the previous allele and the bitscore if the % identity is 100%
+                                            if percentidentity == 100:
+                                                # Get the allele number
+                                                previousallele = nestedalignment.accession.split("_")[-1]
+                                                bitscore = nestedhsp.score
 
-                            # If this allele has already been found in the supplemental file, return these data
-                            if previousallele:
-                                return gene, previousallele, 100.0, bitscore
-                            # Otherwise, get the allele sequence into the supplemental file
+                                # If this allele has already been found in the supplemental file, return these data
+                                if previousallele:
+                                    return gene, previousallele, 100.0, bitscore
+                                # Otherwise, get the allele sequence into the supplemental file
+                                else:
+                                    # Initialise variables
+                                    allelelist = []
+                                    allelenumber = 1000000
+                                    # Open the allele file to append
+                                    with open(allelefile, 'ab+') as supplemental:
+                                        for line in supplemental:
+                                            # As there are multiple genes (e.g. BACT000001, BACT000063, etc.) check to
+                                            # see if the gene of interest is in the line
+                                            if gene in line:
+                                                # Append the header to the list
+                                                allelelist.append(line)
+                                        # Find the last allele number from the header
+                                        try:
+                                            allelenumber = int(allelelist[-1].split("_")[1]) + 1
+                                        # If there are no alleles for the gene of interest, then pass
+                                        except IndexError:
+                                            pass
+                                        # Puts the HSP in the correct order -  hits to the negative strand will be
+                                        # reversed compared to what we're looking for
+                                        allelesequence = Seq(hsp.query, generic_dna)
+                                        if hsp.sbjct_start < hsp.sbjct_end:
+                                            end = hsp.sbjct_end
+                                        else:
+                                            end = hsp.sbjct_start
+                                            allelesequence = allelesequence.reverse_complement()
+                                        # Screen out hits that are shorter than the targets
+                                        # Keeping this format though this statement could be re-written more efficiently
+                                        if end < alignment.length:
+                                            pass
+                                        # The header will be >BACT00001_1000000
+                                        definitionline = '{}_{}'.format(gene, allelenumber)
+                                        # Create a sequence record using BioPython
+                                        fasta = SeqRecord(allelesequence,
+                                                          # Without this, the header will be improperly formatted
+                                                          description='',
+                                                          # Use >:definitionline as the header
+                                                          id=definitionline)
+                                        # Use the SeqIO module to properly format the new sequence record
+                                        SeqIO.write(fasta, supplemental, "fasta")
+                                        # Return the necessary values
+                                        return gene, allelenumber, 100.0, hsp.score
+                            # If there are hits in the supplemental allele file
                             else:
                                 # Initialise variables
                                 allelelist = []
                                 allelenumber = 1000000
-                                # Open the allele file to append
+                                # Open the allele file to find the last allele associated with the gene of interest
                                 with open(allelefile, 'ab+') as supplemental:
                                     for line in supplemental:
-                                        # As there are multiple genes (e.g. BACT000001, BACT000063, etc.) check to
-                                        # see if the gene of interest is in the line
                                         if gene in line:
-                                            # Append the header to the list
                                             allelelist.append(line)
-                                    # Find the last allele number from the header
                                     try:
                                         allelenumber = int(allelelist[-1].split("_")[1]) + 1
-                                    # If there are no alleles for the gene of interest, then pass
                                     except IndexError:
                                         pass
                                     # Puts the HSP in the correct order -  hits to the negative strand will be
@@ -392,10 +436,9 @@ class MLST(object):
                                         end = hsp.sbjct_start
                                         allelesequence = allelesequence.reverse_complement()
                                     # Screen out hits that are shorter than the targets
-                                    # Keeping it this format though this statement could be re-written more efficiently
+                                    # Keeping this format, though this if statement could be re-written more efficiently
                                     if end < alignment.length:
                                         pass
-                                    # The header will be >BACT00001_1000000
                                     definitionline = '{}_{}'.format(gene, allelenumber)
                                     # Create a sequence record using BioPython
                                     fasta = SeqRecord(allelesequence,
@@ -405,45 +448,8 @@ class MLST(object):
                                                       id=definitionline)
                                     # Use the SeqIO module to properly format the new sequence record
                                     SeqIO.write(fasta, supplemental, "fasta")
-                                    # Return the necessary values
+                                    # Return the appropriate information
                                     return gene, allelenumber, 100.0, hsp.score
-                        # If there are hits in the supplemental allele file
-                        else:
-                            # Initialise variables
-                            allelelist = []
-                            allelenumber = 1000000
-                            # Open the allele file to find the last allele associated with the gene of interest
-                            with open(allelefile, 'ab+') as supplemental:
-                                for line in supplemental:
-                                    if gene in line:
-                                        allelelist.append(line)
-                                try:
-                                    allelenumber = int(allelelist[-1].split("_")[1]) + 1
-                                except IndexError:
-                                    pass
-                                # Puts the HSP in the correct order -  hits to the negative strand will be
-                                # reversed compared to what we're looking for
-                                allelesequence = Seq(hsp.query, generic_dna)
-                                if hsp.sbjct_start < hsp.sbjct_end:
-                                    end = hsp.sbjct_end
-                                else:
-                                    end = hsp.sbjct_start
-                                    allelesequence = allelesequence.reverse_complement()
-                                # Screen out hits that are shorter than the targets
-                                # Keeping this format even though this if statement could be re-written more efficiently
-                                if end < alignment.length:
-                                    pass
-                                definitionline = '{}_{}'.format(gene, allelenumber)
-                                # Create a sequence record using BioPython
-                                fasta = SeqRecord(allelesequence,
-                                                  # If this is not added, the header will not be formatted properly
-                                                  description='',
-                                                  # Use >:definitionline as the header
-                                                  id=definitionline)
-                                # Use the SeqIO module to properly format the new sequence record
-                                SeqIO.write(fasta, supplemental, "fasta")
-                                # Return the appropriate information
-                                return gene, allelenumber, 100.0, hsp.score
 
     def sequencetyper(self):
         for sample in self.metadata:
@@ -485,8 +491,11 @@ class MLST(object):
                                     multiallele.append("N")
                                     multipercent.append(0)
                             # For whatever reason, the rMLST profile scheme treat multiple allele hits as 'N's.
-                            multiallele = multiallele if len(multiallele) == 1 else 'N'
-                            multipercent = multipercent if len(multiallele) == 1 else [0, 0]
+                            multiallele = multiallele if len(multiallele) == 1 else ['N']
+                            if multipercent:
+                                multipercent = multipercent if len(multiallele) == 1 else [0, 0]
+                            else:
+                                multipercent = [0]
                             # Populate self.bestdict with genome, gene, alleles joined with a space (this was made like
                             # this because allele is a list generated by the .iteritems() above
                             self.bestdict[genome][gene][" ".join(str(allele)
@@ -653,6 +662,7 @@ class MLST(object):
         # Only perform the next loop if :newprofile exists
         if newprofile:
             # Open the profile file to append
+            print sample[self.analysistype].supplementalprofile
             with open(sample[self.analysistype].supplementalprofile, 'ab') as appendfile:
                 # Append the new profile to the end of the profile file
                 appendfile.write('{}\n'.format(newprofile))
@@ -1018,11 +1028,11 @@ def getrmlsthelper(referencefilepath, update, start):
     # Set the path/name of the folder to contain the new alleles and profile
     newfolder = '{}rMLST/{}'.format(referencefilepath, d1)
     # System call
-    rmlstupdatecall = 'cd {} && perl {}/rest_auth.pl'.format(newfolder, homepath)
+    rmlstupdatecall = 'cd {} && perl {}/rest_auth.pl -a {}/secret.txt'.format(newfolder, homepath, homepath)
     # Three options cause an update: if the last update was over a week ago; if the update is forced from arguments;
     # if the size of the last update folder is less than 100 bytes, indicating a failed update
     if delta.days > 7 or update or foldersize < 100:
-        printtime("Last update of rMLST alleles and profiles was {:d} days ago. Updating".format(delta.days), start)
+        printtime("Last update of rMLST profile and alleles was {} days ago. Updating".format(str(delta.days)), start)
         # Create the path
         make_path(newfolder)
         # Copy over the access token to be used in the authentication
@@ -1035,6 +1045,14 @@ def getrmlsthelper(referencefilepath, update, start):
     # If the profile and alleles are up-to-date, set :newfolder to :lastfolder
     else:
         newfolder = lastfolder
+    # Ensure that the profile/alleles updated successfully
+    # Calculate the size of the folder by adding the sizes of all the files within the folder together
+    newfoldersize = sum(os.path.getsize('{}/{}'.format(newfolder, f)) for f in os.listdir(newfolder)
+                        if os.path.isfile('{}/{}'.format(newfolder, f)))
+    # If the profile/allele failed, remove the folder, and use the most recent update
+    if newfoldersize < 100:
+        shutil.rmtree(newfolder)
+        newfolder = sorted(glob('{}rMLST/*/'.format(referencefilepath)))[-1].rstrip('/')
     # Return the system call and the folder containing the profile and alleles
     return rmlstupdatecall, newfolder
 

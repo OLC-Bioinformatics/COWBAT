@@ -55,6 +55,7 @@ class RunSpades(object):
         import mMLST
         import quaster
         import prodigal
+        import mash
         """Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
         supplied sequences"""
         # Run FastQC on the unprocessed fastq files
@@ -67,6 +68,10 @@ class RunSpades(object):
         spadesRun.Spades(self)
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
+        # Run mash
+        mash.Mash(self, 'mash')
+        metadataprinter.MetadataPrinter(self)
+        # Run rMLST
         mMLST.PipelineInit(self, 'rmlst')
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
@@ -127,20 +132,6 @@ class RunSpades(object):
         resfinder.ResFinder(res)
         metadataprinter.MetadataPrinter(self)
 
-    # TODO Dictreader - tsv to dictionary
-    # TODO SPAdes as library
-    # TODO quast as library
-    # TODO Figure out what to do about GeneMark license keys
-    """
-    Running GeneMark...
-    WARNING: License period for GeneMark has ended!
-    To update license, please visit http://topaz.gatech.edu/license_download.cgi page and fill in the form.
-    You should choose GeneMarkS tool and your operating system (note that GeneMark is free for non-commercial use).
-    Download the license key and replace your ~/.gm_key with the updated version. After that you can restart QUAST.
-    """
-    """WARNING: Can't draw plots: please install python-matplotlib."""
-
-    # TODO CGE
     # TODO Sistr as a module
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
@@ -282,3 +273,4 @@ if __name__ == '__main__':
     # Run the pipeline
     RunSpades(arguments, commit, starttime, homepath)
     printtime('Assembly and characterisation complete', starttime)
+    quit()

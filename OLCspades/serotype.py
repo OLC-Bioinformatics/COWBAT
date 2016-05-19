@@ -53,6 +53,7 @@ class Serotype(GeneSeekr):
                 # Remove the messy blast results from the object
                 delattr(sample[self.analysistype], "blastresults")
             except (AttributeError, KeyError):
+                sample[self.analysistype].serotype = 'NA'
                 pass
         # Create the report containing all the data from all samples
         with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \

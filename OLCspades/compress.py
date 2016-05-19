@@ -30,10 +30,17 @@ class Compress(object):
             threads.setDaemon(True)
             # Start the threading
             threads.start()
-            # Make blast databases for MLST files (if necessary)
-        for compress in compressfile:
+        # Compress files as necessary
+        for compress in sorted(compressfile):
             self.compressqueue.put(compress)
         self.compressqueue.join()  # wait on the dqueue until everything has been processed
+        # Remove the original files once they are compressed
+        for compress in sorted(compressfile):
+            if os.path.isfile('{}.bz2'.format(compress)):
+                try:
+                    os.remove(compress)
+                except (OSError, IOError):
+                    pass
         self.remove()
 
     def compress(self):
@@ -46,11 +53,6 @@ class Compress(object):
                         for inputdata in inputfile:
                             output.write(inputdata)
                     output.close()
-                if os.path.isfile('{}.bz2'.format(compressfile)):
-                    try:
-                        os.remove(compressfile)
-                    except (OSError, IOError):
-                        pass
             self.compressqueue.task_done()
 
     def remove(self):

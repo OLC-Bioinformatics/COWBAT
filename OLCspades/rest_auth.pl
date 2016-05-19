@@ -60,7 +60,8 @@ if ( $opts{'h'} ) {
 }
 
 ### Edits - open the secrets file containing the consumer key and consumer secret
-my $secretfile = 'secret.txt';
+my $secretfile = $opts{'a'};
+
 # Open the file
 open my $fh, '<', $secretfile or die "Cannot find the secret.txt file required for authorization. Please
 ensure that this file exists, and that the supplied consumer key is on the first line, and the consumer secret is on 

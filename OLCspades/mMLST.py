@@ -602,9 +602,9 @@ class MLST(object):
                             sample[self.analysistype].mismatchestosequencetype = 'NA'
                         dotter()
                 else:
-                    sample[self.analysistype].sequencetype = 'NA'
                     sample[self.analysistype].matchestosequencetype = 'NA'
                     sample[self.analysistype].mismatchestosequencetype = 'NA'
+                    sample[self.analysistype].sequencetype = 'NA'
 
     def reprofiler(self, header, genome, sample):
         # reprofiler(numGenes, profileFile, geneList, genome)
@@ -620,54 +620,55 @@ class MLST(object):
         # Find the last profile entry in the dictionary of profiles
         # Opens uses the command line tool 'tail' to look at the last line of the file (-1). This last line
         # is split on tabs, and only the first entry (the sequence type number) is captured
-        if os.path.isfile(sample[self.analysistype].supplementalprofile):
-            try:
-                lastentry = int(subprocess.check_output(['tail', '-1', sample[self.analysistype].supplementalprofile])
-                                .split("\t")[0]) + 1
-            except ValueError:
+        if sample[self.analysistype].supplementalprofile != 'NA':
+            if os.path.isfile(sample[self.analysistype].supplementalprofile):
+                try:
+                    lastentry = int(
+                        subprocess.check_output(['tail', '-1', sample[self.analysistype].supplementalprofile])
+                        .split("\t")[0]) + 1
+                except ValueError:
+                    lastentry = 1000000
+            else:
+                open(sample[self.analysistype].supplementalprofile, 'wb').close()
                 lastentry = 1000000
-        else:
-            open(sample[self.analysistype].supplementalprofile, 'wb').close()
-            lastentry = 1000000
-        # As there can be multiple profiles in MLSTSeqType, this loop only needs to be performed once.
-        seqcount = 0
-        # Go through the sequence types
-        try:
-            sequencetype = self.mlstseqtype[genome].keys()[0]
-        except IndexError:
-            sequencetype = ''
-            seqcount = 1
-        # Only do this once
-        if seqcount == 0:
-            # Set the :newprofile string to start with the new profile name (e.g. 1000000_CFIA)
-            newprofile = str(lastentry)
-            # The number of matches to the reference profile
-            nummatches = self.mlstseqtype[genome][sequencetype].keys()[0]
-            for sample in self.metadata:
-                if sample.name == genome:
-                    # The genes in geneList - should be in the correct order
-                    for gene in sorted(sample[self.analysistype].allelenames):
-                        # The allele for each gene in the query genome
-                        allele = self.mlstseqtype[genome][sequencetype][nummatches][gene].keys()[0]
-                        # Append the allele to newprofile
-                        newprofile += '\t{}'.format(allele)
-                        # Add the MLST results for the query genome as well as the new profile data
-                        # to resultProfile
-                        self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
-                            self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
-                    seqcount += 1
-                sample[self.analysistype].mismatchestosequencetype = 'NA'
-                # sample[self.analysistype].sequencetype = '{}_CFIA'.format(str(lastentry))
-                sample[self.analysistype].matchestosequencetype = header
-        # Only perform the next loop if :newprofile exists
-        if newprofile:
-            # Open the profile file to append
-            print sample[self.analysistype].supplementalprofile
-            with open(sample[self.analysistype].supplementalprofile, 'ab') as appendfile:
-                # Append the new profile to the end of the profile file
-                appendfile.write('{}\n'.format(newprofile))
-            # Re-run profiler with the updated files
-            self.profiler()
+            # As there can be multiple profiles in MLSTSeqType, this loop only needs to be performed once.
+            seqcount = 0
+            # Go through the sequence types
+            try:
+                sequencetype = self.mlstseqtype[genome].keys()[0]
+            except IndexError:
+                sequencetype = ''
+                seqcount = 1
+            # Only do this once
+            if seqcount == 0:
+                # Set the :newprofile string to start with the new profile name (e.g. 1000000_CFIA)
+                newprofile = str(lastentry)
+                # The number of matches to the reference profile
+                nummatches = self.mlstseqtype[genome][sequencetype].keys()[0]
+                for sample in self.metadata:
+                    if sample.name == genome:
+                        # The genes in geneList - should be in the correct order
+                        for gene in sorted(sample[self.analysistype].allelenames):
+                            # The allele for each gene in the query genome
+                            allele = self.mlstseqtype[genome][sequencetype][nummatches][gene].keys()[0]
+                            # Append the allele to newprofile
+                            newprofile += '\t{}'.format(allele)
+                            # Add the MLST results for the query genome as well as the new profile data
+                            # to resultProfile
+                            self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
+                                self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
+                        seqcount += 1
+                    sample[self.analysistype].mismatchestosequencetype = 'NA'
+                    # sample[self.analysistype].sequencetype = '{}_CFIA'.format(str(lastentry))
+                    sample[self.analysistype].matchestosequencetype = header
+            # Only perform the next loop if :newprofile exists
+            if newprofile:
+                # Open the profile file to append
+                with open(sample[self.analysistype].supplementalprofile, 'ab') as appendfile:
+                    # Append the new profile to the end of the profile file
+                    appendfile.write('{}\n'.format(newprofile))
+                # Re-run profiler with the updated files
+                self.profiler()
 
     def reporter(self):
         """ Parse the results into a report"""
@@ -1094,13 +1095,13 @@ if __name__ == '__main__':
                 if not self.allelepath:
                     # If the name of the organism to analyse was provided
                     assert self.organism, 'Need to provide either a path to the alleles or an organism name'
+                    # If the -g flag was included, download the appropriate MLST scheme for the organism
+                    if self.getmlst and self.organism:
+                        self.getmlsthelper()
                     self.allelepath = '{}{}'.format(self.path, self.organism)
                     assert os.path.isdir(self.allelepath), 'Cannot find {}. Please ensure that the folder exists, or ' \
                                                            'use the -g option to download the {} MLST scheme' \
                         .format(self.allelepath, self.organism)
-                # If the -g flag was included, download the appropriate MLST scheme for the organism
-                if self.getmlst and self.organism:
-                    self.getmlsthelper()
                 # Tries to get the organism name for the folder containing the alleles
                 self.organism = self.organism if self.organism else os.path.split(self.allelepath)[-1]
                 if self.cleardatabases:
@@ -1134,8 +1135,6 @@ if __name__ == '__main__':
                 self.combinedalleles = glob('{}/*.fasta'.format(self.allelepath))
                 # Get the .txt profile file name and path into a variable
                 self.profile = glob('{}/*.txt'.format(self.allelepath))
-            # Add the appropriate variables to the metadata object for each sample
-            self.scheme = self.scheme if self.scheme else self.analysistype
             for sample in self.samples:
                 sample[self.analysistype].alleles = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
                 sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
@@ -1155,7 +1154,8 @@ if __name__ == '__main__':
             # As there are multiple profiles for certain organisms, this dictionary has the schemes I use as values
             organismdictionary = {'Escherichia': 'Escherichia coli#1',
                                   'Vibrio': 'Vibrio parahaemolyticus',
-                                  'Campylobacter': 'Campylobacter jejuni'}
+                                  'Campylobacter': 'Campylobacter jejuni',
+                                  'Listeria': 'Listeria monocytogenes'}
             # rMLST alleles cannot be fetched in the same way
             if self.scheme.lower() != 'rmlst':
                 # Allow for a genus not in the dictionary being specified
@@ -1267,7 +1267,7 @@ if __name__ == '__main__':
                 assert os.path.isdir(self.referenceprofilepath), 'Cannot find {}. Please double check that you ' \
                                                                  'provided the proper path to the reference profile ' \
                                                                  'folder'.format(self.referenceprofilepath)
-            self.scheme = args.scheme
+            self.scheme = args.scheme if args.scheme else args.type
             self.organism = args.organism
             self.updateprofile = args.updateprofilefalse
             self.updateallele = args.updateallelefalse
@@ -1322,8 +1322,8 @@ class PipelineInit(object):
     def strainer(self):
         from accessoryFunctions import GenObject
         for sample in self.runmetadata.samples:
+            setattr(sample, self.analysistype, GenObject())
             if sample.general.bestassemblyfile != 'NA':
-                setattr(sample, self.analysistype, GenObject())
                 if self.analysistype.lower() == 'rmlst':
                     # Run the allele updater method
                     updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatermlst, self.start)
@@ -1351,7 +1351,6 @@ class PipelineInit(object):
                 sample[self.analysistype].combinedalleles = self.combinedalleles
                 sample[self.analysistype].supplementalprofile = self.supplementalprofile
             else:
-                setattr(sample, self.analysistype, GenObject())
                 # Set the metadata file appropriately
                 sample[self.analysistype].alleles = 'NA'
                 sample[self.analysistype].allelenames = 'NA'
@@ -1359,6 +1358,7 @@ class PipelineInit(object):
                 sample[self.analysistype].analysistype = 'NA'
                 sample[self.analysistype].reportdir = 'NA'
                 sample[self.analysistype].combinedalleles = 'NA'
+                sample[self.analysistype].supplementalprofile = 'NA'
 
     def __init__(self, inputobject, analysistype):
         self.runmetadata = inputobject.runmetadata

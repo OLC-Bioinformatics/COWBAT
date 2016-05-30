@@ -50,6 +50,7 @@ class Mash(object):
         while True:
             sample = self.sketchqueue.get()
             if not os.path.isfile(sample[self.analysistype].sketchfile):
+
                 call(sample.commands.sketchcall, shell=True, stdout=self.fnull, stderr=self.fnull)
             self.sketchqueue.task_done()
 
@@ -90,8 +91,8 @@ class Mash(object):
                 mashdata = open(sample[self.analysistype].mashresults).readline().rstrip()
                 # Split on tabs
                 data = mashdata.split('\t')
-                referenceid, queryid, sample[self.analysistype].mashdistance, sample[self.analysistype].pvalue, \
-                sample[self.analysistype].nummatches = data
+                referenceid, queryid, sample[self.analysistype].mashdistance, sample[self.analysistype]. \
+                    pvalue, sample[self.analysistype].nummatches = data
                 # The database is formatted such that the reference file name is preceded by '-.-'
                 # e.g. refseq-NZ-1005511-PRJNA224116-SAMN00794588-GCF_000303935.1-.-Escherichia_coli_PA45.fna
                 sample[self.analysistype].closestrefseq = \
@@ -104,7 +105,7 @@ class Mash(object):
         self.reporter()
 
     def reporter(self):
-        header = 'Strain,ReferenceGenus,ReferenceGenomeMashDistance,Pvalue,NumMatchingHashes\n'
+        header = 'Strain,ReferenceGenus,ReferenceFile,ReferenceGenomeMashDistance,Pvalue,NumMatchingHashes\n'
         data = ''
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':

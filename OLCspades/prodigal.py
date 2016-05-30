@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-from accessoryFunctions import *
 from threading import Thread, Lock
+
+from accessoryFunctions import *
+
 __author__ = 'adamkoziol'
 
 threadlock = Lock()
@@ -17,9 +19,9 @@ class Prodigal(object):
                 threads.setDaemon(True)
                 threads.start()
         for sample in self.metadata:
+            # Create the .prodigal attribute
+            sample.prodigal = GenObject()
             if sample.general.bestassemblyfile != 'NA':
-                # Create the .prodigal attribute
-                sample.prodigal = GenObject()
                 self.predictqueue.put(sample)
         self.predictqueue.join()
 

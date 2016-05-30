@@ -195,15 +195,22 @@ class GenObject(object):
         super(GenObject, self).__setattr__('datastore', start)
 
     def __getattr__(self, key):
-        return self.datastore[key]
+        if self.datastore[key] or self.datastore[key] == 0 or self.datastore[key] == False or all(self.datastore[key]):
+            return self.datastore[key]
+        else:
+            self.datastore[key] = 'NA'
+            return self.datastore[key]
 
     def __setattr__(self, key, value):
+        if key == 'trimmedcorrectedfastqfiles':
+            print value
         if value:
             self.datastore[key] = value
-        elif value is False:
-            self.datastore[key] = value
+        elif type(value) != int:
+            if value is False or all(value):
+                self.datastore[key] = value
         else:
-            if value == 0:
+            if value >= 0:
                 self.datastore[key] = 0
             else:
                 self.datastore[key] = "NA"

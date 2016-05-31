@@ -86,12 +86,6 @@ class Mash(object):
 
     def parse(self):
         import re
-        from csv import DictReader
-        from glob import glob
-        # Set the name of the refseq profile
-        refseqprofile = glob('{}{}/*.txt'.format(self.referencefilepath, self.analysistype))[0]
-        # Open the refseq profile file as a dictionary
-        profile = DictReader(open(refseqprofile), dialect='excel-tab')
         printtime('Determining closest refseq genome', self.starttime)
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':

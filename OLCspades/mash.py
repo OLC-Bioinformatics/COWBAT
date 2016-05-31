@@ -9,7 +9,7 @@ __author__ = 'adamkoziol'
 
 class Mash(object):
     def sketching(self):
-        printtime('Indexing assemblies', self.starttime)
+        printtime('Indexing assemblies for mash analysis', self.starttime)
         # Create the threads for the analysis
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
@@ -18,9 +18,9 @@ class Mash(object):
                 threads.start()
         # Populate threads for each gene, genome combination
         for sample in self.metadata:
+            # Create the analysis type-specific GenObject
+            setattr(sample, self.analysistype, GenObject())
             if sample.general.bestassemblyfile != 'NA':
-                # Create the analysis type-specific GenObject
-                setattr(sample, self.analysistype, GenObject())
                 # Set attributes
                 sample[self.analysistype].reportdir = os.path.join(sample.general.outputdirectory, self.analysistype)
                 sample[self.analysistype].targetpath = os.path.join(self.referencefilepath, self.analysistype)
@@ -55,7 +55,7 @@ class Mash(object):
             self.sketchqueue.task_done()
 
     def mashing(self):
-        printtime('Determining closest refseq genome', self.starttime)
+        printtime('Performing mash analyses', self.starttime)
         # Create the threads for the analysis
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
@@ -85,6 +85,14 @@ class Mash(object):
             self.mashqueue.task_done()
 
     def parse(self):
+        import re
+        from csv import DictReader
+        from glob import glob
+        # Set the name of the refseq profile
+        refseqprofile = glob('{}{}/*.txt'.format(self.referencefilepath, self.analysistype))[0]
+        # Open the refseq profile file as a dictionary
+        profile = DictReader(open(refseqprofile), dialect='excel-tab')
+        printtime('Determining closest refseq genome', self.starttime)
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
                 # Open the results and extract the first line of data
@@ -95,8 +103,12 @@ class Mash(object):
                     pvalue, sample[self.analysistype].nummatches = data
                 # The database is formatted such that the reference file name is preceded by '-.-'
                 # e.g. refseq-NZ-1005511-PRJNA224116-SAMN00794588-GCF_000303935.1-.-Escherichia_coli_PA45.fna
-                sample[self.analysistype].closestrefseq = \
-                    referenceid.split('-.-')[1].split('.fna')[0]
+                try:
+                    sample[self.analysistype].closestrefseq = \
+                        re.search('(?:GCF_.{11}-.-)(.+)\.fna', referenceid).groups()[0]
+                except AttributeError:
+                    sample[self.analysistype].closestrefseq = \
+                        referenceid.split('-.-')[1].split('.fna')[0]
                 sample[self.analysistype].closestrefseqgenus = sample[self.analysistype].closestrefseq.split('_')[0]
             else:
                 # Populate the attribute with negative results
@@ -105,6 +117,7 @@ class Mash(object):
         self.reporter()
 
     def reporter(self):
+        make_path(self.reportpath)
         header = 'Strain,ReferenceGenus,ReferenceFile,ReferenceGenomeMashDistance,Pvalue,NumMatchingHashes\n'
         data = ''
         for sample in self.metadata:

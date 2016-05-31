@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+from glob import glob
+
 from accessoryFunctions import *
-import os
+
 __author__ = 'adamkoziol'
 
 
@@ -145,6 +147,9 @@ class Spades(object):
                 bestassemblyfile = '{}/{}.fasta'.format(sample.general.bestassembliespath, sample.name)
                 # Add the name and path of the best assembly file to the metadata
                 sample.general.bestassemblyfile = bestassemblyfile
+                # Get the trimmed, corrected fastq files into the object
+                sample.general.trimmedcorrectedfastqfiles = sorted(
+                    glob('{}/corrected/*_trimmed*'.format(sample.general.spadesoutput)))
                 # Copy the filtered file to the BestAssemblies folder
                 if not os.path.isfile(bestassemblyfile):
                     shutil.copyfile(filteredfile, bestassemblyfile)

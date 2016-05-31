@@ -202,8 +202,6 @@ class GenObject(object):
             return self.datastore[key]
 
     def __setattr__(self, key, value):
-        if key == 'trimmedcorrectedfastqfiles':
-            print value
         if value:
             self.datastore[key] = value
         elif type(value) != int:

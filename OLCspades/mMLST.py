@@ -452,10 +452,10 @@ class MLST(object):
                                     return gene, allelenumber, 100.0, hsp.score
 
     def sequencetyper(self):
+        """Determines the sequence type of each strain based on comparisons to sequence type profiles"""
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
-                if type(sample[self.analysistype].allelenames) == list:
-                    """Determines the sequence type of each strain based on comparisons to sequence type profiles"""
+                if len(sample[self.analysistype].allelenames) > 1:
                     # Initialise variables
                     header = 0
                     # Iterate through the genomes
@@ -465,7 +465,6 @@ class MLST(object):
                     self.bestmatch[genome] = defaultdict(int)
                     if sample[self.analysistype].profile != 'NA':
                         # Create the profiledata variable to avoid writing self.profiledata[self.analysistype]
-                        # profiledata = self.profiledata[self.analysistype]
                         profiledata = sample[self.analysistype].profiledata
                         # For each gene in plusdict[genome]
                         for gene in sample[self.analysistype].allelenames:
@@ -583,7 +582,7 @@ class MLST(object):
                                                 mismatches.append(
                                                     ({gene: ('{} ({})'.format(self.bestdict[sample.name][gene]
                                                                               .keys()[0], sortedrefallele))}))
-                                        if not self.updateprofile:
+                                        if not self.updateprofile or self.analysistype == 'mlst':
                                             sample[self.analysistype].mismatchestosequencetype = mismatches
                                             sample[self.analysistype].sequencetype = sequencetype
                                             sample[self.analysistype].matchestosequencetype = matches
@@ -607,7 +606,6 @@ class MLST(object):
                     sample[self.analysistype].sequencetype = 'NA'
 
     def reprofiler(self, header, genome, sample):
-        # reprofiler(numGenes, profileFile, geneList, genome)
         """
         Creates and appends new profiles as required
         :param header:
@@ -1330,7 +1328,7 @@ class PipelineInit(object):
                     # updatecall, allelefolder = '', '{}rMLST/holding'.format(self.referencefilepath)
                     self.alleles = glob('{}/*.tfa'.format(allelefolder))
                     # self.alleles = glob('{}/*.fas'.format(allelefolder))
-                    self.profile = glob('{}/*.txt'.format(allelefolder))
+                    profile = glob('{}/*.txt'.format(allelefolder))
                     self.supplementalprofile = '{}rMLST/OLC_rMLST_profiles.txt'.format(self.referencefilepath)
                     self.combinedalleles = glob('{}/*.fasta'.format(allelefolder))
                     # Set the metadata file appropriately
@@ -1338,18 +1336,19 @@ class PipelineInit(object):
                     sample[self.analysistype].updatecall = updatecall
                 else:
                     self.alleles = glob('{}MLST/{}/*.tfa'.format(self.referencefilepath, sample.general.referencegenus))
-                    self.profile = glob('{}MLST/{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
+                    profile = glob('{}MLST/{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
                     self.combinedalleles = glob('{}MLST/{}/*.fasta'.format(self.referencefilepath,
                                                                            sample.general.referencegenus))
                     sample[self.analysistype].alleledir = '{}MLST/{}/'.format(self.referencefilepath,
                                                                               sample.general.referencegenus)
                 sample[self.analysistype].alleles = self.alleles
                 sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
-                sample[self.analysistype].profile = self.profile
+                sample[self.analysistype].profile = profile if profile else 'NA'
                 sample[self.analysistype].analysistype = self.analysistype
                 sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory, self.analysistype)
                 sample[self.analysistype].combinedalleles = self.combinedalleles
-                sample[self.analysistype].supplementalprofile = self.supplementalprofile
+                sample[self.analysistype].supplementalprofile = self.supplementalprofile if self.supplementalprofile \
+                    else 'NA'
             else:
                 # Set the metadata file appropriately
                 sample[self.analysistype].alleles = 'NA'

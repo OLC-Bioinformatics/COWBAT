@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from GeneSeekr import *
 import copy_reg
 import types
+
+from GeneSeekr import *
+
 __author__ = 'adamkoziol'
 
 
@@ -56,6 +58,8 @@ class ARMI(GeneSeekr):
                                            evalue=1e-4,
                                            outfmt="'6 sseqid nident gaps slen qacc qstart qend'",
                                            out=report)
+            # Save the blast command in the metadata
+            sample[self.analysistype].blastcommand = str(blastn)
             if not os.path.isfile(report) or size == 0:
                 blastn()
             # Run the blast parsing module

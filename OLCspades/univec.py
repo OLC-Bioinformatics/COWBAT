@@ -36,9 +36,11 @@ class Univec(GeneSeekr):
                                            evalue=0.1,
                                            num_alignments=1000000,
                                            num_threads=24,
-                                           outfmt='"6 qseqid sacc stitle positive mismatch gaps '
-                                                  'evalue bitscore slen length"',
+                                           outfmt="'6 qseqid sacc stitle positive mismatch gaps "
+                                                  "evalue bitscore slen length'",
                                            out=report)
+            # Save the blast command in the metadata
+            sample[self.analysistype].blastcommand = str(blastn)
             if not os.path.isfile(report) or size == 0:
                 try:
                     blastn()

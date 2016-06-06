@@ -80,18 +80,6 @@ RUN make && \
     make prefix=/accessoryfiles/samtools install
 ENV PATH /accessoryfiles/samtools/bin:$PATH
 
-# Install SMALT and bam library
-#WORKDIR /accessoryfiles/bambamc
-#RUN autoreconf -i -f && \
-#    ./configure && \
-#    make && \
-#    make install
-
-#WORKDIR /accessoryfiles/smalt
-#RUN ./configure && \
-#    make && \
-#    make install
-
 # Install Prodigal, mash and ePCR
 ENV PATH /accessoryfiles:$PATH
 
@@ -109,7 +97,6 @@ RUN cpanm Net::OAuth
 RUN cpanm JSON
 RUN cpanm Data::Random
 RUN cpanm Config::Tiny
-
 
 # Useful commands
 #docker build -t remotepythondocker .

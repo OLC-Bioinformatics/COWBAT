@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 from threading import Thread
 
 from accessoryFunctions import *
@@ -30,17 +29,7 @@ class Vtyper(object):
                                                                           self.analysistype)
                     make_path(sample[self.analysistype].reportdir)
                     outfile = sample[self.analysistype].reportdir + sample.name
-                    # # Create the directory/sample.name (no extension)-containing variable
-                    # linkfile = '{}{}'.format(sample[self.analysistype].reportdir, sample.name)
-                    # sample[self.analysistype].linkfile = linkfile
-                    # # Link the contigs file to the report dir
-                    # try:
-                    #     os.symlink(sample.general.filteredfile, '{}.fasta'.format(linkfile))
-                    # # Except os errors
-                    # except OSError as exception:
-                    #     # If the os error is anything but directory exists, then raise
-                    #     if exception.errno != errno.EEXIST:
-                    #         raise
+                    # Set the hashing and mapping commands
                     sample.commands.famap = 'famap -b {}.famap {}.fasta'.format(outfile, sample.general.filenoext)
                     sample.commands.fahash = 'fahash -b {}.hash {}.famap'.format(outfile, outfile)
                     # re-PCR uses the subtyping primers list to search the contigs file using the following parameters

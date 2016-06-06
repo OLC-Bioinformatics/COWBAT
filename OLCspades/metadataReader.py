@@ -13,19 +13,22 @@ class MetadataReader(object):
             if os.path.isfile(metadatafile):
                 size = os.stat(metadatafile).st_size
                 if size != 0:
-                    with open(metadatafile) as metadatareport:
-                        jsondata = json.load(metadatareport)
-                    # Create the metadata objects
-                    metadata = MetadataObject()
-                    # Initialise the metadata categories as GenObjects created using the appropriate key
-                    for attr in jsondata:
-                        if not isinstance(jsondata[attr], dict):
-                            setattr(metadata, attr, jsondata[attr])
-                        else:
-                            setattr(metadata, attr, GenObject(jsondata[attr]))
-                    # Set the name
-                    metadata.name = sample.name
-                    self.samples.append(metadata)
+                    try:
+                        with open(metadatafile) as metadatareport:
+                            jsondata = json.load(metadatareport)
+                        # Create the metadata objects
+                        metadata = MetadataObject()
+                        # Initialise the metadata categories as GenObjects created using the appropriate key
+                        for attr in jsondata:
+                            if not isinstance(jsondata[attr], dict):
+                                setattr(metadata, attr, jsondata[attr])
+                            else:
+                                setattr(metadata, attr, GenObject(jsondata[attr]))
+                        # Set the name
+                        metadata.name = sample.name
+                        self.samples.append(metadata)
+                    except ValueError:
+                        self.samples.append(sample)
             else:
                 self.samples.append(sample)
 

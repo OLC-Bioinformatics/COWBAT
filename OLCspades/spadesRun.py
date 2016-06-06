@@ -83,7 +83,7 @@ class Spades(object):
             # Put the arguments to pass to the assemble method into the queue
             self.assemblequeue.put((spadescommand, sample.general.spadesoutput))
             # Add the command to the metadata
-            sample.commands.spadescall = spadescommand
+            sample.commands.spades = spadescommand
             # Add the version to the metadata
             sample.software.spades = get_version(['spades.py']).split('\n')[0].split()[3]
         # Join the threads
@@ -156,33 +156,6 @@ class Spades(object):
             else:
                 sample.general.bestassemblyfile = 'NA'
 
-    # def insertsize(self):
-    #     """Extracts the insert size and its deviation from the spades.log file"""
-    #     for sample in self.metadata:
-    #         # Only look if the spades output folder exists, and if there are two fastq files (can't find the insert
-    #         # size of single reads
-    #         if os.path.isdir(sample.general.spadesoutput) and len(sample.general.fastqfiles) == 2:
-    #             # Set the name of the log file
-    #             spadeslogfile = '{}/spades.log'.format(sample.general.spadesoutput)
-    #             # Open the log file
-    #             with open(spadeslogfile, 'rb') as spadeslog:
-    #                 # Iterate through the file
-    #                 for line in spadeslog:
-    #                     # Find the line with the insert size on it. Will look something like this:
-    #                     """
-    #                     0:02:07.605   144M / 9G    INFO    General (pair_info_count.cpp : 191) \
-    #                     Insert size = 240.514, deviation = 105.257, left quantile = 142, right quantile = 384, \
-    #                     read length = 301
-    #                     """
-    #                     if 'Insert size =' in line:
-    #                         # Extract the relevant data and add it to the metadata
-    #                         sample.general.insertsize = line.split('= ')[1].split(',')[0]
-    #                         sample.general.insertsizestandarddev = line.split('= ')[2].split(',')[0]
-    #         # Otherwise, populate with NA
-    #         else:
-    #             sample.general.insertsize = 'NA'
-    #             sample.general.insertsizestandarddev = 'NA'
-
     def __init__(self, inputobject):
         from Queue import Queue
         self.metadata = inputobject.runmetadata.samples
@@ -190,6 +163,6 @@ class Spades(object):
         self.kmers = inputobject.kmers
         self.threads = inputobject.cpus
         self.path = inputobject.path
-        self.assemblequeue = Queue()
+        self.assemblequeue = Queue(maxsize=self.threads)
         printtime('Assembling sequences', self.start)
         self.spades()

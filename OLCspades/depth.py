@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 from glob import glob
-from threading import Lock
 from subprocess import call
-from bowtie import *
-from accessoryFunctions import *
+from threading import Lock
+
 from Bio.Sequencing.Applications import SamtoolsViewCommandline, SamtoolsSortCommandline
+
+from accessoryFunctions import *
+from bowtie import *
+
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -16,97 +19,6 @@ __author__ = 'mike knowles, adamkoziol'
 
 class QualiMap(object):
 
-    # def smaltindex(self):
-    #     # Run the indexing threads
-    #     for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != 'NA'])):
-    #         # Send the threads to the merge method. :args is empty as I'm using
-    #         threads = Thread(target=self.index, args=())
-    #         # Set the daemon to true - something to do with thread management
-    #         threads.setDaemon(True)
-    #         # Start the threading
-    #         threads.start()
-    #     for sample in self.metadata:
-    #         # Index the assembly files
-    #         if sample.general.bestassemblyfile != 'NA':
-    #             self.indexqueue.put(sample)
-    #     self.indexqueue.join()
-    #
-    # def index(self):
-    #     while True:
-    #         sample = self.indexqueue.get()
-    #         # Set the name of the indexed file name
-    #         filenoext = sample.general.filteredfile.split('.')[0]
-    #         sample.general.filenoext = filenoext
-    #         smifile = filenoext + '.smi'
-    #         # Define the indexing command
-    #         indexcommand = 'cd {} && smalt index {} {}'\
-    #             .format(sample.general.bestassembliespath, filenoext, sample.general.bestassemblyfile)
-    #         # Index the appropriate files if they do not exist
-    #         if not os.path.isfile(smifile):
-    #             # Run the command
-    #             call(indexcommand, shell=True, stdout=self.fnull, stderr=self.fnull)
-    #         sample.commands.smaltindex = indexcommand
-    #         # Print a dot for each indexed file
-    #         dotter()
-    #         # Signal that the thread's task is complete
-    #         self.indexqueue.task_done()
-    #
-    # def smaltmap(self):
-    #     # Run the indexing threads
-    #     for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile != 'NA'])):
-    #         # Send the threads to the merge method. :args is empty as I'm using
-    #         threads = Thread(target=self.map, args=())
-    #         # Set the daemon to true - something to do with thread management
-    #         threads.setDaemon(True)
-    #         # Start the threading
-    #         threads.start()
-    #     for sample in self.metadata:
-    #         # Index the assembly files
-    #         if sample.general.bestassemblyfile != 'NA':
-    #             self.mapqueue.put(sample)
-    #     self.mapqueue.join()
-    #
-    # def map(self):
-    #     while True:
-    #         sample = self.mapqueue.get()
-    #         # Map the fastq file(s) to the assemblies
-    #         # Define the mapping call
-    #         sample.general.bamfile = sample.general.filenoext + '_sorted'
-    #         sample.general.sortedbam = sample.general.filenoext + '_sorted.bam'
-    #         bz2bam = sample.general.sortedbam + '.bz2'
-    #         #  = bamfile
-    #         if len(sample.general.fastqfiles) == 2:
-    #             # Paired-end system call. Note that the output from SMALT is piped into samtools sort to prevent
-    #             # the creation of intermediate, unsorted bam files
-    #             sample.commands.smaltmap = 'smalt map -f bam -n {} -x {} {} {} | samtools sort -o {} -O bam -@ {} -' \
-    #                 .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
-    #                         sample.general.trimmedfastqfiles[1], sample.general.sortedbam, self.cpus)
-    #         else:
-    #             sample.commands.smaltmap = 'smalt map -f bam -n {} {} {} | samtools sort -o {} -O bam -@ {} -' \
-    #                 .format(self.cpus, sample.general.filenoext, sample.general.trimmedfastqfiles[0],
-    #                         sample.general.sortedbam, self.cpus)
-    #         # Populate metadata
-    #         sample.software.SMALT = self.smaltversion
-    #         sample.software.samtools = self.samversion
-    #         # Set the results folder
-    #         sample.general.QualimapResults = '{}/qualimap_results'.format(sample.general.outputdirectory)
-    #         # Create this results folder if necessary
-    #         make_path(sample.general.QualimapResults)
-    #         sample.software.Qualimap = self.version
-    #         # Run the call if the sorted bam file doesn't exist
-    #         size = 0
-    #         if os.path.isfile(sample.general.sortedbam):
-    #             size = os.stat(sample.general.sortedbam[0]).st_size
-    #         elif os.path.isfile(bz2bam):
-    #             size = os.stat(bz2bam).st_size
-    #         if not os.path.isfile(sample.general.sortedbam) and not os.path.isfile(bz2bam) or size < 100:
-    #             # Run the command
-    #             call(sample.commands.smaltmap, shell=True, stdout=self.fnull, stderr=self.fnull)
-    #         self.mapper(sample)
-    #         # Print a dot for each mapped file
-    #         dotter()
-    #         self.mapqueue.task_done()
-
     def bowtie(self):
         from threading import Thread
         for i in range(len([sample.general for sample in self.metadata if sample.general.bestassemblyfile])):
@@ -117,10 +29,7 @@ class QualiMap(object):
             # Start the threading
             threads.start()
         for sample in self.metadata:
-            main = lambda (x, y): (y, ",".join(getattr(sample.general, x))) if hasattr(sample.general, x) else None
-            # Initialise the bowtie command and version
-            sample.software.Bowtie2 = self.bowversion
-            sample.software.SAMtools = self.samversion
+            # main = lambda (x, y): (y, ",".join(getattr(sample.general, x))) if hasattr(sample.general, x) else None
             sagen = sample.general
             if sagen.bestassemblyfile != "NA":
                 sagen.QualimapResults = '{}/qualimap_results'.format(sagen.outputdirectory)
@@ -134,7 +43,7 @@ class QualiMap(object):
                 sagen.bowtie2results = os.path.join(sagen.QualimapResults, sample.name)
                 # Use fancy new bowtie2 wrapper
                 bowtie2build = Bowtie2BuildCommandLine(reference=sagen.bestassemblyfile,
-                                                                       bt2=sagen.bowtie2results)
+                                                       bt2=sagen.bowtie2results)
                 sample.mapping.BamFile = sagen.bowtie2results + "_sorted.bam"
                 # SAMtools sort v1.3 has different run parameters
                 if self.samversion < "1.3":
@@ -153,11 +62,12 @@ class QualiMap(object):
                                                   threads=self.cpus,
                                                   samtools=samtools,
                                                   **indict)
+
+                sample.commands.bowtie2align = str(bowtie2align)
+                sample.commands.bowtie2build = str(bowtie2build)
                 self.bowqueue.put((sample, bowtie2build, bowtie2align))
             else:
-                # sample.commands.Bowtie2Align = "NA"
-                # sample.commands.Bowtie2Build = "NA"
-                sample.commands.SAMtools = "NA"
+                sample.commands.samtools = "NA"
         self.bowqueue.join()
 
     def align(self):
@@ -172,7 +82,7 @@ class QualiMap(object):
                         stdout, stderr = map(StringIO, func(cwd=sample.general.QualimapResults))
                         if stderr:
                             # Write the standard error to log, bowtie2 puts alignment summary here
-                            with open(os.path.join(sample.general.QualimapResults, "bowtie_samtools.log"), "ab+") as log:
+                            with open(os.path.join(sample.general.QualimapResults, "bowtieSamtools.log"), "ab+") as log:
                                 log.writelines(logstr(func, stderr.getvalue(), stdout.getvalue()))
                         stderr.close()
                         # stdout will be the SAM file from alignment
@@ -211,8 +121,6 @@ class QualiMap(object):
             qdict = dict()
             # If the report file doesn't exist, run Qualimap, and print logs to the log file
             if not os.path.isfile(reportfile):
-                # execute(sample.commands.qualimap, log)
-                #
                 call(sample.commands.qualimap, shell=True, stdout=self.fnull, stderr=self.fnull)
             try:
                 with open(reportfile) as report:
@@ -254,26 +162,13 @@ class QualiMap(object):
         self.cpus = inputobject.cpus
         # Define /dev/null
         self.fnull = open(os.devnull, 'wb')
-        self.smaltversion = get_version(['smalt', 'version']).split('\n')[2].split()[1]
         self.samversion = get_version(['samtools']).split('\n')[2].split()[1]
-        self.version = get_version(['qualimap', '--help']).split('\n')[4].split()[1]
         # Initialise queues
-        # self.indexqueue = Queue(maxsize=24)
-        self.mapqueue = Queue(maxsize=24)
-        # self.sortqueue = Queue(maxsize=24)
-        self.qqueue = Queue(maxsize=24)
-        self.bowqueue = Queue()
-        self.bowversion = Bowtie2CommandLine(version=True)()[0].split('\n')[0].split()[-1]
-        self.samversion = get_version(['samtools', '--version']).split('\n')[0].split()[1]
-        self.version = get_version(['qualimap', '--help']).split('\n')[3].split()[1]
-        printtime('Aligning reads with Bowtie2 {} for Qualimap'.format(self.bowversion.split(",")[0]), self.start)
+        self.mapqueue = Queue(maxsize=self.cpus)
+        self.qqueue = Queue(maxsize=self.cpus)
+        self.bowqueue = Queue(maxsize=self.cpus)
+        printtime('Aligning reads with bowtie2 for Qualimap', self.start)
         self.bowtie()
-        # self.qqueue = Queue()
-        # Run smalt
-        printtime('Indexing assemblies', self.start)
-        # self.smaltindex()
-        printtime('Performing reference mapping', self.start)
-        # self.smaltmap()
 
 
 if __name__ == '__main__':

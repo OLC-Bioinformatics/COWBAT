@@ -7,7 +7,6 @@ __author__ = 'adamkoziol'
 class CoreGenome(GeneSeekr):
 
     def csvwriter(self):
-        combinedrow = ''
         for sample in self.metadata:
             header = 'Strain,GenesPresent/Total,'
             row = '{},'.format(sample.name)

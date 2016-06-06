@@ -38,7 +38,7 @@ class Mash(object):
                     filelist.write('\n'.join(sample.general.trimmedcorrectedfastqfiles))
 
                 # Create the system call
-                sample.commands.sketchcall = 'mash sketch -m 2 -p {} -l {} -o {}' \
+                sample.commands.sketch = 'mash sketch -m 2 -p {} -l {} -o {}' \
                     .format(self.cpus, sample[self.analysistype].filelist, sample[self.analysistype].sketchfilenoext)
                 # Add each sample to the threads
                 self.sketchqueue.put(sample)
@@ -50,8 +50,7 @@ class Mash(object):
         while True:
             sample = self.sketchqueue.get()
             if not os.path.isfile(sample[self.analysistype].sketchfile):
-
-                call(sample.commands.sketchcall, shell=True, stdout=self.fnull, stderr=self.fnull)
+                call(sample.commands.sketch, shell=True, stdout=self.fnull, stderr=self.fnull)
             self.sketchqueue.task_done()
 
     def mashing(self):
@@ -68,7 +67,7 @@ class Mash(object):
                 sample[self.analysistype].mashresults = '{}/{}.tab'.format(sample[self.analysistype].reportdir,
                                                                            sample.name)
 
-                sample.commands.mashcall = \
+                sample.commands.mash = \
                     'mash dist -p {} {} {} | sort -gk3 > {}'.format(self.cpus, sample[self.analysistype].refseqsketch,
                                                                     sample[self.analysistype].sketchfile,
                                                                     sample[self.analysistype].mashresults)
@@ -81,7 +80,7 @@ class Mash(object):
         while True:
             sample = self.mashqueue.get()
             if not os.path.isfile(sample[self.analysistype].mashresults):
-                call(sample.commands.mashcall, shell=True, stdout=self.fnull, stderr=self.fnull)
+                call(sample.commands.mash, shell=True, stdout=self.fnull, stderr=self.fnull)
             self.mashqueue.task_done()
 
     def parse(self):

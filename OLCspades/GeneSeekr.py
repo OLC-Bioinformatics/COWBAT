@@ -119,9 +119,11 @@ class GeneSeekr(object):
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
             blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-10', num_alignments=1000000,
                                            num_threads=12,
-                                           outfmt='"6 qseqid sseqid positive mismatch gaps '
-                                                  'evalue bitscore slen length"',
+                                           outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                                  "evalue bitscore slen length'",
                                            out=report)
+            # Save the blast command in the metadata
+            sample[self.analysistype].blastcommand = str(blastn)
             if not os.path.isfile(report):
                 try:
                     blastn()
@@ -208,14 +210,15 @@ class GeneSeekr(object):
         self.targetfolders = set()
         self.pipeline = inputobject.pipeline
         self.referencefilepath = inputobject.referencefilepath
+        self.cpus = inputobject.threads
         # Fields used for custom outfmt 6 BLAST output:
         # "6 qseqid sseqid positive mismatch gaps evalue bitscore slen length"
         self.fieldnames = ['query_id', 'subject_id', 'positives', 'mismatches', 'gaps',
                            'evalue',  'bit_score', 'subject_length', 'alignment_length']
         #
         self.plusdict = defaultdict(make_dict)
-        self.dqueue = Queue()
-        self.blastqueue = Queue()
+        self.dqueue = Queue(maxsize=self.cpus)
+        self.blastqueue = Queue(maxsize=self.cpus)
         self.geneseekr()
 
 
@@ -317,7 +320,7 @@ if __name__ == '__main__':
             # self.alleles = self.runmetadata.alleles
             # self.profile = self.runmetadata.profile
             self.cutoff = self.runmetadata.cutoff
-            self.threads = self.runmetadata.threads
+            self.threads = int(self.runmetadata.threads)
             self.reportdir = self.runmetadata.reportpath
             self.pipeline = False
             self.referencefilepath = ''
@@ -374,6 +377,7 @@ class PipelineInit(object):
         self.path = inputobject.path
         self.start = inputobject.starttime
         self.referencefilepath = inputobject.reffilepath
+        self.threads = inputobject.cpus
         self.reportdir = '{}/'.format(inputobject.reportpath)
         self.cutoff = cutoff
         self.pipeline = True

@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 import subprocess
 
-import fastqCreator
-import offhours
-import runMetadata
-
-# import json
-import metadataprinter
-import spadesRun
 import depth
+import fastqCreator
+import metadataprinter
+import offhours
 import quality
+import runMetadata
+import spadesRun
 from accessoryFunctions import *
+
 __author__ = 'adamkoziol'
 
 
@@ -96,9 +95,9 @@ class RunSpades(object):
         import vtyper
         import coregenome
         import resfinder
+        # Run modules and print metadata to file
         mMLST.PipelineInit(self, 'mlst')
         metadataprinter.MetadataPrinter(self)
-        #
         geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50)
         GeneSeekr.GeneSeekr(geneseekr)
         metadataprinter.MetadataPrinter(self)
@@ -142,11 +141,11 @@ class RunSpades(object):
         import reporter
         import compress
         import multiprocessing
+        import versions
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit), startingtime)
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
-        # self.numreads = args['n']
         self.numreads = args.numreads
         self.offhours = args.offhours
         self.fastqcreation = args.fastqcreation
@@ -196,14 +195,12 @@ class RunSpades(object):
             self.typing()
         except KeyboardInterrupt:
             raise KeyboardInterruptError
-            # Create a report
+        # Create a report
         reporter.Reporter(self)
         compress.Compress(self)
-        # import json
-        # print json.dumps(self.runmetadata, sort_keys=True, indent=4, separators=(',', ': '))
-        # print json.dumps([x.dump() for x in self.runmetadata.samples],
-        #                  sort_keys=True, indent=4, separators=(',', ': '))
-
+        # Get all the versions of the software used
+        versions.Versions(self)
+        metadataprinter.MetadataPrinter(self)
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
@@ -214,9 +211,7 @@ if __name__ == '__main__':
     homepath = os.path.split(os.path.abspath(__file__))[0]
     # Find the commit of the script by running a command to change to the directory containing the script and run
     # a git command to return the short version of the commit hash
-    # commit = subprocess.Popen('cd {} && git rev-parse --short HEAD'.format(homepath),
-    #                           shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
-    commit = subprocess.Popen('cd {} && git tag'.format(homepath),
+    commit = subprocess.Popen('cd {} && git tag | tail -n 1'.format(homepath),
                               shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
     from argparse import ArgumentParser
     # Parser for arguments

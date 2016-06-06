@@ -3,6 +3,7 @@ import json
 import operator
 import re
 import shlex
+import shutil
 import subprocess
 import time
 from Queue import Queue
@@ -104,7 +105,11 @@ class MLST(object):
                     try:
                         profiledata[sequenceprofile][row['ST']][gene] = row[gene]
                     except KeyError:
-                        profiledata[sequenceprofile][row['rST']][gene] = row[gene]
+                        try:
+                            profiledata[sequenceprofile][row['rST']][gene] = row[gene]
+                        except KeyError:
+                            raise
+
             # Load the supplemental profile definitions
             if self.analysistype == 'rmlst':
                 supplementalprofile = DictReader(open(supplementalset), dialect='excel-tab')
@@ -201,9 +206,11 @@ class MLST(object):
         # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
         blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
                                        num_threads=12,
-                                       outfmt='"6 qseqid sseqid positive mismatch gaps '
-                                              'evalue bitscore slen length"',
+                                       outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                              "evalue bitscore slen length'",
                                        out=report)
+        # Save the blast command in the metadata
+        sample[self.analysistype].blastcommand = str(blastn)
         if not os.path.isfile(report):
             # Run BLAST
             blastn()
@@ -259,7 +266,7 @@ class MLST(object):
                 else:
                     self.plusdict[sample.name][gene][allelenumber][percentidentity] = bitscore
         # Update alleles (if desired)
-        if self.updateallele:
+        if self.updateallele and self.analysistype != 'mlst':
             # Initialise variables
             previousallele, percidentity, bitscore, clearallele, geneofinterest = '', '', '', '', ''
             # Iterate through the all the genes in the analyses
@@ -269,7 +276,7 @@ class MLST(object):
                     # Split the bit score from the percent identity
                     percentidentity = percentscore.items()[0][0]
                     # If the percent identity is less than 100%, run the allele updater method
-                    if 90 < percentidentity < 100:
+                    if 90 < float(percentidentity) < 100:
                         geneofinterest, previousallele, percidentity, bitscore = \
                             self.alleleupdater(sample, gene, allele)
                 self.plusdict[sample.name][geneofinterest].clear()
@@ -519,7 +526,7 @@ class MLST(object):
                                     # If the allele in the query genome matches the allele in the reference profile, add
                                     # the result to the bestmatch dictionary. Genes with multiple alleles were sorted
                                     # the same, strings with multiple alleles will match: 10 692 will never be 692 10
-                                    if allele == sortedrefallele:
+                                    if allele == sortedrefallele and float(percentid) == 100.00:
                                         # Increment the number of matches to each profile
                                         self.bestmatch[genome][sequencetype] += 1
                                     # Special handling of BACT000060 and BACT000065 genes. When the reference profile
@@ -583,6 +590,9 @@ class MLST(object):
                                                     ({gene: ('{} ({})'.format(self.bestdict[sample.name][gene]
                                                                               .keys()[0], sortedrefallele))}))
                                         if not self.updateprofile or self.analysistype == 'mlst':
+                                            self.resultprofile[genome][sequencetype][sortedmatches][gene][
+                                                self.bestdict[genome][gene]
+                                                    .keys()[0]] = str(self.bestdict[genome][gene].values()[0])
                                             sample[self.analysistype].mismatchestosequencetype = mismatches
                                             sample[self.analysistype].sequencetype = sequencetype
                                             sample[self.analysistype].matchestosequencetype = matches
@@ -747,14 +757,14 @@ class MLST(object):
                             allele = self.resultprofile[sample.name][seqtype][matches][gene].keys()[0]
                             percentid = self.resultprofile[sample.name][seqtype][matches][gene].values()[0]
                             if refallele and refallele != allele:
-                                if 0 < percentid < 100:
-                                    row += '{} ({}%),'.format(allele, percentid)
+                                if 0 < float(percentid) < 100:
+                                    row += '{} ({:.2f}%),'.format(allele, float(percentid))
                                 else:
                                     row += '{} ({}),'.format(allele, refallele)
                             else:
                                 # Add the allele and % id to the row (only add the percent identity if it is not 100%)
-                                if 0 < percentid < 100:
-                                    row += '{} ({}%),'.format(allele, percentid)
+                                if 0 < float(percentid) < 100:
+                                    row += '{} ({:.2f}%),'.format(allele, float(percentid))
                                 else:
                                     row += '{},'.format(allele)
                             self.referenceprofile[sample.name][gene] = allele
@@ -886,6 +896,7 @@ class MLST(object):
 
     def __init__(self, inputobject):
         from threading import Lock
+        import multiprocessing
         self.path = inputobject.path
         self.metadata = inputobject.runmetadata.samples
         self.cutoff = inputobject.cutoff
@@ -907,9 +918,10 @@ class MLST(object):
         # "6 qseqid sseqid positive mismatch gaps evalue bitscore slen length"
         self.fieldnames = ['query_id', 'subject_id', 'positives', 'mismatches', 'gaps',
                            'evalue', 'bit_score', 'subject_length', 'alignment_length']
+        self.cpus = int(multiprocessing.cpu_count())
         # Declare queues, and dictionaries
-        self.dqueue = Queue()
-        self.blastqueue = Queue()
+        self.dqueue = Queue(maxsize=self.cpus)
+        self.blastqueue = Queue(maxsize=self.cpus)
         self.blastdict = {}
         self.blastresults = defaultdict(make_dict)
         self.plusdict = defaultdict(make_dict)
@@ -993,23 +1005,19 @@ def combinealleles(start, allelepath, alleles):
                 SeqIO.write(record, combinedfile, 'fasta')
 
 
-def getrmlsthelper(referencefilepath, update, start):
-    """
-    Makes a system call to rest_auth.pl, a Perl script modified from
-    https://github.com/kjolley/BIGSdb/tree/develop/scripts/test
-    And downloads the most up-to-date rMLST profile and alleles
-    """
-    import shutil
+def schemedate(lastfolder):
     from datetime import date
-    from subprocess import call
-    # Folders are named based on the download date e.g 2016-04-26
-    # Find all folders (with the trailing / in the glob search) and remove the trailing /
-    lastfolder = sorted(glob('{}rMLST/*/'.format(referencefilepath)))[-1].rstrip('/')
-    # Extract the folder name (date) from the path/name
-    lastupdate = os.path.split(lastfolder)[1]
-    # Calculate the size of the folder by adding the sizes of all the files within the folder together
-    foldersize = sum(os.path.getsize('{}/{}'.format(lastfolder, f)) for f in os.listdir(lastfolder)
-                     if os.path.isfile('{}/{}'.format(lastfolder, f)))
+    try:
+        # Extract the folder name (date) from the path/name
+        lastupdate = os.path.split(lastfolder)[1]
+    except AttributeError:
+        lastupdate = '2000-01-01'
+    try:
+        # Calculate the size of the folder by adding the sizes of all the files within the folder together
+        foldersize = sum(os.path.getsize('{}/{}'.format(lastfolder, f)) for f in os.listdir(lastfolder)
+                         if os.path.isfile('{}/{}'.format(lastfolder, f)))
+    except TypeError:
+        foldersize = 0
     # Try to figure out the year, month, and day from the folder name
     try:
         (year, month, day) = lastupdate.split("-")
@@ -1022,16 +1030,30 @@ def getrmlsthelper(referencefilepath, update, start):
     d1 = date(int(time.strftime("%Y")), int(time.strftime("%m")), int(time.strftime("%d")))
     # Subtract the last update date from the current date
     delta = d1 - d0
+
+    return delta, foldersize, d1
+
+
+def getrmlsthelper(referencefilepath, update, start, analysistype):
+    """
+    Makes a system call to rest_auth.pl, a Perl script modified from
+    https://github.com/kjolley/BIGSdb/tree/develop/scripts/test
+    And downloads the most up-to-date rMLST profile and alleles
+    """
+    from subprocess import call
+    # Folders are named based on the download date e.g 2016-04-26
+    # Find all folders (with the trailing / in the glob search) and remove the trailing /
+    lastfolder = sorted(glob('{}rMLST/*/'.format(referencefilepath)))[-1].rstrip('/')
+    delta, foldersize, d1 = schemedate(lastfolder)
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]
     # Set the path/name of the folder to contain the new alleles and profile
-    newfolder = '{}rMLST/{}'.format(referencefilepath, d1)
+    newfolder = '{}{}/{}'.format(referencefilepath, analysistype, d1)
     # System call
     rmlstupdatecall = 'cd {} && perl {}/rest_auth.pl -a {}/secret.txt'.format(newfolder, homepath, homepath)
-    # Three options cause an update: if the last update was over a week ago; if the update is forced from arguments;
-    # if the size of the last update folder is less than 100 bytes, indicating a failed update
     if delta.days > 7 or update or foldersize < 100:
-        printtime("Last update of rMLST profile and alleles was {} days ago. Updating".format(str(delta.days)), start)
+        printtime("Last update of rMLST profile and alleles was {} days ago. Updating".format(str(delta.days)),
+                  start)
         # Create the path
         make_path(newfolder)
         # Copy over the access token to be used in the authentication
@@ -1051,10 +1073,74 @@ def getrmlsthelper(referencefilepath, update, start):
     # If the profile/allele failed, remove the folder, and use the most recent update
     if newfoldersize < 100:
         shutil.rmtree(newfolder)
-        newfolder = sorted(glob('{}rMLST/*/'.format(referencefilepath)))[-1].rstrip('/')
+        newfolder = sorted(glob('{}{}/*/'.format(referencefilepath, analysistype)))[-1].rstrip('/')
     # Return the system call and the folder containing the profile and alleles
     return rmlstupdatecall, newfolder
 
+
+def getmlsthelper(referencefilepath, start, organism):
+    """Prepares to run the getmlst.py script provided in SRST2"""
+    from accessoryFunctions import GenObject
+    # Initialise a set to for the organism(s) for which new alleles and profiles are desired
+    organismset = set()
+    # As there are multiple profiles for certain organisms, this dictionary has the schemes I use as values
+    organismdictionary = {'Escherichia': 'Escherichia coli#1',
+                          'Vibrio': 'Vibrio parahaemolyticus',
+                          'Campylobacter': 'Campylobacter jejuni',
+                          'Listeria': 'Listeria monocytogenes'}
+    # Allow for a genus not in the dictionary being specified
+    try:
+        organismset.add(organismdictionary[organism])
+    except KeyError:
+        # Add the organism to the set
+        organismset.add(organism)
+    for scheme in organismset:
+        organismpath = os.path.join(referencefilepath, 'MLST', organism)
+        # Find all folders (with the trailing / in the glob search) and remove the trailing /
+        try:
+            lastfolder = sorted(glob('{}/*/'.format(organismpath)))[-1].rstrip('/')
+        except IndexError:
+            lastfolder = []
+        # Run the method to determine the most recent folder, and how recently it was updated
+        delta, foldersize, d1 = schemedate(lastfolder)
+        # Set the path/name of the folder to contain the new alleles and profile
+        newfolder = '{}/{}'.format(organismpath, d1)
+        if delta.days > 7 or foldersize < 100:
+            printtime('Downloading {} MLST scheme from pubmlst.org'.format(organism), start)
+            # Create the object to store the argument attributes to feed to getmlst
+            getmlstargs = GenObject()
+            getmlstargs.species = scheme
+            getmlstargs.repository_url = 'http://pubmlst.org/data/dbases.xml'
+            getmlstargs.force_scheme_name = False
+            getmlstargs.path = newfolder
+            # Create the path to store the downloaded
+            make_path(getmlstargs.path)
+            getmlst.main(getmlstargs)
+            # Even if there is an issue contacting the database, files are created, however, they are populated
+            # with XML strings indicating that the download failed
+            # Read the first character in the file
+            profilestart = open(glob('{}/*.txt'.format(newfolder))[0]).readline()
+            # If it is a <, then the download failed
+            if profilestart[0] == '<':
+                # Delete the folder, and use the previous definitions instead
+                shutil.rmtree(newfolder)
+                newfolder = lastfolder
+        # If the profile and alleles are up-to-date, set :newfolder to :lastfolder
+        else:
+            newfolder = lastfolder
+            # Ensure that the profile/alleles updated successfully
+            # Calculate the size of the folder by adding the sizes of all the files within the folder together
+        newfoldersize = sum(os.path.getsize('{}/{}'.format(newfolder, f)) for f in os.listdir(newfolder)
+                            if os.path.isfile('{}/{}'.format(newfolder, f)))
+        # If the profile/allele failed, remove the folder, and use the most recent update
+        if newfoldersize < 100:
+            shutil.rmtree(newfolder)
+            try:
+                newfolder = sorted(glob('{}/*/'.format(organismpath)))[-1].rstrip('/')
+            except IndexError:
+                newfolder = organismpath
+        # Return the name/path of the allele-containing folder
+        return newfolder
 
 if __name__ == '__main__':
     class Parser(object):
@@ -1094,8 +1180,9 @@ if __name__ == '__main__':
                     # If the name of the organism to analyse was provided
                     assert self.organism, 'Need to provide either a path to the alleles or an organism name'
                     # If the -g flag was included, download the appropriate MLST scheme for the organism
-                    if self.getmlst and self.organism:
-                        self.getmlsthelper()
+                    # if self.getmlst and self.organism:
+                    # referencefilepath, start, scheme, path, organism
+                    # getmlsthelper(self.r)
                     self.allelepath = '{}{}'.format(self.path, self.organism)
                     assert os.path.isdir(self.allelepath), 'Cannot find {}. Please ensure that the folder exists, or ' \
                                                            'use the -g option to download the {} MLST scheme' \
@@ -1142,36 +1229,6 @@ if __name__ == '__main__':
                 sample[self.analysistype].reportdir = self.reportpath
                 sample[self.analysistype].organism = self.organism
                 sample[self.analysistype].combinedalleles = self.combinedalleles
-
-        def getmlsthelper(self):
-            """Prepares to run the getmlst.py script provided in SRST2"""
-            from accessoryFunctions import GenObject
-            printtime('Downloading {} MLST scheme from pubmlst.org'.format(self.organism), self.start)
-            # Initialise a set to for the organism(s) for which new alleles and profiles are desired
-            organismset = set()
-            # As there are multiple profiles for certain organisms, this dictionary has the schemes I use as values
-            organismdictionary = {'Escherichia': 'Escherichia coli#1',
-                                  'Vibrio': 'Vibrio parahaemolyticus',
-                                  'Campylobacter': 'Campylobacter jejuni',
-                                  'Listeria': 'Listeria monocytogenes'}
-            # rMLST alleles cannot be fetched in the same way
-            if self.scheme.lower() != 'rmlst':
-                # Allow for a genus not in the dictionary being specified
-                try:
-                    organismset.add(organismdictionary[self.organism])
-                except KeyError:
-                    # Add the organism to the set
-                    organismset.add(self.organism)
-            for organism in organismset:
-                # Create the object to store the argument attributes to feed to getmlst
-                getmlstargs = GenObject()
-                getmlstargs.species = organism
-                getmlstargs.repository_url = 'http://pubmlst.org/data/dbases.xml'
-                getmlstargs.force_scheme_name = False
-                getmlstargs.path = '{}{}'.format(self.path, self.organism)
-                # Create the path to store the downloaded
-                make_path(getmlstargs.path)
-                getmlst.main(getmlstargs)
 
         def __init__(self):
             from argparse import ArgumentParser
@@ -1324,7 +1381,8 @@ class PipelineInit(object):
             if sample.general.bestassemblyfile != 'NA':
                 if self.analysistype.lower() == 'rmlst':
                     # Run the allele updater method
-                    updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatermlst, self.start)
+                    updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatermlst, self.start,
+                                                              self.analysistype)
                     # updatecall, allelefolder = '', '{}rMLST/holding'.format(self.referencefilepath)
                     self.alleles = glob('{}/*.tfa'.format(allelefolder))
                     # self.alleles = glob('{}/*.fas'.format(allelefolder))
@@ -1335,12 +1393,12 @@ class PipelineInit(object):
                     sample[self.analysistype].alleledir = allelefolder
                     sample[self.analysistype].updatecall = updatecall
                 else:
-                    self.alleles = glob('{}MLST/{}/*.tfa'.format(self.referencefilepath, sample.general.referencegenus))
-                    profile = glob('{}MLST/{}/*.txt'.format(self.referencefilepath, sample.general.referencegenus))
-                    self.combinedalleles = glob('{}MLST/{}/*.fasta'.format(self.referencefilepath,
-                                                                           sample.general.referencegenus))
-                    sample[self.analysistype].alleledir = '{}MLST/{}/'.format(self.referencefilepath,
-                                                                              sample.general.referencegenus)
+                    # referencefilepath, start, scheme
+                    schemefolder = getmlsthelper(self.referencefilepath, self.start, sample.general.referencegenus)
+                    self.alleles = glob('{}/*.tfa'.format(schemefolder))
+                    profile = glob('{}/*.txt'.format(schemefolder))
+                    self.combinedalleles = glob('{}/*.fasta'.format(schemefolder))
+                    sample[self.analysistype].alleledir = schemefolder
                 sample[self.analysistype].alleles = self.alleles
                 sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
                 sample[self.analysistype].profile = profile if profile else 'NA'

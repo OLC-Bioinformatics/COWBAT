@@ -28,9 +28,11 @@ class ResFinder(GeneSeekr):
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
             blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-20', num_alignments=1000000,
                                            num_threads=12,
-                                           outfmt='"6 qseqid sseqid positive mismatch gaps '
-                                                  'evalue bitscore slen length qstart qend"',
+                                           outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                                  "evalue bitscore slen length qstart qend'",
                                            out=report)
+            # Save the blast command in the metadata
+            sample[self.analysistype].blastcommand = str(blastn)
             if not os.path.isfile(report):
                 try:
                     blastn()

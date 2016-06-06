@@ -89,8 +89,8 @@ class CreateFastq(object):
         # Populate the metadata
         for sample in self.metadata.samples:
             sample.commands = GenObject()
-            sample.commands.nohupcall = nohupcall
-            sample.commands.bclcall = bclcall
+            sample.commands.nohup = nohupcall
+            sample.commands.bcl = bclcall
         # Link the fastq files to a central folder so they can be processed
         self.fastqmover()
 

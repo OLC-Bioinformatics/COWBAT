@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 import os
-from glob import glob
-from threading import Thread
-from Queue import Queue
 import time
+from Queue import Queue
+from glob import glob
 from subprocess import call
+from threading import Thread
+
 from accessoryFunctions import printtime
+
 __author__ = 'adamkoziol'
 
 
 class Quality(object):
 
     def fastqcthreader(self, level):
-        from accessoryFunctions import GenObject, get_version
         from glob import glob
         printtime('Running quality control on {} fastq files'.format(level), self.start)
         for sample in self.metadata:
@@ -26,9 +27,6 @@ class Quality(object):
                 threads.start()
         # Iterate through strains with fastq files to set variables to add to the multithreading queue
         for sample in self.metadata:
-            # Create the .software attribute for the metadata
-            sample.software = GenObject()
-            sample.software.fastqc = get_version(['fastqc', '-v']).split('\n')[0].split()[1]
             fastqccall = ""
             # Check to see if the fastq files exist
             if level == 'Trimmed':
@@ -63,7 +61,7 @@ class Quality(object):
                 elif len(fastqfiles) == 1:
                     fastqccall = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
                 # Add the arguments to the queue
-                sample.commands.fastqccall = fastqccall
+                sample.commands.fastqc = fastqccall
                 self.qcqueue.put((fastqccall, outdir))
         # Wait on the trimqueue until everything has been processed
         self.qcqueue.join()

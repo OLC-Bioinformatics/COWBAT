@@ -173,11 +173,11 @@ def quastMetadata(sampleNames, path, runTrimMetadata):
                         runTrimMetadata[name]["2.Assembly"]["L50"] = subline[11]
                         runTrimMetadata[name]["2.Assembly"]["L75"] = subline[12]
                         runTrimMetadata[name]["2.Assembly"]["NumNsPer100kbp"] = subline[13]
-                        runTrimMetadata[name]["2.Assembly"]["NumUniquePredictedGenes"] = subline[14]
-                        runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes"] = subline[15]
-                        runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>500bp"] = subline[16]
-                        runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>1000bp"] = subline[17]
-                        runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>3000bp"] = subline[18].rstrip()
+                        # runTrimMetadata[name]["2.Assembly"]["NumUniquePredictedGenes"] = subline[14]
+                        # runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes"] = subline[15]
+                        # runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>500bp"] = subline[16]
+                        # runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>1000bp"] = subline[17]
+                        # runTrimMetadata[name]["2.Assembly"]["NumPredictedGenes>3000bp"] = subline[18].rstrip()
                         # These values aren't determined in a non-gage analysis, so in order to keep
                         # the schema consistent they are populated with "N/A"
                         runTrimMetadata[name]["2.Assembly"]["ReferencePercentGC"] = "N/A"

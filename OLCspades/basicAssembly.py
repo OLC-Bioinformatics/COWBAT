@@ -117,7 +117,7 @@ class Basic(object):
                                                         enumerate(reversereads.split('\n')) if iterator % 4 == 1])
                     # Populate metadata of single end reads with 'NA'
                     else:
-                        sample.header.reverselength = 'NA'
+                        sample.run.reverselength = 'NA'
 
     def __init__(self, inputobject):
         self.samples = []

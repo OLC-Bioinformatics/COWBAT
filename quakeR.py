@@ -160,7 +160,8 @@ def correctQuakeMP((name, path, fLength, metadata, commands)):
 
     corFile = glob.glob("%s/*cor.fastq" % newPath)
     # os.path.isfile("%s/cutoff.txt" % newPath)
-    if not commands[name]["QuakeCorrectCommand"] and cutoffSize != 0 and not corFile:
+    # and cutoffSize != 0
+    if not commands[name]["QuakeCorrectCommand"] and not corFile:
         # As part of the assembly of GeneSippr data, only one of the two paired end reads are necessary
         if fLength > 50:
             necessaryNoCorFiles = 2
@@ -177,6 +178,7 @@ def correctQuakeMP((name, path, fLength, metadata, commands)):
         # microbial genomes. Also using 24 processors.
         #  2>/dev/null  -q 33 -k 15
         quakeCorrect = "correct -f %s/%s_fastqFiles.txt -k 15 -m %s/%s_counts.txt -c %s -p 24" % (newPath, name, newPath, name, cutoff)
+        print quakeCorrect
         # quakeRun = "quake.py -f %s/%s_fastqFiles.txt -k 15 -p 24" % (newPath, name)
         # Run the command
         # subprocess.call(quakeRun, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))

@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-from glob import glob
-
 from accessoryFunctions import *
 
 __author__ = 'adamkoziol'
@@ -26,55 +24,46 @@ class Spades(object):
             kmerlist = self.kmers.split(',')
             # Regenerate the list of kmers to use if the kmer is less than the readlength
             sample.general.kmers = ','.join([kmer for kmer in kmerlist if int(kmer) <= sample.run.forwardlength])
-            # Initialise the fastqfiles variable - will store trimmed fastq file names if they exist, and raw fastq
-            # file names if trimmed fastq files were not created for whatever reason
-            if 'trimmedfastqfiles' in sample.general.datastore:
-                if type(sample.general.trimmedfastqfiles) is list:
-                    fastqfiles = sorted(sample.general.trimmedfastqfiles)
-                elif type(sample.general.fastqfiles) is list:
-                        fastqfiles = sorted(sample.general.fastqfiles)
-                else:
-                    fastqfiles = ''
-            else:
-                fastqfiles = sorted(sample.general.fastqfiles)
-            # Only proceed if fastq files exists
-            if fastqfiles:
+            if 'trimmedcorrectedfastqfiles' in sample.general.datastore:
+                # Set the output directory
+                sample.general.spadesoutput = '{}/spades_output'.format(sample.general.outputdirectory)
+                fastqfiles = sample.general.trimmedcorrectedfastqfiles
                 # Set the the forward fastq files
                 sample.general.assemblyfastq = fastqfiles
                 forward = fastqfiles[0]
-                # Set the output directory
-                sample.general.spadesoutput = '{}/spades_output'.format(sample.general.outputdirectory)
                 # If there are two fastq files
                 if len(fastqfiles) == 2:
                     # Set the reverse fastq name
                     reverse = fastqfiles[1]
                     if sample.run.forwardlength < 50:
                         if os.path.isdir(sample.general.spadesoutput):
-                            spadescommand = 'spades.py -k {} --careful --continue --s1 {} -o {} -t {}' \
+                            spadescommand = 'spades.py -k {} --only-assembler --careful --continue --s1 {} -o {} -t {}'\
                                 .format(sample.general.kmers, reverse, sample.general.spadesoutput,
                                         self.threads)
                         else:
-                            spadescommand = 'spades.py -k {} --careful --s1 {} -o {} -t {}' \
+                            spadescommand = 'spades.py -k {} --only-assembler --careful --s1 {} -o {} -t {}' \
                                 .format(sample.general.kmers, reverse, sample.general.spadesoutput,
                                         self.threads)
                     else:
                         # If a previous assembly was partially completed, continue from the most recent checkpoint
                         if os.path.isdir(sample.general.spadesoutput):
-                            spadescommand = 'spades.py -k {} --careful --continue --pe1-1 {} --pe1-2 {} -o {} -t {}'\
+                            spadescommand = 'spades.py -k {} --only-assembler --careful --continue ' \
+                                            '--pe1-1 {} --pe1-2 {} -o {} -t {}'\
                                             .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
                                                     self.threads)
                         else:
-                            spadescommand = 'spades.py -k {} --careful --pe1-1 {} --pe1-2 {} -o {} -t {}'\
+                            spadescommand = 'spades.py -k {} --only-assembler --careful ' \
+                                            '--pe1-1 {} --pe1-2 {} -o {} -t {}'\
                                             .format(sample.general.kmers, forward, reverse, sample.general.spadesoutput,
                                                     self.threads)
                 # Same as above, but use single read settings for spades
                 else:
                     if os.path.isdir(sample.general.spadesoutput):
-                        spadescommand = 'spades.py -k {} --careful --continue --s1 {} -o {} -t {}'\
+                        spadescommand = 'spades.py -k {} --only-assembler --careful --continue --s1 {} -o {} -t {}'\
                                         .format(sample.general.kmers, forward, sample.general.spadesoutput,
                                                 self.threads)
                     else:
-                        spadescommand = 'spades.py -k {} --careful --s1 {} -o {} -t {}'\
+                        spadescommand = 'spades.py -k {} --only-assembler --careful --s1 {} -o {} -t {}'\
                                         .format(sample.general.kmers, forward, sample.general.spadesoutput,
                                                 self.threads)
             # If there are no fastq files, populate the metadata appropriately
@@ -147,9 +136,6 @@ class Spades(object):
                 bestassemblyfile = '{}/{}.fasta'.format(sample.general.bestassembliespath, sample.name)
                 # Add the name and path of the best assembly file to the metadata
                 sample.general.bestassemblyfile = bestassemblyfile
-                # Get the trimmed, corrected fastq files into the object
-                sample.general.trimmedcorrectedfastqfiles = sorted(
-                    glob('{}/corrected/*_trimmed*'.format(sample.general.spadesoutput)))
                 # Copy the filtered file to the BestAssemblies folder
                 if not os.path.isfile(bestassemblyfile):
                     shutil.copyfile(filteredfile, bestassemblyfile)

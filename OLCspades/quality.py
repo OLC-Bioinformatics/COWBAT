@@ -14,7 +14,6 @@ __author__ = 'adamkoziol'
 class Quality(object):
 
     def fastqcthreader(self, level):
-        from glob import glob
         printtime('Running quality control on {} fastq files'.format(level), self.start)
         for sample in self.metadata:
             if type(sample.general.fastqfiles) is list:
@@ -37,9 +36,6 @@ class Quality(object):
                     fastqfiles = ""
                     pass
             elif level == 'trimmedcorrected':
-                # Add the location of the corrected fastq files
-                sample.general.trimmedcorrectedfastqfiles = sorted(glob('{}/corrected/*trimmed*.gz*'
-                                                                        .format(sample.general.spadesoutput)))
                 # Try except loop to allow for missing samples
                 try:
                     fastqfiles = sample.general.trimmedcorrectedfastqfiles
@@ -110,20 +106,21 @@ class Quality(object):
                 # Separate system calls for paired and unpaired fastq files
                 # TODO minlen=number - incorporate read length
                 # http://seqanswers.com/forums/showthread.php?t=42776
-                if sample.run.forwardlength > 75 and sample.run.reverselength > 75:
-                    if len(fastqfiles) == 2:
+                if len(fastqfiles) == 2:
+                    if sample.run.forwardlength > 75 and sample.run.reverselength > 75:
                         cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
                         bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
                             "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
                             .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
-                    elif len(fastqfiles) == 1:
-                        bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
-                            "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
-                            .format(fastqfiles[0], cleanforward, self.bbduklocation)
                     else:
                         bbdukcall = ""
+                elif len(fastqfiles) == 1:
+                    bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                        "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                        .format(fastqfiles[0], cleanforward, self.bbduklocation)
                 else:
                     bbdukcall = ""
+
                     # sample.general.trimmedfastqfiles = fastqfiles
                 sample.commands.bbduk = bbdukcall
                 # Add the arguments to the queue

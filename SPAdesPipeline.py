@@ -35,7 +35,7 @@ from argparse import ArgumentParser
 # Parser for arguments
 parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
 parser.add_argument('-v', '--version', action='version', version='%(prog)s commit 5c63c82cd21e9e1883cd0d69e91a93ccff329b9c')
-parser.add_argument('-p', '--path', required=True, help='Specify path')
+parser.add_argument('-p', '--path', required=False, default=os.getcwd(), help='Specify path')
 parser.add_argument('-n', '--numReads', required=False, default=2,
                     help='Specify the number of reads. Paired-reads: 2, unpaired-reads: 1. Default is paired-end (2)')
 parser.add_argument('-t', '--threads', required=False, help='Number of threads to use. Defaults to the number of '
@@ -118,12 +118,12 @@ def pipeline():
     runTrimAssemblyMLSTQuastMetadata = quastR.functionsGoNOW(assembledFiles, path, runTrimAssemblyMLSTMetadata, commands)
     # print json.dumps(runTrimAssemblyMLSTQuastMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Library size estimation
-    runTrimAssemblyMLSTQuastInsertMetadata = lse.functionsGoNOW(assembledFiles, path, runTrimAssemblyMLSTQuastMetadata, commands)
+    runTrimAssemblyMLSTQuastInsertMetadata = lse.functionsgonow(assembledFiles, path, runTrimAssemblyMLSTQuastMetadata, numReads)
     # print json.dumps(runTrimAssemblyMLSTQuastInsertMetadata, sort_keys=True, indent=4, separators=(',', ': '))
     # Mobile element screening
     # Not implemented yet
     # GeneSeeking
-    runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata = geneSeekr.functionsGoNOW(assembledFiles, path, runTrimAssemblyMLSTQuastInsertMetadata, refFilePath, commands)
+    runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata = geneSeekr.functionsgonow(assembledFiles, path, runTrimAssemblyMLSTQuastInsertMetadata, refFilePath, commands)
     # print json.dumps(runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata["996-Old"]["7.PipelineCommands"], sort_keys=True, indent=4, separators=(',', ': '))
     # # Generate the final metadata reports
     reportR.functionsGoNOW(assembledFiles, runTrimAssemblyMLSTQuastInsertgeneSeekrMetadata, path)

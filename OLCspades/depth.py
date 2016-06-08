@@ -54,10 +54,11 @@ class QualiMap(object):
                                                       out_prefix="-")
                 samtools = [SamtoolsViewCommandline(b=True, S=True, input_file="-"), samsort]
                 indict = {'D': 5, 'R': 1, 'num_mismatches': 0, 'seed_length': 22, 'i_func': "S,0,2.50"}
-                # if len(sample.general.assemblyfastq) == 2 and sample.run.forwardlength > 50:
-                indict.update({'m1': sample.general.assemblyfastq[0], 'm2': sample.general.assemblyfastq[1]})
-                # else:
-                #     indict.update({'U': sample.general.assemblyfastq[1]})
+                #  and sample.run.forwardlength > 50
+                if len(sample.general.assemblyfastq) == 2:
+                    indict.update({'m1': sample.general.assemblyfastq[0], 'm2': sample.general.assemblyfastq[1]})
+                else:
+                    indict.update({'U': sample.general.assemblyfastq[0]})
                 bowtie2align = Bowtie2CommandLine(bt2=sagen.bowtie2results,
                                                   threads=self.cpus,
                                                   samtools=samtools,

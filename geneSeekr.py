@@ -93,6 +93,7 @@ def univecscreen(name, path, reffilepath, command):
                                        evalue=0.1,
                                        outfmt=6,
                                        out=out)
+        blastn()
         univeccommand[name]["7.PipelineCommands"]["UnivecCommand"] = str(blastn)
     else:
         univeccommand[name]["7.PipelineCommands"]["UnivecCommand"] = command[name]["UnivecCommand"]
@@ -197,7 +198,7 @@ def performblast(name, path, targets, analysis, dictionary, reffilepath, command
             # NcbiblastnCommandline runs a command line-like BLAST without actually invoking a system call
             try:
                 blastn = NcbiblastnCommandline(query=query, db=target, outfmt=5, evalue=1e-10, out=out)
-
+                blastn()
                 geneseekrcommands[name]["7.PipelineCommands"]["GeneSeekrBlast"] = str(blastn)
                 # else:
                 #     geneseekrcommands[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
@@ -225,7 +226,7 @@ def performblast(name, path, targets, analysis, dictionary, reffilepath, command
                                     percentidentity = 1
                                 # Otherwise, a cutoff of 80% should be fine
                                 else:
-                                    percentidentity = 0.8
+                                    percentidentity = 0.5
                                 # Invoke the percent identity cutoff. If the number of identities in the HSP is greater 
                                 # or equal to the total length of the subject sequence (multiplied by the cutoff), 
                                 # then the HSP passes
@@ -357,6 +358,7 @@ def performmlst(name, path, reffilepath, genus, commands):
         if not os.path.isfile(out):
             # NcbiblastnCommandline runs a command line-like BLAST without actually invoking a system call
             blastn = NcbiblastnCommandline(query=query, db=allele, outfmt=5, evalue=1e-10, max_target_seqs=1, out=out)
+            blastn()
             mlstcommands[name]["7.PipelineCommands"]["MLSTBlastCommand"] = str(blastn)
         else:
             mlstcommands[name]["7.PipelineCommands"]["MLSTBlastCommand"] = commands[name]["MLSTBlastCommand"]
@@ -574,50 +576,74 @@ def rungeneseekr((name, path, metadata, reffilepath, commands)):
                                                                                   geneseekrresults, reffilepath,
                                                                                   commands)
             # Run the MLST_typer
-            outputmlst, mlstcommands = performmlst(name, path, reffilepath, genus, commands)
+            try:
+                outputmlst, mlstcommands = performmlst(name, path, reffilepath, genus, commands)
+            except KeyError:
+                pass
+    # print name, geneseekroutput, vtcommands, geneseekrcommands, outputmlst, mlstcommands
     # As there's no checks above to populate the dictionary if there are no results, the if statements below not only
     # populate the dictionary with the appropriate metadata headings, and return negative results
-    if output:
-        metadataoutput[name]["1.General"]["verotoxinProfile"] = output[name]
-    else:
-        metadataoutput[name]["1.General"]["verotoxinProfile"] = "N/A"
-
-    if outputmlst:
-        # print outputmlst[name]
-        metadataoutput[name]["1.General"]["MLST_sequenceType"] = outputmlst[name]
-    else:
+    try:
+        if output:
+            metadataoutput[name]["1.General"]["verotoxinProfile"] = output[name]
+        else:
+            metadataoutput[name]["1.General"]["verotoxinProfile"] = "N/A"
+    except KeyError:
+        print name, "verotoxinProfile"
+    try:
+        if outputmlst:
+            # print outputmlst[name]
+            metadataoutput[name]["1.General"]["MLST_sequenceType"] = outputmlst[name]
+        else:
+            metadataoutput[name]["1.General"]["MLST_sequenceType"] = "N/A"
+    except KeyError:
         metadataoutput[name]["1.General"]["MLST_sequenceType"] = "N/A"
+    try:
+        if geneseekroutput:
+            metadataoutput[name]["1.General"]["geneSeekrProfile"] = geneseekroutput[name]
+        else:
+            metadataoutput[name]["1.General"]["geneSeekrProfile"] = "N/A"
+    except KeyError:
+        print name, "geneSeekrProfile"
+    try:
+        if vtcommands:
+            metadataoutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = vtcommands[name]["7.PipelineCommands"][
+                "v-typerEPCRCommand"]
+            metadataoutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = vtcommands[name]["7.PipelineCommands"][
+                "v-typerFahashCommand"]
+            metadataoutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = vtcommands[name]["7.PipelineCommands"][
+                "v-typerFamapCommand"]
+        else:
+            metadataoutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = commands[name]["v-typerEPCRCommand"]
+            metadataoutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = commands[name]["v-typerFahashCommand"]
+            metadataoutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = commands[name]["v-typerFamapCommand"]
+    except KeyError:
+        print name, "typerEPCRCommand"
+    try:
+        if geneseekrcommands:
+            metadataoutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = geneseekrcommands[name]["7.PipelineCommands"][
+                "GeneSeekrBlast"]
+        else:
+            metadataoutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
+    except KeyError:
+        print name, "GeneSeekrBlast"
+    try:
+        if univeccommand:
+            metadataoutput[name]["7.PipelineCommands"]["UnivecCommand"] = univeccommand[name]["7.PipelineCommands"][
+                "UnivecCommand"]
+        else:
+            metadataoutput[name]["7.PipelineCommands"]["UnivecCommand"] = commands[name]["UnivecCommand"]
+    except KeyError:
+        print name, "UnivecCommand"
+    try:
+        if mlstcommands:
+            metadataoutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = mlstcommands[name]["7.PipelineCommands"][
+                "MLSTBlastCommand"]
+        else:
+            metadataoutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = commands[name]["MLSTBlastCommand"]
+    except KeyError:
+        print name, "MLSTBlastCommand"
 
-    if geneseekroutput:
-        metadataoutput[name]["1.General"]["geneSeekrProfile"] = geneseekroutput[name]
-    else:
-        metadataoutput[name]["1.General"]["geneSeekrProfile"] = "N/A"
-    if vtcommands:
-        metadataoutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = vtcommands[name]["7.PipelineCommands"][
-            "v-typerEPCRCommand"]
-        metadataoutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = vtcommands[name]["7.PipelineCommands"][
-            "v-typerFahashCommand"]
-        metadataoutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = vtcommands[name]["7.PipelineCommands"][
-            "v-typerFamapCommand"]
-    else:
-        metadataoutput[name]["7.PipelineCommands"]["v-typerEPCRCommand"] = commands[name]["v-typerEPCRCommand"]
-        metadataoutput[name]["7.PipelineCommands"]["v-typerFahashCommand"] = commands[name]["v-typerFahashCommand"]
-        metadataoutput[name]["7.PipelineCommands"]["v-typerFamapCommand"] = commands[name]["v-typerFamapCommand"]
-    if geneseekrcommands:
-        metadataoutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = geneseekrcommands[name]["7.PipelineCommands"][
-            "GeneSeekrBlast"]
-    else:
-        metadataoutput[name]["7.PipelineCommands"]["GeneSeekrBlast"] = commands[name]["GeneSeekrBlast"]
-    if univeccommand:
-        metadataoutput[name]["7.PipelineCommands"]["UnivecCommand"] = univeccommand[name]["7.PipelineCommands"][
-            "UnivecCommand"]
-    else:
-        metadataoutput[name]["7.PipelineCommands"]["UnivecCommand"] = commands[name]["UnivecCommand"]
-    if mlstcommands:
-        metadataoutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = mlstcommands[name]["7.PipelineCommands"][
-            "MLSTBlastCommand"]
-    else:
-        metadataoutput[name]["7.PipelineCommands"]["MLSTBlastCommand"] = commands[name]["MLSTBlastCommand"]
     return metadataoutput
 
 

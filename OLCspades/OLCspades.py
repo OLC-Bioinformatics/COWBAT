@@ -51,6 +51,7 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
 
     def quality(self):
+        import errorcorrection
         import mMLST
         import quaster
         import prodigal
@@ -63,6 +64,15 @@ class RunSpades(object):
         self.qualityobject.trimquality()
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
+        # Run the error correction module
+        errorcorrection.Correct(self)
+        metadataprinter.MetadataPrinter(self)
+        # Run FastQC on the unprocessed fastq files
+        self.qualityobject.fastqcthreader('trimmedcorrected')
+        # Exit if only pre-processing of data is requested
+        if self.preprocess:
+            printtime('Pre-processing complete', starttime)
+            quit()
         # Run spades
         spadesRun.Spades(self)
         prodigal.Prodigal(self)
@@ -155,6 +165,7 @@ class RunSpades(object):
         self.reverselength = args.readlengthreverse
         self.numreads = 1 if self.reverselength == 0 else 2
         self.kmers = args.kmerrange
+        self.preprocess = args.preprocess
         # Define the start time
         self.starttime = startingtime
         self.customsamplesheet = args.customsamplesheet
@@ -183,12 +194,9 @@ class RunSpades(object):
         try:
             # Start the assembly
             self.assembly()
-            # Run the quality trimming module
             # Create the quality object
             self.qualityobject = quality.Quality(self)
             self.quality()
-            # Run FastQC on the unprocessed fastq files
-            self.qualityobject.fastqcthreader('trimmedcorrected')
             # Print the metadata to file
             metadataprinter.MetadataPrinter(self)
             # Perform typing of assemblies
@@ -264,6 +272,10 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--basicassembly',
                         action='store_true',
                         help='Performs a basic de novo assembly, and does not collect run metadata')
+    parser.add_argument('-p', '--preprocess',
+                        action='store_true',
+                        help='Perform quality trimming and error correction only. Do not assemble the trimmed + '
+                             'corrected reads')
 
     # Get the arguments into an object
     arguments = parser.parse_args()

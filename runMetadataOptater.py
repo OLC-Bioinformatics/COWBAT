@@ -54,6 +54,12 @@ def parseSampleSheet():
     global IDs
     sampleSheet = open("SampleSheet.csv", "r")
     # Go line-by-line through the csv file to find the information required
+    investigator = ""
+    experiment = ""
+    date = ""
+    adapter = ""
+    forwardLength = ""
+    reverseLength = ""
     for line in sampleSheet:
         # Remove all newlines
         line.rstrip()

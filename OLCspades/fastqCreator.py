@@ -20,6 +20,9 @@ class CreateFastq(object):
         self.fastqdestination = self.fastqdestination if self.fastqdestination else self.path + self.miseqfoldername
         # Make the path
         make_path(self.fastqdestination)
+        # Initialise variables for storing index information
+        index = ''
+        indexlength = int()
         # bcl2fastq requires an older version of the sample sheet, this recreates the required version
         # Create the new sample sheet
         with open('{}/SampleSheet_modified.csv'.format(self.fastqdestination), "wb") as modifiedsamplesheet:
@@ -28,9 +31,16 @@ class CreateFastq(object):
                 "FCID,Lane,SampleID,SampleRef,Index,Description,Control,Recipe,Operator,SampleProject\n")
             for strain in self.samples:
                 # Create a combined index of index1-index2
-                modifiedindex = '{}-{}'.format(strain.run.index, strain.run.index2)
+                try:
+                    strain.run.modifiedindex = '{}-{}'.format(strain.run.index, strain.run.index2)
+                    indexlength = 16
+                    index = 'I8,I8'
+                except KeyError:
+                    strain.run.modifiedindex = strain.run.index
+                    indexlength = 6
+                    index = 'I6'
                 # The list of items to print to each line of the modified sample sheet
-                printlist = [self.flowcell, '1', strain.name, str(strain.run.SampleNumber), modifiedindex,
+                printlist = [self.flowcell, '1', strain.name, str(strain.run.SampleNumber), strain.run.modifiedindex,
                              strain.run.Description, 'N', 'NA',
                              strain.run.InvestigatorName, self.projectname]
                 modifiedsamplesheet.write('{}\n'.format(",".join(printlist)))
@@ -45,18 +55,21 @@ class CreateFastq(object):
         # As the number of cycles required is the number of forward reads + the index(8) + the second index(8)
         # Also set the basemask variable as required
         if self.reverselength != '0':
-            self.readsneeded = int(self.forwardlength) + int(self.reverselength) + 16
-            basemask = "Y{}n*,I8,I8,Y{}n*".format(self.forwardlength, self.reverselength)
+            self.readsneeded = int(self.forwardlength) + int(self.reverselength) + indexlength
+            basemask = "Y{}n*,{},Y{}n*".format(self.forwardlength, index, self.reverselength)
             nohup = "nohup make -j 16"
         else:
             self.readsneeded = int(self.forwardlength) + 16
-            basemask = "Y{}n*,I8,I8,n*".format(self.forwardlength)
+            basemask = "Y{}n*,{},n*".format(self.forwardlength, index)
             nohup = "nohup make -j 16 r1"
-        printtime('There are {} samples in this run. '
+        # Handle plurality appropriately
+        samples = 'samples' if samplecount > 1 else 'sample'
+        number = 'are' if samplecount > 1 else 'is'
+        printtime('There {} {} {} in this run. '
                   'Running fastq creating module with the following parameters:\n'
                   'MiSeqPath: {},\n'
                   'MiSeqFolder: {},\n'
-                  'SampleSheet: {}'.format(samplecount, self.miseqpath, self.miseqfolder,
+                  'SampleSheet: {}'.format(number, samplecount, samples, self.miseqpath, self.miseqfolder,
                                            '{}/SampleSheet_modified.csv'.format(self.fastqdestination)), self.start)
         # Count the number of completed cycles in the run of interest
         cycles = glob('{}Data/Intensities/BaseCalls/L001/C*'.format(self.miseqfolder))
@@ -82,16 +95,16 @@ class CreateFastq(object):
             # Call configureBclToFastq.pl
             printtime('Running bcl2fastq', self.start)
             # Run the commands
-            # execute(bclcall, "")
             call(bclcall, shell=True, stdout=fnull, stderr=fnull)
-            # execute(nohupcall, '{}/nohup.out'.format(self.fastqdestination))
             call(nohupcall, shell=True, stdout=fnull, stderr=fnull)
         # Populate the metadata
         for sample in self.metadata.samples:
             sample.commands = GenObject()
             sample.commands.nohup = nohupcall
             sample.commands.bcl = bclcall
-        # Link the fastq files to a central folder so they can be processed
+            sample.run.forwardlength = self.forwardlength
+            sample.run.reverselength = self.reverselength
+        # Copy the fastq files to a central folder so they can be processed
         self.fastqmover()
 
     def configfilepopulator(self):
@@ -160,7 +173,7 @@ class CreateFastq(object):
 
     def fastqmover(self):
         """Links .fastq files created above to :self.path/:sample.name/"""
-        from re import sub
+        from shutil import copyfile
         import errno
         # Create the project path variable
         self.projectpath = self.fastqdestination + "/Project_" + self.projectname
@@ -176,12 +189,14 @@ class CreateFastq(object):
                 for fastq in sorted(glob('{}/Sample_{}/*.gz'.format(self.projectpath, sample.name))):
                     # Try/except loop link .gz files to self.path
                     try:
-                        # Symlink fastq file to the path, but renames them first using the sample number.
+                        # Copy fastq file to the path, but renames them first using the sample number.
                         # 2015-SEQ-1283_GGACTCCT-GCGTAAGA_L001_R1_001.fastq.gz is renamed:
                         # 2015-SEQ-1283_S1_L001_R1_001.fastq.gz
                         make_path(outputdir)
-                        os.symlink(fastq, '{}/{}'.format(outputdir, os.path.basename(sub('\w{8}-\w{8}',
-                                   'S{}'.format(sample.run.SampleNumber), fastq))))
+                        # copyfile(fastq, '{}/{}'.format(outputdir, os.path.basename(
+                        #     sub('\w{8}-\w{8}', 'S{}'.format(sample.run.SampleNumber), fastq))))
+                        os.symlink(fastq, '{}/{}'.format(outputdir, os.path.basename(
+                            fastq.replace(sample.run.modifiedindex, 'S{}'.format(sample.run.SampleNumber)))))
                     # Except os errors
                     except OSError as exception:
                         # If there is an exception other than the file exists, raise it
@@ -212,6 +227,7 @@ class CreateFastq(object):
         try:
             self.miseqpath = os.path.join(inputobject.args.miseqpath, "")
         except AttributeError:
+            print inputobject.miseqfolder
             print('MiSeqPath argument is required in order to use the fastq creation module. Please provide this '
                   'argument and run the script again.')
             quit()

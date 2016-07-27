@@ -57,11 +57,12 @@ class CreateFastq(object):
         if self.reverselength != '0':
             self.readsneeded = int(self.forwardlength) + int(self.reverselength) + indexlength
             basemask = "Y{}n*,{},Y{}n*".format(self.forwardlength, index, self.reverselength)
-            nohup = "nohup make -j 16"
+            nohup = "nohup make -j 16 > nohup.out"
         else:
-            self.readsneeded = int(self.forwardlength) + 16
+            #  + 1
+            self.readsneeded = int(self.forwardlength) + indexlength
             basemask = "Y{}n*,{},n*".format(self.forwardlength, index)
-            nohup = "nohup make -j 16 r1"
+            nohup = "nohup make -j 16 r1 > nohup.out"
         # Handle plurality appropriately
         samples = 'samples' if samplecount > 1 else 'sample'
         number = 'are' if samplecount > 1 else 'is'
@@ -73,10 +74,11 @@ class CreateFastq(object):
                                            '{}/SampleSheet_modified.csv'.format(self.fastqdestination)), self.start)
         # Count the number of completed cycles in the run of interest
         cycles = glob('{}Data/Intensities/BaseCalls/L001/C*'.format(self.miseqfolder))
+        print self.fastqdestination
         while len(cycles) < self.readsneeded:
             printtime('Currently at {} cycles. Waiting until the MiSeq reaches cycle {}'.format(len(cycles),
                       self.readsneeded), self.start)
-            sleep(30)
+            sleep(1800)
             cycles = glob('{}Data/Intensities/BaseCalls/L001/C*'.format(self.miseqfolder))
         # configureBClToFastq requires :self.miseqfolder//Data/Intensities/BaseCalls/config.xml in order to work
         # When you download runs from BaseSpace, this file is not provided. There is an empty config.xml file that
@@ -96,7 +98,7 @@ class CreateFastq(object):
             printtime('Running bcl2fastq', self.start)
             # Run the commands
             call(bclcall, shell=True, stdout=fnull, stderr=fnull)
-            call(nohupcall, shell=True, stdout=fnull, stderr=fnull)
+            call(nohupcall, shell=True, stdout = fnull, stderr = fnull)
         # Populate the metadata
         for sample in self.metadata.samples:
             sample.commands = GenObject()

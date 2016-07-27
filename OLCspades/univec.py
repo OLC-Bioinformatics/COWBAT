@@ -71,7 +71,6 @@ class Univec(GeneSeekr):
             target = '{},{},{}'.format(row['query_id'], row['subject_accession'], row['subject_title'])
             # If the percent identity is greater than the cutoff
             if percentidentity >= self.cutoff:
-                # self.plusdict[sample.name][target] = percentidentity
                 resultdict.update({target: '{},{}'.format(str(percentidentity), row['positives'])})
             sample[self.analysistype].blastresults = resultdict
 

@@ -26,9 +26,12 @@ class Quality(object):
                 threads.start()
         # Iterate through strains with fastq files to set variables to add to the multithreading queue
         for sample in self.metadata:
-            fastqccall = ""
+            fastqccall = ''
+            fastqcreads = ''
             # Check to see if the fastq files exist
             if level == 'Trimmed':
+
+                reader = 'cat' if '.bz2' not in sample.general.trimmedfastqfiles[0] else 'bunzip2 --stdout'
                 # Try except loop to allow for missing samples
                 try:
                     fastqfiles = sample.general.trimmedfastqfiles
@@ -36,6 +39,7 @@ class Quality(object):
                     fastqfiles = ""
                     pass
             elif level == 'trimmedcorrected':
+                reader = 'gunzip --to-stdout'
                 # Try except loop to allow for missing samples
                 try:
                     fastqfiles = sample.general.trimmedcorrectedfastqfiles
@@ -43,6 +47,7 @@ class Quality(object):
                     fastqfiles = ""
                     pass
             else:
+                reader = 'cat' if '.gz' not in sample.general.fastqfiles[0] else 'gunzip --to-stdout'
                 fastqfiles = sample.general.fastqfiles
             # As the metadata can be populated with 'NA' (string) if there are no fastq files, only process if
             # :fastqfiles is a list
@@ -51,14 +56,20 @@ class Quality(object):
                 outdir = '{}/fastqc/fastqc{}'.format(sample.general.outputdirectory, level)
                 # Separate system calls for paired and unpaired fastq files
                 if len(fastqfiles) == 2:
-                    # Call fastqc with -q (quiet), -o (output directory), -d (where to store temp files) flags, and
-                    # -t (number of threads) flags
-                    fastqccall = "fastqc {} {} -q -o {} -t 12".format(fastqfiles[0], fastqfiles[1], outdir)
+                    # Combine the fastq files, so that the paired files are processed together
+                    # Call fastqc with -q (quiet), -o (output directory), -t (number of threads) flags
+                    fastqccall = '{} {} {} | fastqc -q -t {} stdin -o {}'\
+                        .format(reader, fastqfiles[0], fastqfiles[1], self.cpus, outdir)
+                    # Also perform QC on the individual forward and reverse reads
+                    fastqcreads = "fastqc {} {} -q -o {} -t 12".format(fastqfiles[0], fastqfiles[1], outdir)
                 elif len(fastqfiles) == 1:
-                    fastqccall = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
+                    # fastqccall = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
+                    fastqccall = '{} {} | fastqc -q -t {} stdin -o {}'\
+                        .format(reader, fastqfiles[0], self.cpus, outdir)
+                    fastqcreads = "fastqc {} -q -o {} -t 12".format(fastqfiles[0], outdir)
                 # Add the arguments to the queue
                 sample.commands.fastqc = fastqccall
-                self.qcqueue.put((fastqccall, outdir))
+                self.qcqueue.put((sample, fastqccall, outdir, fastqcreads))
         # Wait on the trimqueue until everything has been processed
         self.qcqueue.join()
         self.qcqueue = Queue()
@@ -66,16 +77,25 @@ class Quality(object):
     def fastqc(self):
         """Run fastqc system calls"""
         from accessoryFunctions import make_path
+        import shutil
         while True:  # while daemon
             # Unpack the variables from the queue
-            (systemcall, outputdir) = self.qcqueue.get()
-            # Check to see if the output directory already exists
-            if not os.path.isdir(outputdir):
+            (sample, systemcall, outputdir, fastqcreads) = self.qcqueue.get()
+            # Check to see if the output HTML file already exists
+            if not os.path.isfile('{}/{}_fastqc.html'.format(outputdir, sample.name)):
                 # Make the output directory
                 make_path(outputdir)
-                # Run the system call
-                call(systemcall, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
-                # call(systemcall, shell=True, stdout=devnull, stderr=devnull)
+                # Run the system calls
+                call(systemcall, shell=True, stdout=self.devnull, stderr=self.devnull)
+                call(fastqcreads, shell=True, stdout=self.devnull, stderr=self.devnull)
+                # Rename the outputs
+                try:
+                    shutil.move('{}/stdin_fastqc.html'.format(outputdir),
+                                '{}/{}_fastqc.html'.format(outputdir, sample.name))
+                    shutil.move('{}/stdin_fastqc.zip'.format(outputdir),
+                                '{}/{}_fastqc.zip'.format(outputdir, sample.name))
+                except IOError:
+                    pass
             # Signal to qcqueue that job is done
             self.qcqueue.task_done()
 
@@ -101,19 +121,21 @@ class Quality(object):
                 fastqfiles = sorted(sample.general.fastqfiles)
                 # Define the output directory
                 outputdir = sample.general.outputdirectory
-                # Define the name of the forward trimmed fastq file
+                # Define the name of the trimmed fastq files
                 cleanforward = '{}/{}_R1_trimmed.fastq'.format(outputdir, sample.name)
+                cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
                 # Separate system calls for paired and unpaired fastq files
                 # TODO minlen=number - incorporate read length
                 # http://seqanswers.com/forums/showthread.php?t=42776
                 if len(fastqfiles) == 2:
-                    if sample.run.forwardlength > 75 and sample.run.reverselength > 75:
-                        cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
+                    if int(sample.run.forwardlength) > 75 and int(sample.run.reverselength) > 75:
                         bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
                             "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
                             .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
                     else:
-                        bbdukcall = ""
+                        bbdukcall = "bbduk2.sh -Xmx1g in1={} out1={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                                    "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                            .format(fastqfiles[1], cleanreverse, self.bbduklocation)
                 elif len(fastqfiles) == 1:
                     bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
                         "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
@@ -124,7 +146,7 @@ class Quality(object):
                     # sample.general.trimmedfastqfiles = fastqfiles
                 sample.commands.bbduk = bbdukcall
                 # Add the arguments to the queue
-                self.trimqueue.put((sample, bbdukcall, cleanforward))
+                self.trimqueue.put((sample, bbdukcall, cleanreverse))
         # Wait on the trimqueue until everything has been processed
         self.trimqueue.join()
         # Add all the trimmed files to the metadata
@@ -136,11 +158,11 @@ class Quality(object):
         """Run bbduk system calls"""
         while True:  # while daemon
             # Unpack the variables from the queue
-            (sample, systemcall, forwardname) = self.trimqueue.get()
+            (sample, systemcall, reversename) = self.trimqueue.get()
             # Check to see if the forward file already exists
             if systemcall:
-                if not os.path.isfile(forwardname) and not os.path.isfile('{}.bz2'.format(forwardname)):
-                    call(systemcall, shell=True, stdout=open(os.devnull, 'wb'), stderr=open(os.devnull, 'wb'))
+                if not os.path.isfile(reversename) and not os.path.isfile('{}.bz2'.format(reversename)):
+                    call(systemcall, shell=True, stdout=self.devnull, stderr=self.devnull)
                 # Define the output directory
                 outputdir = sample.general.outputdirectory
                 # Add the trimmed fastq files to a list
@@ -155,9 +177,11 @@ class Quality(object):
     def __init__(self, inputobject):
         from subprocess import Popen, PIPE
         self.metadata = inputobject.runmetadata.samples
-        self.qcqueue = Queue()
-        self.trimqueue = Queue()
-        self.correctqueue = Queue()
+        self.cpus = inputobject.cpus
+        self.devnull = open(os.devnull, 'wb')
+        self.qcqueue = Queue(maxsize=self.cpus)
+        self.trimqueue = Queue(maxsize=self.cpus)
+        self.correctqueue = Queue(maxsize=self.cpus)
         self.start = inputobject.starttime
         # Find the location of the bbduk.sh script. This will be used in finding the adapter file
         self.bbduklocation = os.path.split(Popen('which bbduk.sh', shell=True, stdout=PIPE)

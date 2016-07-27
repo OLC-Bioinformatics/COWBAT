@@ -90,7 +90,7 @@ class QualiMap(object):
             # For different alignment
             sam = sample.general.bowtie2results + ".sam"
             if os.path.isfile(sam):
-                # PIPE stdout to stdin of samtools view then sort (only outputing sorted bam)
+                # PIPE stdout to stdin of samtools view then sort (only outputting sorted bam)
                 # SAMtools sort v1.3 has different run parameters
                 if self.samversion < "1.3":
                     samsort = SamtoolsSortCommandline(input_bam="-", out_prefix=sample.mapping.BamFile[:-4])

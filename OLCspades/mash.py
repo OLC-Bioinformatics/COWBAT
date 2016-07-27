@@ -94,14 +94,26 @@ class Mash(object):
                 data = mashdata.split('\t')
                 referenceid, queryid, sample[self.analysistype].mashdistance, sample[self.analysistype]. \
                     pvalue, sample[self.analysistype].nummatches = data
-                # The database is formatted such that the reference file name is preceded by '-.-'
+                # The database is formatted such that the reference file name is usually preceded by '-.-'
                 # e.g. refseq-NZ-1005511-PRJNA224116-SAMN00794588-GCF_000303935.1-.-Escherichia_coli_PA45.fna
-                try:
-                    sample[self.analysistype].closestrefseq = \
-                        re.search('(?:GCF_.{11}-.-)(.+)\.fna', referenceid).groups()[0]
-                except AttributeError:
-                    sample[self.analysistype].closestrefseq = \
-                        referenceid.split('-.-')[1].split('.fna')[0]
+                #      refseq-NZ-1639-PRJNA224116-SAMN03349770-GCF_000951975.1-p3KSM-Listeria_monocytogenes.fna
+                sample[self.analysistype].closestrefseq = re.findall(r'.+-(.+)\.fna', referenceid)[0]
+                # try:
+                #     print re.findall(r'.+-(.+)\.fna', referenceid), referenceid
+                #     quit()
+                # except AttributeError:
+                #     print referenceid
+                #     quit()
+                # try:
+                #     sample[self.analysistype].closestrefseq = \
+                #         re.search('(?:GCF_.{11}-.-)(.+)\.fna', referenceid).groups()[0]
+                # except AttributeError:
+                #     try:
+                #         sample[self.analysistype].closestrefseq = \
+                #             referenceid.split('-.-')[1].split('.fna')[0]
+                #     except IndexError:
+                #         print sample.name
+                #         sample[self.analysistype].closestrefseq = 'NA'
                 sample[self.analysistype].closestrefseqgenus = sample[self.analysistype].closestrefseq.split('_')[0]
             else:
                 # Populate the attribute with negative results

@@ -86,6 +86,12 @@ ENV PATH /accessoryfiles:$PATH
 # Install bowtie2
 ENV PATH /accessoryfiles/bowtie2:$PATH
 
+# Install sistr
+RUN pip install --upgrade pip
+RUN pip install wheel
+RUN pip install numpy pandas
+RUN cd /accessoryfiles/sistr_cmd && python setup.py install
+
 # Add pipeline to the PATH
 WORKDIR /
 ENV PATH /spades/OLCspades:$PATH

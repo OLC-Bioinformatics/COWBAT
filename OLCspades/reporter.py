@@ -50,6 +50,8 @@ class Reporter(object):
                     row += ','.join([key for key, value in data.items()])
                 row += '\n'
                 row += ','.join(value for key, value in data.items())
+            else:
+                row += '\n{}'.format(sample.name)
         with open('{}/combinedMetadata.csv'.format(self.reportpath), 'wb') as metadatareport:
             metadatareport.write(row)
 

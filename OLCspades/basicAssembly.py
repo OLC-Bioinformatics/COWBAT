@@ -30,9 +30,6 @@ class Basic(object):
             try:
                 # Link the .gz files to :self.path/:filename
                 map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
-                # map(lambda x: relativesymlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
-                # print map(lambda x: (x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
-                # quit()
             # Except os errors
             except OSError as exception:
                 # If there is an exception other than the file exists, raise it

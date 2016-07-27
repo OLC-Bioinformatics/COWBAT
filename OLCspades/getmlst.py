@@ -150,12 +150,13 @@ def main(args):
             found_species.append(info)
     if len(found_species) == 0:
         print("No species matched your query.")
-        exit(1)
+        return
     if len(found_species) > 1:
         print("The following {} species match your query, please be more specific:".format(len(found_species)))
         for info in found_species:
             print(info.name)
-        exit(2)
+            return
+        # exit(2)
 
     # output information for the single matching species
     assert len(found_species) == 1

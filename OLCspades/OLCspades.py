@@ -166,6 +166,7 @@ class RunSpades(object):
         self.numreads = 1 if self.reverselength == 0 else 2
         self.kmers = args.kmerrange
         self.preprocess = args.preprocess
+        self.updatedatabases = args.updatedatabases
         # Define the start time
         self.starttime = startingtime
         self.customsamplesheet = args.customsamplesheet
@@ -182,7 +183,7 @@ class RunSpades(object):
         self.cpus = args.threads if args.threads else multiprocessing.cpu_count()
         # Assertions to ensure that the provided variables are valid
         make_path(self.path)
-        assert os.path.isdir(self.path), u'Output location is not a valid directory {0!r:s}'.format(self.path)
+        assert os.path.isdir(self.path), u'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
         self.reportpath = '{}reports'.format(self.path)
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
@@ -276,6 +277,9 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Perform quality trimming and error correction only. Do not assemble the trimmed + '
                              'corrected reads')
+    parser.add_argument('-u', '--updatedatabases',
+                        action='store_true',
+                        help='Optionally update (r)MLST databases')
 
     # Get the arguments into an object
     arguments = parser.parse_args()

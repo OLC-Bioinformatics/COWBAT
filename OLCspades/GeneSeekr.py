@@ -337,8 +337,10 @@ class PipelineInit(object):
             if sample.general.bestassemblyfile != 'NA':
                 setattr(sample, self.analysistype, GenObject())
                 if self.genusspecific:
-                    targetpath = '{}{}/{}'.format(self.referencefilepath, self.analysistype,
-                                                  sample.general.referencegenus)
+                    # Allow Shigella to use the same targets as Escherichia
+                    genus = sample.general.referencegenus if sample.general.referencegenus != 'Shigella' \
+                        else 'Escherichia'
+                    targetpath = '{}{}/{}'.format(self.referencefilepath, self.analysistype, genus)
                 else:
                     targetpath = '{}{}/'.format(self.referencefilepath, self.analysistype)
                 targets = glob('{}/*.fa*'.format(targetpath))

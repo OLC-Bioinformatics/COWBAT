@@ -24,7 +24,7 @@ class Spades(object):
             kmerlist = self.kmers.split(',')
             # Regenerate the list of kmers to use if the kmer is less than the readlength
             sample.general.kmers = ','.join([kmer for kmer in kmerlist if int(kmer) <= sample.run.forwardlength])
-            if 'trimmedcorrectedfastqfiles' in sample.general.datastore:
+            if sample.general.trimmedcorrectedfastqfiles:
                 # Set the output directory
                 sample.general.spadesoutput = '{}/spades_output'.format(sample.general.outputdirectory)
                 fastqfiles = sample.general.trimmedcorrectedfastqfiles

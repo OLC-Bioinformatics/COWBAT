@@ -46,12 +46,18 @@ class Correct(object):
         from glob import glob
         while True:
             sample = self.correctqueue.get()
-            if not os.path.isdir('{}/corrected'.format(sample.general.correctedfolder)):
+            if not os.path.isdir(sample.general.correctedfolder):
                 call(sample.commands.errorcorrection, shell=True, stdout=self.devnull, stderr=self.devnull)
+            # Depending on when along pipeline development, analyses were performed, the trimmed, corrected files
+            # could be in a different location. Allow for this
+            sample.general.correctedfolder = sample.general.correctedfolder \
+                if glob('{}/*_trimmed*'.format(sample.general.correctedfolder)) \
+                else '{}/spades_output/corrected'.format(sample.general.outputdirectory)
             # Get the trimmed, corrected fastq files into the object
-            sample.general.trimmedcorrectedfastqfiles = sorted(
-                glob('{}/corrected/*_trimmed*'.format(sample.general.correctedfolder)))
-            # print sample.name, sample.general.trimmedcorrectedfastqfiles
+            sample.general.trimmedcorrectedfastqfiles = \
+                sorted(glob('{}/*_trimmed*'.format(sample.general.correctedfolder)))
+
+            # print sample.name, sample.general.correctedfolder, sample.general.trimmedcorrectedfastqfiles
             self.correctqueue.task_done()
 
     def __init__(self, inputobject):

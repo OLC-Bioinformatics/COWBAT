@@ -9,6 +9,7 @@ class Reporter(object):
         from collections import OrderedDict
         printtime('Creating summary report', self.starttime)
         row = ''
+        headers = list()
         for sample in self.metadata:
             if sample.general.bestassemblyfile != 'NA':
                 data = OrderedDict([
@@ -51,6 +52,16 @@ class Reporter(object):
                 row += '\n'
                 row += ','.join(value for key, value in data.items())
             else:
+                if not row:
+                    data = ['SampleName', 'N50', 'NumContigs', 'TotalLength', 'MeanInsertSize', 'AverageCoverageDepth',
+                            'ReferenceGenome', 'RefGenomeAlleleMatches', '16sPhylogeny', 'rMLSTsequenceType',
+                            'MLSTsequencetype', 'MLSTmatches', 'coregenome', 'Serotype', 'geneSeekrProfile',
+                            'vtyperProfile', 'percentGC', 'TotalPredictedGenes', 'predictedgenesover3000bp',
+                            'predictedgenesover1000bp', 'predictedgenesover500bp', 'predictedgenesunder500bp',
+                            'SequencingDate', 'Investigator', 'TotalClustersinRun', 'NumberofClustersPF',
+                            'PercentOfClusters', 'LengthofForwardRead', 'LengthofReverseRead', 'Project',
+                            'PipelineVersion']
+                    row += ','.join(data)
                 row += '\n{}'.format(sample.name)
         with open('{}/combinedMetadata.csv'.format(self.reportpath), 'wb') as metadatareport:
             metadatareport.write(row)

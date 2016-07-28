@@ -32,14 +32,17 @@ class CoreGenome(GeneSeekr):
             # As there are variable numbers of _ in the name, try to split off the last one only if there are multiple
             # and only keep the first part of the split if there is one _ in the name
             underscored = '_'.join(target.split('_')[:-1]) if len(target.split('_')) > 2 else target.split('_')[0]
-            # Since the number of core genes is the same for each reference strain, only need to determine it once
-            if underscored == sorted(coregenomes)[0]:
-                coregenes.add(target)
-            # If the percent identity is greater than the cutoff - adjust the cutoff to 90% for these analyses
-            self.cutoff = 90
-            if percentidentity >= self.cutoff:
-                # Update the dictionary with the target and the number of hits
-                resultdict[underscored] += 1
+            try:
+                # Since the number of core genes is the same for each reference strain, only need to determine it once
+                if underscored == sorted(coregenomes)[0]:
+                    coregenes.add(target)
+                # If the percent identity is greater than the cutoff - adjust the cutoff to 90% for these analyses
+                self.cutoff = 90
+                if percentidentity >= self.cutoff:
+                    # Update the dictionary with the target and the number of hits
+                    resultdict[underscored] += 1
+            except IndexError:
+                pass
         # Sort the dictionary on the number of hits - best at the top
         topcore = sorted(resultdict.items(), key=operator.itemgetter(1), reverse=True)
         # Initialise a dictionary attribute to store results
@@ -56,25 +59,32 @@ class CoreGenome(GeneSeekr):
         data = ''
         for sample in self.metadata:
             try:
-                # Write the sample name, closest refernce genome, and the number of genes found / total number of genes
-                closestref = sample[self.analysistype].blastresults.items()[0][0]
-                coregenes = sample[self.analysistype].blastresults.items()[0][1][0]
-                totalcore = sample[self.analysistype].blastresults.items()[0][1][1]
-                row = '{},{},{}/{}'.format(sample.name, closestref, coregenes, totalcore)
-                # If the script is being run as part of the assembly pipeline, make a report for each sample
-                if self.pipeline:
-                    # Open the report
-                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                   self.analysistype), 'wb') as report:
-                        # Write the row to the report
-                        report.write(header)
-                        report.write(row)
-                data += row
-                # Remove the messy blast results from the object
-                try:
-                    delattr(sample[self.analysistype], "blastresults")
-                except KeyError:
-                    pass
+                if sample[self.analysistype].blastresults != 'NA':
+                    # Write the sample name, closest ref genome, and the number of genes found / total number of genes
+                    closestref = sample[self.analysistype].blastresults.items()[0][0]
+                    coregenes = sample[self.analysistype].blastresults.items()[0][1][0]
+                    totalcore = sample[self.analysistype].blastresults.items()[0][1][1]
+                    # Add the data to the object
+                    sample[self.analysistype].targetspresent = coregenes
+                    sample[self.analysistype].totaltargets = totalcore
+                    row = '{},{},{}/{}'.format(sample.name, closestref, coregenes, totalcore)
+                    # If the script is being run as part of the assembly pipeline, make a report for each sample
+                    if self.pipeline:
+                        # Open the report
+                        with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                       self.analysistype), 'wb') as report:
+                            # Write the row to the report
+                            report.write(header)
+                            report.write(row)
+                    data += row
+                    # Remove the messy blast results from the object
+                    try:
+                        delattr(sample[self.analysistype], "blastresults")
+                    except KeyError:
+                        pass
+                else:
+                    sample[self.analysistype].targetspresent = 'NA'
+                    sample[self.analysistype].totaltargets = 'NA'
             except KeyError:
                 sample[self.analysistype].targetspresent = 'NA'
                 sample[self.analysistype].totaltargets = 'NA'

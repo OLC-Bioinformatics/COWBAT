@@ -24,9 +24,19 @@ class MetadataReader(object):
                                 setattr(metadata, attr, jsondata[attr])
                             else:
                                 setattr(metadata, attr, GenObject(jsondata[attr]))
-                        # Set the name
-                        metadata.name = sample.name
-                        self.samples.append(metadata)
+                        # As files often need to be reanalysed after being moved, test to see if it possible to use the
+                        # metadata from the previous assembly
+                        jsonfile = '{}/{}_metadata.json'.format(metadata.general.outputdirectory, sample.name)
+                        try:
+                            # Open the metadata file to write
+                            with open(jsonfile, 'wb') as metadatafile:
+                                # Write the json dump of the object dump to the metadata file
+                                json.dump(sample.dump(), metadatafile, sort_keys=True, indent=4, separators=(',', ': '))
+                            # Set the name
+                            metadata.name = sample.name
+                            self.samples.append(metadata)
+                        except IOError:
+                            self.samples.append(sample)
                     except ValueError:
                         self.samples.append(sample)
             else:

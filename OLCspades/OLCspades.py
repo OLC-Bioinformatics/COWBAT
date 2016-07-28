@@ -104,6 +104,7 @@ class RunSpades(object):
         import armi
         import vtyper
         import coregenome
+        import sistr
         import resfinder
         # Run modules and print metadata to file
         mMLST.PipelineInit(self, 'mlst')
@@ -137,11 +138,10 @@ class RunSpades(object):
         core = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
         coregenome.CoreGenome(core)
         metadataprinter.MetadataPrinter(self)
+        sistr.Sistr(self, 'sistr')
         res = resfinder.PipelineInit(self, 'resfinder', False, 80)
         resfinder.ResFinder(res)
         metadataprinter.MetadataPrinter(self)
-
-    # TODO Sistr as a module
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """

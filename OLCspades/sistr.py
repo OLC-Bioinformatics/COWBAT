@@ -37,7 +37,7 @@ class Sistr(object):
                                                                       sample.general.bestassemblyfile)
                     # Add the sample to the queue
                     self.queue.put(sample)
-            except ValueError:
+            except (ValueError, KeyError):
                 pass
         self.queue.join()
         self.report()
@@ -63,22 +63,24 @@ class Sistr(object):
         for sample in self.metadata:
             # Each strain is a fresh row
             row = ''
-            # Set the name of the report. Note that this is a tab-separated file, as there can be commas in the results
-            sample[self.analysistype].report = sample[self.analysistype].reportdir + sample.name + '.tsv'
             try:
+                # Set the name of the report.
+                # Note that this is a tab-separated file, as there can be commas in the results
+                sample[self.analysistype].report = sample[self.analysistype].reportdir + sample.name + '.tsv'
                 # Iterate through all the headers to use as keys in the json-formatted output
                 for category in self.headers:
                     # Tab separate all the results
                     row += '{}\t'.format(sample[self.analysistype].jsondata[0][category])
                 # End the results with a newline
                 row += '\n'
-            except AttributeError:
+
+                data += row
+                # Create and write headers and results to the strain-specific report
+                with open(sample[self.analysistype].report, 'wb') as strainreport:
+                    strainreport.write(header)
+                    strainreport.write(row)
+            except (KeyError, AttributeError):
                 pass
-            data += row
-            # Create and write headers and results to the strain-specific report
-            with open(sample[self.analysistype].report, 'wb') as strainreport:
-                strainreport.write(header)
-                strainreport.write(row)
         # Create and write headers and cumulative results to the combined report
         with open('{}sistr.tsv'.format(self.reportdir), 'wb') as report:
             report.write(header)
@@ -94,7 +96,7 @@ class Sistr(object):
         self.analysistype = analysistype
         self.devnull = open(os.devnull, 'wb')
         self.queue = Queue()
-        self.headers = ['cgmlst_distance', 'cgmlst_genome_match', 'cgmlst_matching_alleles', 'genome', 'h1', 'h2',
+        self.headers = ['genome', 'cgmlst_distance', 'cgmlst_genome_match', 'cgmlst_matching_alleles', 'h1', 'h2',
                         'serogroup', 'serovar', 'serovar_antigen', 'serovar_cgmlst']
         # Run the analyses
         self.sistr()

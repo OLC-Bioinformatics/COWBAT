@@ -29,14 +29,14 @@ class QualiMap(object):
             # Start the threading
             threads.start()
         for sample in self.metadata:
-            # main = lambda (x, y): (y, ",".join(getattr(sample.general, x))) if hasattr(sample.general, x) else None
+            # Set an easier to write shortcut for sample.general
             sagen = sample.general
             if sagen.bestassemblyfile != "NA":
                 sagen.QualimapResults = '{}/qualimap_results'.format(sagen.outputdirectory)
                 # Set the results folder
                 # Create this results folder if necessary
                 make_path(sagen.QualimapResults)
-                # sagen.bamfile = sample.general.filenoext + '_sorted'
+                # Set file names
                 sagen.sortedbam = '{}/{}_sorted.bam'.format(sagen.QualimapResults, sample.name)
                 filenoext = sagen.filteredfile.split('.')[0]
                 sagen.filenoext = filenoext

@@ -120,10 +120,12 @@ class Spades(object):
                         record.description = ''
                         # Add this record to our list
                         over1000bp.append(record)
-                # Open the filtered assembly file
-                with open(filteredfile, 'wb') as formatted:
-                    # Write the records in the list to the file
-                    SeqIO.write(over1000bp, formatted, 'fasta')
+                # Only create the file if there are contigs over 1000 bp
+                if over1000bp:
+                    # Open the filtered assembly file
+                    with open(filteredfile, 'wb') as formatted:
+                        # Write the records in the list to the file
+                        SeqIO.write(over1000bp, formatted, 'fasta')
             # If the filtered file was successfully created, copy it to the BestAssemblies folder
             if os.path.isfile(filteredfile):
                 # Add the name and path of the filtered file to the metadata

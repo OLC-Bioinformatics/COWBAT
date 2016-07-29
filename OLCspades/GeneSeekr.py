@@ -117,7 +117,7 @@ class GeneSeekr(object):
             # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
             # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
-            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-10', num_alignments=1000000,
+            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-5', num_alignments=1000000,
                                            num_threads=12,
                                            outfmt="'6 qseqid sseqid positive mismatch gaps "
                                                   "evalue bitscore slen length'",
@@ -222,6 +222,18 @@ class GeneSeekr(object):
         self.geneseekr()
 
 
+def sequencenames(contigsfile):
+    """
+    Takes a multifasta file and returns a list of sequence names
+    :param contigsfile: multifasta of all sequences
+    :return: list of all sequence names
+    """
+    from Bio import SeqIO
+    sequences = list()
+    for record in SeqIO.parse(open(contigsfile, "rU"), "fasta"):
+        sequences.append(record.id)
+    return sequences
+
 if __name__ == '__main__':
 
     class Parser(object):
@@ -255,13 +267,13 @@ if __name__ == '__main__':
                 metadata.general = GenObject()
                 # Create the .mlst attribute
                 setattr(metadata, self.analysistype, GenObject())
-                # metadata.mlst = GenObject()
                 # Set the .general.bestassembly file to be the name and path of the sequence file
                 metadata.general.bestassemblyfile = sample
                 metadata[self.analysistype].targets = self.targets
                 metadata[self.analysistype].combinedtargets = self.combinedtargets
                 metadata[self.analysistype].targetpath = self.targetpath
-                metadata[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in self.targets]
+                # metadata[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in self.targets]
+                metadata[self.analysistype].targetnames = sequencenames(self.combinedtargets)
                 metadata[self.analysistype].reportdir = self.reportpath
                 # Append the metadata for each sample to the list of samples
                 self.samples.append(metadata)
@@ -354,7 +366,8 @@ class PipelineInit(object):
                     sample[self.analysistype].targets = targets
                     sample[self.analysistype].combinedtargets = combinedtargets
                     sample[self.analysistype].targetpath = targetpath
-                    sample[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in targets]
+                    # sample[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in targets]
+                    sample[self.analysistype].targetnames = sequencenames(combinedtargets)
                     sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
                                                                           self.analysistype)
                 else:

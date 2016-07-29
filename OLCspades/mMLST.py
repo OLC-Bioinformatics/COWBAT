@@ -1104,7 +1104,8 @@ def getmlsthelper(referencefilepath, start, organism, update):
                           'Shigella': 'Escherichia coli#1',
                           'Vibrio': 'Vibrio parahaemolyticus',
                           'Campylobacter': 'Campylobacter jejuni',
-                          'Listeria': 'Listeria monocytogenes'}
+                          'Listeria': 'Listeria monocytogenes',
+                          'Bacillus': 'Bacillus cereus'}
     # Allow for a genus not in the dictionary being specified
     try:
         organismset.add(organismdictionary[organism])
@@ -1194,7 +1195,6 @@ if __name__ == '__main__':
                 metadata.general = GenObject()
                 # Create the .mlst attribute
                 setattr(metadata, self.analysistype, GenObject())
-                # metadata.mlst = GenObject()
                 # Set the .general.bestassembly file to be the name and path of the sequence file
                 metadata.general.bestassemblyfile = sample
                 # Append the metadata for each sample to the list of samples
@@ -1402,64 +1402,96 @@ if __name__ == '__main__':
 
 class PipelineInit(object):
     def strainer(self):
-        from accessoryFunctions import GenObject
+        """
+        Determine whether it is required to run the MLST analyses
+        """
+        # Initialise a variable to store whether the analyses need to be performed
+        analyse = True
         for sample in self.runmetadata.samples:
-            setattr(sample, self.analysistype, GenObject())
-            if sample.general.bestassemblyfile != 'NA':
-                sample[self.analysistype].analyse = True
-                if self.analysistype.lower() == 'rmlst':
-                    # Run the allele updater method
-                    # self.updatermlst,
-                    updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatedatabases, self.start)
-                    # updatecall, allelefolder = '', '{}rMLST/holding'.format(self.referencefilepath)
-                    self.alleles = glob('{}/*.tfa'.format(allelefolder))
-                    # self.alleles = glob('{}/*.fas'.format(allelefolder))
-                    profile = glob('{}/*.txt'.format(allelefolder))
-                    self.supplementalprofile = '{}rMLST/OLC_rMLST_profiles.txt'.format(self.referencefilepath)
-                    self.combinedalleles = glob('{}/*.fasta'.format(allelefolder))
-                    # Set the metadata file appropriately
-                    sample[self.analysistype].alleledir = allelefolder
-                    sample[self.analysistype].updatecall = updatecall
+            try:
+                # Try to open the final report from the analyses. If it exists, then the analyses don't need to be
+                # performed again.
+                if os.path.isfile('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                       self.analysistype)):
+                    # The analyses have already been successfully completed
+                    analyse = False
+                # Otherwise run the analyses
                 else:
-                    # referencefilepath, start, scheme
-                    schemefolder = getmlsthelper(self.referencefilepath, self.start, sample.general.referencegenus,
-                                                 self.updatedatabases)
-                    if not schemefolder:
-                        sample[self.analysistype].analyse = False
-                        # Set the metadata file appropriately
-                        sample[self.analysistype].alleles = 'NA'
-                        sample[self.analysistype].allelenames = 'NA'
-                        sample[self.analysistype].profile = 'NA'
-                        sample[self.analysistype].analysistype = 'NA'
-                        sample[self.analysistype].reportdir = 'NA'
-                        sample[self.analysistype].combinedalleles = 'NA'
-                        sample[self.analysistype].supplementalprofile = 'NA'
-                        sample[self.analysistype].alleledir = 'NA'
-                    else:
-                        self.alleles = glob('{}/*.tfa'.format(schemefolder))
-                        profile = glob('{}/*.txt'.format(schemefolder))
-                        self.combinedalleles = glob('{}/*.fasta'.format(schemefolder))
-                        sample[self.analysistype].alleledir = schemefolder
-                if sample[self.analysistype].analyse:
-                    sample[self.analysistype].alleles = self.alleles
-                    sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
-                    sample[self.analysistype].profile = profile if profile else 'NA'
-                    sample[self.analysistype].analysistype = self.analysistype
-                    sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
-                                                                          self.analysistype)
-                    sample[self.analysistype].combinedalleles = self.combinedalleles
-                    sample[self.analysistype].supplementalprofile = self.supplementalprofile \
-                        if self.supplementalprofile else 'NA'
-            else:
+                    self.populator(sample)
+
+            # If the attribute doesn't exist, then the analyses haven't been performed yet.
+            except (KeyError, AttributeError):
+                self.populator(sample)
+        # Only run the analyses if they have not completed successfully before
+        if analyse:
+            # Run the MLST analyses
+            MLST(self)
+
+    def populator(self, sample):
+        """
+        Populates objects with the necessary attributes
+        :param sample: sample object
+        """
+        from accessoryFunctions import GenObject
+        if sample.general.bestassemblyfile != 'NA':
+            profile = ''
+            setattr(sample, self.analysistype, GenObject())
+            sample[self.analysistype].analyse = True
+            if self.analysistype.lower() == 'rmlst':
+                # Run the allele updater method
+                updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatedatabases, self.start)
+                # Alleles have a .tfa extension
+                self.alleles = glob('{}/*.tfa'.format(allelefolder))
+                # Get the profile file into a list
+                profile = glob('{}/*.txt'.format(allelefolder))
+                self.supplementalprofile = '{}rMLST/OLC_rMLST_profiles.txt'.format(self.referencefilepath)
+                self.combinedalleles = glob('{}/*.fasta'.format(allelefolder))
                 # Set the metadata file appropriately
-                sample[self.analysistype].alleledir = 'NA'
-                sample[self.analysistype].alleles = 'NA'
-                sample[self.analysistype].allelenames = 'NA'
-                sample[self.analysistype].profile = 'NA'
-                sample[self.analysistype].analysistype = 'NA'
-                sample[self.analysistype].reportdir = 'NA'
-                sample[self.analysistype].combinedalleles = 'NA'
-                sample[self.analysistype].supplementalprofile = 'NA'
+                sample[self.analysistype].alleledir = allelefolder
+                sample[self.analysistype].updatecall = updatecall
+            else:
+                # Use the getmlsthelper module to download databases as required
+                schemefolder = getmlsthelper(self.referencefilepath, self.start, sample.general.referencegenus,
+                                             self.updatedatabases)
+                # If there is no database folder, do not perform the MLST analyses on this sample
+                if not schemefolder:
+                    sample[self.analysistype].analyse = False
+                    # Set the metadata file appropriately
+                    sample[self.analysistype].alleles = 'NA'
+                    sample[self.analysistype].allelenames = 'NA'
+                    sample[self.analysistype].profile = 'NA'
+                    sample[self.analysistype].analysistype = 'NA'
+                    sample[self.analysistype].reportdir = 'NA'
+                    sample[self.analysistype].combinedalleles = 'NA'
+                    sample[self.analysistype].supplementalprofile = 'NA'
+                    sample[self.analysistype].alleledir = 'NA'
+                else:
+                    self.alleles = glob('{}/*.tfa'.format(schemefolder))
+                    profile = glob('{}/*.txt'.format(schemefolder))
+                    self.combinedalleles = glob('{}/*.fasta'.format(schemefolder))
+                    sample[self.analysistype].alleledir = schemefolder
+            # Only perform analyses on samples with target databases
+            if sample[self.analysistype].analyse:
+                sample[self.analysistype].alleles = self.alleles
+                sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in self.alleles]
+                sample[self.analysistype].profile = profile if profile else 'NA'
+                sample[self.analysistype].analysistype = self.analysistype
+                sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
+                                                                      self.analysistype)
+                sample[self.analysistype].combinedalleles = self.combinedalleles
+                sample[self.analysistype].supplementalprofile = self.supplementalprofile \
+                    if self.supplementalprofile else 'NA'
+
+        else:
+            # Set the metadata file appropriately
+            sample[self.analysistype].alleledir = 'NA'
+            sample[self.analysistype].alleles = 'NA'
+            sample[self.analysistype].allelenames = 'NA'
+            sample[self.analysistype].profile = 'NA'
+            sample[self.analysistype].analysistype = 'NA'
+            sample[self.analysistype].reportdir = 'NA'
+            sample[self.analysistype].combinedalleles = 'NA'
+            sample[self.analysistype].supplementalprofile = 'NA'
 
     def __init__(self, inputobject, analysistype):
         self.runmetadata = inputobject.runmetadata
@@ -1483,4 +1515,3 @@ class PipelineInit(object):
         self.referenceprofilepath = '{}referenceGenomes/'.format(self.referencefilepath)
         # Get the alleles and profile into the metadata
         self.strainer()
-        MLST(self)

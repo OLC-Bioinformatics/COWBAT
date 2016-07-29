@@ -47,7 +47,12 @@ class Versions(object):
         self.spades = get_version(['spades.py', '-v']).split('\n')[0].split()[1]
         self.bowversion = Bowtie2CommandLine(version=True)()[0].split('\n')[0].split()[-1]
         self.samversion = get_version(['samtools', '--version']).split('\n')[0].split()[1]
-        self.qualimap = get_version(['qualimap', '--help']).split('\n')[3].split()[1]
+        # Qualimap seems to have an Java warning message that doesn't necessarily show up on every system
+        # Only capture the line that starts with 'Qualimap'
+        qualimaplist = get_version(['qualimap', '--help']).split('\n')
+        for line in qualimaplist:
+            if 'QualiMap' in line:
+                self.qualimap = line.split()[1]
         self.mash = get_version(['mash']).split('\n')[1].split()[2]
         self.prodigal = get_version(['prodigal', '-v']).split('\n')[1].split()[1]
         self.quast = get_version(['quast.py']).split('\n')[1].split()[1]

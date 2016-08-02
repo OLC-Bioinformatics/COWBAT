@@ -41,7 +41,7 @@ class CoreGenome(GeneSeekr):
                 if percentidentity >= self.cutoff:
                     # Update the dictionary with the target and the number of hits
                     resultdict[underscored] += 1
-            except IndexError:
+            except (KeyError, IndexError):
                 pass
         # Sort the dictionary on the number of hits - best at the top
         topcore = sorted(resultdict.items(), key=operator.itemgetter(1), reverse=True)

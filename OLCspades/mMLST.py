@@ -16,7 +16,6 @@ from Bio import SeqIO
 from Bio.Blast.Applications import NcbiblastnCommandline
 
 import getmlst
-# Import accessory functions
 from accessoryFunctions import *
 
 __author__ = 'akoziol, mikeknowles'
@@ -1483,6 +1482,7 @@ class PipelineInit(object):
                     if self.supplementalprofile else 'NA'
 
         else:
+            setattr(sample, self.analysistype, GenObject())
             # Set the metadata file appropriately
             sample[self.analysistype].alleledir = 'NA'
             sample[self.analysistype].alleles = 'NA'

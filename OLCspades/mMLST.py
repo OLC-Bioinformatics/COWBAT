@@ -1437,7 +1437,7 @@ class PipelineInit(object):
                     analyse.append(True)
             else:
                 self.populator(sample)
-                analyse.append(True)
+                analyse.append(False)
         # Only run the analyses if they have not completed successfully before
         if any(analyse):
             # Run the MLST analyses

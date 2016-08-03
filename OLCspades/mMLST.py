@@ -121,12 +121,13 @@ class MLST(object):
             genedict[sequenceprofile] = sorted(genelist)
             # Add the profile data, and gene list to each sample
             for sample in self.metadata:
-                if sequenceprofile == sample[self.analysistype].profile[0]:
-                    # Populate the metadata with the profile data
-                    sample[self.analysistype].profiledata = profiledata[sample[self.analysistype].profile[0]]
-                    # Add the allele directory to a list of directories used in this analysis
-                    self.allelefolders.add(sample[self.analysistype].alleledir)
-                    dotter()
+                if sample.general.bestassemblyfile != 'NA':
+                    if sequenceprofile == sample[self.analysistype].profile[0]:
+                        # Populate the metadata with the profile data
+                        sample[self.analysistype].profiledata = profiledata[sample[self.analysistype].profile[0]]
+                        # Add the allele directory to a list of directories used in this analysis
+                        self.allelefolders.add(sample[self.analysistype].alleledir)
+                        dotter()
 
     def makedbthreads(self, folder):
         """
@@ -535,6 +536,9 @@ class MLST(object):
                                         if sortedrefallele == 'N' and allele != 'N':
                                             # Increment the number of matches to each profile
                                             self.bestmatch[genome][sequencetype] += 1
+                                    elif allele == sortedrefallele and sortedrefallele == 'N':
+                                        # Increment the number of matches to each profile
+                                        self.bestmatch[genome][sequencetype] += 1
                         # Get the best number of matches
                         # From: https://stackoverflow.com/questions/613183/sort-a-python-dictionary-by-value
                         try:
@@ -661,22 +665,19 @@ class MLST(object):
                 newprofile = str(lastentry)
                 # The number of matches to the reference profile
                 nummatches = self.mlstseqtype[genome][sequencetype].keys()[0]
-                for sample in self.metadata:
-                    if sample.name == genome:
-                        # The genes in geneList - should be in the correct order
-                        for gene in sorted(sample[self.analysistype].allelenames):
-                            # The allele for each gene in the query genome
-                            allele = self.mlstseqtype[genome][sequencetype][nummatches][gene].keys()[0]
-                            # Append the allele to newprofile
-                            newprofile += '\t{}'.format(allele)
-                            # Add the MLST results for the query genome as well as the new profile data
-                            # to resultProfile
-                            self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
-                                self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
-                        seqcount += 1
-                    sample[self.analysistype].mismatchestosequencetype = 'NA'
-                    # sample[self.analysistype].sequencetype = '{}_CFIA'.format(str(lastentry))
-                    sample[self.analysistype].matchestosequencetype = header
+                # The genes in geneList - should be in the correct order
+                for gene in sorted(sample[self.analysistype].allelenames):
+                    # The allele for each gene in the query genome
+                    allele = self.mlstseqtype[genome][sequencetype][nummatches][gene].keys()[0]
+                    # Append the allele to newprofile
+                    newprofile += '\t{}'.format(allele)
+                    # Add the MLST results for the query genome as well as the new profile data
+                    # to resultProfile
+                    self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
+                        self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
+                seqcount += 1
+                sample[self.analysistype].mismatchestosequencetype = 'NA'
+                sample[self.analysistype].matchestosequencetype = header
             # Only perform the next loop if :newprofile exists
             if newprofile:
                 # Open the profile file to append
@@ -685,6 +686,9 @@ class MLST(object):
                     appendfile.write('{}\n'.format(newprofile))
                 # Re-run profiler with the updated files
                 self.profiler()
+        else:
+            sample[self.analysistype].mismatchestosequencetype = 'NA'
+            sample[self.analysistype].matchestosequencetype = 'NA'
 
     def reporter(self):
         """ Parse the results into a report"""
@@ -1405,24 +1409,37 @@ class PipelineInit(object):
         Determine whether it is required to run the MLST analyses
         """
         # Initialise a variable to store whether the analyses need to be performed
-        analyse = True
+        analyse = list()
         for sample in self.runmetadata.samples:
-            try:
-                # Try to open the final report from the analyses. If it exists, then the analyses don't need to be
-                # performed again.
-                if os.path.isfile('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                       self.analysistype)):
-                    # The analyses have already been successfully completed
-                    analyse = False
-                # Otherwise run the analyses
-                else:
+            if sample.general.bestassemblyfile != 'NA':
+                try:
+                    # Try to open the final report from the analyses. If it exists, then the analyses don't need to be
+                    # performed again.
+                    if os.path.isfile('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
+                                                           self.analysistype)):
+                        # Run the allele updater method
+                        updatecall, allelefolder = getrmlsthelper(self.referencefilepath, self.updatedatabases,
+                                                                  self.start)
+                        # Alleles have a .tfa extension
+                        self.alleles = glob('{}/*.tfa'.format(allelefolder))
+                        sample[self.analysistype].alleles = self.alleles
+                        sample[self.analysistype].allelenames = [os.path.split(x)[1].split('.')[0] for x in
+                                                                 self.alleles]
+                        # The analyses have already been successfully completed
+                        analyse.append(False)
+                    # Otherwise run the analyses
+                    else:
+                        self.populator(sample)
+                        analyse.append(True)
+                # If the attribute doesn't exist, then the analyses haven't been performed yet.
+                except (KeyError, AttributeError):
                     self.populator(sample)
-
-            # If the attribute doesn't exist, then the analyses haven't been performed yet.
-            except (KeyError, AttributeError):
+                    analyse.append(True)
+            else:
                 self.populator(sample)
+                analyse.append(True)
         # Only run the analyses if they have not completed successfully before
-        if analyse:
+        if any(analyse):
             # Run the MLST analyses
             MLST(self)
 

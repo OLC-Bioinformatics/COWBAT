@@ -29,7 +29,9 @@ class Basic(object):
             # Link the files to the output folder
             try:
                 # Link the .gz files to :self.path/:filename
-                map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+                # map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
+                map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
+                                         '{}/{}'.format(outputdir, os.path.basename(x))), specificfastq)
             # Except os errors
             except OSError as exception:
                 # If there is an exception other than the file exists, raise it

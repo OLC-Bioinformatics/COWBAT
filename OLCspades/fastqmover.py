@@ -29,7 +29,9 @@ class FastqMover(object):
                 # map(lambda x: shutil.move(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
                 # map(lambda x: relativesymlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
                 try:
-                    map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
+                    # map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
+                    map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
+                                             '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
                 except OSError:
                     pass
                 # Find any fastq files with the sample name

@@ -17,12 +17,11 @@ class Compress(object):
         printtime('Compressing large files', self. start)
         compressfile = []
         for sample in self.metadata:
-            if sample.general.bestassemblyfile != 'NA':
-                for key, value in sample.general.datastore.items():
-                    if type(value) is list:
-                        for item in value:
-                            if re.search(".fastq$", item):
-                                compressfile.append(item)
+            for key, value in sample.general.datastore.items():
+                if type(value) is list:
+                    for item in value:
+                        if re.search(".fastq$", item):
+                            compressfile.append(item)
         for i in range(len(compressfile)):
             # Send the threads to makeblastdb
             threads = Thread(target=self.compress, args=())

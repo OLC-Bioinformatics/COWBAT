@@ -80,7 +80,6 @@ class MLST(object):
                 profileset.add(sample[self.analysistype].profile[0])
                 if self.analysistype == 'rmlst':
                     supplementalset = sample[self.analysistype].supplementalprofile
-
         # Extract the profiles for each set
         for sequenceprofile in profileset:
             # Clear the list of genes
@@ -210,6 +209,7 @@ class MLST(object):
                                        out=report)
         # Save the blast command in the metadata
         sample[self.analysistype].blastcommand = str(blastn)
+        sample[self.analysistype].blastreport = report
         if not os.path.isfile(report):
             # Run BLAST
             blastn()
@@ -1200,6 +1200,7 @@ if __name__ == '__main__':
                 setattr(metadata, self.analysistype, GenObject())
                 # Set the .general.bestassembly file to be the name and path of the sequence file
                 metadata.general.bestassemblyfile = sample
+                metadata.general.referencegenus = 'NA'
                 # Append the metadata for each sample to the list of samples
                 self.samples.append(metadata)
 
@@ -1237,7 +1238,7 @@ if __name__ == '__main__':
                     assert os.path.isdir(self.allelepath), 'Cannot find directory containing rMLST alleles and ' \
                                                            'profile in {}'.format(self.path)
                 # Create lists of the alleles, combined alleles, and the profile
-                self.alleles = glob('{}*.fas'.format(self.allelepath))
+                self.alleles = glob('{}*.tfa'.format(self.allelepath))
                 self.combinedalleles = glob('{}*.fasta'.format(self.allelepath))
                 # If the combined alleles files doesn't exist
                 size = 0
@@ -1257,7 +1258,7 @@ if __name__ == '__main__':
                 sample[self.analysistype].profile = self.profile
                 sample[self.analysistype].analysistype = self.scheme
                 sample[self.analysistype].reportdir = self.reportpath
-                sample[self.analysistype].organism = self.organism
+                sample[self.analysistype].organism = self.organism if self.organism else 'NA'
                 sample[self.analysistype].combinedalleles = self.combinedalleles
 
         def __init__(self):

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from glob import glob
-
 import runMetadata
 from accessoryFunctions import *
 from offhours import Offhours
@@ -70,11 +69,13 @@ class CreateFastq(object):
                   'Running fastq creating module with the following parameters:\n'
                   'MiSeqPath: {},\n'
                   'MiSeqFolder: {},\n'
-                  'SampleSheet: {}'.format(number, samplecount, samples, self.miseqpath, self.miseqfolder,
-                                           '{}/SampleSheet_modified.csv'.format(self.fastqdestination)), self.start)
+                  'Fastq destination: {},\n'
+                  'SampleSheet: {}'
+                  .format(number, samplecount, samples, self.miseqpath, self.miseqfolder,
+                          self.fastqdestination, '{}/SampleSheet_modified.csv'.format(self.fastqdestination)),
+                  self.start)
         # Count the number of completed cycles in the run of interest
         cycles = glob('{}Data/Intensities/BaseCalls/L001/C*'.format(self.miseqfolder))
-        print self.fastqdestination
         while len(cycles) < self.readsneeded:
             printtime('Currently at {} cycles. Waiting until the MiSeq reaches cycle {}'.format(len(cycles),
                       self.readsneeded), self.start)
@@ -98,7 +99,7 @@ class CreateFastq(object):
             printtime('Running bcl2fastq', self.start)
             # Run the commands
             call(bclcall, shell=True, stdout=fnull, stderr=fnull)
-            call(nohupcall, shell=True, stdout = fnull, stderr = fnull)
+            call(nohupcall, shell=True, stdout=fnull, stderr=fnull)
         # Populate the metadata
         for sample in self.metadata.samples:
             sample.commands = GenObject()
@@ -175,64 +176,63 @@ class CreateFastq(object):
 
     def fastqmover(self):
         """Links .fastq files created above to :self.path/:sample.name/"""
-        from shutil import copyfile
+        from shutil import move, copyfile
         import errno
+        from re import sub
         # Create the project path variable
         self.projectpath = self.fastqdestination + "/Project_" + self.projectname
         # Iterate through all the sample names
         for sample in self.metadata.samples:
-            # Make the outputdir variable
-            outputdir = '{}{}'.format(self.path, sample.name)
-            # Find any fastq files with the sample name
-            strainfastqfiles = glob('{}/{}*.fastq*'.format(outputdir, sample.name))
-            # Don't link the files if they have already been linked
-            if len(strainfastqfiles) < self.numreads:
-                # Glob all the .gz files in the subfolders - projectpath/Sample_:sample.name/*.gz
-                for fastq in sorted(glob('{}/Sample_{}/*.gz'.format(self.projectpath, sample.name))):
-                    # Try/except loop link .gz files to self.path
-                    try:
-                        # Copy fastq file to the path, but renames them first using the sample number.
-                        # 2015-SEQ-1283_GGACTCCT-GCGTAAGA_L001_R1_001.fastq.gz is renamed:
-                        # 2015-SEQ-1283_S1_L001_R1_001.fastq.gz
-                        make_path(outputdir)
-                        # copyfile(fastq, '{}/{}'.format(outputdir, os.path.basename(
-                        #     sub('\w{8}-\w{8}', 'S{}'.format(sample.run.SampleNumber), fastq))))
-                        os.symlink(fastq, '{}/{}'.format(outputdir, os.path.basename(
-                            fastq.replace(sample.run.modifiedindex, 'S{}'.format(sample.run.SampleNumber)))))
-                    # Except os errors
-                    except OSError as exception:
-                        # If there is an exception other than the file exists, raise it
-                        if exception.errno != errno.EEXIST:
-                            raise
+            # Glob all the .gz files in the subfolders - projectpath/Sample_:sample.name/*.gz
+            for fastq in sorted(glob('{}/Sample_{}/*.gz'.format(self.projectpath, sample.name))):
+                # Try/except loop link .gz files to self.path
+                try:
+                    # Move fastq file to the path, but renames them first using the sample number.
+                    move(
+                        fastq, '{}{}'.format(self.path, os.path.basename(
+                            sub('\w{8}-\w{8}', 'S{}'.format(
+                                sample.run.SampleNumber), fastq))))
+                # Except os errors
+                except OSError as exception:
+                    # If there is an exception other than the file exists, raise it
+                    if exception.errno != errno.EEXIST:
+                        raise
             # Repopulate .strainfastqfiles with the freshly-linked files
-            fastqfiles = glob('{}/{}*.fastq*'.format(outputdir, sample.name))
+            fastqfiles = glob('{}/{}*.fastq*'.format(self.fastqdestination, sample.name))
             fastqfiles = [fastq for fastq in fastqfiles if 'trimmed' not in fastq]
             # Populate the metadata object with the name/path of the fastq files
             sample.general.fastqfiles = fastqfiles
             # Save the outputdir to the metadata object
-            sample.run.outputdirectory = outputdir
+            sample.run.outputdirectory = self.fastqdestination
+        # Copy the sample sheet and the run info files to the path
+        copyfile(self.assertions.samplesheet, os.path.join(self.path, 'SampleSheet.csv'))
+        copyfile(os.path.join(self.miseqfolder, 'RunInfo.xml'), os.path.join(self.path, 'RunInfo.xml'))
 
     def __init__(self, inputobject):
         """Initialise variables"""
-        self.path = inputobject.path
+        self.path = os.path.join(inputobject.path, '')
         self.start = inputobject.starttime
-        self.forwardlength = inputobject.forwardlength
-        self.reverselength = inputobject.reverselength
         self.fastqdestination = inputobject.fastqdestination
         self.homepath = inputobject.homepath
         self.miseqout = ""
         self.projectname = 'fastqCreation'
         self.projectpath = ""
         self.numreads = inputobject.numreads
+        self.forwardlength = inputobject.forwardlength
+        self.reverselength = inputobject.reverselength if self.numreads > 1 else '0'
         self.readsneeded = 0
         self.commit = inputobject.commit
-        try:
-            self.miseqpath = os.path.join(inputobject.args.miseqpath, "")
-        except AttributeError:
+        if inputobject.miseqpath:
+            self.miseqpath = os.path.join(inputobject.miseqpath, "")
+        else:
             print inputobject.miseqfolder
             print('MiSeqPath argument is required in order to use the fastq creation module. Please provide this '
                   'argument and run the script again.')
             quit()
+        self.customsamplesheet = inputobject.customsamplesheet
+        if self.customsamplesheet:
+            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {}' \
+                .format(self.customsamplesheet)
         # Use the assertions module from offhours to validate whether provided arguments are valid
         self.assertions = Offhours(inputobject)
         self.assertions.assertpathsandfiles()
@@ -256,3 +256,60 @@ class CreateFastq(object):
         self.totalreads = self.metadata.totalreads
         # Create fastq files
         self.createfastq()
+
+# If the script is called from the command line, then call the argument parser
+if __name__ == '__main__':
+    import subprocess
+    from time import time
+    from accessoryFunctions import printtime
+    # Get the current commit of the pipeline from git
+    # Extract the path of the current script from the full path + file name
+    homepath = os.path.split(os.path.abspath(__file__))[0]
+    # Find the commit of the script by running a command to change to the directory containing the script and run
+    # a git command to return the short version of the commit hash
+    commit = subprocess.Popen('cd {} && git tag | tail -n 1'.format(homepath),
+                              shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
+    from argparse import ArgumentParser
+    # Parser for arguments
+    parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
+    parser.add_argument('-v', '--version',
+                        action='version', version='%(prog)s commit {}'.format(commit))
+    parser.add_argument('path',
+                        help='Specify path')
+    parser.add_argument('-n', '--numreads',
+                        default=2,
+                        type=int,
+                        help='Specify the number of reads. Paired-reads:'
+                        ' 2, unpaired-reads: 1. Default is paired-end')
+    parser.add_argument('-t', '--threads',
+                        help='Number of threads. Default is the number of cores in the system')
+    parser.add_argument('-d', '--fastqdestination',
+                        help='Optional folder path to store .fastq files created using the fastqCreation module. '
+                             'Defaults to path/miseqfolder')
+    parser.add_argument('-m', '--miseqpath',
+                        required=True,
+                        help='Path of the folder containing MiSeq run data folder e.g. /mnt/MiSeq')
+    parser.add_argument('-f', '--miseqfolder',
+                        required=True,
+                        help='Name of the folder containing MiSeq run data e.g. 161129_M02466_0007_000000000-AW5L5')
+    parser.add_argument('-r1', '--forwardlength',
+                        default='full',
+                        help='Length of forward reads to use. Can specify "full" to take the full length of forward '
+                             'reads specified on the SampleSheet. Defaults to "full"')
+    parser.add_argument('-r2', '--reverselength',
+                        default='full',
+                        help='Length of reverse reads to use. Can specify "full" to take the full length of reverse '
+                             'reads specified on the SampleSheet. Defaults to "full"')
+    parser.add_argument('-c', '--customsamplesheet',
+                        help='Path of folder containing a custom sample sheet and name of sample sheet file '
+                             'e.g. /home/name/folder/BackupSampleSheet.csv. Note that this sheet must still have the '
+                             'same format of Illumina SampleSheet.csv files')
+    # Get the arguments into an object
+    arguments = parser.parse_args()
+    arguments.starttime = time()
+    arguments.commit = commit
+    arguments.homepath = homepath
+    # Run the pipeline
+    CreateFastq(arguments)
+    # Print a bold, green exit statement
+    print '\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time() - arguments.starttime) + '\033[0m'

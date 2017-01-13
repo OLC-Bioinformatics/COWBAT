@@ -1,0 +1,6 @@
+[submodule "OLCspades/coregenome"]
+	path = OLCspades/coregenome
+	url = https://github.com/adamkoziol/coregenome.git
+[submodule "OLCspades/metagenomeFilter"]
+	path = OLCspades/metagenomeFilter
+	url = https://github.com/adamkoziol/metagenomeFilter.git

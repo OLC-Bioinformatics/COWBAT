@@ -263,12 +263,15 @@ class GeneSeekr(object):
                     # the length of the string up to the first line break
                     alignmentcorrect = len(results.split('\n')[0])
                     # Count the number of lines for the data
-                    lines = results.count('\n')
+                    lines = results.count('\n') if results.count('\n') >= 1 else 1
                     # Add the number of lines to the list
                     totallines.append(lines)
                 # If there are no newline characters, set the width to the length of the string
                 except AttributeError:
                     alignmentcorrect = len(results)
+                    lines = 1
+                    # Add the number of lines to the list
+                    totallines.append(lines)
                 # Increase the width of the current column, if necessary
                 columnwidth[col] = alignmentcorrect if alignmentcorrect > columnwidth[col] else columnwidth[col]
                 worksheet.set_column(col, col, columnwidth[col])

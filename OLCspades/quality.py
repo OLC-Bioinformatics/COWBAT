@@ -124,26 +124,36 @@ class Quality(object):
                 # Define the name of the trimmed fastq files
                 cleanforward = '{}/{}_R1_trimmed.fastq'.format(outputdir, sample.name)
                 cleanreverse = '{}/{}_R2_trimmed.fastq'.format(outputdir, sample.name)
-                # Separate system calls for paired and unpaired fastq files
-                # TODO minlen=number - incorporate read length
-                # http://seqanswers.com/forums/showthread.php?t=42776
-                if len(fastqfiles) == 2:
-                    if int(sample.run.forwardlength) > 75 and int(sample.run.reverselength) > 75:
-                        bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
-                            "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 tpe tbo" \
-                            .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
+                if self.numreads == 2:
+                    # Separate system calls for paired and unpaired fastq files
+                    # TODO minlen=number - incorporate read length
+                    # http://seqanswers.com/forums/showthread.php?t=42776
+                    if len(fastqfiles) == 2:
+                        if int(sample.run.forwardlength) > 75 and int(sample.run.reverselength) > 75:
+                            bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
+                                "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 " \
+                                        "tpe tbo" \
+                                .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
+                        else:
+                            bbdukcall = "bbduk2.sh -Xmx1g in1={} out1={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                                        "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                                .format(fastqfiles[1], cleanreverse, self.bbduklocation)
+                    elif len(fastqfiles) == 1:
+                        bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                            "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                            .format(fastqfiles[0], cleanforward, self.bbduklocation)
                     else:
-                        bbdukcall = "bbduk2.sh -Xmx1g in1={} out1={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
-                                    "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
-                            .format(fastqfiles[1], cleanreverse, self.bbduklocation)
-                elif len(fastqfiles) == 1:
-                    bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
-                        "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
-                        .format(fastqfiles[0], cleanforward, self.bbduklocation)
+                        bbdukcall = ""
+                # Allows for exclusion of the reverse reads if desired
                 else:
-                    bbdukcall = ""
-
-                    # sample.general.trimmedfastqfiles = fastqfiles
+                    bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                                "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
+                        .format(fastqfiles[0], cleanforward, self.bbduklocation)
+                    # There is a check to ensure that the trimmed reverse file is created. This will change the file
+                    # being looked for to the forward file
+                    cleanreverse = cleanforward
+                    if self.forwardlength != 'full':
+                        bbdukcall += ' forcetrimright={}'.format(str(self.forwardlength))
                 sample.commands.bbduk = bbdukcall
                 # Add the arguments to the queue
                 self.trimqueue.put((sample, bbdukcall, cleanreverse))
@@ -183,6 +193,9 @@ class Quality(object):
         self.trimqueue = Queue(maxsize=self.cpus)
         self.correctqueue = Queue(maxsize=self.cpus)
         self.start = inputobject.starttime
+        self.forwardlength = inputobject.forwardlength
+        self.reverselength = inputobject.reverselength
+        self.numreads = inputobject.numreads
         # Find the location of the bbduk.sh script. This will be used in finding the adapter file
         self.bbduklocation = os.path.split(Popen('which bbduk.sh', shell=True, stdout=PIPE)
                                            .communicate()[0].rstrip())[0]

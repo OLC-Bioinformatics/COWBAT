@@ -195,7 +195,7 @@ class GenObject(object):
         super(GenObject, self).__setattr__('datastore', start)
 
     def __getattr__(self, key):
-        if self.datastore[key] or self.datastore[key] == 0 or self.datastore[key] == False or all(self.datastore[key]):
+        if self.datastore[key] or self.datastore[key] == 0 or self.datastore[key] is False or all(self.datastore[key]):
             return self.datastore[key]
         else:
             self.datastore[key] = 'NA'

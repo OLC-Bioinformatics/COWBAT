@@ -6,18 +6,15 @@ from collections import defaultdict
 from csv import DictReader
 from glob import glob
 from threading import Thread
-
 from Bio.Blast.Applications import NcbiblastnCommandline
-
+from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.Alphabet import IUPAC
 from accessoryFunctions import *
 
 __author__ = 'mike knowles, adamkoziol'
 
-__doc__ = 'The purpose of this set of modules is to improve upon earlier development of ARMISeekr.py and eventually' \
-          'to include generalized functionality for with OOP for GeneSeekr'
 
-
-# from mMLST import MLST
 class GeneSeekr(object):
 
     def geneseekr(self):
@@ -28,7 +25,7 @@ class GeneSeekr(object):
         printtime('Running {} blast analyses'.format(self.analysistype), self.start)
         self.blastnthreads()
         globalcounter()
-        self.csvwriter()
+        self.reporter()
         # Remove the attributes from the object; they take up too much room on the .json report
         for sample in self.metadata:
             delattr(sample[self.analysistype], "targetnames")
@@ -54,8 +51,10 @@ class GeneSeekr(object):
         # Make blast databases for MLST files (if necessary)
         for targetdir in self.targetfolders:
             # List comprehension to remove any previously created database files from list
-            targetfiles = glob('{}/*.tfa'.format(targetdir))
-            for targetfile in targetfiles:
+            self.targetfiles = glob('{}/*.tfa'.format(targetdir))
+            for targetfile in self.targetfiles:
+                # Read the sequences from the target file to a dictionary
+                self.records[targetfile] = SeqIO.to_dict(SeqIO.parse(targetfile, 'fasta'))
                 # Add the fasta file to the queue
                 self.dqueue.put(targetfile)
         self.dqueue.join()  # wait on the dqueue until everything has been processed
@@ -73,8 +72,6 @@ class GeneSeekr(object):
                 # TODO use MakeBLASTdb class
                 subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
                                             .format(fastapath, db)), stdout=fnull, stderr=fnull)
-                # os.system('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
-                #           .format(fastapath, db))
             dotter()
             self.dqueue.task_done()  # signals to dqueue job is done
 
@@ -106,6 +103,8 @@ class GeneSeekr(object):
             try:
                 report = glob('{}{}*rawresults*'.format(sample[self.analysistype].reportdir, genome))[0]
                 size = os.path.getsize(report)
+                # If a report was created, but no results entered - program crashed, or no sequences passed thresholds,
+                # remove the report, and run the blast analyses again
                 if size == 0:
                     os.remove(report)
                     report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
@@ -119,11 +118,14 @@ class GeneSeekr(object):
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
             blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-5', num_alignments=1000000,
                                            num_threads=12,
+                                           # outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                           #        "evalue bitscore slen length'",
                                            outfmt="'6 qseqid sseqid positive mismatch gaps "
-                                                  "evalue bitscore slen length'",
+                                                  "evalue bitscore slen length qstart qend qseq sstart send'",
                                            out=report)
             # Save the blast command in the metadata
             sample[self.analysistype].blastcommand = str(blastn)
+            # Only run blast if the report doesn't exist
             if not os.path.isfile(report):
                 try:
                     blastn()
@@ -140,14 +142,20 @@ class GeneSeekr(object):
             self.blastqueue.task_done()  # signals to dqueue job is done
 
     def blastparser(self, report, sample):
+        """
+        Parse the blast results, and store necessary data in dictionaries in sample object
+        :param report: Name of the blast output report being parsed
+        :param sample: sample object
+        """
         # Open the sequence profile file as a dictionary
         blastdict = DictReader(open(report), fieldnames=self.fieldnames, dialect='excel-tab')
-        resultdict = {}
+        resultdict = dict()
+        # Initialise a dictionary to store all the target sequences
+        sample[self.analysistype].targetsequence = dict()
         # Go through each BLAST result
         for row in blastdict:
             # Calculate the percent identity and extract the bitscore from the row
             # Percent identity is the (length of the alignment - number of mismatches) / total subject length
-            # noinspection PyTypeChecker
             percentidentity = float('{:0.2f}'.format((float(row['positives']) - float(row['gaps'])) /
                                                      float(row['subject_length']) * 100))
             target = row['subject_id']
@@ -155,50 +163,211 @@ class GeneSeekr(object):
             if percentidentity >= self.cutoff:
                 # Update the dictionary with the target and percent identity
                 resultdict.update({target: percentidentity})
+                # Determine if the orientation of the sequence is reversed compared to the reference
+                if int(row['subject_end']) < int(row['subject_start']):
+                    # Create a sequence object using Biopython
+                    seq = Seq(row['query_sequence'], IUPAC.unambiguous_dna)
+                    # Calculate the reverse complement of the sequence
+                    querysequence = str(seq.reverse_complement())
+                # If the sequence is not reversed, use the sequence as it is in the output
+                else:
+                    querysequence = row['query_sequence']
+                # Add the sequence in the correct orientation to the sample
+                sample[self.analysistype].targetsequence[target] = querysequence
+            # Add the percent identity to the object
             sample[self.analysistype].blastresults = resultdict
+        # Populate missing results with 'NA' values
         if not resultdict:
             sample[self.analysistype].blastresults = 'NA'
 
-    def csvwriter(self):
-        combinedrow = ''
+    def reporter(self):
+        """
+        Creates .xlsx reports using xlsxwriter
+        """
+        import xlsxwriter
+        # Create a workbook to store the report. Using xlsxwriter rather than a simple csv format, as I want to be
+        # able to have appropriately sized, multi-line cells
+        workbook = xlsxwriter.Workbook('{}/{}.xlsx'.format(self.reportpath, self.analysistype))
+        # New worksheet to store the data
+        worksheet = workbook.add_worksheet()
+        # Add a bold format for header cells. Using a monotype font size 10
+        bold = workbook.add_format({'bold': True, 'font_name': 'Courier New', 'font_size': 10})
+        # Format for data cells. Monotype, size 10, top vertically justified
+        courier = workbook.add_format({'font_name': 'Courier New', 'font_size': 10})
+        courier.set_align('top')
+        # Initialise the position within the worksheet to be (0,0)
+        row = 0
+        # A dictionary to store the column widths for every header
+        columnwidth = dict()
         for sample in self.metadata:
-            row = ''
+            # Reset the column to zero
+            col = 0
+            # Initialise a list to store all the data for each strain
+            data = list()
+            # Initialise a list of all the headers with 'Strain'
+            headers = ['Strain']
             if sample[self.analysistype].targetnames != 'NA':
-                # Populate the header with the appropriate data, including all the genes in the list of targets
-                row += 'Strain,{},\n'.format(','.join(sorted(sample[self.analysistype].targetnames)))
-                row += '{},'.format(sample.name)
-                for target in sorted(sample[self.analysistype].targetnames):
-                    if sample[self.analysistype].blastresults != 'NA':
-                        try:
-                            type(sample[self.analysistype].blastresults[target])
-                            row += '{},'.format(sample[self.analysistype].blastresults[target])
-                        except (KeyError, TypeError):
-                            row += '-,'
-                    else:
-                        row += '-,'
-                row += '\n'
-                combinedrow += row
-                # If the length of the number of report directories is greater than 1 (script is being run as part of
-                # the assembly pipeline) make a report for each sample
-                if self.pipeline:
-                    # Open the report
-                    with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                   self.analysistype), 'wb') as report:
-                        # Write the row to the report
-                        report.write(row)
-            else:
-                sample[self.analysistype].blastresults = 'NA'
+                # Append the sample name to the data list only if the script could find targets
+                data.append(sample.name)
+                if sample[self.analysistype].blastresults != 'NA':
+                    for target in sorted(sample[self.analysistype].targetnames):
+                        # Add the name of the gene to the header
+                        headers.append(target)
+                        if sample[self.analysistype].blastresults != 'NA':
+                            try:
+                                # Append the percent identity to the data list
+                                data.append(str(sample[self.analysistype].blastresults[target]))
+                                # Only if the alignment option is selected, for inexact results, add alignments
+                                if self.align and sample[self.analysistype].blastresults[target] != 100.00:
+                                    # Align the protein (and nucleotide) sequences to the reference
+                                    self.alignprotein(sample, target)
+                                    # Add the appropriate headers
+                                    headers.extend(['{}_aa_Alignment'.format(target),
+                                                    '{}_aa_SNP_location'.format(target),
+                                                    '{}_nt_Alignment'.format(target),
+                                                    '{}_nt_SNP_location'.format(target)
+                                                    ])
+                                    # Add the alignment, and the location of mismatches for both nucleotide and amino
+                                    # acid sequences
+                                    data.extend([sample[self.analysistype].aaalign[target],
+                                                 sample[self.analysistype].aaindex[target],
+                                                 sample[self.analysistype].ntalign[target],
+                                                 sample[self.analysistype].ntindex[target],
+                                                 ])
+                            # If there are no blast results for the target, add a '-'
+                            except (KeyError, TypeError):
+                                data.append('-')
+                        # If there are no blast results at all, add a '-'
+                        else:
+                            data.append('-')
+            # Write the header to the spreadsheet
+            for header in headers:
+                worksheet.write(row, col, header, bold)
+                # Set the column width based on the longest header
+                try:
+                    columnwidth[col] = len(header)if len(header) > columnwidth[col] else columnwidth[col]
+                except KeyError:
+                    columnwidth[col] = len(header)
+                worksheet.set_column(col, col, columnwidth[col])
+                col += 1
+            # Increment the row and reset the column to zero in preparation of writing results
+            row += 1
+            col = 0
+            # List of the number of lines for each result
+            totallines = list()
+            # Write out the data to the spreadsheet
+            for results in data:
+                worksheet.write(row, col, results, courier)
+                try:
+                    # Counting the length of multi-line strings yields columns that are far too wide, only count
+                    # the length of the string up to the first line break
+                    alignmentcorrect = len(results.split('\n')[0])
+                    # Count the number of lines for the data
+                    lines = results.count('\n')
+                    # Add the number of lines to the list
+                    totallines.append(lines)
+                # If there are no newline characters, set the width to the length of the string
+                except AttributeError:
+                    alignmentcorrect = len(results)
+                # Increase the width of the current column, if necessary
+                columnwidth[col] = alignmentcorrect if alignmentcorrect > columnwidth[col] else columnwidth[col]
+                worksheet.set_column(col, col, columnwidth[col])
+                col += 1
+            # Set the width of the row to be the number of lines (number of newline characters) * 11
+            worksheet.set_row(row, max(totallines) * 12)
+            # Increase the row counter for the next strain's data
+            row += 1
+        # Close the workbook
+        workbook.close()
 
-        # Create the report containing all the data from all samples
-        if self.pipeline:
-            with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
-                    as combinedreport:
-                combinedreport.write(combinedrow)
-        else:
-            with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")),
-                      'wb') \
-                    as combinedreport:
-                combinedreport.write(combinedrow)
+    def alignprotein(self, sample, target):
+        """
+        Create alignments of the sample nucleotide and amino acid sequences to the reference sequences
+        """
+        import re
+        # Initialise dictionaries
+        sample[self.analysistype].dnaseq = dict()
+        sample[self.analysistype].protseq = dict()
+        sample[self.analysistype].ntindex = dict()
+        sample[self.analysistype].aaindex = dict()
+        sample[self.analysistype].ntalign = dict()
+        sample[self.analysistype].aaalign = dict()
+        # In order to properly translate the nucleotide sequence, BioPython requests that the sequence is a multiple of
+        # three - not partial codons. Trim the sequence accordingly
+        remainder = 0 - len(sample[self.analysistype].targetsequence[target]) % 3
+        seq = sample[self.analysistype].targetsequence[target] if remainder == 0 \
+            else sample[self.analysistype].targetsequence[target][:remainder]
+        # Set the DNA and protein sequences of the target in the sample
+        sample[self.analysistype].dnaseq[target] = Seq(seq, IUPAC.unambiguous_dna)
+        # Translate the nucleotide sequence
+        sample[self.analysistype].protseq[target] = str(sample[self.analysistype].dnaseq[target].translate())
+        for targetfile in self.targetfiles:
+            # Trim the reference sequence to multiples of three
+            refremainder = 0 - len(self.records[targetfile][target].seq) % 3
+            refseq = str(self.records[targetfile][target].seq) if refremainder % 3 == 0 \
+                else str(self.records[targetfile][target].seq)[:refremainder]
+            # Translate the nucleotide sequence of the reference sequence
+            refdna = Seq(refseq, IUPAC.unambiguous_dna)
+            refprot = str(refdna.translate())
+            # Align the nucleotide sequence of the reference to the sample. If the corresponding bases match, add
+            # a |, otherwise a space
+            ntalignment = ''.join(map(lambda x: '|' if len(set(x)) == 1 else ' ',
+                                      zip(sample[self.analysistype].dnaseq[target], refdna)))
+            # Create the nucleotide alignment: the sample sequence, the (mis)matches, and the reference sequence
+            sample[self.analysistype].ntalign[target] = self.interleaveblastresults(
+                sample[self.analysistype].dnaseq[target],
+                refdna)
+            # Regex to determine location of mismatches in the sequences
+            sample[self.analysistype].ntindex[target] = ';'.join(
+                (str(snp.start()) for snp in re.finditer(' ', ntalignment)))
+            # Perform the same steps, except for the amino acid sequence
+            aaalignment = ''.join(map(lambda x: '|' if len(set(x)) == 1 else ' ',
+                                      zip(sample[self.analysistype].protseq[target], refprot)))
+            sample[self.analysistype].aaalign[target] = self.interleaveblastresults(
+                sample[self.analysistype].protseq[target],
+                refprot)
+            sample[self.analysistype].aaindex[target] = ';'.join(
+                (str(snp.start()) for snp in re.finditer(' ', aaalignment)))
+
+    @staticmethod
+    def interleaveblastresults(query, subject):
+        """
+        Creates an interleaved string that resembles BLAST sequence comparisons
+        :param query: Query sequence
+        :param subject: Subject sequence
+        :return: Properly formatted BLAST-like sequence comparison
+        """
+        # Initialise strings to hold the matches, and the final BLAST-formatted string
+        matchstring = ''
+        blaststring = ''
+        # Iterate through the query
+        for i, bp in enumerate(query):
+            # If the current base in the query is identical to the corresponding base in the reference, append a '|'
+            # to the match string, otherwise, append a ' '
+            if bp == subject[i]:
+                matchstring += '|'
+            else:
+                matchstring += ' '
+        # Set a variable to store the progress through the sequence
+        prev = 0
+        # Iterate through the query, from start to finish in steps of 60 bp
+        for j in range(0, len(query), 60):
+            # BLAST results string. The components are: current position (padded to four characters), 'OLC', query
+            # sequence, \n, matches, \n, 'ref', subject sequence. Repeated until all the sequence data are present.
+            """
+            0000 OLC ATGAAGAAGATATTTGTAGCGGCTTTATTTGCTTTTGTTTCTGTTAATGCAATGGCAGCT
+                     ||||||||||| ||| | |||| ||||||||| || ||||||||||||||||||||||||
+                 ref ATGAAGAAGATGTTTATGGCGGTTTTATTTGCATTAGTTTCTGTTAATGCAATGGCAGCT
+            0060 OLC GATTGTGCAAAAGGTAAAATTGAGTTCTCTAAGTATAATGAGAATGATACATTCACAGTA
+                     ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+                 ref GATTGTGCAAAAGGTAAAATTGAGTTCTCTAAGTATAATGAGAATGATACATTCACAGTA
+            """
+            blaststring += '{} OLC {}\n         {}\n     ref {}\n' \
+                .format('{:04d}'.format(j), query[prev:j + 60], matchstring[prev:j + 60], subject[prev:j + 60])
+            # Update the progress variable
+            prev = j + 60
+        # Return the properly formatted string
+        return blaststring
 
     def __init__(self, inputobject):
         from Queue import Queue
@@ -208,14 +377,16 @@ class GeneSeekr(object):
         self.analysistype = inputobject.analysistype
         self.reportpath = inputobject.reportdir
         self.targetfolders = set()
+        self.targetfiles = list()
+        self.records = dict()
         self.pipeline = inputobject.pipeline
         self.referencefilepath = inputobject.referencefilepath
         self.cpus = inputobject.threads
+        self.align = inputobject.align
         # Fields used for custom outfmt 6 BLAST output:
-        # "6 qseqid sseqid positive mismatch gaps evalue bitscore slen length"
         self.fieldnames = ['query_id', 'subject_id', 'positives', 'mismatches', 'gaps',
-                           'evalue',  'bit_score', 'subject_length', 'alignment_length']
-        #
+                           'evalue', 'bit_score', 'subject_length', 'alignment_length',
+                           'query_start', 'query_end', 'query_sequence', 'subject_start', 'subject_end']
         self.plusdict = defaultdict(make_dict)
         self.dqueue = Queue(maxsize=self.cpus)
         self.blastqueue = Queue(maxsize=self.cpus)
@@ -228,7 +399,6 @@ def sequencenames(contigsfile):
     :param contigsfile: multifasta of all sequences
     :return: list of all sequence names
     """
-    from Bio import SeqIO
     sequences = list()
     for record in SeqIO.parse(open(contigsfile, "rU"), "fasta"):
         sequences.append(record.id)
@@ -293,7 +463,6 @@ if __name__ == '__main__':
             parser.add_argument('-r', '--reportpath',
                                 required=True,
                                 help='Specify output folder for csv')
-            # parser.add_argument('-a', '--anti', type=str, required=True, help='JSON file location')
             parser.add_argument('-c', '--cutoff',
                                 type=int,
                                 default=70, help='Threshold for maximum unique bacteria for a single antibiotic')
@@ -301,6 +470,10 @@ if __name__ == '__main__':
                                 type=int,
                                 default=24,
                                 help='Specify number of threads')
+            parser.add_argument('-a', '--align',
+                                action='store_true',
+                                help='Optionally output alignments of genes with less than 100% identity to reference '
+                                     'genes. This alignment will use amino acid sequences for both query and reference')
             args = parser.parse_args()
             self.sequencepath = os.path.join(args.sequencepath, '')
             assert os.path.isdir(self.sequencepath), 'Cannot locate sequence path as specified: {}'\
@@ -309,15 +482,16 @@ if __name__ == '__main__':
             assert os.path.isdir(self.targetpath), 'Cannot locate target path as specified: {}'\
                 .format(self.targetpath)
             self.reportpath = os.path.join(args.reportpath, '')
+            make_path(self.reportpath)
             assert os.path.isdir(self.reportpath), 'Cannot locate report path as specified: {}'\
                 .format(self.reportpath)
             self.cutoff = args.cutoff
             self.threads = args.numthreads
-            #
-            self.strains = []
-            self.targets = []
-            self.combinedtargets = ''
-            self.samples = []
+            self.align = args.align
+            self.strains = list()
+            self.targets = list()
+            self.combinedtargets = str()
+            self.samples = list()
             self.analysistype = 'geneseekr'
             self.start = time.time()
             self.strainer()
@@ -329,13 +503,12 @@ if __name__ == '__main__':
             # Get the appropriate variables from the metadata file
             self.start = self.runmetadata.start
             self.analysistype = self.runmetadata.analysistype
-            # self.alleles = self.runmetadata.alleles
-            # self.profile = self.runmetadata.profile
             self.cutoff = self.runmetadata.cutoff
             self.threads = int(self.runmetadata.threads)
             self.reportdir = self.runmetadata.reportpath
             self.pipeline = False
-            self.referencefilepath = ''
+            self.referencefilepath = str()
+            self.align = self.runmetadata.align
             # Run the analyses
             GeneSeekr(self)
 
@@ -366,7 +539,6 @@ class PipelineInit(object):
                     sample[self.analysistype].targets = targets
                     sample[self.analysistype].combinedtargets = combinedtargets
                     sample[self.analysistype].targetpath = targetpath
-                    # sample[self.analysistype].targetnames = [os.path.split(x)[1].split('.')[0] for x in targets]
                     sample[self.analysistype].targetnames = sequencenames(combinedtargets)
                     sample[self.analysistype].reportdir = '{}/{}/'.format(sample.general.outputdirectory,
                                                                           self.analysistype)
@@ -377,6 +549,9 @@ class PipelineInit(object):
                     sample[self.analysistype].targetpath = 'NA'
                     sample[self.analysistype].targetnames = 'NA'
                     sample[self.analysistype].reportdir = 'NA'
+                # Special typing for Vibrio involves in silico qPCR primer/probe binding
+                if sample.general.referencegenus == 'Vibrio':
+                    self.chas.append(sample)
             else:
                 # Set the metadata file appropriately
                 setattr(sample, self.analysistype, GenObject())
@@ -385,6 +560,9 @@ class PipelineInit(object):
                 sample[self.analysistype].targetpath = 'NA'
                 sample[self.analysistype].targetnames = 'NA'
                 sample[self.analysistype].reportdir = 'NA'
+        if self.chas:
+            import CHAS
+            CHAS.CHAS(self, 'chas')
 
     def __init__(self, inputobject, analysistype, genusspecific, cutoff):
         self.runmetadata = inputobject.runmetadata
@@ -397,10 +575,7 @@ class PipelineInit(object):
         self.cutoff = cutoff
         self.pipeline = True
         self.genusspecific = genusspecific
+        self.chas = list()
+        self.align = False
         # Get the alleles and profile into the metadata
         self.strainer()
-        # GeneSeekr(self)
-
-# TODO no pluses
-# TODO multifasta?
-# TODO alignments

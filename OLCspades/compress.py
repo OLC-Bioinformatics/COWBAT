@@ -20,8 +20,9 @@ class Compress(object):
             for key, value in sample.general.datastore.items():
                 if type(value) is list:
                     for item in value:
-                        if re.search(".fastq$", item):
-                            compressfile.append(item)
+                        if type(item) is str:
+                            if re.search(".fastq$", item) and not os.path.islink(item):
+                                compressfile.append(item)
         for i in range(len(compressfile)):
             # Send the threads to makeblastdb
             threads = Thread(target=self.compress, args=())

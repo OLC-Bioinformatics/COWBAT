@@ -69,6 +69,7 @@ class Spades(object):
             # If there are no fastq files, populate the metadata appropriately
             else:
                 sample.general.spadesoutput = 'NA'
+                sample.general.assemblyfastq = 'NA'
             # Put the arguments to pass to the assemble method into the queue
             self.assemblequeue.put((spadescommand, sample.general.spadesoutput))
             # Add the command to the metadata

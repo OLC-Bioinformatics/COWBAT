@@ -63,7 +63,7 @@ class Correct(object):
         self.metadata = inputobject.runmetadata.samples
         self.cpus = inputobject.cpus
         self.start = inputobject.starttime
-        self.correctqueue = Queue()
+        self.correctqueue = Queue(maxsize=self.cpus)
         self.devnull = open(os.devnull, 'wb')
         printtime('Correcting sequences', self.start)
         self.correct()

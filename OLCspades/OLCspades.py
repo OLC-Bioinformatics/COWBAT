@@ -75,6 +75,9 @@ class RunSpades(object):
             quit()
         # Run spades
         spadesRun.Spades(self)
+        # Run CLARK typing on the .fastq and .fasta files
+        from metagenomeFilter import automateCLARK
+        automateCLARK.PipelineInit(self)
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
         # Run mash
@@ -103,7 +106,8 @@ class RunSpades(object):
         import virulence
         import armi
         import vtyper
-        import coregenome
+        import core
+        # import coregenome
         import sistr
         import resfinder
         # Run modules and print metadata to file
@@ -112,7 +116,7 @@ class RunSpades(object):
         geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50)
         GeneSeekr.GeneSeekr(geneseekr)
         metadataprinter.MetadataPrinter(self)
-        sixteens = GeneSeekr.PipelineInit(self, '16s', False, 95)
+        sixteens = GeneSeekr.PipelineInit(self, 'sixteenS', False, 95)
         sixteenS.SixteenS(sixteens)
         metadataprinter.MetadataPrinter(self)
         uni = univec.PipelineInit(self, 'univec', False, 80)
@@ -135,8 +139,9 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
-        core = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
-        coregenome.CoreGenome(core)
+        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
+        core.CoreGenome(coregen)
+        core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
         sistr.Sistr(self, 'sistr')
         res = resfinder.PipelineInit(self, 'resfinder', False, 80)
@@ -156,14 +161,13 @@ class RunSpades(object):
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
-        self.numreads = args.numreads
         self.offhours = args.offhours
         self.fastqcreation = args.fastqcreation
         self.fastqdestination = args.destinationfastq
         self.reffilepath = os.path.join(args.referencefilepath, '')
         self.forwardlength = args.readlengthforward
         self.reverselength = args.readlengthreverse
-        self.numreads = 1 if self.reverselength == 0 else 2
+        self.numreads = 1 if self.reverselength == 0 else args.numreads
         self.kmers = args.kmerrange
         self.preprocess = args.preprocess
         self.updatedatabases = args.updatedatabases
@@ -187,11 +191,12 @@ class RunSpades(object):
         self.reportpath = '{}reports'.format(self.path)
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
+        self.miseqpath = args.miseqpath
         self.commit = str(pipelinecommit)
         self.homepath = scriptpath
         self.runinfo = ''
         # Initialise the metadata object
-        self.runmetadata = ''
+        self.runmetadata = MetadataObject()
         try:
             # Start the assembly
             self.assembly()

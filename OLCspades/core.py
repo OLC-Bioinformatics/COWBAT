@@ -92,3 +92,31 @@ class CoreGenome(GeneSeekr):
             # Write the data to the report
             report.write(header)
             report.write(data)
+
+
+class AnnotatedCore(object):
+
+    def annotatedcore(self):
+        """
+        Calculates the core genome of organisms using custom databases
+        """
+        from coregenome import core
+        coremetadata = list()
+        printtime('Calculating annotated core', self.start)
+        for sample in self.metadata:
+            if sample.general.referencegenus == 'Escherichia':
+                coremetadata.append(sample)
+        # Run the core genome analyses on the Escherichia coli samples
+        core.PipelineInit(self, coremetadata)
+
+    def __init__(self, inputobject):
+        self.start = inputobject.starttime
+        self.commit = inputobject.commit
+        self.starttime = inputobject.starttime
+        self.homepath = inputobject.homepath
+        self.path = inputobject.path
+        self.cpus = inputobject.cpus
+        self.metadata = inputobject.runmetadata.samples
+        self.reffilepath = inputobject.reffilepath
+        # Run the analyses
+        self.annotatedcore()

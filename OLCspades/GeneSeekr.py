@@ -222,14 +222,16 @@ class GeneSeekr(object):
                                     # Align the protein (and nucleotide) sequences to the reference
                                     self.alignprotein(sample, target)
                                     # Add the appropriate headers
-                                    headers.extend(['{}_aa_Alignment'.format(target),
+                                    headers.extend(['{}_aa_Identity'.format(target),
+                                                    '{}_aa_Alignment'.format(target),
                                                     '{}_aa_SNP_location'.format(target),
                                                     '{}_nt_Alignment'.format(target),
                                                     '{}_nt_SNP_location'.format(target)
                                                     ])
                                     # Add the alignment, and the location of mismatches for both nucleotide and amino
                                     # acid sequences
-                                    data.extend([sample[self.analysistype].aaalign[target],
+                                    data.extend([sample[self.analysistype].aaidentity[target],
+                                                 sample[self.analysistype].aaalign[target],
                                                  sample[self.analysistype].aaindex[target],
                                                  sample[self.analysistype].ntalign[target],
                                                  sample[self.analysistype].ntindex[target],
@@ -273,10 +275,13 @@ class GeneSeekr(object):
                     # Add the number of lines to the list
                     totallines.append(lines)
                 # Increase the width of the current column, if necessary
-                columnwidth[col] = alignmentcorrect if alignmentcorrect > columnwidth[col] else columnwidth[col]
+                try:
+                    columnwidth[col] = alignmentcorrect if alignmentcorrect > columnwidth[col] else columnwidth[col]
+                except KeyError:
+                    columnwidth[col] = alignmentcorrect
                 worksheet.set_column(col, col, columnwidth[col])
                 col += 1
-            # Set the width of the row to be the number of lines (number of newline characters) * 11
+            # Set the width of the row to be the number of lines (number of newline characters) * 12
             worksheet.set_row(row, max(totallines) * 12)
             # Increase the row counter for the next strain's data
             row += 1
@@ -295,6 +300,7 @@ class GeneSeekr(object):
         sample[self.analysistype].aaindex = dict()
         sample[self.analysistype].ntalign = dict()
         sample[self.analysistype].aaalign = dict()
+        sample[self.analysistype].aaidentity = dict()
         # In order to properly translate the nucleotide sequence, BioPython requests that the sequence is a multiple of
         # three - not partial codons. Trim the sequence accordingly
         remainder = 0 - len(sample[self.analysistype].targetsequence[target]) % 3
@@ -326,6 +332,8 @@ class GeneSeekr(object):
             # Perform the same steps, except for the amino acid sequence
             aaalignment = ''.join(map(lambda x: '|' if len(set(x)) == 1 else ' ',
                                       zip(sample[self.analysistype].protseq[target], refprot)))
+            sample[self.analysistype].aaidentity[target] = '{:.2f}'\
+                .format(float(aaalignment.count('|')) / float(len(aaalignment)) * 100)
             sample[self.analysistype].aaalign[target] = self.interleaveblastresults(
                 sample[self.analysistype].protseq[target],
                 refprot)

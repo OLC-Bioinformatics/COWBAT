@@ -4,7 +4,7 @@ __author__ = 'adamkoziol'
 
 
 class PlasmidFinder(Prophages):
-    def csvwriter(self):
+    def reporter(self):
         combinedrow = ''
         for sample in self.metadata:
             # Populate the header with the appropriate data

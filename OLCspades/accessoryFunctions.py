@@ -50,6 +50,27 @@ def printtime(string, start):
     import time
     print('\n\033[1m' + "[Elapsed Time: {:.2f} seconds] {}".format(time.time() - start, string) + '\033[0m')
 
+
+class Dotter(object):
+
+    def globalcounter(self):
+        """Resets the globalcount to 0"""
+        self.globalcount = 0
+
+    def dotter(self):
+        """Prints formatted time to stdout at the start of a line, as well as a "."
+        whenever the length of the line is equal or lesser than 80 "." long"""
+        import sys
+        if self.globalcount <= 80:
+            sys.stdout.write('.')
+            self.globalcount += 1
+        else:
+            sys.stdout.write('\n.')
+            self.globalcount = 1
+
+    def __init__(self):
+        self.globalcount = 0
+
 # Initialise globalcount
 globalcount = 0
 
@@ -174,7 +195,7 @@ def relativesymlink(src_file, dest_file):
     """
     # Perform relative symlinking
     try:
-        print os.path.relpath(src_file), os.path.relpath(dest_file)
+        print(os.path.relpath(src_file), os.path.relpath(dest_file))
         os.symlink(
             # Find the relative path for the source file and the destination file
             os.path.relpath(src_file),
@@ -251,7 +272,7 @@ class MetadataObject(object):
                     try:
                         metadata[attr] = self.datastore[attr].datastore
                     except AttributeError:
-                        print attr
+                        print(attr)
         return metadata
 
 
@@ -299,7 +320,7 @@ def combinetargets(targets, targetpath):
     make_path(targetpath)
     recordlist = []
     # Open the combined allele file to write
-    with open('{}/combinedtargets.tfa'.format(targetpath), 'wb') as combinedfile:
+    with open('{}/combinedtargets.tfa'.format(targetpath), 'w') as combinedfile:
         # Open each target file
         for target in sorted(targets):
             # with open(allele, 'rU') as fasta:

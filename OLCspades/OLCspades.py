@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import subprocess
-
 import depth
 import fastqCreator
 import metadataprinter
@@ -103,49 +102,53 @@ class RunSpades(object):
         import prophages
         import plasmidfinder
         import serotype
-        import virulence
+        # import virulence
         import armi
         import vtyper
         import core
         # import coregenome
         import sistr
-        import resfinder
+        # import resfinder
         # Run modules and print metadata to file
         mMLST.PipelineInit(self, 'mlst')
         metadataprinter.MetadataPrinter(self)
-        geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50)
+        geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50, False)
         GeneSeekr.GeneSeekr(geneseekr)
         metadataprinter.MetadataPrinter(self)
-        sixteens = GeneSeekr.PipelineInit(self, 'sixteenS', False, 95)
+        sixteens = GeneSeekr.PipelineInit(self, 'sixteenS', False, 95, False)
         sixteenS.SixteenS(sixteens)
         metadataprinter.MetadataPrinter(self)
-        uni = univec.PipelineInit(self, 'univec', False, 80)
+        uni = univec.PipelineInit(self, 'univec', False, 80, False)
         univec.Univec(uni)
         metadataprinter.MetadataPrinter(self)
-        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80)
+        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80, True)
         prophages.Prophages(pro)
         metadataprinter.MetadataPrinter(self)
-        plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80)
+        plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80, True)
         plasmidfinder.PlasmidFinder(plasmid)
         metadataprinter.MetadataPrinter(self)
-        sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95)
+        sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95, False)
         serotype.Serotype(sero)
         metadataprinter.MetadataPrinter(self)
-        vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
-        virulence.Virulence(vir)
+        # vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
+        # virulence.Virulence(vir)
+        vir = GeneSeekr.PipelineInit(self, 'virulence', True, 80, True)
+        GeneSeekr.GeneSeekr(vir)
         metadataprinter.MetadataPrinter(self)
-        armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
-        armi.ARMI(armiobject)
+        # armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
+        # armi.ARMI(armiobject)
         metadataprinter.MetadataPrinter(self)
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
-        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70)
+        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
         sistr.Sistr(self, 'sistr')
-        res = resfinder.PipelineInit(self, 'resfinder', False, 80)
-        resfinder.ResFinder(res)
+        # res = resfinder.PipelineInit(self, 'resfinder', False, 80)
+        res = GeneSeekr.PipelineInit(self, 'resfinder', False, 80, True)
+        GeneSeekr.GeneSeekr(res)
+        # resfinder.ResFinder(res)
         metadataprinter.MetadataPrinter(self)
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):

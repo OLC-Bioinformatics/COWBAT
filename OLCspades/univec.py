@@ -74,7 +74,7 @@ class Univec(GeneSeekr):
                 resultdict.update({target: '{},{}'.format(str(percentidentity), row['positives'])})
             sample[self.analysistype].blastresults = resultdict
 
-    def csvwriter(self):
+    def reporter(self):
         import operator
         combinedrow = ''
         for sample in self.metadata:

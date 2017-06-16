@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import shlex
 import subprocess
 import time
@@ -10,9 +10,9 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
-from accessoryFunctions import *
+from accessoryfunctions.accessoryFunctions import *
 
-__author__ = 'mike knowles, adamkoziol'
+__author__ = 'adamkoziol'
 
 
 class GeneSeekr(object):
@@ -24,13 +24,82 @@ class GeneSeekr(object):
         # Run the blast analyses
         printtime('Running {} blast analyses'.format(self.analysistype), self.start)
         self.blastnthreads()
-        globalcounter()
-        self.reporter()
+        if self.unique:
+            self.filterunique()
+        if self.analysistype == 'resfinder':
+            self.resfinderreporter()
+        elif self.analysistype == 'virulence':
+            self.virulencefinderreporter()
+        # elif self.unique:
+        else:
+            self.reporter()
         # Remove the attributes from the object; they take up too much room on the .json report
         for sample in self.metadata:
             delattr(sample[self.analysistype], "targetnames")
             delattr(sample[self.analysistype], "targets")
         printtime('{} analyses complete'.format(self.analysistype), self.start)
+
+    def filterunique(self):
+        """
+        Filters multiple BLAST hits in a common region of the genome. Leaves only the best hit
+        """
+        for sample in self.metadata:
+            # Initialise variables
+            sample[self.analysistype].blastresults = list()
+            resultdict = dict()
+            rowdict = dict()
+            # Iterate through all the contigs, which had BLAST hits
+            for contig in sample[self.analysistype].queryranges:
+                # Find all the locations in each contig that correspond to the BLAST hits
+                for location in sample[self.analysistype].queryranges[contig]:
+                    # Extract the BLAST result dictionary for the contig
+                    for row in sample[self.analysistype].results[contig]:
+                        # Initialise variable to reduce the number of times row['value'] needs to be typed
+                        contig = row['query_id']
+                        high = row['high']
+                        low = row['low']
+                        percentidentity = row['percentidentity']
+                        # Join the two ranges in the location list with a comma
+                        locstr = ','.join([str(x) for x in location])
+                        # Create a set of the location of all the base pairs between the low and high (-1) e.g.
+                        # [6, 10] would give 6, 7, 8, 9, but NOT 10. This turns out to be useful, as there are
+                        # genes located back-to-back in the genome e.g. strB and strA, with locations of 2557,3393
+                        # and 3393,4196, respectively. By not including 3393 in the strB calculations, I don't
+                        # have to worry about this single bp overlap
+                        loc = set(range(low, high))
+                        # Use a set intersection to determine whether the current result overlaps with location
+                        # This will allow all the hits to be grouped together based on their location
+                        if loc.intersection(set(range(location[0], location[1]))):
+                            # Populate the grouped hits for each location
+                            try:
+                                resultdict[contig][locstr].append(percentidentity)
+                                rowdict[contig][locstr].append(row)
+                            # Initialise and populate the lists of the nested dictionary
+                            except KeyError:
+                                try:
+                                    resultdict[contig][locstr] = list()
+                                    resultdict[contig][locstr].append(percentidentity)
+                                    rowdict[contig][locstr] = list()
+                                    rowdict[contig][locstr].append(row)
+                                # As this is a nested dictionary, it needs to be initialised here
+                                except KeyError:
+                                    resultdict[contig] = dict()
+                                    resultdict[contig][locstr] = list()
+                                    resultdict[contig][locstr].append(percentidentity)
+                                    rowdict[contig] = dict()
+                                    rowdict[contig][locstr] = list()
+                                    rowdict[contig][locstr].append(row)
+            # Find the best hit for each location based on percent identity
+            for contig in resultdict:
+                for location in resultdict[contig]:
+                    # Initialise a variable to determine whether there is already a best hit found for the location
+                    multiple = False
+                    # Iterate through the BLAST results to find the best hit
+                    for row in rowdict[contig][location]:
+                        # Add the best hit to the .blastresults attribute of the object
+                        if row['percentidentity'] == max(resultdict[contig][location]) and not multiple:
+                            sample[self.analysistype].blastresults.append(row)
+                            multiple = True
 
     def makedbthreads(self):
         """
@@ -72,7 +141,6 @@ class GeneSeekr(object):
                 # TODO use MakeBLASTdb class
                 subprocess.call(shlex.split('makeblastdb -in {} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {}'
                                             .format(fastapath, db)), stdout=fnull, stderr=fnull)
-            dotter()
             self.dqueue.task_done()  # signals to dqueue job is done
 
     def blastnthreads(self):
@@ -121,7 +189,7 @@ class GeneSeekr(object):
                                            # outfmt="'6 qseqid sseqid positive mismatch gaps "
                                            #        "evalue bitscore slen length'",
                                            outfmt="'6 qseqid sseqid positive mismatch gaps "
-                                                  "evalue bitscore slen length qstart qend qseq sstart send'",
+                                                  "evalue bitscore slen length qstart qend qseq sstart send sseq'",
                                            out=report)
             # Save the blast command in the metadata
             sample[self.analysistype].blastcommand = str(blastn)
@@ -137,8 +205,12 @@ class GeneSeekr(object):
                     except IOError:
                         pass
                     raise
-            # Run the blast parsing module
-            self.blastparser(report, sample)
+            # Parse the output depending on whether unique results are desired
+            if self.unique:
+                self.uniqueblastparser(report, sample)
+            else:
+                # Run the blast parsing module
+                self.blastparser(report, sample)
             self.blastqueue.task_done()  # signals to dqueue job is done
 
     def blastparser(self, report, sample):
@@ -180,6 +252,96 @@ class GeneSeekr(object):
         if not resultdict:
             sample[self.analysistype].blastresults = 'NA'
 
+    def uniqueblastparser(self, report, sample):
+        """
+        Find the best hit at a location, and discard any other matches
+        :param report: Name of the blast output report being parsed
+        :param sample: sample object
+        """
+        # Open the sequence profile file as a dictionary
+        blastdict = DictReader(open(report), fieldnames=self.fieldnames, dialect='excel-tab')
+        # Initialise a dictionary to store all the target sequences
+        sample[self.analysistype].targetsequence = dict()
+        sample[self.analysistype].queryranges = dict()
+        sample[self.analysistype].querypercent = dict()
+        sample[self.analysistype].queryscore = dict()
+        sample[self.analysistype].results = dict()
+        # Go through each BLAST result
+        for row in blastdict:
+            # Calculate the percent identity and extract the bitscore from the row
+            # Percent identity is the (length of the alignment - number of mismatches) / total subject length
+            percentidentity = float('{:0.2f}'.format((float(row['positives'])) /
+                                                     float(row['subject_length']) * 100))
+            target = row['subject_id']
+            contig = row['query_id']
+            high = max([int(row['query_start']), int(row['query_end'])])
+            low = min([int(row['query_start']), int(row['query_end'])])
+            score = row['bit_score']
+            # Create new entries in the blast results dictionaries with the calculated variables
+            row['percentidentity'] = percentidentity
+            row['low'] = low
+            row['high'] = high
+            row['alignment_fraction'] = float('{:0.2f}'.format(float(float(row['alignment_length']) /
+                                                                     float(row['subject_length']) * 100)))
+            # If the percent identity is greater than the cutoff
+            if percentidentity >= self.cutoff:
+                try:
+                    sample[self.analysistype].results[contig].append(row)
+                    # Boolean to store whether the list needs to be updated
+                    append = True
+                    # Iterate through all the ranges in the list - if the new range is different than any of the ranges
+                    # seen before, append it. Otherwise, update the previous ranges with the new, longer range as
+                    # necessary e.g. [2494, 3296] will be updated to [2493, 3296] with [2493, 3293], and
+                    # [2494, 3296] will become [[2493, 3296], [3296, 4132]] with [3296, 4132]
+                    for spot in sample[self.analysistype].queryranges[contig]:
+                        # Update the low value if the new low value is slightly lower than before
+                        if 1 <= (spot[0] - low) <= 100:
+                            # Update the low value
+                            spot[0] = low
+                            # It is not necessary to append
+                            append = False
+                        # Update the previous high value if the new high value is slightly higher than before
+                        elif 1 <= (high - spot[1]) <= 100:
+                            # Update the high value in the list
+                            spot[1] = high
+                            # It is not necessary to append
+                            append = False
+                        # Do not append if the new low is slightly larger than before
+                        elif 1 <= (low - spot[0]) <= 100:
+                            append = False
+                        # Do not append if the new high is slightly smaller than before
+                        elif 1 <= (spot[1] - high) <= 100:
+                            append = False
+                        # Do not append if the high and low are the same as the previously recorded values
+                        elif low == spot[0] and high == spot[1]:
+                            append = False
+                    # If the result appears to be in a new location, add the data to the object
+                    if append:
+                        sample[self.analysistype].queryranges[contig].append([low, high])
+                        sample[self.analysistype].querypercent[contig] = percentidentity
+                        sample[self.analysistype].queryscore[contig] = score
+                # Initialise and populate the dictionary for each contig
+                except KeyError:
+                    sample[self.analysistype].queryranges[contig] = list()
+                    sample[self.analysistype].queryranges[contig].append([low, high])
+                    sample[self.analysistype].querypercent[contig] = percentidentity
+                    sample[self.analysistype].queryscore[contig] = score
+                    sample[self.analysistype].results[contig] = list()
+                    sample[self.analysistype].results[contig].append(row)
+                    sample[self.analysistype].targetsequence[target] = dict()
+                # Determine if the query sequence is in a different frame than the subject, and correct
+                # by setting the query sequence to be the reverse complement
+                if int(row['subject_end']) < int(row['subject_start']):
+                    # Create a sequence object using Biopython
+                    seq = Seq(row['query_sequence'], IUPAC.unambiguous_dna)
+                    # Calculate the reverse complement of the sequence
+                    querysequence = str(seq.reverse_complement())
+                # If the sequence is not reversed, use the sequence as it is in the output
+                else:
+                    querysequence = row['query_sequence']
+                # Add the sequence in the correct orientation to the sample
+                sample[self.analysistype].targetsequence[target] = querysequence
+
     def reporter(self):
         """
         Creates .xlsx reports using xlsxwriter
@@ -213,32 +375,31 @@ class GeneSeekr(object):
                     for target in sorted(sample[self.analysistype].targetnames):
                         # Add the name of the gene to the header
                         headers.append(target)
-                        if sample[self.analysistype].blastresults != 'NA':
-                            try:
-                                # Append the percent identity to the data list
-                                data.append(str(sample[self.analysistype].blastresults[target]))
-                                # Only if the alignment option is selected, for inexact results, add alignments
-                                if self.align and sample[self.analysistype].blastresults[target] != 100.00:
-                                    # Align the protein (and nucleotide) sequences to the reference
-                                    self.alignprotein(sample, target)
-                                    # Add the appropriate headers
-                                    headers.extend(['{}_aa_Identity'.format(target),
-                                                    '{}_aa_Alignment'.format(target),
-                                                    '{}_aa_SNP_location'.format(target),
-                                                    '{}_nt_Alignment'.format(target),
-                                                    '{}_nt_SNP_location'.format(target)
-                                                    ])
-                                    # Add the alignment, and the location of mismatches for both nucleotide and amino
-                                    # acid sequences
-                                    data.extend([sample[self.analysistype].aaidentity[target],
-                                                 sample[self.analysistype].aaalign[target],
-                                                 sample[self.analysistype].aaindex[target],
-                                                 sample[self.analysistype].ntalign[target],
-                                                 sample[self.analysistype].ntindex[target],
-                                                 ])
-                            # If there are no blast results for the target, add a '-'
-                            except (KeyError, TypeError):
-                                data.append('-')
+                        try:
+                            # Append the percent identity to the data list
+                            data.append(str(sample[self.analysistype].blastresults[target]))
+                            # Only if the alignment option is selected, for inexact results, add alignments
+                            if self.align and sample[self.analysistype].blastresults[target] != 100.00:
+                                # Align the protein (and nucleotide) sequences to the reference
+                                self.alignprotein(sample, target)
+                                # Add the appropriate headers
+                                headers.extend(['{}_aa_Identity'.format(target),
+                                                '{}_aa_Alignment'.format(target),
+                                                '{}_aa_SNP_location'.format(target),
+                                                '{}_nt_Alignment'.format(target),
+                                                '{}_nt_SNP_location'.format(target)
+                                                ])
+                                # Add the alignment, and the location of mismatches for both nucleotide and amino
+                                # acid sequences
+                                data.extend([sample[self.analysistype].aaidentity[target],
+                                             sample[self.analysistype].aaalign[target],
+                                             sample[self.analysistype].aaindex[target],
+                                             sample[self.analysistype].ntalign[target],
+                                             sample[self.analysistype].ntindex[target],
+                                             ])
+                        # If there are no blast results for the target, add a '-'
+                        except (KeyError, TypeError):
+                            data.append('-')
                         # If there are no blast results at all, add a '-'
                         else:
                             data.append('-')
@@ -293,6 +454,8 @@ class GeneSeekr(object):
         Create alignments of the sample nucleotide and amino acid sequences to the reference sequences
         """
         import re
+        from Bio import pairwise2
+        from Bio.pairwise2 import format_alignment
         # Initialise dictionaries
         sample[self.analysistype].dnaseq = dict()
         sample[self.analysistype].protseq = dict()
@@ -318,27 +481,274 @@ class GeneSeekr(object):
             # Translate the nucleotide sequence of the reference sequence
             refdna = Seq(refseq, IUPAC.unambiguous_dna)
             refprot = str(refdna.translate())
-            # Align the nucleotide sequence of the reference to the sample. If the corresponding bases match, add
-            # a |, otherwise a space
+            # Use pairwise2 to perform a local alignment with the following parameters:
+            # x     No match parameters. Identical characters have score of 1, otherwise 0.
+            # s     Same open (-1)  and extend (-.1) gap penalties for both sequences
+            ntalignments = pairwise2.align.localxs(seq, refseq, -1, -.1)
+            # Use format_alignment to create a formatted alignment that is subsequently split on newlines e.g.
+            '''
+            ACCGT
+            | ||
+            A-CG-
+            Score=3
+            '''
+            ntformat = (str(format_alignment(*ntalignments[0])).split('\n'))
+            # Align the nucleotide sequence of the reference (ntalignments[2]) to the sample (ntalignments[0]).
+            # If the corresponding bases match, add a |, otherwise a space
             ntalignment = ''.join(map(lambda x: '|' if len(set(x)) == 1 else ' ',
-                                      zip(sample[self.analysistype].dnaseq[target], refdna)))
+                                      zip(ntformat[0], ntformat[2])))
             # Create the nucleotide alignment: the sample sequence, the (mis)matches, and the reference sequence
-            sample[self.analysistype].ntalign[target] = self.interleaveblastresults(
-                sample[self.analysistype].dnaseq[target],
-                refdna)
+            sample[self.analysistype].ntalign[target] = self.interleaveblastresults(ntformat[0], ntformat[2])
             # Regex to determine location of mismatches in the sequences
-            sample[self.analysistype].ntindex[target] = ';'.join(
-                (str(snp.start()) for snp in re.finditer(' ', ntalignment)))
+            count = 0
+            sample[self.analysistype].ntindex[target] = str()
+            for snp in re.finditer(' ', ntalignment):
+                # If there are many SNPs, then insert line breaks for every 10 SNPs
+                if count <= 10:
+                    sample[self.analysistype].ntindex[target] += str(snp.start()) + ';'
+                else:
+                    sample[self.analysistype].ntindex[target] += '\n' + str(snp.start()) + ';'
+                    count = 0
+                count += 1
             # Perform the same steps, except for the amino acid sequence
+            aaalignments = pairwise2.align.localxs(sample[self.analysistype].protseq[target], refprot, -1, -.1)
+            aaformat = (str(format_alignment(*aaalignments[0])).split('\n'))
             aaalignment = ''.join(map(lambda x: '|' if len(set(x)) == 1 else ' ',
-                                      zip(sample[self.analysistype].protseq[target], refprot)))
+                                      zip(aaformat[0], aaformat[2])))
             sample[self.analysistype].aaidentity[target] = '{:.2f}'\
                 .format(float(aaalignment.count('|')) / float(len(aaalignment)) * 100)
-            sample[self.analysistype].aaalign[target] = self.interleaveblastresults(
-                sample[self.analysistype].protseq[target],
-                refprot)
-            sample[self.analysistype].aaindex[target] = ';'.join(
-                (str(snp.start()) for snp in re.finditer(' ', aaalignment)))
+            sample[self.analysistype].aaalign[target] = self.interleaveblastresults(aaformat[0], aaformat[2])
+            count = 0
+            sample[self.analysistype].aaindex[target] = str()
+            for snp in re.finditer(' ', aaalignment):
+                if count <= 10:
+                    sample[self.analysistype].aaindex[target] += str(snp.start()) + ';'
+                else:
+                    sample[self.analysistype].aaindex[target] += '\n' + str(snp.start()) + ';'
+                    count = 0
+                count += 1
+
+    def resfinderreporter(self):
+        """
+        Custom reports for ResFinder analyses. These reports link the gene(s) found to their resistance phenotypes
+        """
+        import xlsxwriter
+        from Bio.SeqRecord import SeqRecord
+        for sample in self.metadata:
+            if sample.general.bestassemblyfile != 'NA':
+                # Create a dictionary to store the genotype: phenotype data
+                sample[self.analysistype].resfindernotes = dict()
+                with open(os.path.join(sample[self.analysistype].targetpath, 'notes.txt')) as notes:
+                    for line in notes:
+                        # Ignore lines starting with a '#' these lines usually denote classes of antibiotics
+                        if not line.startswith('#'):
+                            # Example line: aac(2')-Ia:Aminoglycoside resistance:
+                            # Gene: aac(2')-Ia
+                            gene = line.split(':')[0]
+                            # Resistance: Aminoglycoside resistance
+                            resistance = line.split(':')[1]
+                            sample[self.analysistype].resfindernotes[gene] = resistance
+
+        # Create a workbook to store the report. Using xlsxwriter rather than a simple csv format, as I want to be
+        # able to have appropriately sized, multi-line cells
+        workbook = xlsxwriter.Workbook('{}/{}.xlsx'.format(self.reportpath, self.analysistype))
+        # New worksheet to store the data
+        worksheet = workbook.add_worksheet()
+        # Add a bold format for header cells. Using a monotype font size 10
+        bold = workbook.add_format({'bold': True, 'font_name': 'Courier New', 'font_size': 8})
+        # Format for data cells. Monotype, size 10, top vertically justified
+        courier = workbook.add_format({'font_name': 'Courier New', 'font_size': 8})
+        courier.set_align('top')
+        # Initialise the position within the worksheet to be (0,0)
+        row = 0
+        col = 0
+        # A dictionary to store the column widths for every header
+        columnwidth = dict()
+        extended = False
+        headers = ['Strain', 'Gene', 'Resistance', 'PercentIdentity', 'PercentCovered', 'Contig', 'Location',
+                   'nt_sequence']
+        for sample in self.metadata:
+            sample[self.analysistype].sampledata = list()
+            # Initialise a list of all the headers with 'Strain'
+            if sample[self.analysistype].targetnames != 'NA':
+                # Process the sample only if the script could find targets
+                if sample[self.analysistype].blastresults != 'NA':
+                    for result in sample[self.analysistype].blastresults:
+                        # Initialise a list to store all the data for each strain
+                        data = list()
+                        # There are three 'styles' of gene:resistance pairs in the notes.txt file
+                        # 1) strA:Aminoglycoside resistance, with an allele format: strA_1_M96392
+                        # Only the gene name (strA) is required
+                        try:
+                            target = result['subject_id'].split('_')[0]
+                            resistance = sample[self.analysistype].resfindernotes[target]
+                        # 2) blaTEM-101:Beta-lactam resistance, with an allele format: blaTEM_1B_1_JF910132
+                        # The '1B' following the gene name (blaTEM) is also required
+                        except KeyError:
+                            try:
+                                target = '-'.join([result['subject_id'].split('_')[0],
+                                                   result['subject_id'].split('_')[1]])
+                                resistance = sample[self.analysistype].resfindernotes[target]
+                            # 3) blaCTX-M-55:Beta-lactam resistance, with an allele format: blaCTX_M_55_2_GQ456159
+                            # The 'M' and the '55' following the gene name (blaCTX) are both required
+                            except KeyError:
+                                target = '-'.join([result['subject_id'].split('_')[0],
+                                                   result['subject_id'].split('_')[1],
+                                                   result['subject_id'].split('_')[2]])
+                                resistance = sample[self.analysistype].resfindernotes[target]
+
+                        # Append the necessary values to the data list
+                        data.append(result['subject_id'])
+                        data.append(resistance)
+                        percentid = result['percentidentity']
+                        data.append(percentid)
+                        data.append(result['alignment_fraction'])
+                        data.append(result['query_id'])
+                        data.append('...'.join([str(result['low']), str(result['high'])]))
+                        try:
+                            # Only if the alignment option is selected, for inexact results, add alignments
+                            if self.align and percentid != 100.00:
+
+                                # Align the protein (and nucleotide) sequences to the reference
+                                self.alignprotein(sample, result['subject_id'])
+                                if not extended:
+                                    # Add the appropriate headers
+                                    headers.extend(['aa_Identity',
+                                                    'aa_Alignment',
+                                                    'aa_SNP_location',
+                                                    'nt_Alignment',
+                                                    'nt_SNP_location'
+                                                    ])
+                                    extended = True
+                                # Create a FASTA-formatted sequence output of the query sequence
+                                record = SeqRecord(sample[self.analysistype].dnaseq[result['subject_id']],
+                                                   id='{}_{}'.format(sample.name, result['subject_id']),
+                                                   description='')
+
+                                # Add the alignment, and the location of mismatches for both nucleotide and amino
+                                # acid sequences
+                                data.extend([record.format('fasta'),
+                                             sample[self.analysistype].aaidentity[result['subject_id']],
+                                             sample[self.analysistype].aaalign[result['subject_id']],
+                                             sample[self.analysistype].aaindex[result['subject_id']],
+                                             sample[self.analysistype].ntalign[result['subject_id']],
+                                             sample[self.analysistype].ntindex[result['subject_id']]
+                                             ])
+                            else:
+                                record = SeqRecord(Seq(result['subject_sequence'], IUPAC.unambiguous_dna),
+                                                   id='{}_{}'.format(sample.name, result['subject_id']),
+                                                   description='')
+                                data.append(record.format('fasta'))
+                                if self.align:
+                                    # Add '-'s for the empty results, as there are no alignments for exact matches
+                                    data.extend(['-', '-', '-', '-', '-'])
+                        # If there are no blast results for the target, add a '-'
+                        except (KeyError, TypeError):
+                            data.append('-')
+                        sample[self.analysistype].sampledata.append(data)
+                # If there are no blast results at all, add a '-'
+                # else:
+                #     data.append('-')
+
+        if 'nt_sequence' not in headers:
+            headers.append('nt_sequence')
+        # Write the header to the spreadsheet
+        for header in headers:
+            worksheet.write(row, col, header, bold)
+            # Set the column width based on the longest header
+            try:
+                columnwidth[col] = len(header) if len(header) > columnwidth[col] else columnwidth[
+                    col]
+            except KeyError:
+                columnwidth[col] = len(header)
+            worksheet.set_column(col, col, columnwidth[col])
+            col += 1
+        # Increment the row and reset the column to zero in preparation of writing results
+        row += 1
+        col = 0
+        # Write out the data to the spreadsheet
+        for sample in self.metadata:
+            worksheet.write(row, col, sample.name, courier)
+            columnwidth[col] = len(sample.name)
+            worksheet.set_column(col, col, columnwidth[col])
+            col += 1
+            multiple = False
+            for data in sample[self.analysistype].sampledata:
+                if multiple:
+                    col += 1
+                # List of the number of lines for each result
+                totallines = list()
+                for results in data:
+                    #
+                    worksheet.write(row, col, results, courier)
+                    try:
+                        # Counting the length of multi-line strings yields columns that are far too wide, only count
+                        # the length of the string up to the first line break
+                        alignmentcorrect = len(str(results).split('\n')[1])
+                        # Count the number of lines for the data
+                        lines = results.count('\n') if results.count('\n') >= 1 else 1
+                        # Add the number of lines to the list
+                        totallines.append(lines)
+                    except IndexError:
+                        try:
+                            # Counting the length of multi-line strings yields columns that are far too wide, only count
+                            # the length of the string up to the first line break
+                            alignmentcorrect = len(str(results).split('\n')[0])
+                            # Count the number of lines for the data
+                            lines = results.count('\n') if results.count('\n') >= 1 else 1
+                            # Add the number of lines to the list
+                            totallines.append(lines)
+                        # If there are no newline characters, set the width to the length of the string
+                        except AttributeError:
+                            alignmentcorrect = len(str(results))
+                            lines = 1
+                            # Add the number of lines to the list
+                            totallines.append(lines)
+                    # Increase the width of the current column, if necessary
+                    try:
+                        columnwidth[col] = alignmentcorrect if alignmentcorrect > columnwidth[col] else \
+                            columnwidth[col]
+                    except KeyError:
+                        columnwidth[col] = alignmentcorrect
+                    worksheet.set_column(col, col, columnwidth[col])
+                    col += 1
+                    multiple = True
+                # Set the width of the row to be the number of lines (number of newline characters) * 12
+                worksheet.set_row(row, max(totallines) * 11)
+                # Increase the row counter for the next strain's data
+                row += 1
+                col = 0
+        # Close the workbook
+        workbook.close()
+
+    def virulencefinderreporter(self):
+        with open(os.path.join(self.reportpath, 'virulence.csv'), 'w') as report:
+            header = 'Strain,Gene,PercentIdentity,PercentCovered,Contig,Location\n'
+            data = ''
+            for sample in self.metadata:
+                if sample.general.bestassemblyfile != 'NA':
+                    if sample[self.analysistype].blastresults:
+                        data += '{},'.format(sample.name)
+                        #
+                        multiple = False
+                        for result in sample[self.analysistype].blastresults:
+                            if self.analysistype == 'virulence':
+                                gene = result['subject_id'].split(':')[0]
+                            else:
+                                gene = result['subject_id']
+                            if multiple:
+                                data += ','
+                            data += '{},{},{},{},{}..{}\n' \
+                                .format(gene, result['percentidentity'], result['alignment_fraction'],
+                                        result['query_id'], result['low'], result['high'])
+                            # data += '\n'
+                            multiple = True
+                    else:
+                        data += '{}\n'.format(sample.name)
+                else:
+                    data += '{}\n'.format(sample.name)
+            report.write(header)
+            report.write(data)
 
     @staticmethod
     def interleaveblastresults(query, subject):
@@ -381,7 +791,7 @@ class GeneSeekr(object):
         return blaststring
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.cutoff = inputobject.cutoff
         self.start = inputobject.start
@@ -394,10 +804,21 @@ class GeneSeekr(object):
         self.referencefilepath = inputobject.referencefilepath
         self.cpus = inputobject.threads
         self.align = inputobject.align
+        # self.resfinder = inputobject.resfinder
+        # self.virulencefinder = inputobject.virulencefinder
+        # If CGE-based analyses are specified, set self.unique to True, otherwise, use the arguments
+        if self.analysistype == 'resfinder':
+            self.unique = True
+        elif self.analysistype == 'virulence':
+            self.unique = True
+            self.cutoff = 80
+        else:
+            self.unique = inputobject.unique
         # Fields used for custom outfmt 6 BLAST output:
         self.fieldnames = ['query_id', 'subject_id', 'positives', 'mismatches', 'gaps',
                            'evalue', 'bit_score', 'subject_length', 'alignment_length',
-                           'query_start', 'query_end', 'query_sequence', 'subject_start', 'subject_end']
+                           'query_start', 'query_end', 'query_sequence',
+                           'subject_start', 'subject_end', 'subject_sequence']
         self.plusdict = defaultdict(make_dict)
         self.dqueue = Queue(maxsize=self.cpus)
         self.blastqueue = Queue(maxsize=self.cpus)
@@ -411,7 +832,7 @@ def sequencenames(contigsfile):
     :return: list of all sequence names
     """
     sequences = list()
-    for record in SeqIO.parse(open(contigsfile, "rU"), "fasta"):
+    for record in SeqIO.parse(open(contigsfile, "rU", encoding="iso-8859-15"), "fasta"):
         sequences.append(record.id)
     return sequences
 
@@ -420,7 +841,6 @@ if __name__ == '__main__':
     class Parser(object):
 
         def strainer(self):
-            from accessoryFunctions import GenObject, MetadataObject
             # Get the sequences in the sequences folder into a list. Note that they must have a file extension that
             # begins with .fa
             self.strains = sorted(glob('{}*.fa*'.format(self.sequencepath)))
@@ -485,6 +905,16 @@ if __name__ == '__main__':
                                 action='store_true',
                                 help='Optionally output alignments of genes with less than 100% identity to reference '
                                      'genes. This alignment will use amino acid sequences for both query and reference')
+            parser.add_argument('-u', '--unique',
+                                action='store_true',
+                                help='Do not report multiple hits at the same location in a contig. Instead, store the'
+                                     'best hit, and ignore the rest')
+            parser.add_argument('-R', '--resfinder',
+                                action='store_true',
+                                help='Perform ResFinder-like analyses ')
+            parser.add_argument('-v', '--virulencefinder',
+                                action='store_true',
+                                help='Perform VirulenceFinder-like analyses')
             args = parser.parse_args()
             self.sequencepath = os.path.join(args.sequencepath, '')
             assert os.path.isdir(self.sequencepath), 'Cannot locate sequence path as specified: {}'\
@@ -499,11 +929,22 @@ if __name__ == '__main__':
             self.cutoff = args.cutoff
             self.threads = args.numthreads
             self.align = args.align
+            self.unique = args.unique
+            self.resfinder = args.resfinder
+            self.virulencefinder = args.virulencefinder
             self.strains = list()
             self.targets = list()
             self.combinedtargets = str()
             self.samples = list()
-            self.analysistype = 'geneseekr'
+            if self.resfinder:
+                self.analysistype = 'resfinder'
+            elif self.virulencefinder:
+                self.analysistype = 'virulence'
+            elif self.resfinder and self.virulencefinder:
+                print('Cannot perform ResFinder and VirulenceFinder simultaneously. Please choose only one'
+                      'of the -R and -v flags')
+            else:
+                self.analysistype = 'geneseekr'
             self.start = time.time()
             self.strainer()
 
@@ -520,6 +961,9 @@ if __name__ == '__main__':
             self.pipeline = False
             self.referencefilepath = str()
             self.align = self.runmetadata.align
+            self.unique = self.runmetadata.unique
+            # self.resfinder = self.runmetadata.resfinder
+            # self.virulencefinder = self.runmetadata.virulencefinder
             # Run the analyses
             GeneSeekr(self)
 
@@ -572,10 +1016,10 @@ class PipelineInit(object):
                 sample[self.analysistype].targetnames = 'NA'
                 sample[self.analysistype].reportdir = 'NA'
         if self.chas:
-            import CHAS
-            CHAS.CHAS(self, 'chas')
+            from .CHAS import CHAS
+            CHAS(self, 'chas')
 
-    def __init__(self, inputobject, analysistype, genusspecific, cutoff):
+    def __init__(self, inputobject, analysistype, genusspecific, cutoff, unique):
         self.runmetadata = inputobject.runmetadata
         self.analysistype = analysistype
         self.path = inputobject.path
@@ -588,5 +1032,20 @@ class PipelineInit(object):
         self.genusspecific = genusspecific
         self.chas = list()
         self.align = False
+        self.unique = unique
+        # self.resfinder = False
+        # self.virulencefinder = False
         # Get the alleles and profile into the metadata
         self.strainer()
+
+'''
+-s
+/nas0/bio_requests/8801/sequences
+-t
+/nas0/Adam/assemblypipeline/resfinder
+-r
+/nas0/bio_requests/8801/reports
+-a
+-u
+-R
+'''

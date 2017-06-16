@@ -6,7 +6,7 @@ __author__ = 'adamkoziol'
 
 class Serotype(GeneSeekr):
 
-    def csvwriter(self):
+    def reporter(self):
         combinedrow = ''
         for sample in self.metadata:
             row = ''

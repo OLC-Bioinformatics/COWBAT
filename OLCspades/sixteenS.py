@@ -6,7 +6,7 @@ __author__ = 'adamkoziol'
 
 class SixteenS(GeneSeekr):
 
-    def csvwriter(self):
+    def reporter(self):
         import operator
         from glob import glob
         from csv import DictReader

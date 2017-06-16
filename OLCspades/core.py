@@ -54,7 +54,7 @@ class CoreGenome(GeneSeekr):
         else:
             sample[self.analysistype].blastresults[topcore[0][0]] = (str(topcore[0][1]), str(len(coregenes)))
 
-    def csvwriter(self):
+    def reporter(self):
         header = 'Strain,ClosestRef,GenesPresent/Total,\n'
         data = ''
         for sample in self.metadata:

@@ -23,7 +23,7 @@ class Prophages(GeneSeekr):
                 resultdict.update({row['query_id']: {row['subject_id']: percentidentity}})
             sample[self.analysistype].blastresults = resultdict
 
-    def csvwriter(self):
+    def reporter(self):
         from csv import DictReader
         # Set the required variables to load prophage data from a summary file
         targetpath = '{}{}/'.format(self.referencefilepath, self.analysistype)

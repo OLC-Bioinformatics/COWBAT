@@ -91,8 +91,8 @@ class Sistr(object):
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.cpus = inputobject.cpus
-        self.referencefilepath = inputobject.reffilepath
         self.reportdir = '{}/'.format(inputobject.reportpath)
+        make_path(self.reportdir)
         self.analysistype = analysistype
         self.devnull = open(os.devnull, 'wb')
         self.queue = Queue()
@@ -100,3 +100,58 @@ class Sistr(object):
                         'serogroup', 'serovar', 'serovar_antigen', 'serovar_cgmlst']
         # Run the analyses
         self.sistr()
+
+if __name__ == '__main__':
+    # Argument parser for user-inputted values, and a nifty help menu
+    from argparse import ArgumentParser
+    import time
+    import multiprocessing
+    from glob import glob
+    # Parser for arguments
+    parser = ArgumentParser(description='Automate sistr analyses on a folder of .fasta files')
+    parser.add_argument('path',
+                        help='Specify input directory')
+    parser.add_argument('-s', '--sequencepath',
+                        required=True,
+                        help='Path of .fastq(.gz) files to process.')
+    # Get the arguments into an object
+    arguments = parser.parse_args()
+
+    # Define the start time
+    arguments.starttime = time.time()
+
+    # Find the files
+    fastas = sorted(glob(os.path.join(arguments.sequencepath, '*.fa*')))
+
+    # Create a metadata object
+    arguments.runmetadata = MetadataObject()
+    arguments.runmetadata.samples = list()
+    for fasta in fastas:
+        metadata = MetadataObject()
+        metadata.name = os.path.split(fasta)[1].split('.')[0]
+        # Initialise the general and run categories
+        metadata.general = GenObject()
+        metadata.run = GenObject()
+        # Set the destination folder
+        outputdir = os.path.join(arguments.sequencepath, metadata.name)
+        make_path(outputdir)
+        # Add the output directory to the metadata
+        metadata.general.outputdirectory = outputdir
+        metadata.run.outputdirectory = outputdir
+        metadata.general.bestassemblyfile = True
+        # Initialise an attribute to store commands
+        metadata.commands = GenObject()
+        # Assume that all samples are Salmonella
+        metadata.general.referencegenus = 'Salmonella'
+        # Set the .fasta file as the best assembly
+        metadata.general.bestassemblyfile = fasta
+        arguments.runmetadata.samples.append(metadata)
+
+    arguments.cpus = multiprocessing.cpu_count()
+    arguments.reportpath = os.path.join(arguments.path, 'reports')
+
+    # Run the script
+    Sistr(arguments, 'sistr')
+
+    # Print a bold, green exit statement
+    print('\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time.time() - arguments.starttime) + '\033[0m')

@@ -53,9 +53,12 @@ class Aggregate(object):
             metadata.general.path = assembly
             metadata.general.reportpath = str(assembly) + 'reports/'
             metadata.general.reports = glob('{}*.csv'.format(metadata.general.reportpath))
+            # SISTR outputs a .tsv file - add it to the list of reports
+            metadata.general.reports = metadata.general.reports + glob('{}*.tsv'.format(metadata.general.reportpath))
             metadata.general.reportnames = [os.path.basename(x) for x in metadata.general.reports]
             # Add all the names of the reports to the set of reports
             for reportname in metadata.general.reportnames:
+
                 self.reportset.add(reportname)
             # Add the metadata to list of metadata objects
             samples.append(metadata)
@@ -113,7 +116,7 @@ class Aggregate(object):
         self.samples = list()
         self.reportset = set()
         self.runmetadata = MetadataObject()
-        self.reportpath = os.path.join(self.path, 'reports/')
+        self.reportpath = os.path.join(self.path, 'reports', '')
         # Make the report folder
         make_path(self.reportpath)
         # Run the analyses
@@ -139,4 +142,4 @@ if __name__ == '__main__':
     # Run the script
     Aggregate(arguments, start)
     # Print a bold, green exit statement
-    print '\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time.time() - start) + '\033[0m'
+    print('\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time.time() - start) + '\033[0m')

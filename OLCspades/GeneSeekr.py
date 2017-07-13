@@ -146,12 +146,10 @@ class GeneSeekr(object):
     def blastnthreads(self):
         """Setup and create  threads for blastn and xml path"""
         # Create the threads for the BLAST analysis
-        for sample in self.metadata:
-            if sample.general.bestassemblyfile != 'NA':
-                for i in range(len(sample[self.analysistype].combinedtargets)):
-                    threads = Thread(target=self.runblast, args=())
-                    threads.setDaemon(True)
-                    threads.start()
+        for i in range(self.cpus):
+            threads = Thread(target=self.runblast, args=())
+            threads.setDaemon(True)
+            threads.start()
         # Populate threads for each gene, genome combination
         for sample in self.metadata:
             if sample[self.analysistype].combinedtargets != 'NA':
@@ -723,7 +721,7 @@ class GeneSeekr(object):
 
     def virulencefinderreporter(self):
         with open(os.path.join(self.reportpath, 'virulence.csv'), 'w') as report:
-            header = 'Strain,Gene,PercentIdentity,PercentCovered,Contig,Location\n'
+            header = 'Strain,Gene,PercentIdentity,PercentCovered,Contig,Location,Sequence\n'
             data = ''
             for sample in self.metadata:
                 if sample.general.bestassemblyfile != 'NA':
@@ -738,9 +736,9 @@ class GeneSeekr(object):
                                 gene = result['subject_id']
                             if multiple:
                                 data += ','
-                            data += '{},{},{},{},{}..{}\n' \
+                            data += '{},{},{},{},{}..{},{}\n' \
                                 .format(gene, result['percentidentity'], result['alignment_fraction'],
-                                        result['query_id'], result['low'], result['high'])
+                                        result['query_id'], result['low'], result['high'], result['query_sequence'])
                             # data += '\n'
                             multiple = True
                     else:

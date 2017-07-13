@@ -27,7 +27,7 @@ class Download(object):
         Search for sequencing runs on the FTP
         """
         # Load the credentials to the FTP
-        self.username, self.password = open(self.ftpcredentials, 'rb').readline().rstrip().split(',')
+        self.username, self.password = open(self.ftpcredentials, 'r').readline().rstrip().split(',')
         # Create a URL that includes the user name and password, so PycURL can login to the FTP server
         destinationurl = 'ftp://{}:{}@{}'.format(self.username, self.password, self.downloadpath)
         success = False

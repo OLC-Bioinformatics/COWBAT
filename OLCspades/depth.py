@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 from glob import glob
 from subprocess import call
 from threading import Lock
@@ -8,10 +8,10 @@ from Bio.Sequencing.Applications import SamtoolsViewCommandline, SamtoolsSortCom
 from accessoryFunctions import *
 from bowtie import *
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+#try:
+from io import StringIO  # This shouldn't give an import error any more.
+#except ImportError:
+#    from StringIO import StringIO
 
 threadlock = Lock()
 __author__ = 'mike knowles, adamkoziol'
@@ -157,7 +157,7 @@ class QualiMap(object):
         return key, value
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.cpus = inputobject.cpus
@@ -176,7 +176,7 @@ if __name__ == '__main__':
     class Parser(object):
 
         def associate(self):
-            from accessoryFunctions import GenObject, MetadataObject
+            from .accessoryFunctions import GenObject, MetadataObject
             # Get the sequences in the sequences folder into a list. Note that they must have a file extension that
             # begins with .fa
             self.strains = [fasta for fasta in sorted(glob('{}*.fa*'.format(self.assemblypath)))

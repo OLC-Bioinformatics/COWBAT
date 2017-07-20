@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-import copy_reg
+import copyreg
 import types
-
+import os
 from GeneSeekr import *
+from accessoryFunctions import make_path
 
 __author__ = 'adamkoziol'
 
@@ -28,7 +29,7 @@ def _unpickle_method(func_name, obj, cls):
     # noinspection PyUnboundLocalVariable
     return func.__get__(obj, cls)
 
-copy_reg.pickle(types.MethodType, _pickle_method, _unpickle_method)
+copyreg.pickle(types.MethodType, _pickle_method, _unpickle_method)
 
 
 class ARMI(GeneSeekr):
@@ -88,7 +89,7 @@ class ARMI(GeneSeekr):
                     self.plus[sample.name][gene[:7]].append([percentidentity, row['query_accession'], allele])
 
     def csvwriter(self):
-        from ARMICARD import decipher
+        from .ARMICARD import decipher
         import pickle
         aro = ''
         # Set the location of the .dat file - it is inefficiently done for each sample, as I don't have the .targetpath

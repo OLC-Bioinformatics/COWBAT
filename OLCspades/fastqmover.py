@@ -11,7 +11,7 @@ class FastqMover(object):
         import os
         import time
         # from accessoryFunctions import relativesymlink
-        print "\r[{:}] Moving fastq files".format(time.strftime("%H:%M:%S"))
+        print("\r[{:}] Moving fastq files".format(time.strftime("%H:%M:%S")))
         # Iterate through each sample
         for sample in self.metadata.runmetadata.samples:
             # Retrieve the output directory
@@ -30,8 +30,8 @@ class FastqMover(object):
                 # map(lambda x: relativesymlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
                 try:
                     # map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
-                    map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
-                                             '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles)
+                    list(map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
+                                             '{}/{}'.format(outputdir, os.path.basename(x))), fastqfiles))
                 except OSError:
                     pass
                 # Find any fastq files with the sample name

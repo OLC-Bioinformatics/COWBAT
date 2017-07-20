@@ -10,7 +10,7 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
-from accessoryfunctions.accessoryFunctions import *
+from accessoryFunctions import *
 
 __author__ = 'adamkoziol'
 

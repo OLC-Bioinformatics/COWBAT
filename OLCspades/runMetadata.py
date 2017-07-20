@@ -49,6 +49,7 @@ class Metadata(object):
             samples, prev, header = False, 0, []
             for count, line in enumerate(samplesheet):
                 # Remove new lines, and split on commas
+                line = line.decode('utf-8')  # Turn from bytes to string, since python3 is finicky.
                 data = line.rstrip().split(",")
                 if any(data):
                     if "[Settings]" in line:

@@ -106,7 +106,7 @@ class Resfinder(object):
         """
         :param inputobject: object containing variables of interest
         """
-        from Queue import Queue
+        from queue import Queue
         import multiprocessing
         # Initialise variables
         self.start = inputobject.starttime
@@ -143,7 +143,7 @@ class Resfinder(object):
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
     from time import time
-    from accessoryFunctions import printtime
+    from .accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]
@@ -196,4 +196,4 @@ if __name__ == '__main__':
     # Run the pipeline
     Resfinder(inputs, 'ResFinder')
     # Print a bold, green exit statement
-    print '\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time() - inputs.starttime) + '\033[0m'
+    print('\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time() - inputs.starttime) + '\033[0m')

@@ -55,7 +55,7 @@ class Busco(object):
     def metaparse(sample, resfile):
         pc = lambda x: x if x[0].isupper() else x.title()
         if not os.path.isfile(resfile):
-            print "There was an issue getting the metadata from {0:s}".format(sample.name)
+            print("There was an issue getting the metadata from {0:s}".format(sample.name))
         else:
             busco = dict()
             # Open BUSCO short_summary file and make list of key value pairs then add those the assembly metadata
@@ -73,9 +73,9 @@ class Busco(object):
             # sample.assembly = GenObject(busco)
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         from Bio.Blast.Applications import NcbiblastnCommandline
-        from distutils import spawn
+        from distutils import spawn  # TODO: Figure out how to get this imported properly
         # Find blastn and augustus version
         self.version = "v1.1b1"
         self.augustus = " ".join(get_version(['augustus', '--version']).split()[:2])

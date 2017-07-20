@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from Bio.Application import _Option, AbstractCommandline, _Switch, _Argument
 import re
+from past.builtins import basestring
 
 __author__ = 'mike knowles'
 __doc__ = 'Wrapper for bowtie2'
@@ -344,7 +345,7 @@ class Bowtie2CommandLine(_Bowtie2BaseCommandLine):
                     "Like -k but with no upper limit on number of alignments to search for. "
                     "-a is mutually exclusive with -k."),
 
-            # Effort Options
+            # Effort Opti,ons
             _Option(["-D", "D"],
                     "Up to <int> consecutive seed extension attempts can fail before Bowtie 2 moves on, using"
                     " the alignments found so far. A seed extension fails if it does not yield a new best or a new "
@@ -877,6 +878,6 @@ if __name__ == '__main__':
     samsortt = SamtoolsSortCommandline(input_bam="-", out_prefix=ubam[:-4])
     samtoolss = [SamtoolsViewCommandline(b=True, S=True, input_file="-"), samsortt]
     # print samtools
-    print Bowtie2CommandLine(bt2="test", m1="none", m2="yes", samtools=samtoolss)
+    print(Bowtie2CommandLine(bt2="test", m1="none", m2="yes", samtools=samtoolss))
     # print Bowtie2InspectCommandLine(bt2="test")
     pass

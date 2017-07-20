@@ -30,8 +30,8 @@ class Basic(object):
             try:
                 # Link the .gz files to :self.path/:filename
                 # map(lambda x: os.symlink(x, '{}/{}'.format(outputdir, os.path.split(x)[1])), specificfastq)
-                map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
-                                         '{}/{}'.format(outputdir, os.path.basename(x))), specificfastq)
+                list(map(lambda x: os.symlink('../{}'.format(os.path.basename(x)),
+                                         '{}/{}'.format(outputdir, os.path.basename(x))), specificfastq))  # Had to add list here due to some sort of 2to3 conversion issue.
             # Except os errors
             except OSError as exception:
                 # If there is an exception other than the file exists, raise it
@@ -102,6 +102,8 @@ class Basic(object):
                     """
                     # The line with the sequence information occurs every four lines (1, 5, 9, etc). This can be
                     # represented by linenumber % 4 == 1
+                    forwardreads = forwardreads.decode('utf-8')  # Added due to weird 2to3 conversion issues, was coming
+                    # up as a bytes object when we need it as a string.
                     forwardlength = max([len(sequence) for iterator, sequence in enumerate(forwardreads.split('\n'))
                                          if iterator % 4 == 1])
                     sample.run.forwardlength = forwardlength
@@ -112,6 +114,7 @@ class Basic(object):
                                                         shell=True,
                                                         stdout=subprocess.PIPE,
                                                         stderr=devnull).communicate()[0].rstrip()
+                        reversereads = reversereads.decode('utf-8')
                         sample.run.reverselength = max([len(sequence) for iterator, sequence in
                                                         enumerate(reversereads.split('\n')) if iterator % 4 == 1])
                     # Populate metadata of single end reads with 'NA'

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from accessoryFunctions import *
-from cStringIO import StringIO
+from io import StringIO
 import re
 from time import sleep
 import pycurl
@@ -107,7 +107,7 @@ class Download(object):
                             success = True
                         else:
                             # Open the destination file to write
-                            with open(metadata.localfile, 'wb') as localfile:
+                            with open(metadata.localfile, 'w') as localfile:
                                 # Create a pycurl instance to download the file
                                 curlinstance = pycurl.Curl()
                                 # # Set the desired encoding type to be gzip

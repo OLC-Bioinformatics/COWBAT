@@ -6,7 +6,7 @@ import shlex
 import shutil
 import subprocess
 import time
-from Queue import Queue
+from queue import Queue
 from collections import defaultdict
 from csv import DictReader
 from glob import glob
@@ -376,7 +376,7 @@ class MLST(object):
             # This may not be an issue, but it must still be flagged
             truncated = True if sample[self.analysistype].alignmentlength[gene] < sample[self.analysistype].subjectlength[gene] else False
             if not truncated:
-                print 'full length', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq
+                print('full length', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq)
                 # The header will be >BACT00001_1000000
                 definitionline = '{}_{} {} NT from allele {}### no internal stop codons'\
                     .format(gene, nextallele, sample[self.analysistype].mismatches[gene], sample[self.analysistype].closealleles[gene])
@@ -386,7 +386,7 @@ class MLST(object):
                                   description='',
                                   # Use >:definitionline as the header
                                   id=definitionline)
-                print definitionline
+                print(definitionline)
                 # with open(sample[self.analysistype].supplementalalleles) as supplemental:
                 #     # Use the SeqIO module to properly format the new sequence record
                 #     SeqIO.write(fasta, supplemental, 'fasta')
@@ -394,10 +394,10 @@ class MLST(object):
                 #     # Use the SeqIO module to properly format the new sequence record
                 #     SeqIO.write(fasta, localalleles, 'fasta')
             else:
-                print 'truncated', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq
+                print('truncated', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq)
 
         else:
-            print 'internal stop', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq
+            print('internal stop', sample.name, gene, nextallele, targetallele, alleledir, allelefile, protseq)
 
         return '', '', ''
 
@@ -408,7 +408,7 @@ class MLST(object):
         :param gene: name of gene of interest
         :param targetallele: closest allele in database
         """
-        from cStringIO import StringIO
+        from io import StringIO
         from Bio.Blast import NCBIXML
         from Bio.SeqRecord import SeqRecord
         from Bio.Seq import Seq
@@ -767,7 +767,7 @@ class MLST(object):
                 except ValueError:
                     lastentry = 1000000
             else:
-                open(sample[self.analysistype].supplementalprofile, 'wb').close()
+                open(sample[self.analysistype].supplementalprofile, 'w').close()
                 lastentry = 1000000
             # As there can be multiple profiles in MLSTSeqType, this loop only needs to be performed once.
             seqcount = 0
@@ -908,7 +908,7 @@ class MLST(object):
                     if self.pipeline:
                         # Open the report
                         with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                       self.analysistype), 'wb') as report:
+                                                       self.analysistype), 'w') as report:
                             # Write the row to the report
                             report.write(row)
                 dotter()
@@ -916,13 +916,13 @@ class MLST(object):
             make_path(self.reportpath)
             # Create the report containing all the data from all samples
             if self.pipeline:
-                with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
+                with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'w') \
                         as combinedreport:
                     # Write the results to this report
                     combinedreport.write(combinedrow)
             else:
                 with open('{}{}_{:}.csv'.format(self.reportpath, self.analysistype, time.strftime("%Y.%m.%d.%H.%M.%S")),
-                          'wb') as combinedreport:
+                          'w') as combinedreport:
                     # Write the results to this report
                     combinedreport.write(combinedrow)
             # Remove the raw results csv
@@ -930,7 +930,7 @@ class MLST(object):
 
     def dumper(self):
         """Write :self.referenceprofile"""
-        with open('{}{}_referenceprofile.json'.format(self.reportpath, self.analysistype, ), 'wb') as referenceprofile:
+        with open('{}{}_referenceprofile.json'.format(self.reportpath, self.analysistype, ), 'w') as referenceprofile:
             referenceprofile.write(json.dumps(self.referenceprofile, sort_keys=True, indent=4, separators=(',', ': ')))
 
     def referencegenomefinder(self):
@@ -1015,7 +1015,7 @@ class MLST(object):
                         sample[self.analysistype].mismatchestoreferencegenome = [0]
         # Print the results to file
         make_path(self.reportpath)
-        with open('{}referencegenomes.csv'.format(self.reportpath), 'wb') as referencegenomereport:
+        with open('{}referencegenomes.csv'.format(self.reportpath), 'w') as referencegenomereport:
             row = 'Strain,referencegenome,numberofmatches\n'
             for sample in self.metadata:
                 if sample[self.analysistype].reportdir != 'NA':
@@ -1117,7 +1117,7 @@ def blastdatabaseclearer(genepath):
 
 def combinealleles(start, allelepath, alleles):
     printtime('Creating combined rMLST allele file', start)
-    with open('{}/rMLST_combined.fasta'.format(allelepath), 'wb') as combinedfile:
+    with open('{}/rMLST_combined.fasta'.format(allelepath), 'w') as combinedfile:
         # Open each allele file
         for allele in sorted(alleles):
             # with open(allele, 'rU') as fasta:
@@ -1156,7 +1156,7 @@ def schemedate(lastfolder):
         d0 = date(int(year), int(month), int(day))
     except ValueError:
         # Set an arbitrary date in the past to force an update
-        d0 = date(2000, 01, 01)
+        d0 = date(2000, 1, 1)
     # Create a date object with the current date
     d1 = date(int(time.strftime("%Y")), int(time.strftime("%m")), int(time.strftime("%d")))
     # Subtract the last update date from the current date
@@ -1216,7 +1216,7 @@ def getrmlsthelper(referencefilepath, update, start):
 
 def getmlsthelper(referencefilepath, start, organism, update):
     """Prepares to run the getmlst.py script provided in SRST2"""
-    from accessoryFunctions import GenObject
+    from .accessoryFunctions import GenObject
     # Initialise a set to for the organism(s) for which new alleles and profiles are desired
     organismset = set()
     # Allow for Shigella to use the Escherichia MLST profile/alleles
@@ -1297,7 +1297,7 @@ if __name__ == '__main__':
     class Parser(object):
 
         def strainer(self):
-            from accessoryFunctions import GenObject, MetadataObject
+            from .accessoryFunctions import GenObject, MetadataObject
             # Get the sequences in the sequences folder into a list. Note that they must have a file extension that
             # begins with .fa
             self.strains = sorted(glob('{}*.fa*'.format(self.sequencepath))) if self.sequencepath \
@@ -1575,7 +1575,7 @@ class PipelineInit(object):
         Populates objects with the necessary attributes
         :param sample: sample object
         """
-        from accessoryFunctions import GenObject
+        from .accessoryFunctions import GenObject
         if sample.general.bestassemblyfile != 'NA':
             profile = ''
             setattr(sample, self.analysistype, GenObject())
@@ -1628,7 +1628,7 @@ class PipelineInit(object):
                     if self.supplementalprofile else 'NA'
                 sample[self.analysistype].supplementalalleles = self.supplementalalleles \
                     if self.supplementalalleles else 'NA'
-                print sample[self.analysistype].datastore
+                print(sample[self.analysistype].datastore)
 
         else:
             setattr(sample, self.analysistype, GenObject())
@@ -1644,7 +1644,7 @@ class PipelineInit(object):
             sample[self.analysistype].supplementalalleles = 'NA'
 
     def __init__(self, inputobject, analysistype):
-        import alleleSubmit
+        # import alleleSubmit # Looks to be unused, so we'll ignore it.
         self.runmetadata = inputobject.runmetadata
         self.analysistype = analysistype
         self.path = inputobject.path

@@ -24,7 +24,7 @@ class CreateFastq(object):
         indexlength = int()
         # bcl2fastq requires an older version of the sample sheet, this recreates the required version
         # Create the new sample sheet
-        with open('{}/SampleSheet_modified.csv'.format(self.fastqdestination), "wb") as modifiedsamplesheet:
+        with open('{}/SampleSheet_modified.csv'.format(self.fastqdestination), "w") as modifiedsamplesheet:
             # Write the required headings to the file
             modifiedsamplesheet.write(
                 "FCID,Lane,SampleID,SampleRef,Index,Description,Control,Recipe,Operator,SampleProject\n")
@@ -225,7 +225,7 @@ class CreateFastq(object):
         if inputobject.miseqpath:
             self.miseqpath = os.path.join(inputobject.miseqpath, "")
         else:
-            print inputobject.miseqfolder
+            print(inputobject.miseqfolder)
             print('MiSeqPath argument is required in order to use the fastq creation module. Please provide this '
                   'argument and run the script again.')
             quit()
@@ -261,7 +261,7 @@ class CreateFastq(object):
 if __name__ == '__main__':
     import subprocess
     from time import time
-    from accessoryFunctions import printtime
+    from .accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]
@@ -312,4 +312,4 @@ if __name__ == '__main__':
     # Run the pipeline
     CreateFastq(arguments)
     # Print a bold, green exit statement
-    print '\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time() - arguments.starttime) + '\033[0m'
+    print('\033[92m' + '\033[1m' + "\nElapsed Time: %0.2f seconds" % (time() - arguments.starttime) + '\033[0m')

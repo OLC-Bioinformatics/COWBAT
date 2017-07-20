@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import subprocess
 import depth
 import fastqCreator
@@ -160,7 +160,7 @@ class RunSpades(object):
         import compress
         import multiprocessing
         import versions
-        printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit), startingtime)
+        printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit.decode('utf-8')), startingtime)
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
@@ -222,7 +222,7 @@ class RunSpades(object):
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
     from time import time
-    from accessoryFunctions import printtime
+    # from .accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]

@@ -54,7 +54,7 @@ class Prophages(GeneSeekr):
                 if self.pipeline:
                     # Open the report
                     with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                   self.analysistype), 'wb') as report:
+                                                   self.analysistype), 'w') as report:
                         # Write the row to the report
                         report.write(row)
                 # Remove the messy blast results from the object
@@ -62,6 +62,6 @@ class Prophages(GeneSeekr):
             except (AttributeError, KeyError):
                 pass
         # Create the report containing all the data from all samples
-        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
+        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'w') \
                 as combinedreport:
             combinedreport.write(combinedrow)

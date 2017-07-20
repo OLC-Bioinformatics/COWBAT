@@ -29,7 +29,7 @@ class MetadataReader(object):
                         jsonfile = '{}/{}_metadata.json'.format(metadata.general.outputdirectory, sample.name)
                         try:
                             # Open the metadata file to write
-                            with open(jsonfile, 'wb') as metadatafile:
+                            with open(jsonfile, 'w') as metadatafile:  # Change from wb to w since this is text in python3
                                 # Write the json dump of the object dump to the metadata file
                                 json.dump(sample.dump(), metadatafile, sort_keys=True, indent=4, separators=(',', ': '))
                             # Set the name

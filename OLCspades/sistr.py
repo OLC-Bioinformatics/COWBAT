@@ -87,7 +87,7 @@ class Sistr(object):
             report.write(data)
 
     def __init__(self, inputobject, analysistype):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.cpus = inputobject.cpus

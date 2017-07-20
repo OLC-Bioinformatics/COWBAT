@@ -111,7 +111,7 @@ def recur(current, existing, index, dup=True):
                 eitem.append(citem)
             else:
                 dup, existing[item] = recur(citem, eitem, index+1, dup)
-        elif not type(existing) in (str, unicode, list) and index != 0:
+        elif not type(existing) in (str, list) and index != 0:  # Removed unicode from the in (str, list) since in 3 everything is unicode.
             existing[item] = current[item]
     return dup, existing
 
@@ -197,7 +197,7 @@ def decipher(plusdict, antidict, outputs, metadata, tolc=None):
         antistr += ",%i" % genomecount
         # Open the report
         if sample.general.bestassemblyfile != 'NA':
-            with open('{}{}_{}.csv'.format(sample['ARMI'].reportdir, sample.name, 'ARMI'), 'wb') as report:
+            with open('{}{}_{}.csv'.format(sample['ARMI'].reportdir, sample.name, 'ARMI'), 'w') as report:
                 # Write the row to the report
                 report.write(antihead)
                 report.write(antistr)

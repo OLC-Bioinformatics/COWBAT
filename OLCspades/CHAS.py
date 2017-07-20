@@ -216,16 +216,16 @@ class CHAS(object):
                         strainspecific += '-,'
                 strainspecific += '\n'
                 # Open and write the data to the strain-specific report
-                with open(sample[self.analysistype].report, 'wb') as specificreport:
+                with open(sample[self.analysistype].report, 'w') as specificreport:
                     specificreport.write(strainspecific)
                 # Add all the data from each strain to the cumulative data string
                 data += strainspecific
         # Open and write the cumulative data to the cumulative report
-        with open('{}/{}.csv'.format(self.reportdir, self.analysistype), 'wb') as report:
+        with open('{}/{}.csv'.format(self.reportdir, self.analysistype), 'w') as report:
             report.write(data)
 
     def __init__(self, inputobject, analysistype):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.path = inputobject.path
         self.start = inputobject.start

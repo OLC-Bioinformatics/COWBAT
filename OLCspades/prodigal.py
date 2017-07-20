@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from threading import Thread, Lock
-
 from accessoryFunctions import *
 
 __author__ = 'adamkoziol'
@@ -72,7 +71,7 @@ class Prodigal(object):
                                 sample.prodigal.predictedgenesunder500bp += 1
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.predictqueue = Queue()

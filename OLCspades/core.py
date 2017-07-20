@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from GeneSeekr import *
+import os
 
 __author__ = 'adamkoziol'
 
@@ -72,7 +73,7 @@ class CoreGenome(GeneSeekr):
                     if self.pipeline:
                         # Open the report
                         with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                       self.analysistype), 'wb') as report:
+                                                       self.analysistype), 'w') as report:
                             # Write the row to the report
                             report.write(header)
                             report.write(row)
@@ -88,7 +89,7 @@ class CoreGenome(GeneSeekr):
             except KeyError:
                 sample[self.analysistype].targetspresent = 'NA'
                 sample[self.analysistype].totaltargets = 'NA'
-        with open('{}coregenome.csv'.format(self.reportpath), 'wb') as report:
+        with open('{}coregenome.csv'.format(self.reportpath), 'w') as report:
             # Write the data to the report
             report.write(header)
             report.write(data)
@@ -100,7 +101,8 @@ class AnnotatedCore(object):
         """
         Calculates the core genome of organisms using custom databases
         """
-        from coregenome import core
+        from .coregenome import core
+        from .accessoryFunctions import printtime
         coremetadata = list()
         printtime('Calculating annotated core', self.start)
         for sample in self.metadata:

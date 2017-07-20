@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import time
-from Queue import Queue
+from queue import Queue
 from glob import glob
 from subprocess import call
 from threading import Thread
@@ -101,7 +101,7 @@ class Quality(object):
 
     def trimquality(self):
         """Uses bbduk from the bbmap tool suite to quality and adapter trim"""
-        print "\r[{:}] Trimming fastq files".format(time.strftime("%H:%M:%S"))
+        print("\r[{:}] Trimming fastq files".format(time.strftime("%H:%M:%S")))
         # Create and start threads for each strain with fastq files
         for sample in self.metadata:
             if type(sample.general.fastqfiles) is list:
@@ -128,25 +128,26 @@ class Quality(object):
                     # Separate system calls for paired and unpaired fastq files
                     # TODO minlen=number - incorporate read length
                     # http://seqanswers.com/forums/showthread.php?t=42776
+                    # BBduk 37.23 doesn't need the ktrim=l/mink=11 parameters, so they have been removed.
                     if len(fastqfiles) == 2:
                         if int(sample.run.forwardlength) > 75 and int(sample.run.reverselength) > 75:
-                            bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 ktrim=l " \
-                                "k=25 mink=11 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 " \
+                            bbdukcall = "bbduk2.sh -Xmx1g in1={} in2={} out1={} out2={} qtrim=w trimq=20 " \
+                                "k=25 minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1 " \
                                         "tpe tbo" \
                                 .format(fastqfiles[0], fastqfiles[1], cleanforward, cleanreverse, self.bbduklocation)
                         else:
-                            bbdukcall = "bbduk2.sh -Xmx1g in1={} out1={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                            bbdukcall = "bbduk2.sh -Xmx1g in1={} out1={} qtrim=w trimq=20 k=25 " \
                                         "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
                                 .format(fastqfiles[1], cleanreverse, self.bbduklocation)
                     elif len(fastqfiles) == 1:
-                        bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                        bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 k=25 " \
                             "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
                             .format(fastqfiles[0], cleanforward, self.bbduklocation)
                     else:
                         bbdukcall = ""
                 # Allows for exclusion of the reverse reads if desired
                 else:
-                    bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 ktrim=l k=25 mink=11 " \
+                    bbdukcall = "bbduk2.sh -Xmx1g in={} out={} qtrim=w trimq=20 k=25 " \
                                 "minlength=50 forcetrimleft=15 ref={}/resources/adapters.fa hdist=1" \
                         .format(fastqfiles[0], cleanforward, self.bbduklocation)
                     # There is a check to ensure that the trimmed reverse file is created. This will change the file
@@ -161,7 +162,7 @@ class Quality(object):
         self.trimqueue.join()
         # Add all the trimmed files to the metadata
 
-        print "\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S"))
+        print("\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S")))
         self.fastqcthreader('Trimmed')
 
     def bbduker(self):
@@ -199,3 +200,4 @@ class Quality(object):
         # Find the location of the bbduk.sh script. This will be used in finding the adapter file
         self.bbduklocation = os.path.split(Popen('which bbduk.sh', shell=True, stdout=PIPE)
                                            .communicate()[0].rstrip())[0]
+        self.bbduklocation = self.bbduklocation.decode('utf-8')

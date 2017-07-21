@@ -245,7 +245,7 @@ class MLST(object):
                 # If there are multiple best hits, then the .values() will be populated
                 if self.plusdict[sample.name][gene].values():
                     # If the previous best hit has under 100% identity, or if the current bitscore is better
-                    if self.plusdict[sample.name][gene].values()[0].keys()[0] < 100:
+                    if list(list(self.plusdict[sample.name][gene].values())[0].keys())[0] < 100:
                         # Clear the previous match
                         self.depopulate(sample, gene)
                         # Populate the new match
@@ -254,7 +254,7 @@ class MLST(object):
                     # If the bitscore is better (longer match) clear the previous result
                     # (not for rMLST analyses, which are allowed multiple allele matches)
                     else:
-                        if bitscore > self.plusdict[sample.name][gene].values()[0].values() and \
+                        if bitscore > list(list(self.plusdict[sample.name][gene].values())[0].values())[0] and \
                                         self.analysistype.lower() != 'rmlst':
                             # Clear the previous match
                             self.depopulate(sample, gene)
@@ -277,8 +277,8 @@ class MLST(object):
                 # If there are multiple best hits, then the .values() will be populated
                 if self.plusdict[sample.name][gene].values():
 
-                    if bitscore > self.plusdict[sample.name][gene].values()[0].values() and \
-                                    self.plusdict[sample.name][gene].values()[0].keys()[0] < 100:
+                    if bitscore > list(list(self.plusdict[sample.name][gene].values())[0].values())[0] and \
+                                    list(list(self.plusdict[sample.name][gene].values())[0].keys())[0] < 100:
                         # elif percentidentity > self.cutoff and gene not in self.plusdict[sample.name]:
                         self.populate(sample, gene, allelenumber, percentidentity, bitscore, row)
                 else:
@@ -597,7 +597,7 @@ class MLST(object):
                             multipercent = []
                             # Go through the alleles in plusdict
                             for allele in self.plusdict[genome][gene]:
-                                percentid = self.plusdict[genome][gene][allele].keys()[0]
+                                percentid = list(self.plusdict[genome][gene][allele].keys())[0]
                                 # "N" alleles screw up the allele splitter function
                                 if allele != "N":
                                     # Use the alleleSplitter function to get the allele number
@@ -640,7 +640,7 @@ class MLST(object):
                                 else:
                                     # Use the reference allele as the sortedRefAllele
                                     sortedrefallele = refallele
-                                for allele, percentid in self.bestdict[genome][gene].iteritems():
+                                for allele, percentid in self.bestdict[genome][gene].items():
                                     # If the allele in the query genome matches the allele in the reference profile, add
                                     # the result to the bestmatch dictionary. Genes with multiple alleles were sorted
                                     # the same, strings with multiple alleles will match: 10 692 will never be 692 10
@@ -668,21 +668,21 @@ class MLST(object):
                         # Otherwise, the query profile matches the reference profile
                         if int(sortedmatches) == header:
                             # Iterate through best match
-                            for sequencetype, matches in self.bestmatch[genome].iteritems():
+                            for sequencetype, matches in self.bestmatch[genome].items():
                                 if matches == sortedmatches:
                                     for gene in profiledata[sequencetype]:
                                         # Populate resultProfile with the genome, best match to profile, # of matches
                                         # to the profile, gene, query allele(s), reference allele(s), and % identity
                                         self.resultprofile[genome][sequencetype][sortedmatches][gene][
-                                            self.bestdict[genome][gene]
-                                                .keys()[0]] = str(self.bestdict[genome][gene].values()[0])
+                                            list(self.bestdict[genome][gene]
+                                                .keys())[0]] = str(list(self.bestdict[genome][gene].values())[0])
                                     sample[self.analysistype].sequencetype = sequencetype
                                     sample[self.analysistype].matchestosequencetype = matches
                         # If there are fewer matches than the total number of genes in the typing scheme
                         elif 0 < int(sortedmatches) < header:
                             mismatches = []
                             # Iterate through the sequence types and the number of matches in bestDict for each genome
-                            for sequencetype, matches in self.bestmatch[genome].iteritems():
+                            for sequencetype, matches in self.bestmatch[genome].items():
                                 # If the number of matches for a profile matches the best number of matches
                                 if matches == sortedmatches:
                                     # Iterate through the gene in the analysis
@@ -699,21 +699,22 @@ class MLST(object):
                                         # to the profile, gene, query allele(s), reference allele(s), and % identity
                                         if self.updateprofile:
                                             self.mlstseqtype[genome][sequencetype][sortedmatches][gene][
-                                                str(self.bestdict[genome][gene]
-                                                    .keys()[0])][sortedrefallele] = str(self.bestdict[genome][gene]
-                                                                                        .values()[0])
+                                                str(list(self.bestdict[genome][gene]
+                                                    .keys())[0])][sortedrefallele] = str(list(self.bestdict[genome][gene]
+                                                                                        .values())[0])
                                         else:
                                             self.resultprofile[genome][sequencetype][sortedmatches][gene][
-                                                self.bestdict[genome][gene].keys()[0]] \
-                                                = str(self.bestdict[genome][gene].values()[0])
-                                            if sortedrefallele != self.bestdict[sample.name][gene].keys()[0]:
+                                                list(self.bestdict[genome][gene].keys())[0]] \
+                                                = str(list(self.bestdict[genome][gene])[0])
+                                                #= str(list(self.bestdict[genome][gene].values())[0])
+                                            if sortedrefallele != list(self.bestdict[sample.name][gene].keys())[0]:
                                                 mismatches.append(
-                                                    ({gene: ('{} ({})'.format(self.bestdict[sample.name][gene]
-                                                                              .keys()[0], sortedrefallele))}))
+                                                    ({gene: ('{} ({})'.format(list(self.bestdict[sample.name][gene]
+                                                                              .keys())[0], sortedrefallele))}))
                                         if not self.updateprofile or self.analysistype == 'mlst':
                                             self.resultprofile[genome][sequencetype][sortedmatches][gene][
-                                                self.bestdict[genome][gene]
-                                                    .keys()[0]] = str(self.bestdict[genome][gene].values()[0])
+                                                list(self.bestdict[genome][gene]
+                                                    .keys())[0]] = str(list(self.bestdict[genome][gene].values())[0])
                                             sample[self.analysistype].mismatchestosequencetype = mismatches
                                             sample[self.analysistype].sequencetype = sequencetype
                                             sample[self.analysistype].matchestosequencetype = matches
@@ -773,7 +774,7 @@ class MLST(object):
             seqcount = 0
             # Go through the sequence types
             try:
-                sequencetype = self.mlstseqtype[genome].keys()[0]
+                sequencetype = list(self.mlstseqtype[genome].keys())[0]
             except IndexError:
                 sequencetype = ''
                 seqcount = 1
@@ -782,17 +783,17 @@ class MLST(object):
                 # Set the :newprofile string to start with the new profile name (e.g. 1000000_CFIA)
                 newprofile = str(lastentry)
                 # The number of matches to the reference profile
-                nummatches = self.mlstseqtype[genome][sequencetype].keys()[0]
+                nummatches = list(self.mlstseqtype[genome][sequencetype].keys())[0]
                 # The genes in geneList - should be in the correct order
                 for gene in sorted(sample[self.analysistype].allelenames):
                     # The allele for each gene in the query genome
-                    allele = self.mlstseqtype[genome][sequencetype][nummatches][gene].keys()[0]
+                    allele = list(self.mlstseqtype[genome][sequencetype][nummatches][gene].keys())[0]
                     # Append the allele to newprofile
                     newprofile += '\t{}'.format(allele)
                     # Add the MLST results for the query genome as well as the new profile data
                     # to resultProfile
                     self.resultprofile[genome]['{}(new)'.format(str(lastentry))][header][gene][allele] = \
-                        self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values()[0]
+                        list(self.mlstseqtype[genome][sequencetype][nummatches][gene][allele].values())[0]
                 seqcount += 1
                 sample[self.analysistype].mismatchestosequencetype = 'NA'
                 sample[self.analysistype].matchestosequencetype = header
@@ -872,7 +873,7 @@ class MLST(object):
                         """
                         sample[self.analysistype].sequencetype = seqtype
                         # The number of matches to the profile
-                        matches = self.resultprofile[sample.name][seqtype].keys()[0]
+                        matches = list(self.resultprofile[sample.name][seqtype].keys())[0]
                         # If this is the first of one or more sequence types, include the sample name
                         if seqcount == 0:
                             row += '{},{},{},{},'.format(sample.name, sample.general.referencegenus, seqtype, matches)
@@ -884,8 +885,8 @@ class MLST(object):
                             # refallele = self.profiledata[self.analysistype][seqtype][gene]
                             refallele = sample[self.analysistype].profiledata[seqtype][gene]
                             # Set the allele and percent id from the dictionary's keys and values, respectively
-                            allele = self.resultprofile[sample.name][seqtype][matches][gene].keys()[0]
-                            percentid = self.resultprofile[sample.name][seqtype][matches][gene].values()[0]
+                            allele = list(self.resultprofile[sample.name][seqtype][matches][gene].keys())[0]
+                            percentid = list(self.resultprofile[sample.name][seqtype][matches][gene].values())[0]
                             if refallele and refallele != allele:
                                 if 0 < float(percentid) < 100:
                                     row += '{} ({:.2f}%),'.format(allele, float(percentid))
@@ -957,7 +958,7 @@ class MLST(object):
                     for gene in self.bestdict[sample.name]:
                         # If the alleles match between the assembly of interest and the reference genome, increment
                         # the number of matches by 1
-                        if self.bestdict[sample.name][gene].keys()[0] == referencetypes[genome][gene]:
+                        if list(self.bestdict[sample.name][gene].keys())[0] == referencetypes[genome][gene]:
                             referencematch[sample.name][genome][gene] = 1
                             referencehits[sample.name][genome] += 1
                         else:
@@ -976,21 +977,22 @@ class MLST(object):
                 if 0 < int(sortedmatches[1]) < len(sample[self.analysistype].allelenames):
                     mismatches = []
                     # Iterate through the gene in the analysis
-                    for gene, allele in referencetypes[sortedmatches[0]].iteritems():
+                    for gene, allele in referencetypes[sortedmatches[0]].items():
                         # Populate :self.referencegenome with the genome name, best reference match, number of matches,
                         # gene, query allele(s), and percent identity
-                        percentidentity = '{:.2f}'.format(self.bestdict[sample.name][gene].values()[0])
-                        self.referencegenome[sample.name][sortedmatches[0]][sortedmatches[1]][gene][self.bestdict[
-                            sample.name][gene].keys()[0]] = percentidentity
-                        if self.bestdict[sample.name][gene].keys()[0] != allele:
+                        percentidentity = '{:.2f}'.format(list(self.bestdict[sample.name][gene].values())[0])
+                        self.referencegenome[sample.name][sortedmatches[0]][sortedmatches[1]][gene][list(self.bestdict[
+                            sample.name][gene].keys())[0]] = percentidentity
+                        if list(self.bestdict[sample.name][gene].keys())[0] != allele:
                             sample[self.analysistype].referencegenome = sortedmatches[0]
                             sample.general.referencegenus = sortedmatches[0].split('_')[0]
                             sample[self.analysistype].referencegenomepath = '{}{}.fa' \
                                 .format(self.referenceprofilepath, sortedmatches[0])
                             sample[self.analysistype].matchestoreferencegenome = sortedmatches[1]
-                            mismatches.append(({gene: ('{} ({})'.format(self.bestdict[sample.name][gene]
-                                                                        .keys()[0], allele))}))
-                        sample[self.analysistype].mismatchestoreferencegenome = sorted(mismatches)
+                            mismatches.append(({gene: ('{} ({})'.format(list(self.bestdict[sample.name][gene]
+                                                                        .keys())[0], allele))}))
+                        # sample[self.analysistype].mismatchestoreferencegenome = sorted(mismatches)
+                        sample[self.analysistype].mismatchestoreferencegenome = mismatches
                 elif sortedmatches == 0:
                     for gene in sample[self.analysistype].allelenames:
                         # Populate the profile of results with 'negative' values for sequence type and sorted matches
@@ -1004,9 +1006,9 @@ class MLST(object):
                 else:
                     for gene in referencetypes[sortedmatches[0]]:
                         # Populate self.referencegenome as above
-                        self.referencegenome[sample.name][sortedmatches[0]][sortedmatches[1]][gene][self.bestdict[
-                            sample.name][gene].keys()[0]] = '{:.2f}'.format(self.bestdict[
-                                                                                sample.name][gene].values()[0])
+                        self.referencegenome[sample.name][sortedmatches[0]][sortedmatches[1]][gene][list(self.bestdict[
+                            sample.name][gene].keys())[0]] = '{:.2f}'.format(list(self.bestdict[
+                                                                                sample.name][gene].values())[0])
                         sample[self.analysistype].referencegenome = sortedmatches[0]
                         sample[self.analysistype].referencegenomepath = '{}{}.fa' \
                             .format(self.referenceprofilepath, sortedmatches[0])
@@ -1216,7 +1218,7 @@ def getrmlsthelper(referencefilepath, update, start):
 
 def getmlsthelper(referencefilepath, start, organism, update):
     """Prepares to run the getmlst.py script provided in SRST2"""
-    from .accessoryFunctions import GenObject
+    from accessoryFunctions import GenObject
     # Initialise a set to for the organism(s) for which new alleles and profiles are desired
     organismset = set()
     # Allow for Shigella to use the Escherichia MLST profile/alleles
@@ -1575,7 +1577,7 @@ class PipelineInit(object):
         Populates objects with the necessary attributes
         :param sample: sample object
         """
-        from .accessoryFunctions import GenObject
+        from accessoryFunctions import GenObject
         if sample.general.bestassemblyfile != 'NA':
             profile = ''
             setattr(sample, self.analysistype, GenObject())

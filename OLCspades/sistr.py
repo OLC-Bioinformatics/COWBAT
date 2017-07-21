@@ -76,13 +76,13 @@ class Sistr(object):
 
                 data += row
                 # Create and write headers and results to the strain-specific report
-                with open(sample[self.analysistype].report, 'wb') as strainreport:
+                with open(sample[self.analysistype].report, 'w') as strainreport:
                     strainreport.write(header)
                     strainreport.write(row)
             except (KeyError, AttributeError):
                 pass
         # Create and write headers and cumulative results to the combined report
-        with open('{}sistr.tsv'.format(self.reportdir), 'wb') as report:
+        with open('{}sistr.tsv'.format(self.reportdir), 'w') as report:
             report.write(header)
             report.write(data)
 

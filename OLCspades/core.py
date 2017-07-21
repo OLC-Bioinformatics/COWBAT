@@ -101,8 +101,8 @@ class AnnotatedCore(object):
         """
         Calculates the core genome of organisms using custom databases
         """
-        from .coregenome import core
-        from .accessoryFunctions import printtime
+        from coregenome import core
+        from accessoryFunctions import printtime
         coremetadata = list()
         printtime('Calculating annotated core', self.start)
         for sample in self.metadata:

@@ -75,8 +75,9 @@ class RunSpades(object):
         # Run spades
         spadesRun.Spades(self)
         # Run CLARK typing on the .fastq and .fasta files
-        from metagenomeFilter import automateCLARK
-        automateCLARK.PipelineInit(self)
+        import automateCLARK
+        # TODO: Test this on a computer with more RAM. CLARK seems to be working, but it isn't going to run on this machine.
+        # automateCLARK.PipelineInit(self)
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
         # Run mash

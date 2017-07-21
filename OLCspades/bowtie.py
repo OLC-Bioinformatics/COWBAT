@@ -11,17 +11,17 @@ class _PipeArgumentList(_Argument):
     """Represent a variable list of arguments for piping on a command line, e.g. sam to bam to sorted bam."""
 
     def __str__(self):
-        assert isinstance(self.value, list), \
-            "Arguments should be a list"
+        #assert isinstance(self.value, list), \
+        #    "Arguments should be a list"
         assert self.value, "Requires at least one argument"
         # A leading pipe is required so that commands following the last filename
         # do not appear merged.
         # e.g.:  samtools view -bS - | samtools sort -o out.sorted.bam -  [without leading pipe][Incorrect]
         #        | samtools view -bS - | samtools sort -o out.sorted.bam -  [with leading pipe][Correct]
-        if any(not isinstance(x, basestring) for x in self.value):
+        # if any(not isinstance(x, basestring) for x in self.value):
             # Correct for non-string commands.
             # e.g. command classes like Bio.Sequencing.Applications.SamtoolsViewCommandLine
-            self.value = map(str, self.value)
+        self.value = map(str, self.value)
         return "| " + " | ".join(self.value)
 
 

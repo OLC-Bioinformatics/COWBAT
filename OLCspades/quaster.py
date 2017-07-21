@@ -61,7 +61,7 @@ class Quast(object):
             if os.path.isfile("{0:s}/gage_report.tsv".format(quastoutputdirectory)) \
             else "{0:s}/report.tsv".format(quastoutputdirectory)
         with open(resfile) as report:
-            report.next()
+            # report.next() # Next doesn't work in python3. Pretty sure getting rid of this just adds one extra item to an object.
             for line in report:
                 # Use headings in report as keys for the GenObject supplied from generator and replace incrementally
                 # with reduce and lambda function below

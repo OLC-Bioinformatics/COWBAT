@@ -43,24 +43,26 @@ class Versions(object):
         printtime('Populating metadata', self.start)
         self.python = sys.version.replace('\n', '')
         self.arch = ", ".join(os.uname())
-        self.blast = get_version(['blastn', '-version']).split('\n')[0].split()[1]
-        self.spades = get_version(['spades.py', '-v']).split('\n')[0].split()[1]
+        self.blast = get_version(['blastn', '-version']).decode('utf-8').split('\n')[0].split()[1]
+        self.spades = get_version(['spades.py', '-v']).decode('utf-8').split('\n')[0].split()[1]
         self.bowversion = Bowtie2CommandLine(version=True)()[0].split('\n')[0].split()[-1]
-        self.samversion = get_version(['samtools', '--version']).split('\n')[0].split()[1]
+        self.samversion = get_version(['samtools', '--version']).decode('utf-8').split('\n')[0].split()[1]
         # Qualimap seems to have an Java warning message that doesn't necessarily show up on every system
         # Only capture the line that starts with 'Qualimap'
-        qualimaplist = get_version(['qualimap', '--help']).split('\n')
+        qualimaplist = get_version(['qualimap', '--help']).decode('utf-8').split('\n')
         for line in qualimaplist:
             if 'QualiMap' in line:
                 self.qualimap = line.split()[1]
-        self.mash = get_version(['mash']).split('\n')[1].split()[2]
-        self.prodigal = get_version(['prodigal', '-v']).split('\n')[1].split()[1]
-        self.quast = get_version(['quast.py']).split('\n')[1].split()[1]
-        self.bbmap = get_version(['bbmap.sh']).split('\n')[1].split()[1]
-        self.fastqc = get_version(['fastqc', '--version']).split('\n')[0].split()[1]
-        self.bcl2fastq = get_version(['configureBclToFastq.pl']).split('\n')[-2].split()[2].split('/')[4].split('-')[1]
-        self.perl = get_version(['perl', '-v']).split('\n')[1].split('This is ')[1]
+        self.mash = get_version(['mash']).decode('utf-8').split('\n')[1].split()[2]
+        self.prodigal = get_version(['prodigal', '-v']).decode('utf-8').split('\n')[1].split()[1]
+        self.quast = get_version(['quast.py']).decode('utf-8').split('\n')[1].split()[1]
+        self.bbmap = get_version(['bbversion.sh']).decode('utf-8')
+        self.fastqc = get_version(['fastqc', '--version']).decode('utf-8').split('\n')[0].split()[1]
+        # Uncomment this once you figure ou where this file is stored.
+        self.bcl2fastq = "2"
+        #self.bcl2fastq = get_version(['configureBclToFastq.pl']).decode('utf-8').split('\n')[-2].split()[2].split('/')[4].split('-')[1]
+        self.perl = get_version(['perl', '-v']).decode('utf-8').split('\n')[1].split('This is ')[1]
         self.biopython = Bio.__version__
-        self.java = get_version(['java', '-showversion']).split('\n')[0].split()[2].replace('"', '')
+        self.java = get_version(['java', '-showversion']).decode('utf-8').split('\n')[0].split()[2].replace('"', '')
         # self.docker = get_version(['docker', 'version']).split('\n')[1].split()[1]
         self.versions()

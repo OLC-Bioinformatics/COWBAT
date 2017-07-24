@@ -101,7 +101,8 @@ class Quality(object):
 
     def trimquality(self):
         """Uses bbduk from the bbmap tool suite to quality and adapter trim"""
-        print("\r[{:}] Trimming fastq files".format(time.strftime("%H:%M:%S")))
+        printtime("Trimming fastq files", self.start)
+        # print("\r[{:}] Trimming fastq files".format(time.strftime("%H:%M:%S")))
         # Create and start threads for each strain with fastq files
         for sample in self.metadata:
             if type(sample.general.fastqfiles) is list:
@@ -162,7 +163,8 @@ class Quality(object):
         self.trimqueue.join()
         # Add all the trimmed files to the metadata
 
-        print("\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S")))
+        #print("\r[{:}] Fastq files trimmed".format(time.strftime("%H:%M:%S")))
+        printtime('Fastq files trimmed', self.start)
         self.fastqcthreader('Trimmed')
 
     def bbduker(self):

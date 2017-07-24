@@ -63,7 +63,7 @@ class Reporter(object):
                             'PipelineVersion']
                     row += ','.join(data)
                 row += '\n{}'.format(sample.name)
-        with open('{}/combinedMetadata.csv'.format(self.reportpath), 'wb') as metadatareport:
+        with open('{}/combinedMetadata.csv'.format(self.reportpath), 'w') as metadatareport:
             metadatareport.write(row)
 
     def database(self):

@@ -102,7 +102,7 @@ class Vtyper(object):
                 sample[self.analysistype].toxinprofile = 'NA'
 
     def __init__(self, inputobject, analysistype):
-        from Queue import Queue
+        from queue import Queue
         import multiprocessing
         self.metadata = inputobject.runmetadata.samples
         self.analysistype = analysistype
@@ -201,7 +201,7 @@ if __name__ == '__main__':
             printtime('Printing metadata to file', self.starttime)
             metadataprinter.MetadataPrinter(self)
             # Print a bold, green exit statement
-            print u'\033[92m' + u'\033[1m' + u'\nElapsed Time: %0.2f seconds' % (time() - self.starttime) + u'\033[0m'
+            print(u'\033[92m' + u'\033[1m' + u'\nElapsed Time: %0.2f seconds' % (time() - self.starttime) + u'\033[0m')
 
     Setup()
 

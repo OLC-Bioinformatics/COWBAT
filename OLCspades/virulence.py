@@ -82,7 +82,7 @@ if __name__ == '__main__':
     class Parser(object):
 
         def strainer(self):
-            from accessoryFunctions import GenObject, MetadataObject
+            from .accessoryFunctions import GenObject, MetadataObject
             # Get the sequences in the sequences folder into a list. Note that they must have a file extension that
             # begins with .fa
             self.strains = sorted(glob('{}*.fa*'.format(self.sequencepath)))

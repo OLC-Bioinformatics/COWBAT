@@ -34,7 +34,7 @@ class Mash(object):
                 # Create a file containing the path/name of the filtered, corrected fastq files
                 sample[self.analysistype].filelist = '{}/{}_fastqfiles.txt'.format(sample[self.analysistype].reportdir,
                                                                                    sample.name)
-                with open(sample[self.analysistype].filelist, 'wb') as filelist:
+                with open(sample[self.analysistype].filelist, 'w') as filelist:
                     filelist.write('\n'.join(sample.general.trimmedcorrectedfastqfiles))
 
                 # Create the system call
@@ -135,12 +135,12 @@ class Mash(object):
                                                      sample[self.analysistype].nummatches)
         # Create the report file
         reportfile = '{}/mash.csv'.format(self.reportpath)
-        with open(reportfile, 'wb') as report:
+        with open(reportfile, 'w') as report:
             report.write(header)
             report.write(data)
 
     def __init__(self, inputobject, analysistype):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.referencefilepath = inputobject.reffilepath
         self.starttime = inputobject.starttime

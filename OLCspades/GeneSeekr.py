@@ -10,7 +10,7 @@ from Bio.Blast.Applications import NcbiblastnCommandline
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
-from accessoryfunctions.accessoryFunctions import *
+from accessoryFunctions import *
 
 __author__ = 'adamkoziol'
 
@@ -1014,7 +1014,7 @@ class PipelineInit(object):
                 sample[self.analysistype].targetnames = 'NA'
                 sample[self.analysistype].reportdir = 'NA'
         if self.chas:
-            from .CHAS import CHAS
+            from CHAS import CHAS
             CHAS(self, 'chas')
 
     def __init__(self, inputobject, analysistype, genusspecific, cutoff, unique):

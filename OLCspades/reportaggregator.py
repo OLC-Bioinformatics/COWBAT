@@ -77,12 +77,12 @@ class Aggregate(object):
             # Initialise a string to hold the data for each report
             data = ''
             # Open the aggregated report
-            with open('{}{}'.format(self.reportpath, report), 'wb') as aggregate:
+            with open('{}{}'.format(self.reportpath, report), 'w') as aggregate:
                 for sample in self.runmetadata.samples:
                     # Try to open the report for this run
                     try:
                         #
-                        with open('{}{}'.format(sample.general.reportpath, report), 'rb') as runreport:
+                        with open('{}{}'.format(sample.general.reportpath, report), 'r') as runreport:
                             # Only get the header from the first file
                             if not header:
                                 header = runreport.readline()

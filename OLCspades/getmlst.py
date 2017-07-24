@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# TODO: Get to this one later. Messing with urllib is probably the opposite of fun.
 """
 Software Copyright License Agreement (BSD License)
 
@@ -13,10 +14,10 @@ All rights reserved.
 
 from argparse import ArgumentParser
 import xml.dom.minidom as xml
-import urllib2 as url
+import urllib3 as url  # Changed this from urllib2. Hopefully that won't break anything too badly.
 import re
 import os
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 '''
 Download MLST datasets from this site: http://pubmlst.org/data/ by

@@ -23,6 +23,8 @@ class Spades(object):
             # Split the string of the provided kmer argument
             kmerlist = self.kmers.split(',')
             # Regenerate the list of kmers to use if the kmer is less than the readlength
+            # Had to type sample.run.forwardlength to an int, for some reason it was a string.
+            sample.run.forwardlength = int(sample.run.forwardlength)
             sample.general.kmers = ','.join([kmer for kmer in kmerlist if int(kmer) <= sample.run.forwardlength])
             if sample.general.trimmedcorrectedfastqfiles:
                 # Set the output directory
@@ -75,7 +77,7 @@ class Spades(object):
             # Add the command to the metadata
             sample.commands.spades = spadescommand
             # Add the version to the metadata
-            sample.software.spades = get_version(['spades.py']).split('\n')[0].split()[3]
+            sample.software.spades = get_version(['spades.py']).decode('utf-8').split('\n')[0].split()[3]
         # Join the threads
         self.assemblequeue.join()
         # Filter contigs shorter than 1000 bp, and rename remaining contigs with sample.name
@@ -124,7 +126,7 @@ class Spades(object):
                 # Only create the file if there are contigs over 1000 bp
                 if over1000bp:
                     # Open the filtered assembly file
-                    with open(filteredfile, 'wb') as formatted:
+                    with open(filteredfile, 'w') as formatted:
                         # Write the records in the list to the file
                         SeqIO.write(over1000bp, formatted, 'fasta')
             # If the filtered file was successfully created, copy it to the BestAssemblies folder
@@ -146,7 +148,7 @@ class Spades(object):
                 sample.general.bestassemblyfile = 'NA'
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.kmers = inputobject.kmers

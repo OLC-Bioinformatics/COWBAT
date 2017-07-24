@@ -50,6 +50,7 @@ class Quast(object):
             self.quastqueue.task_done()
 
     def metaparse(self, sample, quastoutputdirectory):
+        import functools
         # Tuples of strings to replace when parsing the results file
         repls = ('>=', 'Over'), ('000 Bp', 'kbp'), ('#', 'Num'), \
                 ("'", ''), ('(', ''), (')', ''), (' ', ''), ('>', 'Less'), ('Gc%', 'GC%')
@@ -60,11 +61,11 @@ class Quast(object):
             if os.path.isfile("{0:s}/gage_report.tsv".format(quastoutputdirectory)) \
             else "{0:s}/report.tsv".format(quastoutputdirectory)
         with open(resfile) as report:
-            report.next()
+            # report.next() # Next doesn't work in python3. Pretty sure getting rid of this just adds one extra item to an object.
             for line in report:
                 # Use headings in report as keys for the GenObject supplied from generator and replace incrementally
                 # with reduce and lambda function below
-                k, v = [reduce(lambda a, kv: a.replace(*kv), repls, s.title()) for s in line.rstrip().split('\t')]
+                k, v = [functools.reduce(lambda a, kv: a.replace(*kv), repls, s.title()) for s in line.rstrip().split('\t')]
                 quast[k] = v
         # Create the quast metadata object
         sample.quast = GenObject(quast)
@@ -72,7 +73,7 @@ class Quast(object):
         sample.quast.kmers = self.kmers
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.kmers = inputobject.kmers
         self.start = inputobject.starttime

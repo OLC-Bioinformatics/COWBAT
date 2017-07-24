@@ -16,12 +16,12 @@ class Submit(object):
                     for gene, allele in sample[self.analysistype].closealleles.items():
                         dnaseq = Seq(sample[self.analysistype].queryseq[gene], IUPAC.unambiguous_dna)
                         protseq = str(dnaseq.translate())
-                        print gene, allele, sample[self.analysistype].start[gene], sample[self.analysistype].end[gene],\
+                        print(gene, allele, sample[self.analysistype].start[gene], sample[self.analysistype].end[gene],\
                             sample[self.analysistype].mismatches[gene], sample[self.analysistype].querylength[gene], \
-                            sample[self.analysistype].subjectlength[gene], sample[self.analysistype].queryid[gene]
-                        print sample[self.analysistype].queryseq[gene]
-                        print protseq
-                        print protseq.count('*')
+                            sample[self.analysistype].subjectlength[gene], sample[self.analysistype].queryid[gene])
+                        print(sample[self.analysistype].queryseq[gene])
+                        print(protseq)
+                        print(protseq.count('*'))
 
     def __init__(self, inputobject, analysistype):
         self.runmetadata = inputobject.runmetadata

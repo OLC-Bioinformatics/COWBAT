@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from Bio.Application import _Option, AbstractCommandline, _Switch, _Argument
 import re
+from past.builtins import basestring
 
 __author__ = 'mike knowles'
 __doc__ = 'Wrapper for bowtie2'
@@ -10,17 +11,17 @@ class _PipeArgumentList(_Argument):
     """Represent a variable list of arguments for piping on a command line, e.g. sam to bam to sorted bam."""
 
     def __str__(self):
-        assert isinstance(self.value, list), \
-            "Arguments should be a list"
+        #assert isinstance(self.value, list), \
+        #    "Arguments should be a list"
         assert self.value, "Requires at least one argument"
         # A leading pipe is required so that commands following the last filename
         # do not appear merged.
         # e.g.:  samtools view -bS - | samtools sort -o out.sorted.bam -  [without leading pipe][Incorrect]
         #        | samtools view -bS - | samtools sort -o out.sorted.bam -  [with leading pipe][Correct]
-        if any(not isinstance(x, basestring) for x in self.value):
+        # if any(not isinstance(x, basestring) for x in self.value):
             # Correct for non-string commands.
             # e.g. command classes like Bio.Sequencing.Applications.SamtoolsViewCommandLine
-            self.value = map(str, self.value)
+        self.value = map(str, self.value)
         return "| " + " | ".join(self.value)
 
 
@@ -344,7 +345,7 @@ class Bowtie2CommandLine(_Bowtie2BaseCommandLine):
                     "Like -k but with no upper limit on number of alignments to search for. "
                     "-a is mutually exclusive with -k."),
 
-            # Effort Options
+            # Effort Opti,ons
             _Option(["-D", "D"],
                     "Up to <int> consecutive seed extension attempts can fail before Bowtie 2 moves on, using"
                     " the alignments found so far. A seed extension fails if it does not yield a new best or a new "
@@ -877,6 +878,6 @@ if __name__ == '__main__':
     samsortt = SamtoolsSortCommandline(input_bam="-", out_prefix=ubam[:-4])
     samtoolss = [SamtoolsViewCommandline(b=True, S=True, input_file="-"), samsortt]
     # print samtools
-    print Bowtie2CommandLine(bt2="test", m1="none", m2="yes", samtools=samtoolss)
+    print(Bowtie2CommandLine(bt2="test", m1="none", m2="yes", samtools=samtoolss))
     # print Bowtie2InspectCommandLine(bt2="test")
     pass

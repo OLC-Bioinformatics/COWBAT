@@ -20,6 +20,7 @@ folder.
 Copy all necessary files to a properly named folder in an easy to remember location (e.g. ../Sequencing/140922).
 
 #Requirements
+* bbduk.sh and spades.py in $PATH
 * Docker
 Everything else should be contained within the docker container, and is ready to run.
 
@@ -103,4 +104,10 @@ This pipeline generates multiple outputs.
 2. JSON reports - these are located in the 'reports' folder
 3. A summary of rMLST alleles - this is located in the 'reports' folder
 
+
+## Things to add to this README:
+* bbduk.sh and spades.py need to be in your $PATH
+* SPAdes needs to be at a version that supports python3 - using 3.10.1 seems to work.
+* BBduk/the bbmap package needs to be upgraded to version 37.23
+* Quast needs to be upgraded to version 4.5 in order to support python3
 

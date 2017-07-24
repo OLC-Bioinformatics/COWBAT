@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import bz2
-from Queue import Queue
+from queue import Queue
 from glob import glob
 from threading import Thread
 

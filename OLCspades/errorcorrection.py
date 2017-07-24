@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from accessoryFunctions import *
-import quality
+# from . import quality # Seems to be unused.
 __author__ = 'adamkoziol'
 
 
@@ -59,7 +59,7 @@ class Correct(object):
             self.correctqueue.task_done()
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.cpus = inputobject.cpus
         self.start = inputobject.starttime

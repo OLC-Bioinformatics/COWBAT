@@ -67,7 +67,7 @@ class Offhours(object):
         import re
         import shutil
         import errno
-        from accessoryFunctions import make_path
+        from .accessoryFunctions import make_path
         # Glob for .gz files in the appropriate subfolder of :miseqfolder. Discard 'Undetermined' files
         gzfiles = [gzfile for gzfile in glob('{}Data/Intensities/BaseCalls/*.gz'.format(self.miseqfolder))
                    if "Undetermined" not in gzfile]

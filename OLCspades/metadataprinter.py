@@ -13,7 +13,7 @@ class MetadataPrinter(object):
                 jsonfile = '{}/{}_metadata.json'.format(sample.general.outputdirectory, sample.name)
                 try:
                     # Open the metadata file to write
-                    with open(jsonfile, 'wb') as metadatafile:
+                    with open(jsonfile, 'w') as metadatafile:  # Changed from wb to w since this is text in python3, not bytes.
                         # Write the json dump of the object dump to the metadata file
                         json.dump(sample.dump(), metadatafile, sort_keys=True, indent=4, separators=(',', ': '))
                 except IOError:

@@ -98,7 +98,7 @@ class Univec(GeneSeekr):
                 if sample.general.bestassemblyfile != 'NA':
                     # Open the report
                     with open('{}{}_{}.csv'.format(sample[self.analysistype].reportdir, sample.name,
-                                                   self.analysistype), 'wb') as report:
+                                                   self.analysistype), 'w') as report:
                         # Write the row to the report
                         report.write(row)
             try:
@@ -107,7 +107,7 @@ class Univec(GeneSeekr):
             except KeyError:
                 pass
         # Create the report containing all the data from all samples
-        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'wb') \
+        with open('{}{}.csv'.format(self.reportpath, self.analysistype), 'w') \
                 as combinedreport:
             combinedreport.write(combinedrow)
 

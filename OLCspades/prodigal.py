@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from threading import Thread, Lock
-
 from accessoryFunctions import *
 
 __author__ = 'adamkoziol'
@@ -55,7 +54,7 @@ class Prodigal(object):
                 sample.prodigal.predictedgenesover1000bp = 0
                 sample.prodigal.predictedgenesover500bp = 0
                 sample.prodigal.predictedgenesunder500bp = 0
-                with open(sample.prodigal.results, 'rb') as results:
+                with open(sample.prodigal.results, 'r') as results:
                     for line in results:
                         if line.startswith('>'):
                             start = int(line.split('_')[1])
@@ -72,7 +71,7 @@ class Prodigal(object):
                                 sample.prodigal.predictedgenesunder500bp += 1
 
     def __init__(self, inputobject):
-        from Queue import Queue
+        from queue import Queue
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
         self.predictqueue = Queue()

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 import subprocess
-import depth
+import SPAdesPipeline.OLCspades.depth as depth
+import me
 import fastqCreator
 import metadataprinter
 import offhours
 import quality
 import runMetadata
 import spadesRun
-from accessoryFunctions import *
+from accessoryFunctions.accessoryFunctions import *
 
 __author__ = 'adamkoziol'
 

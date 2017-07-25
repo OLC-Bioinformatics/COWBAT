@@ -1046,4 +1046,13 @@ class PipelineInit(object):
 -a
 -u
 -R
+
+-s
+/nas0/bio_requests/9191/Refseq/sequences
+-t
+/nas0/bio_requests/9191/targets
+-r
+/nas0/bio_requests/9191/Refseq/reports
+-u
+-v
 '''

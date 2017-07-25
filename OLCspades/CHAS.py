@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 from threading import Thread
-from accessoryFunctions import *
+from accessoryFunctions.accessoryFunctions import *
 __author__ = 'adamkoziol'
 
 
@@ -43,7 +43,7 @@ class CHAS(object):
                     # Initialise a list to store the names of the targets
                     sample[self.analysistype].targets = list()
                     # Open the primer file, and read the names of the targets into a list
-                    with open(sample[self.analysistype].primers, 'rb') as primerfile:
+                    with open(sample[self.analysistype].primers, 'r') as primerfile:
                         for line in primerfile:
                             sample[self.analysistype].targets.append(line.split('\t')[0])
                 # Organisms without primer/probe files will fail. Populate metadata with 'NA' values

@@ -108,7 +108,7 @@ RUN cpanm Config::Tiny
 #docker build -t remotepythondocker .
 # -v /home/blais/Downloads/accessoryfiles:/accessoryfiles
 # -e NFS_MOUNT=192.168.1.18:/mnt/zvolume1 --privileged 
-#docker run -it -v /home/blais/PycharmProjects/SPAdesPipeline:/spades -v /media/miseq/:/media/miseq -v /home/blais/Bioinformatics/0_biorequests/assemblypipeline:/spadespipeline -v /home/blais/Bioinformatics/0_biorequests/6396/dockertest:/spadesrun --name pythondocker remotepythondocker
+#docker run -it -v /home/blais/PycharmProjects/spadespipeline:/spades -v /media/miseq/:/media/miseq -v /home/blais/Bioinformatics/0_biorequests/assemblypipeline:/spadespipeline -v /home/blais/Bioinformatics/0_biorequests/6396/dockertest:/spadesrun --name pythondocker remotepythondocker
 #docker rm pythondocker
 
 # python /spades/OLCspades/OLCspades.py -m /media/miseq/MiSeqOutput -F /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -f 151218_M02466_0126_000000000-AKF4P -r1 25 -r2 25 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/

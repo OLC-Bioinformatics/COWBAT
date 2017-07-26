@@ -25,7 +25,7 @@ class Reporter(object):
                     ('rMLSTsequenceType', sample.rmlst.sequencetype),
                     ('MLSTsequencetype', sample.mlst.sequencetype),
                     ('MLSTmatches', str(sample.mlst.matchestosequencetype)),
-                    ('coregenome', '{}/{}'.format(sample.coregenome.targetspresent, sample.coregenome.totaltargets)),
+                    ('coreGenome', '{}/{}'.format(sample.coregenome.targetspresent, sample.coregenome.totaltargets)),
                     ('Serotype', sample.serotype.serotype),
                     ('geneSeekrProfile', ';'.join(result for result in sample.geneseekr.blastresults)
                         if sample.geneseekr.blastresults != 'NA' else 'NA'),
@@ -55,7 +55,7 @@ class Reporter(object):
                 if not row:
                     data = ['SampleName', 'N50', 'NumContigs', 'TotalLength', 'MeanInsertSize', 'AverageCoverageDepth',
                             'ReferenceGenome', 'RefGenomeAlleleMatches', '16sPhylogeny', 'rMLSTsequenceType',
-                            'MLSTsequencetype', 'MLSTmatches', 'coregenome', 'Serotype', 'geneSeekrProfile',
+                            'MLSTsequencetype', 'MLSTmatches', 'coreGenome', 'Serotype', 'geneSeekrProfile',
                             'vtyperProfile', 'percentGC', 'TotalPredictedGenes', 'predictedgenesover3000bp',
                             'predictedgenesover1000bp', 'predictedgenesover500bp', 'predictedgenesunder500bp',
                             'SequencingDate', 'Investigator', 'TotalClustersinRun', 'NumberofClustersPF',

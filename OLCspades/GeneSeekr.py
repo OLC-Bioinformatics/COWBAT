@@ -6,7 +6,7 @@ from collections import defaultdict
 from csv import DictReader
 from glob import glob
 from threading import Thread
-from Bio.Blast.Applications import NcbiblastnCommandline
+from Bio.Blast.Applications import NcbiblastnCommandline, NcbitblastxCommandline
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.Alphabet import IUPAC
@@ -172,28 +172,37 @@ class GeneSeekr(object):
                 # remove the report, and run the blast analyses again
                 if size == 0:
                     os.remove(report)
-                    report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
-                                                              time.strftime("%Y.%m.%d.%H.%M.%S"))
+                    report = '{}{}_{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir,
+                                                                 genome,
+                                                                 self.blastprogram,
+                                                                 time.strftime("%Y.%m.%d.%H.%M.%S"))
             except IndexError:
-                report = '{}{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir, genome,
-                                                          time.strftime("%Y.%m.%d.%H.%M.%S"))
+                report = '{}{}_{}_rawresults_{:}.csv'.format(sample[self.analysistype].reportdir,
+                                                             genome,
+                                                             self.blastprogram,
+                                                             time.strftime("%Y.%m.%d.%H.%M.%S"))
             db = target.split('.')[0]
             # BLAST command line call. Note the mildly restrictive evalue, and the high number of alignments.
             # Due to the fact that all the targets are combined into one database, this is to ensure that all potential
             # alignments are reported. Also note the custom outfmt: the doubled quotes are necessary to get it work
-            blastn = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-5', num_alignments=1000000,
-                                           num_threads=12,
-                                           # outfmt="'6 qseqid sseqid positive mismatch gaps "
-                                           #        "evalue bitscore slen length'",
-                                           outfmt="'6 qseqid sseqid positive mismatch gaps "
-                                                  "evalue bitscore slen length qstart qend qseq sstart send sseq'",
-                                           out=report)
+            if self.blastprogram == 'blastn':
+                blast = NcbiblastnCommandline(query=assembly, db=db, evalue='1E-5', num_alignments=1000000,
+                                              num_threads=12,
+                                              outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                                     "evalue bitscore slen length qstart qend qseq sstart send sseq'",
+                                              out=report)
+            elif self.blastprogram == 'tblastx':
+                blast = NcbitblastxCommandline(query=assembly, db=db, evalue='1E-5', num_alignments=1000000,
+                                               num_threads=12,
+                                               outfmt="'6 qseqid sseqid positive mismatch gaps "
+                                                      "evalue bitscore slen length qstart qend qseq sstart send sseq'",
+                                               out=report)
             # Save the blast command in the metadata
-            sample[self.analysistype].blastcommand = str(blastn)
+            sample[self.analysistype].blastcommand = str(blast)
             # Only run blast if the report doesn't exist
             if not os.path.isfile(report):
                 try:
-                    blastn()
+                    blast()
                 except:
                     self.blastqueue.task_done()
                     self.blastqueue.join()
@@ -816,6 +825,7 @@ class GeneSeekr(object):
                            'evalue', 'bit_score', 'subject_length', 'alignment_length',
                            'query_start', 'query_end', 'query_sequence',
                            'subject_start', 'subject_end', 'subject_sequence']
+        self.blastprogram = 'blastn' if not inputobject.blastx else 'blastx'
         self.plusdict = defaultdict(make_dict)
         self.dqueue = Queue(maxsize=self.cpus)
         self.blastqueue = Queue(maxsize=self.cpus)
@@ -912,6 +922,9 @@ if __name__ == '__main__':
             parser.add_argument('-v', '--virulencefinder',
                                 action='store_true',
                                 help='Perform VirulenceFinder-like analyses')
+            parser.add_argument('-x', '--tblastx',
+                                action='store_true',
+                                help='Use tBLASTx instead of BLASTn to perform alignments')
             args = parser.parse_args()
             self.sequencepath = os.path.join(args.sequencepath, '')
             assert os.path.isdir(self.sequencepath), 'Cannot locate sequence path as specified: {}'\
@@ -929,6 +942,7 @@ if __name__ == '__main__':
             self.unique = args.unique
             self.resfinder = args.resfinder
             self.virulencefinder = args.virulencefinder
+            self.blastx = args.blastx
             self.strains = list()
             self.targets = list()
             self.combinedtargets = str()
@@ -959,6 +973,7 @@ if __name__ == '__main__':
             self.referencefilepath = str()
             self.align = self.runmetadata.align
             self.unique = self.runmetadata.unique
+            self.blastx = self.runmetadata.blastx
             # self.resfinder = self.runmetadata.resfinder
             # self.virulencefinder = self.runmetadata.virulencefinder
             # Run the analyses
@@ -1030,6 +1045,7 @@ class PipelineInit(object):
         self.chas = list()
         self.align = False
         self.unique = unique
+        self.blastx = False
         # self.resfinder = False
         # self.virulencefinder = False
         # Get the alleles and profile into the metadata

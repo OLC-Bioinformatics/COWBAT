@@ -5,23 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8df50326-f28e-470b-8450-ab77b8c09107" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/OLCspades/ftpdownload.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/OLCspades/resfinderwrapper.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/accessoryfunctions" afterPath="$PROJECT_DIR$/OLCspades/accessoryfunctions" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/metagenomeFilter" afterPath="$PROJECT_DIR$/OLCspades/metagenomeFilter" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/GeneSeekr.py" afterPath="$PROJECT_DIR$/OLCspades/GeneSeekr.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/OLCspades.py" afterPath="$PROJECT_DIR$/OLCspades/OLCspades.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/accessoryFunctions.py" afterPath="$PROJECT_DIR$/OLCspades/accessoryFunctions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/core.py" afterPath="$PROJECT_DIR$/OLCspades/core.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/metadataprinter.py" afterPath="$PROJECT_DIR$/OLCspades/metadataprinter.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/plasmidfinder.py" afterPath="$PROJECT_DIR$/OLCspades/plasmidfinder.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/prophages.py" afterPath="$PROJECT_DIR$/OLCspades/prophages.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/mMLST.py" afterPath="$PROJECT_DIR$/OLCspades/mMLST.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/reportaggregator.py" afterPath="$PROJECT_DIR$/OLCspades/reportaggregator.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/serotype.py" afterPath="$PROJECT_DIR$/OLCspades/serotype.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/sistr.py" afterPath="$PROJECT_DIR$/OLCspades/sistr.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/sixteenS.py" afterPath="$PROJECT_DIR$/OLCspades/sixteenS.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OLCspades/univec.py" afterPath="$PROJECT_DIR$/OLCspades/univec.py" />
     </list>
     <ignored path="SPAdesPipeline.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -34,60 +21,59 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$modellingThreaded.coverage" NAME="modellingThreaded Coverage Results" MODIFIED="1413570403129" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../SipprModeling" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$0splitter.coverage" NAME="0splitter Coverage Results" MODIFIED="1445020357938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$fastqSampler.coverage" NAME="fastqSampler Coverage Results" MODIFIED="1424892758994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/sandbox" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$tbl2asn.coverage" NAME="tbl2asn Coverage Results" MODIFIED="1459967604662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$referenceMapperComparer.coverage" NAME="referenceMapperComparer Coverage Results" MODIFIED="1456856003460" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$splitter.coverage" NAME="splitter Coverage Results" MODIFIED="1445020297746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$OLCspades.coverage" NAME="OLCspades Coverage Results" MODIFIED="1463149979310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$fastqMove.coverage" NAME="fastqMove Coverage Results" MODIFIED="1430423279391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$jsonFilterR.coverage" NAME="jsonFilterR Coverage Results" MODIFIED="1436190747071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/Genomes/OLC_Sorted_Genomes_June" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$postSipFastqAssemblyPrepper__1_.coverage" NAME="postSipFastqAssemblyPrepper (1) Coverage Results" MODIFIED="1428673380832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$postSipFastqAssemblyPrepper.coverage" NAME="postSipFastqAssemblyPrepper Coverage Results" MODIFIED="1428605383988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/RawReadSipping" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$geneSipprV2.coverage" NAME="geneSipprV2 Coverage Results" MODIFIED="1461785014151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$mergeFastqFiles.coverage" NAME="mergeFastqFiles Coverage Results" MODIFIED="1430852204830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateAbacasAndAppend.coverage" NAME="AutomateAbacasAndAppend Coverage Results" MODIFIED="1417102361545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$campyAssembler.coverage" NAME="campyAssembler Coverage Results" MODIFIED="1427218108175" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/SND/CFetus_seqs" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP.coverage" NAME="automatekSNP Coverage Results" MODIFIED="1428938464445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../Automate_kSNP" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper__1_.coverage" NAME="contigPrepper (1) Coverage Results" MODIFIED="1422629341716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$mendelsFirstLaw.coverage" NAME="mendelsFirstLaw Coverage Results" MODIFIED="1424960567238" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Bioinformatics/Rosalind/09_MendelsFirstLaw" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$austin.coverage" NAME="austin Coverage Results" MODIFIED="1427213218024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$offHours.coverage" NAME="offHours Coverage Results" MODIFIED="1419006212816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$modellingMultiprocessing.coverage" NAME="modellingMultiprocessing Coverage Results" MODIFIED="1418056626165" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../SipprModeling" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$SPAdesPipeline.coverage" NAME="SPAdesPipeline Coverage Results" MODIFIED="1435256573207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$campyAssembler__1_.coverage" NAME="campyAssembler (1) Coverage Results" MODIFIED="1427221794771" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP__1_.coverage" NAME="automatekSNP (1) Coverage Results" MODIFIED="1425911088275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$armiTest.coverage" NAME="armiTest Coverage Results" MODIFIED="1445629849726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$metagenomR.coverage" NAME="metagenomR Coverage Results" MODIFIED="1445954593044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../metagenomeAutomator" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$vagrantDocker.coverage" NAME="vagrantDocker Coverage Results" MODIFIED="1427402108321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$createJSONfiles.coverage" NAME="createJSONfiles Coverage Results" MODIFIED="1432583738512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads/fastq" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$getmlst.coverage" NAME="getmlst Coverage Results" MODIFIED="1459875344337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp__1_.coverage" NAME="1000bp (1) Coverage Results" MODIFIED="1422993044940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$bamProcessor.coverage" NAME="bamProcessor Coverage Results" MODIFIED="1444394553481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$tmpMover.coverage" NAME="tmpMover Coverage Results" MODIFIED="1435949625891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/GeneSeekr" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$seekrReportParser.coverage" NAME="seekrReportParser Coverage Results" MODIFIED="1436190269535" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Grace" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$combined_metadata.coverage" NAME="combined_metadata Coverage Results" MODIFIED="1415977733159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Reports" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$mMLST.coverage" NAME="mMLST Coverage Results" MODIFIED="1459872563882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$splitter.coverage" NAME="splitter Coverage Results" MODIFIED="1445020297746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$mergeFastqFiles.coverage" NAME="mergeFastqFiles Coverage Results" MODIFIED="1430852204830" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$fastqSampler.coverage" NAME="fastqSampler Coverage Results" MODIFIED="1424892758994" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/sandbox" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper.coverage" NAME="contigPrepper Coverage Results" MODIFIED="1461700178630" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateMauveAndAppendContigs.coverage" NAME="AutomateMauveAndAppendContigs Coverage Results" MODIFIED="1420568117920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$GeneSeekr_stand_alone.coverage" NAME="GeneSeekr stand alone Coverage Results" MODIFIED="1459952600038" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../pythonGeneSeekr" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$pseudomolecules.coverage" NAME="pseudomolecules Coverage Results" MODIFIED="1418748433855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/2014-11-28/OLF14140/MauveResults/alignment2" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$extractCloseSequences.coverage" NAME="extractCloseSequences Coverage Results" MODIFIED="1418919193558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/220000_around_oriC/potentialTargets/BACT000002" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$xlsParser.coverage" NAME="xlsParser Coverage Results" MODIFIED="1435246451083" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Grace" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$autoRunPipeline.coverage" NAME="autoRunPipeline Coverage Results" MODIFIED="1421268560896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$merger.coverage" NAME="merger Coverage Results" MODIFIED="1461761726707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../seqIDmerger" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$group1.coverage" NAME="group1 Coverage Results" MODIFIED="1421331963748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades/Group_1" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp.coverage" NAME="1000bp Coverage Results" MODIFIED="1422988550521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$uniVecScreen.coverage" NAME="uniVecScreen Coverage Results" MODIFIED="1422629228944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/2014-08-06" />
-    <SUITE FILE_PATH="coverage/SPAdesPipeline$GeneSeekr.coverage" NAME="GeneSeekr Coverage Results" MODIFIED="1457962977353" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$formattR.coverage" NAME="formattR Coverage Results" MODIFIED="1433510658060" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$austin.coverage" NAME="austin Coverage Results" MODIFIED="1427213218024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$tbl2asn.coverage" NAME="tbl2asn Coverage Results" MODIFIED="1459967604662" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$combined_metadata.coverage" NAME="combined_metadata Coverage Results" MODIFIED="1415977733159" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Reports" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$modellingMultiprocessing.coverage" NAME="modellingMultiprocessing Coverage Results" MODIFIED="1418056626165" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../SipprModeling" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$GeneSeekr_stand_alone.coverage" NAME="GeneSeekr stand alone Coverage Results" MODIFIED="1459952600038" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../pythonGeneSeekr" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP.coverage" NAME="automatekSNP Coverage Results" MODIFIED="1428938464445" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../Automate_kSNP" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$pseudomolecules.coverage" NAME="pseudomolecules Coverage Results" MODIFIED="1418748433855" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/2014-11-28/OLF14140/MauveResults/alignment2" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$campyAssembler__1_.coverage" NAME="campyAssembler (1) Coverage Results" MODIFIED="1427221794771" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$postSipFastqAssemblyPrepper__1_.coverage" NAME="postSipFastqAssemblyPrepper (1) Coverage Results" MODIFIED="1428673380832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$mMLST.coverage" NAME="mMLST Coverage Results" MODIFIED="1459872563882" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$extractCloseSequences.coverage" NAME="extractCloseSequences Coverage Results" MODIFIED="1418919193558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/220000_around_oriC/potentialTargets/BACT000002" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$group1.coverage" NAME="group1 Coverage Results" MODIFIED="1421331963748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades/Group_1" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$SPAdesPipeline.coverage" NAME="SPAdesPipeline Coverage Results" MODIFIED="1435256573207" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$uniVecScreen.coverage" NAME="uniVecScreen Coverage Results" MODIFIED="1422629228944" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/GeneSipping/NCBI_submission/Sequences/2014-08-06" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp.coverage" NAME="1000bp Coverage Results" MODIFIED="1422988550521" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter/E_cloacae_ludwigii/OLC-1406" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$vagrantDocker.coverage" NAME="vagrantDocker Coverage Results" MODIFIED="1427402108321" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/.." />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$xlsParser.coverage" NAME="xlsParser Coverage Results" MODIFIED="1435246451083" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Grace" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$OLCspades.coverage" NAME="OLCspades Coverage Results" MODIFIED="1463149979310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$campyAssembler.coverage" NAME="campyAssembler Coverage Results" MODIFIED="1427218108175" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/SND/CFetus_seqs" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$getmlst.coverage" NAME="getmlst Coverage Results" MODIFIED="1459875344337" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$referenceMapperComparer.coverage" NAME="referenceMapperComparer Coverage Results" MODIFIED="1456856003460" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$GeneSeekr.coverage" NAME="GeneSeekr Coverage Results" MODIFIED="1457962977353" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/OLCspades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$tmpMover.coverage" NAME="tmpMover Coverage Results" MODIFIED="1435949625891" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/GeneSeekr" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$0splitter.coverage" NAME="0splitter Coverage Results" MODIFIED="1445020357938" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$merger.coverage" NAME="merger Coverage Results" MODIFIED="1461761726707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../seqIDmerger" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$createJSONfiles.coverage" NAME="createJSONfiles Coverage Results" MODIFIED="1432583738512" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/Downloads/fastq" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$1000bp__1_.coverage" NAME="1000bp (1) Coverage Results" MODIFIED="1422993044940" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Ashley/Enterobacter" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateAbacasAndAppend.coverage" NAME="AutomateAbacasAndAppend Coverage Results" MODIFIED="1417102361545" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$metagenomR.coverage" NAME="metagenomR Coverage Results" MODIFIED="1445954593044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../metagenomeAutomator" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$jsonFilterR.coverage" NAME="jsonFilterR Coverage Results" MODIFIED="1436190747071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/Genomes/OLC_Sorted_Genomes_June" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$armiTest.coverage" NAME="armiTest Coverage Results" MODIFIED="1445629849726" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$geneSipprV2.coverage" NAME="geneSipprV2 Coverage Results" MODIFIED="1461785014151" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$fastqMove.coverage" NAME="fastqMove Coverage Results" MODIFIED="1430423279391" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$contigPrepper__1_.coverage" NAME="contigPrepper (1) Coverage Results" MODIFIED="1422629341716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/genomeAnnouncements" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$bamProcessor.coverage" NAME="bamProcessor Coverage Results" MODIFIED="1444394553481" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../geneSipprV2" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$seekrReportParser.coverage" NAME="seekrReportParser Coverage Results" MODIFIED="1436190269535" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Collaborations/Grace" />
     <SUITE FILE_PATH="coverage/SPAdesPipeline$test.coverage" NAME="test Coverage Results" MODIFIED="1435930467044" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/sandbox/2015-07-02/150702_M02466_0090_000000000-AEH15/firstStrand/Project_firstStrand/query/2015-SEQ-0548" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$offHours.coverage" NAME="offHours Coverage Results" MODIFIED="1419006212816" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$automatekSNP__1_.coverage" NAME="automatekSNP (1) Coverage Results" MODIFIED="1425911088275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/Pipeline_development/ePFGE/kSNP" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$autoRunPipeline.coverage" NAME="autoRunPipeline Coverage Results" MODIFIED="1421268560896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="/media/nas/akoziol/WGS_Spades" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$AutomateMauveAndAppendContigs.coverage" NAME="AutomateMauveAndAppendContigs Coverage Results" MODIFIED="1420568117920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$modellingThreaded.coverage" NAME="modellingThreaded Coverage Results" MODIFIED="1413570403129" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../SipprModeling" />
+    <SUITE FILE_PATH="coverage/SPAdesPipeline$postSipFastqAssemblyPrepper.coverage" NAME="postSipFastqAssemblyPrepper Coverage Results" MODIFIED="1428605383988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$USER_HOME$/git/RawReadSipping" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="SPAdesPipeline" />
   </component>
@@ -96,20 +82,18 @@
       <file leaf-file-name="OLCspades.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OLCspades/OLCspades.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3430">
-              <caret line="253" column="46" lean-forward="false" selection-start-line="253" selection-start-column="46" selection-end-line="253" selection-end-column="46" />
-              <folding>
-                <element signature="e#22#39#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="3416">
+              <caret line="253" column="44" lean-forward="false" selection-start-line="253" selection-start-column="44" selection-end-line="253" selection-end-column="44" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mMLST.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="mMLST.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/OLCspades/mMLST.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="14406">
-              <caret line="1046" column="6" lean-forward="false" selection-start-line="1046" selection-start-column="6" selection-end-line="1046" selection-end-column="6" />
+            <state relative-caret-position="224">
+              <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -125,10 +109,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prodigal.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="prodigal.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OLCspades/prodigal.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="560">
+            <state relative-caret-position="574">
               <caret line="42" column="47" lean-forward="false" selection-start-line="42" selection-start-column="47" selection-end-line="42" selection-end-column="47" />
               <folding />
             </state>
@@ -138,7 +122,7 @@
       <file leaf-file-name="depth.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OLCspades/depth.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3500">
+            <state relative-caret-position="3458">
               <caret line="257" column="0" lean-forward="false" selection-start-line="257" selection-start-column="0" selection-end-line="257" selection-end-column="0" />
               <folding />
             </state>
@@ -243,8 +227,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="1972" />
     <option name="y" value="24" />
-    <option name="width" value="1244" />
-    <option name="height" value="1056" />
+    <option name="width" value="1266" />
+    <option name="height" value="1020" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -283,36 +267,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SPAdesPipeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SPAdesPipeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SPAdesPipeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SPAdesPipeline" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="OLCspades" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
+      <pane id="ProjectPane" />
       <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -351,45 +308,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.OLCspades">
-    <configuration default="false" name="referenceMapperComparer" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/referenceMapperComparer.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest -s /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/sequences" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="splitter" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping/splitter.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="0splitter" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="0splitter" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -406,28 +325,44 @@
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <method />
     </configuration>
-    <configuration default="false" name="armiTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="GeneSeekr stand alone" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../pythonGeneSeekr" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/armiTest.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../pythonGeneSeekr/GeneSeekr.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <method />
     </configuration>
-    <configuration default="false" name="OLCspades" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="GeneSeekr" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/GeneSeekr.py" />
+      <option name="PARAMETERS" value="-s $PROJECT_DIR$/../MLST/sequences -t $USER_HOME$/Bioinformatics/0_biorequests/assemblypipeline/geneseekr/Escherichia -r $USER_HOME$/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159/geneseekr" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="OLCspades" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -445,7 +380,55 @@
       <option name="PARAMETERS" value="$USER_HOME$/Bioinformatics/00_Analyses/test -r /nas0/Adam/assemblypipeline" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <method />
+    </configuration>
+    <configuration name="SPAdesPipeline" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PATH" value="/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP:/media/nas/SPAdes-3.5.0-Linux/bin:/home/blais/Pychar/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP:/media/nas/SPAdes-3.5.0-Linux/bin:/home/blais/PycharmProjects/Automate_kSNPmProjects/Automate_kSNP" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SPAdesPipeline.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/WGS_Spades/EIEC-SRA -k 21,33,55,77" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+      <node-interpreter>project</node-interpreter>
+      <node-options />
+      <gulpfile />
+      <tasks />
+      <arguments />
+      <envs />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -511,25 +494,6 @@
       <option name="ADDITIONAL_ARGS" value="" />
       <method />
     </configuration>
-    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
     <configuration default="true" type="Tox" factoryName="Tox">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -544,15 +508,6 @@
       <method />
     </configuration>
     <configuration default="true" type="docker-deploy" factoryName="Docker Deployment">
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
-      <node-interpreter>project</node-interpreter>
-      <node-options />
-      <gulpfile />
-      <tasks />
-      <arguments />
-      <envs />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.npm" factoryName="npm">
@@ -632,91 +587,45 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method />
     </configuration>
-    <configuration default="false" name="fastqSampler" type="PythonConfigurationType" factoryName="Python">
+    <configuration default="true" type="tests" factoryName="Attests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/sandbox" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/sandbox/fastqSampler.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/sandbox" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="postSipFastqAssemblyPrepper" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
+      <envs />
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/RawReadSipping" />
-      <option name="IS_MODULE_SDK" value="true" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/git/RawReadSipping/postSipFastqAssemblyPrepper.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/GeneSipping/150304_M02466_0059_000000000-AEM4V/2015-03-04_Outbreak/Project_outbreak/query" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="vagrantDocker" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="armiTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../vagrantDocker.py" />
-      <option name="PARAMETERS" value="-p /mnt/zvolume1 -f $USER_HOME$/vagrant/testEnv" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/armiTest.py" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="postSipFastqAssemblyPrepper (1)" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../postSipFastqAssemblyPrepper.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/WGS_Spades -P $USER_HOME$/git/geneSippr/prepareFastqFiles.pl -m /media/miseq/MiSeqOutput -f /media/nas/akoziol/sandbox -o automateTest -r 300 -j testAutomate" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="automatekSNP" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="automatekSNP" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -735,75 +644,44 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="SPAdesPipeline" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="PATH" value="/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP:/media/nas/SPAdes-3.5.0-Linux/bin:/home/blais/Pychar/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP:/media/nas/SPAdes-3.5.0-Linux/bin:/home/blais/PycharmProjects/Automate_kSNPmProjects/Automate_kSNP" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/SPAdesPipeline.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/WGS_Spades/EIEC-SRA -k 21,33,55,77" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="fastqMove" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="bamProcessor" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples/fastqMove.py" />
-      <option name="PARAMETERS" value="-p $USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples -d $USER_HOME$/git/core-phylogenomics" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/bamProcessor.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="mergeFastqFiles" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="contigPrepper" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/genomeAnnouncements" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../mergeFastqFiles.py" />
-      <option name="PARAMETERS" value="-p /media/nas/backup/MiSeq/MiSeqOutput -d /media/nas/akoziol/fastqmergetest -f1 140814_M02466_0023_000000000-AAF1M -f2 140818_M02466_0024_000000000-A78YN" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/git/genomeAnnouncements/contigPrepper.py" />
+      <option name="PARAMETERS" value="$USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/assemblies -f $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/organismdata.csv -c $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/comments.asm -t $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/template.sbt -s /nas0/bio_requests/6396/fastq" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="createJSONfiles" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="createJSONfiles" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -822,9 +700,161 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="metagenomR" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="fastqMove" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples/fastqMove.py" />
+      <option name="PARAMETERS" value="-p $USER_HOME$/git/snp-pipeline/snppipeline/data/test/testListeria/cleanInputs/samples -d $USER_HOME$/git/core-phylogenomics" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration name="fastqSampler" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/sandbox" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="/media/nas/akoziol/sandbox/fastqSampler.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/sandbox" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration name="formattR" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Collaborations" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Collaborations/formattR.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/Collaborations/Diana" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration name="geneSipprV2" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/geneSipprV2.py" />
+      <option name="PARAMETERS" value="-p /nas0/bio_requests/6396/genesipprAnaysis -s /nas0/bio_requests/6396/genesipprAnaysis/sequences -t /nas0/bio_requests/6396/genesipprAnaysis/targets -d -V" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="getmlst" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/getmlst.py" />
+      <option name="PARAMETERS" value="--species &quot;Campylobacter jejuni&quot; --force_scheme_name --path $PROJECT_DIR$/../MLST/Campylobacter" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="mMLST" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PATH" value="/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP/kSNP:/home/blais/git/Automate_kSNP:/home/blais/vagrant/testEnv:/home/blais/Bioinformatics/sratoolkit/bin:/home/blais/.local/bin:/home/blais/Bioinformatics/vcftools_0.1.12b/bin:/home/blais/git/core-phylogenomics/scripts/clustalw-2.1-linux-x86_64-libcppstatic:/home/blais/Bioinformatics/tabix-0.2.6:/opt/core-phylogenomics/bin:/home/blais/Bioinformatics/pear-0.9.6-bin-64:/home/blais/PycharmProjects/metagenomeAutomator:/home/blais/Bioinformatics/bbmap:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades:/home/blais/PycharmProjects/pollux:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades/accessoryfiles/spades/bin:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades/accessoryfiles/qualimap " />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/mMLST.py" />
+      <option name="PARAMETERS" value="-a $PROJECT_DIR$/../MLST/rMLST -s $PROJECT_DIR$/../MLST/sequences -r $PROJECT_DIR$/../MLST/reports -b -R $PROJECT_DIR$/../MLST/referenceGenomes -s MLST -o &quot;Campylobacter jejuni&quot; -g" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="mergeFastqFiles" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../mergeFastqFiles.py" />
+      <option name="PARAMETERS" value="-p /media/nas/backup/MiSeq/MiSeqOutput -d /media/nas/akoziol/fastqmergetest -f1 140814_M02466_0023_000000000-AAF1M -f2 140818_M02466_0024_000000000-A78YN" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration name="merger" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../seqIDmerger" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../seqIDmerger/merger.py" />
+      <option name="PARAMETERS" value="-f /nas0/bio_requests/6948/merge.txt /nas0/bio_requests/6948" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="metagenomR" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -845,51 +875,102 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="formattR" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="postSipFastqAssemblyPrepper (1)" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Collaborations" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Collaborations/formattR.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/Collaborations/Diana" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../postSipFastqAssemblyPrepper.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/WGS_Spades -P $USER_HOME$/git/geneSippr/prepareFastqFiles.pl -m /media/miseq/MiSeqOutput -f /media/nas/akoziol/sandbox -o automateTest -r 300 -j testAutomate" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="xlsParser" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="postSipFastqAssemblyPrepper" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/RawReadSipping" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/git/RawReadSipping/postSipFastqAssemblyPrepper.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/GeneSipping/150304_M02466_0059_000000000-AEM4V/2015-03-04_Outbreak/Project_outbreak/query" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+    </configuration>
+    <configuration name="referenceMapperComparer" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Collaborations/Grace" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Collaborations/Grace/xlsParser.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/Collaborations/Grace" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/referenceMapperComparer.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest -s /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/sequences" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="tmpMover" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="splitter" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest/targets/Organism/Escherichia/Pathotyping/splitter.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="tbl2asn" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/genomeAnnouncements" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="SPAdesPipeline" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$USER_HOME$/git/genomeAnnouncements/tbl2asn.py" />
+      <option name="PARAMETERS" value="$USER_HOME$/Bioinformatics/0_biorequests/6396/assemblies/reformatted" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="tmpMover" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -908,179 +989,46 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <RunnerSettings RunnerId="PythonRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
     </configuration>
-    <configuration default="false" name="bamProcessor" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="vagrantDocker" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/.." />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/bamProcessor.py" />
-      <option name="PARAMETERS" value="-p /media/nas/akoziol/Pipeline_development/GeneSipperV2/baitTest" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../vagrantDocker.py" />
+      <option name="PARAMETERS" value="-p /mnt/zvolume1 -f $USER_HOME$/vagrant/testEnv" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <method />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
     </configuration>
-    <configuration default="false" name="mMLST" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="PATH" value="/home/blais/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/cd-hit:/home/blais/Bioinformatics/prokka-1.5.2/bin:/home/blais/Bioinformatics/aragorn1.2.36:/home/blais/Bioinformatics/rnammer-1.2:/home/blais/Bioinformatics/prodigal.v2_60:/home/blais/Bioinformatics/signalp-4.1:/home/blais/Bioinformatics/infernal-1.1rc2-linux-intel-gcc/binaries:/home/blais/Bioinformatics/nmltoolkit/bin/:/home/blais/Bioinformatics/orthomclSoftware-v2.0.7/bin:/usr/local/cuda-5.5/bin:/home/blais/git/PerlAssemblyPipeline:/home/blais/Bioinformatics/mauve_2.3.1:/home/blais/PycharmProjects/LibrarySizeEstimator:/home/blais/Bioinformatics/Quake/bin:/home/blais/Bioinformatics/Quake/src:/home/blais/eclipse:/home/blais/git/RawReadSipping:/home/blais/workspace/GeneSippr:/home/blais/Bioinformatics/quast-2.3:/home/blais/PycharmProjects/seqtk:/home/blais/PycharmProjects/SPAdesPipeline:/home/blais/git/SNP_analysis/bin:/home/blais/Bioinformatics/GATK:/home/blais/Bioinformatics/IGVTools:/home/blais/PycharmProjects/SipprModeling:/home/blais/Bioinformatics/soma-v2/bin:/home/blais/Bioinformatics/twin-1.02-bin:/home/blais/Bioinformatics/kSNP/kSNP:/home/blais/git/Automate_kSNP:/home/blais/vagrant/testEnv:/home/blais/Bioinformatics/sratoolkit/bin:/home/blais/.local/bin:/home/blais/Bioinformatics/vcftools_0.1.12b/bin:/home/blais/git/core-phylogenomics/scripts/clustalw-2.1-linux-x86_64-libcppstatic:/home/blais/Bioinformatics/tabix-0.2.6:/opt/core-phylogenomics/bin:/home/blais/Bioinformatics/pear-0.9.6-bin-64:/home/blais/PycharmProjects/metagenomeAutomator:/home/blais/Bioinformatics/bbmap:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades:/home/blais/PycharmProjects/pollux:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades/accessoryfiles/spades/bin:/home/blais/PycharmProjects/SPAdesPipeline/OLCspades/accessoryfiles/qualimap " />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/mMLST.py" />
-      <option name="PARAMETERS" value="-a $PROJECT_DIR$/../MLST/rMLST -s $PROJECT_DIR$/../MLST/sequences -r $PROJECT_DIR$/../MLST/reports -b -R $PROJECT_DIR$/../MLST/referenceGenomes -s MLST -o &quot;Campylobacter jejuni&quot; -g" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="GeneSeekr" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="xlsParser" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
+      <option name="WORKING_DIRECTORY" value="/media/nas/akoziol/Collaborations/Grace" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="SPAdesPipeline" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/GeneSeekr.py" />
-      <option name="PARAMETERS" value="-s $PROJECT_DIR$/../MLST/sequences -t $USER_HOME$/Bioinformatics/0_biorequests/assemblypipeline/geneseekr/Escherichia -r $USER_HOME$/Bioinformatics/0_biorequests/6396/fastqtest/2015-SEQ-1159/geneseekr" />
+      <option name="SCRIPT_NAME" value="/media/nas/akoziol/Collaborations/Grace/xlsParser.py" />
+      <option name="PARAMETERS" value="-p /media/nas/akoziol/Collaborations/Grace" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="getmlst" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/OLCspades" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OLCspades/getmlst.py" />
-      <option name="PARAMETERS" value="--species &quot;Campylobacter jejuni&quot; --force_scheme_name --path $PROJECT_DIR$/../MLST/Campylobacter" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="contigPrepper" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/genomeAnnouncements" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/git/genomeAnnouncements/contigPrepper.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/assemblies -f $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/organismdata.csv -c $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/comments.asm -t $USER_HOME$/Bioinformatics/0_biorequests/6396/genome_submission/template.sbt -s /nas0/bio_requests/6396/fastq" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="GeneSeekr stand alone" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../pythonGeneSeekr" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../pythonGeneSeekr/GeneSeekr.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="tbl2asn" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/git/genomeAnnouncements" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$USER_HOME$/git/genomeAnnouncements/tbl2asn.py" />
-      <option name="PARAMETERS" value="$USER_HOME$/Bioinformatics/0_biorequests/6396/assemblies/reformatted" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="merger" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../seqIDmerger" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../seqIDmerger/merger.py" />
-      <option name="PARAMETERS" value="-f /nas0/bio_requests/6948/merge.txt /nas0/bio_requests/6948" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="geneSipprV2" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="$USER_HOME$/venv/bin/python" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../geneSipprV2" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../geneSipprV2/geneSipprV2.py" />
-      <option name="PARAMETERS" value="-p /nas0/bio_requests/6396/genesipprAnaysis -s /nas0/bio_requests/6396/genesipprAnaysis/sequences -t /nas0/bio_requests/6396/genesipprAnaysis/targets -d -V" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
     </configuration>
     <list size="27">
       <item index="0" class="java.lang.String" itemvalue="Python.fastqSampler" />
@@ -1120,26 +1068,6 @@
         <item index="4" class="java.lang.String" itemvalue="Python.splitter" />
       </list>
     </recent_temporary>
-    <configuration default="true" type="tests" factoryName="Attests">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="SPAdesPipeline" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <method />
-    </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
@@ -1473,19 +1401,17 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="1972" y="24" width="1244" height="1056" extended-state="4" />
+    <frame x="1972" y="24" width="1266" height="1020" extended-state="0" />
     <layout>
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14869282" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3735849" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32896304" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32777116" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14891846" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="17" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39928487" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32777116" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1495,9 +1421,11 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32929516" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39928487" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3295325" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39907727" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3298731" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Concurrent Activities Diagram" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38105726" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1524,7 +1452,7 @@
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="processedProjectFiles" value="true" />
+    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
@@ -1637,13 +1565,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OLCspades/accessoryFunctions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="376">
-          <caret line="310" column="53" lean-forward="false" selection-start-line="310" selection-start-column="53" selection-end-line="310" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/OLCspades/accessoryFunctions.py" />
     <entry file="file://$PROJECT_DIR$/OLCspades/sixteenS.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="415">
@@ -1829,7 +1751,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OLCspades/depth.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3500">
+        <state relative-caret-position="3458">
           <caret line="257" column="0" lean-forward="false" selection-start-line="257" selection-start-column="0" selection-end-line="257" selection-end-column="0" />
           <folding />
         </state>
@@ -1868,18 +1790,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OLCspades/OLCspades.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3430">
-          <caret line="253" column="46" lean-forward="false" selection-start-line="253" selection-start-column="46" selection-end-line="253" selection-end-column="46" />
-          <folding>
-            <element signature="e#22#39#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OLCspades/mMLST.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="14406">
-          <caret line="1046" column="6" lean-forward="false" selection-start-line="1046" selection-start-column="6" selection-end-line="1046" selection-end-column="6" />
+        <state relative-caret-position="3416">
+          <caret line="253" column="44" lean-forward="false" selection-start-line="253" selection-start-column="44" selection-end-line="253" selection-end-column="44" />
           <folding />
         </state>
       </provider>
@@ -1907,8 +1819,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OLCspades/prodigal.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="560">
+        <state relative-caret-position="574">
           <caret line="42" column="47" lean-forward="false" selection-start-line="42" selection-start-column="47" selection-end-line="42" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OLCspades/mMLST.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="16" column="0" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
           <folding />
         </state>
       </provider>

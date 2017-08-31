@@ -146,7 +146,7 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
-        coregen = GeneSeekr.PipelineInit(self, 'coreGenome', True, 70, False)
+        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)

@@ -1,6 +1,6 @@
 SPAdesPipeline
 ==============
-#Introduction
+# Introduction
 
 This pipeline is designed to be able to assemble and type raw fastq data generated using an Illumina MiSeq.
 
@@ -38,10 +38,10 @@ This pipeline includes a main script (SPAdesPipeline), and several helper module
 * Creating a JSON report of all collected metadata for each sequenced strain
  * reportR
 
-#Use
+# Use
 Run SPAdesPipeline.py from the console.
 
-#Requirements
+# Requirements
 * Docker
 Everything else should be contained within the docker container, and is ready to run.
 

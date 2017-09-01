@@ -10,6 +10,7 @@ import spadespipeline.fastqmover as fastqmover
 import spadespipeline.mMLST as mMLST
 from spadespipeline.basicAssembly import Basic
 from accessoryFunctions.accessoryFunctions import *
+from typingscripts import *
 
 __author__ = 'adamkoziol'
 
@@ -106,7 +107,7 @@ class RunSpades(object):
         """
         import MASHsippr.mash as mash
         from sixteenS.sixteens_full import SixteenS as SixteensFull
-        from genesippr.genesippr import GeneSippr as GeneSippr
+        # from genesippr.genesippr import GeneSippr as GeneSippr
         import spadespipeline.GeneSeekr as GeneSeekr
         import spadespipeline.prophages as prophages
         # Run mash
@@ -120,9 +121,9 @@ class RunSpades(object):
         # mMLST.PipelineInit(self, 'rmlst')
         # metadataprinter.MetadataPrinter(self)
         # Plasmid finding
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
+        Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
         # Resistance finding
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False)
+        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False)
         # res = GeneSeekr.PipelineInit(self, 'resfinder', False, 80, True)
         # GeneSeekr.GeneSeekr(res)
         # metadataprinter.MetadataPrinter(self)

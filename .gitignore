@@ -1,3 +1,9 @@
+# Compiled Python Files
+*.pyc
+
+# Edited text files
+*~
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

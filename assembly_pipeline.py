@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import subprocess
-import spadespipeline.depth as depth
 import spadespipeline.fastqCreator as fastqCreator
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.offhours as offhours
@@ -16,7 +15,8 @@ __author__ = 'adamkoziol'
 
 
 class RunSpades(object):
-    def assembly(self):
+
+    def helper(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
         and trimming as well as the assembly"""
         # Run the fastq creation script - if argument is provided
@@ -30,7 +30,7 @@ class RunSpades(object):
         else:
             # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
             # RunInfo.xml files
-            self.runinfo = "{}RunInfo.xml".format(self.path)
+            self.runinfo = os.path.join(self.path, 'RunInfo.xml')
             self.runmetadata = runMetadata.Metadata(self)
             # Extract the flowcell ID and the instrument name if the RunInfo.xml file was provided
             self.runmetadata.parseruninfo()
@@ -51,12 +51,11 @@ class RunSpades(object):
         metadataprinter.MetadataPrinter(self)
 
     def quality(self):
+        """
+        Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
+        supplied sequences
+        """
         import spadespipeline.errorcorrection as errorcorrection
-        import spadespipeline.quaster as quaster
-        import spadespipeline.prodigal as prodigal
-        import spadespipeline.mash as mash
-        """Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
-        supplied sequences"""
         # Run FastQC on the unprocessed fastq files
         self.qualityobject.fastqcthreader('Raw')
         # Perform quality trimming and FastQC on the trimmed files
@@ -72,8 +71,24 @@ class RunSpades(object):
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
             quit()
+
+    def assemble(self):
+        """
+
+        """
+        import spadespipeline.depth as depth
+        import spadespipeline.quaster as quaster
+        import spadespipeline.prodigal as prodigal
         # Run spades
         spadesRun.Spades(self)
+        # Calculate the depth of coverage as well as other quality metrics using Qualimap
+        depth.QualiMap(self)
+        metadataprinter.MetadataPrinter(self)
+        # Run quast assembly metrics
+        quaster.Quast(self)
+        # ORF detection
+        prodigal.Prodigal(self)
+        metadataprinter.MetadataPrinter(self)
         # Determine the amount of physical memory in the system
         from psutil import virtual_memory
         mem = virtual_memory()
@@ -84,65 +99,63 @@ class RunSpades(object):
             automateCLARK.PipelineInit(self, 'typing')
         else:
             printtime('Not enough RAM to run CLARK!', self.starttime)
-        # automateCLARK.PipelineInit(self)
-        prodigal.Prodigal(self)
-        metadataprinter.MetadataPrinter(self)
+
+    def agnostictyping(self):
+        """
+
+        """
+        import MASHsippr.mash as mash
+        from sixteenS.sixteens_full import SixteenS as SixteensFull
+        from genesippr.genesippr import GeneSippr as GeneSippr
+        import spadespipeline.GeneSeekr as GeneSeekr
+        import spadespipeline.prophages as prophages
         # Run mash
         mash.Mash(self, 'mash')
         metadataprinter.MetadataPrinter(self)
+        # Run the 16S analyses
+        SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.985)
+        # Run 16S typing
+        metadataprinter.MetadataPrinter(self)
         # Run rMLST
-        mMLST.PipelineInit(self, 'rmlst')
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        # Run quast assembly metrics
-        quaster.Quast(self)
-        # Calculate the depth of coverage as well as other quality metrics using Qualimap
-        metadataprinter.MetadataPrinter(self)
-        depth.QualiMap(self)
-        # Print the metadata to file
+        # mMLST.PipelineInit(self, 'rmlst')
+        # metadataprinter.MetadataPrinter(self)
+        # Plasmid finding
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
+        # Resistance finding
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False)
+        # res = GeneSeekr.PipelineInit(self, 'resfinder', False, 80, True)
+        # GeneSeekr.GeneSeekr(res)
+        # metadataprinter.MetadataPrinter(self)
+        quit()
+        # Prophage detection
+        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80, True)
+        prophages.Prophages(pro)
         metadataprinter.MetadataPrinter(self)
 
     def typing(self):
+        """
+
+        """
         import spadespipeline.GeneSeekr as GeneSeekr
-        import spadespipeline.sixteenS as sixteenS
         import spadespipeline.univec as univec
-        import spadespipeline.prophages as prophages
-        import spadespipeline.plasmidfinder as plasmidfinder
         import spadespipeline.serotype as serotype
-        # import virulence
         import spadespipeline.vtyper as vtyper
         import coreGenome.core as core
-        # import coreGenome
         import spadespipeline.sistr as sistr
-        # import resfinder
         # Run modules and print metadata to file
         mMLST.PipelineInit(self, 'mlst')
         metadataprinter.MetadataPrinter(self)
         geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50, False)
         GeneSeekr.GeneSeekr(geneseekr)
         metadataprinter.MetadataPrinter(self)
-        sixteens = GeneSeekr.PipelineInit(self, 'sixteenS', False, 95, False)
-        sixteenS.SixteenS(sixteens)
-        metadataprinter.MetadataPrinter(self)
         uni = univec.PipelineInit(self, 'univec', False, 80, False)
         univec.Univec(uni)
-        metadataprinter.MetadataPrinter(self)
-        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80, True)
-        prophages.Prophages(pro)
-        metadataprinter.MetadataPrinter(self)
-        plasmid = GeneSeekr.PipelineInit(self, 'plasmidfinder', False, 80, True)
-        plasmidfinder.PlasmidFinder(plasmid)
         metadataprinter.MetadataPrinter(self)
         sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95, False)
         serotype.Serotype(sero)
         metadataprinter.MetadataPrinter(self)
-        # vir = GeneSeekr.PipelineInit(self, 'virulence', True, 70)
-        # virulence.Virulence(vir)
         vir = GeneSeekr.PipelineInit(self, 'virulence', True, 80, True)
         GeneSeekr.GeneSeekr(vir)
-        metadataprinter.MetadataPrinter(self)
-        # armiobject = GeneSeekr.PipelineInit(self, 'ARMI', False, 70)
-        # armi.ARMI(armiobject)
         metadataprinter.MetadataPrinter(self)
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
@@ -151,11 +164,6 @@ class RunSpades(object):
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
         sistr.Sistr(self, 'sistr')
-        # res = resfinder.PipelineInit(self, 'resfinder', False, 80)
-        res = GeneSeekr.PipelineInit(self, 'resfinder', False, 80, True)
-        GeneSeekr.GeneSeekr(res)
-        # resfinder.ResFinder(res)
-        metadataprinter.MetadataPrinter(self)
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """
@@ -189,7 +197,7 @@ class RunSpades(object):
                 .format(self.customsamplesheet)
 
         self.basicassembly = args.basicassembly
-        if not self.customsamplesheet and not os.path.isfile("{}SampleSheet.csv".format(self.path)):
+        if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, '{}SampleSheet.csv')):
             self.basicassembly = True
             printtime('Could not find a sample sheet. Performing basic assembly (no run metadata captured)',
                       self.starttime)
@@ -198,25 +206,30 @@ class RunSpades(object):
         # Assertions to ensure that the provided variables are valid
         make_path(self.path)
         assert os.path.isdir(self.path), u'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
-        self.reportpath = '{}reports'.format(self.path)
+        self.reportpath = os.path.join(self.path, 'reports')
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
         self.miseqpath = args.miseqpath
         self.commit = str(pipelinecommit)
         self.homepath = scriptpath
         self.logfile = os.path.join(self.path, 'logfile.txt')
-        self.runinfo = ''
+        self.runinfo = str()
+        self.pipeline = True
         # Initialise the metadata object
         self.runmetadata = MetadataObject()
         try:
             # Start the assembly
-            self.assembly()
+            self.helper()
             # Create the quality object
             self.qualityobject = quality.Quality(self)
             self.quality()
             # Print the metadata to file
             metadataprinter.MetadataPrinter(self)
-            # Perform typing of assemblies
+            # Perform assembly
+            self.assemble()
+            # Perform genus-agnostic typing
+            self.agnostictyping()
+            # Perform typing
             self.typing()
         except KeyboardInterrupt:
             raise KeyboardInterruptError

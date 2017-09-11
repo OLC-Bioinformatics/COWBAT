@@ -7,8 +7,8 @@ import spadespipeline.quality as quality
 import spadespipeline.runMetadata as runMetadata
 import spadespipeline.spadesRun as spadesRun
 import spadespipeline.fastqmover as fastqmover
-import spadespipeline.GeneSeekr as GeneSeekr
-import spadespipeline.mMLST as mMLST
+import spadespipeline.GeneSeekr as GeneSeekrMethod
+from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from spadespipeline.basicAssembly import Basic
 from accessoryFunctions.accessoryFunctions import *
 from typingclasses import *
@@ -120,15 +120,16 @@ class RunSpades(object):
         # Run 16S typing
         metadataprinter.MetadataPrinter(self)
         # Run rMLST
+        # MLSTSippr(self, self.commit, self.starttime, self.homepath, 'rMLST', 1.0, True)
         # mMLST.PipelineInit(self, 'rmlst')
         # metadataprinter.MetadataPrinter(self)
         # Plasmid finding
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
         # Resistance finding
         Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False)
-        """
+        # """
         # Prophage detection
-        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 90, True)
+        pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
         Prophages(pro)
         metadataprinter.MetadataPrinter(self)
         # Univec contamination search
@@ -138,13 +139,12 @@ class RunSpades(object):
         # Virulence
         Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.9, False)
         metadataprinter.MetadataPrinter(self)
-        """
+        # """
 
     def typing(self):
         """
 
         """
-        from MLSTsippr.mlst import GeneSippr as MLSTSippr
         import spadespipeline.vtyper as vtyper
         import coreGenome.core as core
         import spadespipeline.sistr as sistr
@@ -160,7 +160,7 @@ class RunSpades(object):
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
         # Core genome calculation
-        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70, False)
+        coregen = GeneSeekrMethod.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)

@@ -7,10 +7,11 @@ import spadespipeline.quality as quality
 import spadespipeline.runMetadata as runMetadata
 import spadespipeline.spadesRun as spadesRun
 import spadespipeline.fastqmover as fastqmover
+import spadespipeline.GeneSeekr as GeneSeekr
 import spadespipeline.mMLST as mMLST
 from spadespipeline.basicAssembly import Basic
 from accessoryFunctions.accessoryFunctions import *
-from typingscripts import *
+from typingclasses import *
 
 __author__ = 'adamkoziol'
 
@@ -107,14 +108,15 @@ class RunSpades(object):
         """
         import MASHsippr.mash as mash
         from sixteenS.sixteens_full import SixteenS as SixteensFull
-        # from genesippr.genesippr import GeneSippr as GeneSippr
-        import spadespipeline.GeneSeekr as GeneSeekr
-        import spadespipeline.prophages as prophages
+        from genesippr.genesippr import GeneSippr as GeneSippr
+        import spadespipeline.univec as univec
         # Run mash
         mash.Mash(self, 'mash')
         metadataprinter.MetadataPrinter(self)
         # Run the 16S analyses
         SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.985)
+        #
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False)
         # Run 16S typing
         metadataprinter.MetadataPrinter(self)
         # Run rMLST
@@ -124,46 +126,45 @@ class RunSpades(object):
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
         # Resistance finding
         Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False)
-        # res = GeneSeekr.PipelineInit(self, 'resfinder', False, 80, True)
-        # GeneSeekr.GeneSeekr(res)
-        # metadataprinter.MetadataPrinter(self)
-        quit()
+        """
         # Prophage detection
-        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 80, True)
-        prophages.Prophages(pro)
+        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 90, True)
+        Prophages(pro)
         metadataprinter.MetadataPrinter(self)
+        # Univec contamination search
+        uni = univec.PipelineInit(self, 'univec', False, 80, True)
+        Univec(uni)
+        metadataprinter.MetadataPrinter(self)
+        # Virulence
+        Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.9, False)
+        metadataprinter.MetadataPrinter(self)
+        """
 
     def typing(self):
         """
 
         """
-        import spadespipeline.GeneSeekr as GeneSeekr
-        import spadespipeline.univec as univec
-        import spadespipeline.serotype as serotype
+        from MLSTsippr.mlst import GeneSippr as MLSTSippr
         import spadespipeline.vtyper as vtyper
         import coreGenome.core as core
         import spadespipeline.sistr as sistr
+        from serosippr.serosippr import SeroSippr
         # Run modules and print metadata to file
-        mMLST.PipelineInit(self, 'mlst')
-        metadataprinter.MetadataPrinter(self)
-        geneseekr = GeneSeekr.PipelineInit(self, 'geneseekr', True, 50, False)
-        GeneSeekr.GeneSeekr(geneseekr)
-        metadataprinter.MetadataPrinter(self)
-        uni = univec.PipelineInit(self, 'univec', False, 80, False)
-        univec.Univec(uni)
-        metadataprinter.MetadataPrinter(self)
-        sero = GeneSeekr.PipelineInit(self, 'serotype', True, 95, False)
-        serotype.Serotype(sero)
-        metadataprinter.MetadataPrinter(self)
-        vir = GeneSeekr.PipelineInit(self, 'virulence', True, 80, True)
-        GeneSeekr.GeneSeekr(vir)
-        metadataprinter.MetadataPrinter(self)
+        # MLST
+        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
+        quit()
+        # mMLST.PipelineInit(self, 'mlst')
+        # Serotyping
+        SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
+        # Virulence typing
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
+        # Core genome calculation
         coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
+        # Sistr
         sistr.Sistr(self, 'sistr')
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):

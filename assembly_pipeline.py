@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import subprocess
+# import subprocess
 import spadespipeline.fastqCreator as fastqCreator
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.offhours as offhours
@@ -7,11 +7,36 @@ import spadespipeline.quality as quality
 import spadespipeline.runMetadata as runMetadata
 import spadespipeline.spadesRun as spadesRun
 import spadespipeline.fastqmover as fastqmover
-import spadespipeline.GeneSeekr as GeneSeekr
-import spadespipeline.mMLST as mMLST
+import spadespipeline.GeneSeekr as GeneSeekrMethod
+from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from spadespipeline.basicAssembly import Basic
-from accessoryFunctions.accessoryFunctions import *
-from typingclasses import *
+import spadespipeline.univec as univec
+import spadespipeline.reporter as reporter
+import spadespipeline.compress as compress
+import spadespipeline.versions as versions
+import spadespipeline.errorcorrection as errorcorrection
+import spadespipeline.depth as depth
+import spadespipeline.quaster as quaster
+import spadespipeline.prodigal as prodigal
+import MASHsippr.mash as mash
+from sixteenS.sixteens_full import SixteenS as SixteensFull
+from KmerContam import pipeline_contamination_detection
+from metagenomefilter import automateCLARK
+import spadespipeline.vtyper as vtyper
+import coreGenome.core as core
+import spadespipeline.sistr as sistr
+from serosippr.serosippr import SeroSippr
+try:
+    from .typingclasses import MetadataObject, GenObject, printtime, make_path, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+except ImportError:
+    from typingclasses import MetadataObject, GenObject, printtime, make_path, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+import gc
+import os
+import subprocess
+from psutil import virtual_memory
+import multiprocessing
+from time import time
+from argparse import ArgumentParser
 
 __author__ = 'adamkoziol'
 
@@ -57,7 +82,6 @@ class RunSpades(object):
         Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
         supplied sequences
         """
-        import spadespipeline.errorcorrection as errorcorrection
         # Run FastQC on the unprocessed fastq files
         self.qualityobject.fastqcthreader('Raw')
         # Perform quality trimming and FastQC on the trimmed files
@@ -67,6 +91,7 @@ class RunSpades(object):
         # Run the error correction module
         errorcorrection.Correct(self)
         metadataprinter.MetadataPrinter(self)
+        pipeline_contamination_detection.PipelineContaminationDetection(self)
         # Run FastQC on the unprocessed fastq files
         self.qualityobject.fastqcthreader('trimmedcorrected')
         # Exit if only pre-processing of data is requested
@@ -78,9 +103,6 @@ class RunSpades(object):
         """
 
         """
-        import spadespipeline.depth as depth
-        import spadespipeline.quaster as quaster
-        import spadespipeline.prodigal as prodigal
         # Run spades
         spadesRun.Spades(self)
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
@@ -92,13 +114,11 @@ class RunSpades(object):
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
         # Determine the amount of physical memory in the system
-        from psutil import virtual_memory
         mem = virtual_memory()
         # If the total amount of memory is greater than 100GB (this could probably be lowered), run CLARK
         if mem.total >= 100000000000:
             # Run CLARK typing on the .fastq and .fasta files
-            from metagenomefilter import automateCLARK
-            automateCLARK.PipelineInit(self, 'typing')
+            automateCLARK.PipelineInit(self)
         else:
             printtime('Not enough RAM to run CLARK!', self.starttime)
 
@@ -106,53 +126,44 @@ class RunSpades(object):
         """
 
         """
-        import MASHsippr.mash as mash
-        from sixteenS.sixteens_full import SixteenS as SixteensFull
-        from genesippr.genesippr import GeneSippr as GeneSippr
-        import spadespipeline.univec as univec
+
+        # from genesippr.genesippr import GeneSippr as GeneSippr
+
         # Run mash
         mash.Mash(self, 'mash')
+        # Run rMLST
+        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'rMLST', 1.0, True)
         metadataprinter.MetadataPrinter(self)
         # Run the 16S analyses
         SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.985)
-        #
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False)
-        # Run 16S typing
         metadataprinter.MetadataPrinter(self)
-        # Run rMLST
-        # mMLST.PipelineInit(self, 'rmlst')
-        # metadataprinter.MetadataPrinter(self)
+        # Find genes of interest
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False, False)
+        metadataprinter.MetadataPrinter(self)
         # Plasmid finding
-        Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False)
+        Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
         # Resistance finding
-        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False)
-        """
+        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False, True)
+        # """
         # Prophage detection
-        pro = GeneSeekr.PipelineInit(self, 'prophages', False, 90, True)
+        pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
         Prophages(pro)
-        metadataprinter.MetadataPrinter(self)
         # Univec contamination search
         uni = univec.PipelineInit(self, 'univec', False, 80, True)
         Univec(uni)
         metadataprinter.MetadataPrinter(self)
         # Virulence
-        Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.9, False)
+        Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
         metadataprinter.MetadataPrinter(self)
-        """
+        # """
 
     def typing(self):
         """
 
         """
-        from MLSTsippr.mlst import GeneSippr as MLSTSippr
-        import spadespipeline.vtyper as vtyper
-        import coreGenome.core as core
-        import spadespipeline.sistr as sistr
-        from serosippr.serosippr import SeroSippr
         # Run modules and print metadata to file
         # MLST
         MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
-        quit()
         # mMLST.PipelineInit(self, 'mlst')
         # Serotyping
         SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
@@ -160,7 +171,7 @@ class RunSpades(object):
         vtyper.Vtyper(self, 'vtyper')
         metadataprinter.MetadataPrinter(self)
         # Core genome calculation
-        coregen = GeneSeekr.PipelineInit(self, 'coregenome', True, 70, False)
+        coregen = GeneSeekrMethod.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
@@ -172,12 +183,9 @@ class RunSpades(object):
         :param args: list of arguments passed to the script
         Initialises the variables required for this class
         """
-        import spadespipeline.reporter as reporter
-        import spadespipeline.compress as compress
-        import multiprocessing
-        import spadespipeline.versions as versions
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit.decode('utf-8')),
                   startingtime)
+        gc.enable()
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
@@ -211,6 +219,7 @@ class RunSpades(object):
         self.reportpath = os.path.join(self.path, 'reports')
         assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
+        self.scriptpath = os.path.join(args.scriptpath)
         self.miseqpath = args.miseqpath
         self.commit = str(pipelinecommit)
         self.homepath = scriptpath
@@ -219,32 +228,30 @@ class RunSpades(object):
         self.pipeline = True
         # Initialise the metadata object
         self.runmetadata = MetadataObject()
-        try:
-            # Start the assembly
-            self.helper()
-            # Create the quality object
-            self.qualityobject = quality.Quality(self)
-            self.quality()
-            # Print the metadata to file
-            metadataprinter.MetadataPrinter(self)
-            # Perform assembly
-            self.assemble()
-            # Perform genus-agnostic typing
-            self.agnostictyping()
-            # Perform typing
-            self.typing()
-        except KeyboardInterrupt:
-            raise KeyboardInterruptError
+        # Start the assembly
+        self.helper()
+        # Create the quality object
+        self.qualityobject = quality.Quality(self)
+        self.quality()
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
+        # Perform assembly
+        self.assemble()
+        # Perform genus-agnostic typing
+        self.agnostictyping()
+        # Perform typing
+        self.typing()
         # Create a report
         reporter.Reporter(self)
         compress.Compress(self)
         # Get all the versions of the software used
         versions.Versions(self)
         metadataprinter.MetadataPrinter(self)
+        gc.collect()
+
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
-    from time import time
     # from .accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
@@ -253,7 +260,6 @@ if __name__ == '__main__':
     # a git command to return the short version of the commit hash
     commit = subprocess.Popen('cd {} && git tag | tail -n 1'.format(homepath),
                               shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
-    from argparse import ArgumentParser
     # Parser for arguments
     parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
     parser.add_argument('-v', '--version',
@@ -311,6 +317,9 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--updatedatabases',
                         action='store_true',
                         help='Optionally update (r)MLST databases')
+    parser.add_argument('-s', '--scriptpath',
+                        default='/accessoryfiles',
+                        help='Path to location of external scripts')
 
     # Get the arguments into an object
     arguments = parser.parse_args()

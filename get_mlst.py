@@ -209,23 +209,6 @@ def main(args):
     log_file.close()
     species_all_fasta_file.close()
 
-    # print "\n  For SRST2, remember to check what separator is being used in this allele database"
-    # head = os.popen('head -n 1 ' + species_all_fasta_filename).read().rstrip()
-    # m = re.match('>(.*)([_-])(\d*)', head).groups()
-    # if len(m) == 3:
-    #     print
-    #     print "  Looks like --mlst_delimiter '" + m[1] + "'"
-    #     print
-    #     print "  " + head + "  --> -->  ",
-    #     print m
-    # print
-    # print "  Suggested srst2 command for use with this MLST database:"
-    # print
-    # print "    srst2 --output test --input_pe *.fastq.gz --mlst_db " + species_name_underscores + '.fasta',
-    # print "--mlst_definitions " + format(profile_filename),
-    # print "--mlst_delimiter '" + m[1] + "'"
-    # print
-
 
 if __name__ == '__main__':
     arguments = parse_args()

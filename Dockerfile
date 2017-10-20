@@ -1,14 +1,12 @@
 # Dockerfile for OLCspades genome assembly pipeline
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 
 MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-#COPY sources.list /etc/apt/sources.list
-
-# Install various required softwares
-RUN apt-get update -y -qq && apt-get install -y --force-yes \
+# Install packages
+RUN apt-get update -y -qq && apt-get install -y \
 	bash \
 	nfs-common \
 	nfs-client \
@@ -18,42 +16,41 @@ RUN apt-get update -y -qq && apt-get install -y --force-yes \
 	libexpat1-dev \
 	libxml2-dev \
 	libxslt-dev \
+	liblzma-dev \
 	zlib1g-dev \
 	libbz2-dev \
 	software-properties-common \
 	nano \
 	xsltproc \
-	python-numpy \
-	python-dev \
+	python3-dev \
 	libncurses5-dev \ 
         pkg-config \ 
         automake \
 	libtool \
 	build-essential \
 	ncbi-blast+ \
-	autoconf 	
+	fastx-toolkit \
+	python3-pip \
+	autoconf && \
+    	apt-get clean  && \
+    	rm -rf /var/lib/apt/lists/*	
+
+# Upgrade pip
+RUN pip3 install --upgrade pip
+
+# Add the scripts
+ADD accessoryfiles /accessoryfiles
 
 # Install bcl2fastq
-ADD accessoryfiles /accessoryfiles
 RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Remove the rpm
 RUN rm /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
 # Edited Config.pm supplied with bcl2fastq to comment out sub _validateEland subroutine that was causing bcl2fastq to fail with compilation errors
 COPY Config.pm /usr/local/lib/bcl2fastq-1.8.4/perl/Casava/Alignment/Config.pm
 
-# Install XML:Simple and dependencies for bcl2fastq 
+# Install cpan minus, XML:Simple and dependencies for bcl2fastq 
 RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm --mirror http://mirror.csclub.uwaterloo.ca/CPAN/ XML::Simple --mirror-only --force
-
-# Install bbmap and bbduk
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | sudo /usr/bin/debconf-set-selections
-RUN add-apt-repository -y ppa:webupd8team/java
-RUN apt-get update -qq -y && apt-get install -y --force-yes \
-	oracle-java7-installer \
-	oracle-java7-set-default  && \
-    	rm -rf /var/cache/oracle-jdk7-installer  && \
-    	apt-get clean  && \
-    	rm -rf /var/lib/apt/lists/*
+RUN cpanm XML::Simple@2.24 --mirror-only --force
 
 # Add bbmap files to the path
 ENV PATH /accessoryfiles/bbmap:$PATH
@@ -62,11 +59,7 @@ ENV PATH /accessoryfiles/bbmap:$PATH
 ENV PATH /accessoryfiles/FastQC:$PATH
 
 # Install SPAdes
-ENV PATH /accessoryfiles/spades/bin:$PATH
-
-# Install biopython
-RUN python /accessoryfiles/get-pip.py
-RUN easy_install -f http://biopython.org/DIST/ biopython
+ENV PATH /accessoryfiles/SPAdes/bin:$PATH
 
 # Install qualimap
 ENV PATH /accessoryfiles/qualimap:$PATH
@@ -80,37 +73,73 @@ RUN make && \
     make prefix=/accessoryfiles/samtools install
 ENV PATH /accessoryfiles/samtools/bin:$PATH
 
-# Install Prodigal, mash and ePCR
-ENV PATH /accessoryfiles:$PATH
+# Install jellyfish
+WORKDIR /accessoryfiles/jellyfish
+RUN ./configure
+RUN make -j 4
+RUN make install
+
+# Install CLARK
+WORKDIR /accessoryfiles/CLARK
+RUN ./install.sh
+ENV PATH /accessoryfiles/CLARK:$PATH
+WORKDIR /
+
+# Install Prodigal
+ENV PATH /accessoryfiles/prodigal:$PATH
+
+# Install mash
+ENV PATH /accessoryfiles/mash:$PATH
+
+# Install ePCR
+ENV PATH /accessoryfiles/ePCR:$PATH
 
 # Install bowtie2
 ENV PATH /accessoryfiles/bowtie2:$PATH
 
-# Install sistr
-RUN pip install --upgrade pip
-RUN pip install wheel
-RUN pip install numpy pandas
-RUN cd /accessoryfiles/sistr_cmd && python setup.py install
+# Install MIRA
+ENV PATH /accessoryfiles/mira/bin:$PATH
 
-# Add pipeline to the PATH
-WORKDIR /
-ENV PATH /spades/OLCspades:$PATH
-ENV PATH /spadesfiles:/spadespipelinefiles:$PATH
-ENV LD_LIBRARY_PATH /usr/local/lib
+# Install seqtk
+RUN cd /accessoryfiles/seqtk && make
+ENV PATH /accessoryfiles/seqtk:$PATH
+
+# Install fastx_toolkit
+RUN cd /accessoryfiles/libgtextutils && ./configure && make && make install
+RUN cd /accessoryfiles/fastx_toolkit && ./configure && make && make install
+
+# Install conda
+RUN bash /accessoryfiles/miniconda/Miniconda3-latest-Linux-x86_64.sh -b -p /accessoryfiles/miniconda/miniconda
+ENV PATH /accessoryfiles/miniconda/miniconda/bin:$PATH
+RUN conda update conda
+# Add Bioconda channel and other channels https://bioconda.github.io/
+RUN conda config --add channels conda-forge
+RUN conda config --add channels defaults
+RUN conda config --add channels r
+RUN conda config --add channels bioconda
+RUN conda config --add channels anaconda
+
+# Install pysamstats and dependencies
+#RUN conda install -c bioconda pysamstats==1.0.1
+
+# Install sistr_cmd and its dependencies
+RUN conda install sistr_cmd==1.0.2
+
+# Install OLCTools
+#RUN pip3 install OLCTools==0.2.4
+
+# Install the pipeline
+RUN git clone https://github.com/adamkoziol/SPAdesPipeline.git
+ENV PATH /SPAdesPipeline:$PATH
 
 # Install perl modules for rMLST updating
-RUN cpanm Net::OAuth
-RUN cpanm JSON
-RUN cpanm Data::Random
-RUN cpanm Config::Tiny
+RUN cpanm Net::OAuth@0.28
+RUN cpanm JSON@2.94
+RUN cpanm Data::Random@0.12
+RUN cpanm Config::Tiny@2.23
 
-# Useful commands
-#docker build -t remotepythondocker .
-# -v /home/blais/Downloads/accessoryfiles:/accessoryfiles
-# -e NFS_MOUNT=192.168.1.18:/mnt/zvolume1 --privileged 
-#docker run -it -v /home/blais/PycharmProjects/spadespipeline:/spades -v /media/miseq/:/media/miseq -v /home/blais/Bioinformatics/0_biorequests/assemblypipeline:/spadespipeline -v /home/blais/Bioinformatics/0_biorequests/6396/dockertest:/spadesrun --name pythondocker remotepythondocker
-#docker rm pythondocker
+# Install python requirements
+RUN cd /accessoryfiles/requirements && pip3 install -r requirements.txt
 
-# python /spades/OLCspades/OLCspades.py -m /media/miseq/MiSeqOutput -F /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -f 151218_M02466_0126_000000000-AKF4P -r1 25 -r2 25 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/
-# python /spades/OLCspades/OLCspades.py /mnt/zvolume1/akoziol/Pipeline_development/OLCspadesV2 -r /mnt/zvolume1/akoziol/WGS_Spades/spades_pipeline/SPAdesPipelineFiles/
-# OLCspades.py -r /spadespipeline/ /spadesrun/
+# Remove all the non-folders from the accessoryfiles folder
+RUN find /accessoryfiles -name "*" -type f -exec rm -f {} \;

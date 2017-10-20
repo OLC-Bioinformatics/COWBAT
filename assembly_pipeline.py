@@ -126,9 +126,6 @@ class RunSpades(object):
         """
 
         """
-
-        # from genesippr.genesippr import GeneSippr as GeneSippr
-
         # Run mash
         mash.Mash(self, 'mash')
         # Run rMLST
@@ -144,7 +141,6 @@ class RunSpades(object):
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
         # Resistance finding
         Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False, True)
-        # """
         # Prophage detection
         pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
         Prophages(pro)

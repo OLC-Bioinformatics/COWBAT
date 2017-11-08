@@ -1,7 +1,101 @@
 #!/usr/bin/env python 3
 from genesippr.genesippr import GeneSippr
-from spadespipeline.GeneSeekr import *
+import os
+from glob import glob
+from csv import DictReader
+from spadespipeline.GeneSeekr import GeneSeekr
+from BioTools.biotools import bbtools
+from accessoryFunctions.accessoryFunctions import GenObject, printtime, make_path, write_to_logfile
 __author__ = 'adamkoziol'
+
+
+class Quality(object):
+
+    def estimate_genome_size(self):
+        """
+        Use kmercountexact from the bbmap suite of tools to estimate the size of the genome
+        """
+        printtime('Estimating genome size using kmercountexact', self.start)
+        for sample in self.metadata:
+            # Initialise the name of the output file
+            sample[self.analysistype].peaksfile = os.path.join(sample[self.analysistype].outputdir, 'peaks.txt')
+            # Run the kmer counting command
+            out, err, cmd = bbtools.kmercountexact(forward_in=sorted(sample.general.fastqfiles)[0],
+                                                   peaks=sample[self.analysistype].peaksfile,
+                                                   threads=self.cpus)
+            # Set the command in the object
+            sample[self.analysistype].kmercountexactcmd = cmd
+            # Extract the genome size from the peaks file
+            sample[self.analysistype].genomesize = bbtools.genome_size(sample[self.analysistype].peaksfile)
+            write_to_logfile(out, err, self.logfile, sample.general.logout, sample.general.logerr, None, None)
+
+    def error_correction(self):
+        """
+        Use tadpole from the bbmap suite of tools to perform error correction of the reads
+        """
+        printtime('Error correcting reads', self.start)
+        for sample in self.metadata:
+            sample.general.trimmedcorrectedfastqfiles = [fastq.split('.fastq.gz')[0] + '_trimmed_corrected.fastq.gz'
+                                                         for fastq in sorted(sample.general.fastqfiles)]
+            out, err, cmd = bbtools.tadpole(forward_in=sorted(sample.general.trimmedfastqfiles)[0],
+                                            forward_out=sample.general.trimmedcorrectedfastqfiles[0],
+                                            mode='correct',
+                                            threads=self.cpus)
+            # Set the command in the object
+            sample[self.analysistype].errorcorrectcmd = cmd
+            write_to_logfile(out, err, self.logfile, sample.general.logout, sample.general.logerr, None, None)
+
+    def normalise_reads(self):
+        """
+        Use bbnorm from the bbmap suite of tools to perform read normalisation
+        """
+        printtime('Normalising reads to a kmer depth of 100', self.start)
+        for sample in self.metadata:
+            # Set the name of the normalised read files
+            sample.general.normalisedreads = [fastq.split('.fastq.gz')[0] + '_normalised.fastq.gz'
+                                              for fastq in sorted(sample.general.fastqfiles)]
+            # Run the normalisation command
+            out, err, cmd = bbtools.bbnorm(forward_in=sorted(sample.general.trimmedcorrectedfastqfiles)[0],
+                                           forward_out=sample.general.normalisedreads[0],
+                                           threads=self.cpus)
+            sample[self.analysistype].normalisecmd = cmd
+            write_to_logfile(out, err, self.logfile, sample.general.logout, sample.general.logerr, None, None)
+
+    def merge_pairs(self):
+        """
+        Use bbmerge from the bbmap suite of tools to merge paired-end reads
+        """
+        printtime('Merging paired reads', self.start)
+        for sample in self.metadata:
+            # Can only merge paired-end
+            if len(sample.general.fastqfiles) == 2:
+                # Set the name of the merged, and unmerged files
+                sample.general.mergedreads = \
+                    os.path.join(sample.general.outputdirectory, '{}_paired.fastq.gz'.format(sample.name))
+                sample.general.unmergedforward = \
+                    os.path.join(sample.general.outputdirectory, '{}_unpaired_R1.fastq.gz'.format(sample.name))
+                sample.general.unmergedreverse = \
+                    os.path.join(sample.general.outputdirectory, '{}_unpaired_R2.fastq.gz'.format(sample.name))
+                # Run the merging command
+                out, err, cmd = bbtools.bbmerge(forward_in=sample.general.normalisedreads[0],
+                                                merged_reads=sample.general.mergedreads,
+                                                outu1=sample.general.unmergedforward,
+                                                outu2=sample.general.unmergedreverse,
+                                                threads=self.cpus)
+                sample[self.analysistype].bbmergecmd = cmd
+                write_to_logfile(out, err, self.logfile, sample.general.logout, sample.general.logerr, None, None)
+            else:
+                sample.general.mergedreads = sorted(sample.general.trimmedcorrectedfastqfiles)[0]
+
+    def __init__(self, inputobject):
+        self.metadata = inputobject.runmetadata.samples
+        self.start = inputobject.starttime
+        self.analysistype = 'quality'
+        self.cpus = inputobject.cpus
+        self.logfile = inputobject.logfile
+        # Initialise the quality attribute in the metadata object
+        for sample in self.metadata:
+            setattr(sample, self.analysistype, GenObject())
 
 
 class Plasmids(GeneSippr):
@@ -87,11 +181,20 @@ class Resistance(GeneSippr):
                 data += sample.name + ','
                 try:
                     if sample[self.analysistype].results:
+                        # Create an attribute to store the string for the eventual pipeline report
+                        sample[self.analysistype].pipelineresults = list()
                         # If there are multiple results for a sample, don't write the name in each line of the report
                         multiple = False
                         for name, identity in sample[self.analysistype].results.items():
                             # Split the name on '_'s: ARR-2_1_HQ141279; gene: ARR-2, allele: 1, accession: HQ141279
-                            genename, allele, accession = name.split('_')
+                            try:
+                                genename, allele, accession = name.split('_')
+                            # Some names have a slightly different naming scheme:
+                            # tet(44)_1_NZ_ABDU01000081; gene: tet(44), allele: 1, accession: NZ_ABDU01000081
+                            except ValueError:
+                                genename, allele, preaccession, postaccession = name.split('_')
+                                accession = '{preaccess}_{postaccess}'.format(preaccess=preaccession,
+                                                                              postaccess=postaccession)
                             # Retrieve the best identity for each gene
                             percentid = sample[self.analysistype].uniquegenes[genename]
                             # If the percent identity of the current gene matches the best percent identity, add it to
@@ -101,25 +204,22 @@ class Resistance(GeneSippr):
                             if float(identity) == percentid:
                                 # Treat the initial vs subsequent results for each sample slightly differently - instead
                                 # of including the sample name, use an empty cell instead
-                                if not multiple:
-                                    # Populate the results
-                                    data += '{},{},{},{},{},{},{}\n'.format(
-                                        genedict[genename],
-                                        genename,
-                                        allele,
-                                        accession,
-                                        identity,
-                                        len(sample[self.analysistype].sequences[name]),
-                                        sample[self.analysistype].avgdepth[name])
-                                else:
-                                    data += ',{},{},{},{},{},{},{}\n'.format(
-                                        genedict[genename],
-                                        genename,
-                                        allele,
-                                        accession,
-                                        identity,
-                                        len(sample[self.analysistype].sequences[name]),
-                                        sample[self.analysistype].avgdepth[name])
+                                if multiple:
+                                    data += ','
+                                # Populate the results
+                                data += '{},{},{},{},{},{},{}\n'.format(
+                                    genedict[genename],
+                                    genename,
+                                    allele,
+                                    accession,
+                                    identity,
+                                    len(sample[self.analysistype].sequences[name]),
+                                    sample[self.analysistype].avgdepth[name])
+                                sample[self.analysistype].pipelineresults.append(
+                                    '{rgene} ({pid}%) {rclass}'.format(rgene=genename,
+                                                                       pid=identity,
+                                                                       rclass=genedict[genename])
+                                )
                                 multiple = True
                     else:
                         data += '\n'

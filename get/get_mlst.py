@@ -12,7 +12,8 @@ from argparse import ArgumentParser
 import xml.dom.minidom as xml
 import urllib.request as url
 from urllib.parse import urlparse
-from accessoryFunctions.accessoryFunctions import *
+from accessoryFunctions.accessoryFunctions import make_path
+import os
 
 '''
 Download MLST datasets from this site: http://pubmlst.org/data/ by
@@ -137,17 +138,15 @@ def main(args):
     args.genus = args.genus if args.genus != 'Shigella' else 'Escherichia'
     # As there are multiple profiles for certain organisms, this dictionary has the schemes I use as values
     organismdictionary = {'Escherichia': 'Escherichia coli#1',
-                          'Shigella': 'Escherichia coli#1',
                           'Vibrio': 'Vibrio parahaemolyticus',
                           'Campylobacter': 'Campylobacter jejuni',
                           'Listeria': 'Listeria monocytogenes',
                           'Bacillus': 'Bacillus cereus'}
     # Set the appropriate profile based on the dictionary key:value pairs
     try:
-        args.genus = organismdictionary[args.genus]
+        args.genus = organismdictionary[args.species]
     except KeyError:
         pass
-    # print args.species, args.force_scheme_name, args.repository_url
     with url.urlopen(args.repository_url) as docfile:
         doc = xml.parse(docfile)
         root = doc.childNodes[0]

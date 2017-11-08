@@ -14,7 +14,6 @@ import spadespipeline.univec as univec
 import spadespipeline.reporter as reporter
 import spadespipeline.compress as compress
 import spadespipeline.versions as versions
-import spadespipeline.errorcorrection as errorcorrection
 import spadespipeline.depth as depth
 import spadespipeline.quaster as quaster
 import spadespipeline.prodigal as prodigal
@@ -22,14 +21,15 @@ import MASHsippr.mash as mash
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 from KmerContam import pipeline_contamination_detection
 from metagenomefilter import automateCLARK
-import spadespipeline.vtyper as vtyper
+import spadespipeline.primer_finder_bbduk as vtyper
 import coreGenome.core as core
 import spadespipeline.sistr as sistr
 from serosippr.serosippr import SeroSippr
+from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 try:
-    from .typingclasses import MetadataObject, GenObject, printtime, make_path, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+    from .typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
 except ImportError:
-    from typingclasses import MetadataObject, GenObject, printtime, make_path, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+    from typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
 import gc
 import os
 import subprocess
@@ -42,6 +42,31 @@ __author__ = 'adamkoziol'
 
 
 class RunSpades(object):
+
+    def main(self):
+        """
+        Run the methods in the correct order
+        """
+        # Start the assembly
+        self.helper()
+        # Create the quality object
+        self.qualityobject = quality.Quality(self)
+        self.quality()
+        # Print the metadata to file
+        metadataprinter.MetadataPrinter(self)
+        # Perform assembly
+        self.assemble()
+        # Perform genus-agnostic typing
+        self.agnostictyping()
+        # Perform typing
+        self.typing()
+        # Create a report
+        reporter.Reporter(self)
+        compress.Compress(self)
+        # Get all the versions of the software used
+        versions.Versions(self)
+        metadataprinter.MetadataPrinter(self)
+        gc.collect()
 
     def helper(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
@@ -84,16 +109,25 @@ class RunSpades(object):
         """
         # Run FastQC on the unprocessed fastq files
         self.qualityobject.fastqcthreader('Raw')
+        # Initialise quality object
+        qual = Quality(self)
         # Perform quality trimming and FastQC on the trimmed files
         self.qualityobject.trimquality()
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        # Run the error correction module
-        errorcorrection.Correct(self)
-        metadataprinter.MetadataPrinter(self)
+        # Perform error correcting on the reads
+        qual.error_correction()
+        # Calculate the levels of contamination in the reads
         pipeline_contamination_detection.PipelineContaminationDetection(self)
-        # Run FastQC on the unprocessed fastq files
+        # Run FastQC on the processed fastq files
         self.qualityobject.fastqcthreader('trimmedcorrected')
+        # Normalise the reads to a kmer depth of 100
+        qual.normalise_reads()
+        # Run FastQC on the normalised fastq files
+        self.qualityobject.fastqcthreader('normalised')
+        # Merge paired end reads into a single file based on overlap
+        qual.merge_pairs()
+        # Run FastQC on the merged fastq files
+        self.qualityobject.fastqcthreader('merged')
+        metadataprinter.MetadataPrinter(self)
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
@@ -101,12 +135,13 @@ class RunSpades(object):
 
     def assemble(self):
         """
-
+        Assemble genomes and perform some basic quality analyses
         """
         # Run spades
         spadesRun.Spades(self)
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
-        depth.QualiMap(self)
+        qual = depth.QualiMap(self)
+        qual.main()
         metadataprinter.MetadataPrinter(self)
         # Run quast assembly metrics
         quaster.Quast(self)
@@ -124,7 +159,7 @@ class RunSpades(object):
 
     def agnostictyping(self):
         """
-
+        Perform typing that does not require the genus of the organism to be known
         """
         # Run mash
         mash.Mash(self, 'mash')
@@ -151,28 +186,25 @@ class RunSpades(object):
         # Virulence
         Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
         metadataprinter.MetadataPrinter(self)
-        # """
 
     def typing(self):
         """
-
+        Perform analyses that use genera-specific databases
         """
         # Run modules and print metadata to file
         # MLST
         MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
-        # mMLST.PipelineInit(self, 'mlst')
         # Serotyping
         SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
         # Virulence typing
-        vtyper.Vtyper(self, 'vtyper')
-        metadataprinter.MetadataPrinter(self)
+        vtyper.PrimerFinder(self, 'vtyper')
         # Core genome calculation
         coregen = GeneSeekrMethod.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
-        metadataprinter.MetadataPrinter(self)
         # Sistr
         sistr.Sistr(self, 'sistr')
+        metadataprinter.MetadataPrinter(self)
 
     def __init__(self, args, pipelinecommit, startingtime, scriptpath):
         """
@@ -217,33 +249,14 @@ class RunSpades(object):
             .format(self.reffilepath)
         self.scriptpath = os.path.join(args.scriptpath)
         self.miseqpath = args.miseqpath
-        self.commit = str(pipelinecommit)
+        self.commit = pipelinecommit.decode('utf-8')
         self.homepath = scriptpath
-        self.logfile = os.path.join(self.path, 'logfile.txt')
+        self.logfile = os.path.join(self.path, 'logfile')
         self.runinfo = str()
         self.pipeline = True
+        self.qualityobject = MetadataObject()
         # Initialise the metadata object
         self.runmetadata = MetadataObject()
-        # Start the assembly
-        self.helper()
-        # Create the quality object
-        self.qualityobject = quality.Quality(self)
-        self.quality()
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
-        # Perform assembly
-        self.assemble()
-        # Perform genus-agnostic typing
-        self.agnostictyping()
-        # Perform typing
-        self.typing()
-        # Create a report
-        reporter.Reporter(self)
-        compress.Compress(self)
-        # Get all the versions of the software used
-        versions.Versions(self)
-        metadataprinter.MetadataPrinter(self)
-        gc.collect()
 
 
 # If the script is called from the command line, then call the argument parser
@@ -321,6 +334,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
     starttime = time()
     # Run the pipeline
-    RunSpades(arguments, commit, starttime, homepath)
+    pipeline = RunSpades(arguments, commit, starttime, homepath)
+    pipeline.main()
     printtime('Assembly and characterisation complete', starttime)
     quit()

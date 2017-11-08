@@ -1,9 +1,10 @@
 #!/usr/bin/env python 3
-from accessoryFunctions.accessoryFunctions import *
+from accessoryFunctions.accessoryFunctions import printtime, make_path
 from glob import glob
 import shutil
 from Bio import SeqIO
 import time
+import os
 __author__ = 'adamkoziol'
 
 

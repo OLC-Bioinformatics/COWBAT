@@ -126,7 +126,10 @@ RUN conda config --add channels anaconda
 RUN conda install sistr_cmd==1.0.2
 
 # Install OLCTools
-#RUN pip3 install OLCTools==0.2.4
+RUN pip3 install OLCTools==0.2.4
+
+# Install pilon
+conda install -c bioconda pilon
 
 # Install the pipeline
 RUN git clone https://github.com/adamkoziol/SPAdesPipeline.git

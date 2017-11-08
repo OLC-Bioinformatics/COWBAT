@@ -3,6 +3,10 @@ SPAdesPipeline
 
 ![alt text](cowbat.png "Cowbat")
 
+### CFIA OLC Workflow for Bacterial Assembly and Typing
+
+#### [Read the Docs](http://olc-bioinformatics.github.io/COWBAT/)
+
 # Introduction
 
 This pipeline is designed to be able to assemble and type raw fastq data generated using an Illumina MiSeq.

@@ -6,6 +6,7 @@ import get.get_mlst as get_mlst
 from argparse import ArgumentParser
 from time import time
 from glob import glob
+import tarfile
 import shutil
 import os
 __author__ = 'adamkoziol'
@@ -17,6 +18,7 @@ class DatabaseSetup(object):
         """
         Run the methods
         """
+        self.olc_databases()
         self.clark()
         self.mash()
         self.rmlst()
@@ -26,6 +28,25 @@ class DatabaseSetup(object):
         self.cge_db_downloader('virulence', 'virulencefinder_db', 'fsa')
         self.cge_db_downloader('serosippr', 'serotypefinder_db', 'fsa')
         self.univec()
+
+    def olc_databases(self):
+        """
+        Clone the OLC-specific databases from github. This method must be performed first, as the call will only clone
+        the repository into an empty folder
+        """
+        printtime('Downloading OLC databases', self.start)
+        # Set the git clone system call
+        targetcall = 'git clone https://github.com/OLC-Bioinformatics/Databases.git {dbpath}'\
+            .format(dbpath=self.databasepath)
+        # Download the databases
+        self.database_download(targetcall, self.databasepath)
+        # Extract the databases from the archives
+        for gz in glob(os.path.join(self.databasepath, '*.gz')):
+            with tarfile.open(gz, 'r:gz') as tar:
+                # Decompress the archive
+                tar.extractall()
+            # Delete the archive file
+            os.remove(gz)
 
     def clark(self):
         """
@@ -47,9 +68,13 @@ class DatabaseSetup(object):
         """
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('mash')
+        # Download the assembly summary refseq document
+        summarycall = 'curl -o {} ftp://ftp.ncbi.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt'\
+            .format(os.path.join(databasepath, 'assembly_summary_refseq.txt'))
+        self.database_download(summarycall, databasepath, False)
         # Set the call to create the database
-        targetcall = 'curl https://gembox.cbcb.umd.edu/mash/refseq.genomes.k21s1000.msh | gzip > {}'\
-            .format(os.path.join(databasepath, 'RefSeqSketchesDefault.msh.gz'))
+        targetcall = 'curl -o {} https://gembox.cbcb.umd.edu/mash/refseq.genomes.k21s1000.msh'\
+            .format(os.path.join(databasepath, 'RefSeqSketchesDefaults.msh'))
         # Download the database
         self.database_download(targetcall, databasepath)
 
@@ -139,12 +164,13 @@ class DatabaseSetup(object):
         make_path(databasepath)
         return databasepath
 
-    def database_download(self, targetcall, databasepath):
+    def database_download(self, targetcall, databasepath, complete=True):
         """
         Checks to see if the database has already been downloaded. If not, downloads the database, and writes stdout
         and stderr to the logfile
         :param targetcall: system call to download, and possibly set-up the database
         :param databasepath: absolute path of the database
+        :param complete: boolean variable to determine whether the complete file should be created
         """
         # Create a file to store the logs; it will be used to determine if the database was downloaded and set-up
         completefile = os.path.join(databasepath, 'complete')
@@ -153,10 +179,11 @@ class DatabaseSetup(object):
             out, err = run_subprocess(targetcall)
             # Write the out and err streams to the master files
             write_to_logfile(out, err, self.logfile, None, None, None, None)
-            # Create the database completeness assessment file and populate it with the out and err streams
-            with open(completefile, 'w') as complete:
-                complete.write(out)
-                complete.write(err)
+            if complete:
+                # Create the database completeness assessment file and populate it with the out and err streams
+                with open(completefile, 'w') as complete:
+                    complete.write(out)
+                    complete.write(err)
 
     def __init__(self, args):
         self.databasepath = os.path.join(args.databasepath)

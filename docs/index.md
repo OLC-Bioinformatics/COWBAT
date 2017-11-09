@@ -1,8 +1,8 @@
 # COWBAT Documentation
 
-### CFIA OLC Workflow for Bacterial Assembly and Typing
+### CFIA OLC Workflow for B️acterial Assembly and Typing
 
-![alt text](./img/cowbat.png "Cowbat")
+![alt text](./img/cowbat.png "COWBAT")
 
 ## Commands
 

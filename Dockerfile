@@ -1,4 +1,4 @@
-# Dockerfile for OLCspades genome assembly pipeline
+# Dockerfile for COWBAT
 FROM ubuntu:16.04
 
 MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
@@ -39,7 +39,10 @@ RUN apt-get update -y -qq && apt-get install -y \
 RUN pip3 install --upgrade pip
 
 # Add the scripts
-ADD accessoryfiles /accessoryfiles
+ADD accessoryfiles/bin /accessoryfiles
+
+# Add the databases
+ADD accessoryfile/databases /databases
 
 # Install bcl2fastq
 RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
@@ -97,9 +100,6 @@ ENV PATH /accessoryfiles/ePCR:$PATH
 # Install bowtie2
 ENV PATH /accessoryfiles/bowtie2:$PATH
 
-# Install MIRA
-ENV PATH /accessoryfiles/mira/bin:$PATH
-
 # Install seqtk
 RUN cd /accessoryfiles/seqtk && make
 ENV PATH /accessoryfiles/seqtk:$PATH
@@ -127,9 +127,6 @@ RUN conda install sistr_cmd==1.0.2
 
 # Install OLCTools
 RUN pip3 install OLCTools==0.2.4
-
-# Install pilon
-conda install -c bioconda pilon
 
 # Install the pipeline
 RUN git clone https://github.com/adamkoziol/SPAdesPipeline.git

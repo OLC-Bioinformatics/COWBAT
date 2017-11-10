@@ -42,7 +42,7 @@ RUN pip3 install --upgrade pip
 ADD accessoryfiles/bin /accessoryfiles
 
 # Add the databases
-ADD accessoryfile/databases /databases
+#ADD accessoryfile/databases /databases
 
 # Install bcl2fastq
 RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
@@ -119,24 +119,21 @@ RUN conda config --add channels r
 RUN conda config --add channels bioconda
 RUN conda config --add channels anaconda
 
-# Install pysamstats and dependencies
-#RUN conda install -c bioconda pysamstats==1.0.1
-
 # Install sistr_cmd and its dependencies
 RUN conda install sistr_cmd==1.0.2
 
+# Install pysam
+RUN conda install -c bioconda pysam==0.13
+
 # Install OLCTools
-RUN pip3 install OLCTools==0.2.4
+RUN pip3 install OLCTools==0.3.4
 
 # Install the pipeline
-RUN git clone https://github.com/adamkoziol/SPAdesPipeline.git
-ENV PATH /SPAdesPipeline:$PATH
+RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
+ENV PATH /COWBAT:$PATH
 
-# Install perl modules for rMLST updating
-RUN cpanm Net::OAuth@0.28
-RUN cpanm JSON@2.94
-RUN cpanm Data::Random@0.12
-RUN cpanm Config::Tiny@2.23
+# Install sipprverse
+RUN pip3 install sipprverse==0.0.2
 
 # Install python requirements
 RUN cd /accessoryfiles/requirements && pip3 install -r requirements.txt

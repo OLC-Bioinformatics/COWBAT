@@ -4,12 +4,21 @@ import os
 from glob import glob
 from csv import DictReader
 from spadespipeline.GeneSeekr import GeneSeekr
+import confindr.confindr as confinder
 from BioTools.biotools import bbtools
 from accessoryFunctions.accessoryFunctions import GenObject, printtime, make_path, write_to_logfile
 __author__ = 'adamkoziol'
 
 
 class Quality(object):
+
+    def contamination_finder(self):
+        """
+
+        """
+        contamination = confinder.check_dependencies()
+
+
 
     def estimate_genome_size(self):
         """

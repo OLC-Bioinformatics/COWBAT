@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# import subprocess
 import spadespipeline.fastqCreator as fastqCreator
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.offhours as offhours
@@ -19,7 +18,7 @@ import spadespipeline.quaster as quaster
 import spadespipeline.prodigal as prodigal
 import MASHsippr.mash as mash
 from sixteenS.sixteens_full import SixteenS as SixteensFull
-from KmerContam import pipeline_contamination_detection
+# from KmerContam import pipeline_contamination_detection
 from metagenomefilter import automateCLARK
 import spadespipeline.primer_finder_bbduk as vtyper
 import coreGenome.core as core
@@ -116,7 +115,8 @@ class RunSpades(object):
         # Perform error correcting on the reads
         qual.error_correction()
         # Calculate the levels of contamination in the reads
-        pipeline_contamination_detection.PipelineContaminationDetection(self)
+        # pipeline_contamination_detection.PipelineContaminationDetection(self)
+        # qual.contamination_finder()
         # Run FastQC on the processed fastq files
         self.qualityobject.fastqcthreader('trimmedcorrected')
         # Normalise the reads to a kmer depth of 100

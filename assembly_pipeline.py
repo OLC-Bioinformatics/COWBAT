@@ -116,7 +116,7 @@ class RunSpades(object):
         qual.error_correction()
         # Calculate the levels of contamination in the reads
         # pipeline_contamination_detection.PipelineContaminationDetection(self)
-        # qual.contamination_finder()
+        qual.contamination_finder()
         # Run FastQC on the processed fastq files
         self.qualityobject.fastqcthreader('trimmedcorrected')
         # Normalise the reads to a kmer depth of 100
@@ -212,7 +212,7 @@ class RunSpades(object):
         Initialises the variables required for this class
         """
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit.decode('utf-8')),
-                  startingtime)
+                  startingtime, '\033[1;94m')
         gc.enable()
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args

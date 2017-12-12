@@ -130,7 +130,10 @@ class DatabaseSetup(object):
         :param extension: The file extension of the FASTA files
         """
         printtime('Downloading {} database'.format(analysistype), self.start)
-        databasepath = os.path.join(self.databasepath, analysistype)
+        if analysistype == 'serosippr':
+            databasepath = os.path.join(self.databasepath, analysistype, 'Escherichia')
+        else:
+            databasepath = os.path.join(self.databasepath, analysistype)
         targetcall = 'git clone https://bitbucket.org/genomicepidemiology/{db}.git {atype}'\
             .format(db=dbname,
                     atype=databasepath)

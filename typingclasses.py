@@ -1,12 +1,14 @@
 #!/usr/bin/env python 3
-from genesippr.genesippr import GeneSippr
-import os
-from glob import glob
-from csv import DictReader
+from accessoryFunctions.accessoryFunctions import filer, GenObject, MetadataObject, printtime, make_path, write_to_logfile
 from spadespipeline.GeneSeekr import GeneSeekr
+from genesippr.genesippr import GeneSippr
 import confindr.confindr as confinder
-from BioTools.biotools import bbtools
-from accessoryFunctions.accessoryFunctions import GenObject, printtime, make_path, write_to_logfile
+from biotools import bbtools
+from csv import DictReader
+from glob import glob
+import shutil
+import os
+
 __author__ = 'adamkoziol'
 
 
@@ -16,9 +18,59 @@ class Quality(object):
         """
 
         """
-        contamination = confinder.check_dependencies()
-
-
+        printtime('Calculating contamination in reads', self.start)
+        report = os.path.join(self.path, 'confinder', 'confindr_report.csv')
+        if not os.path.isfile(report):
+            # Create an object to store attributes to pass to confinder
+            args = MetadataObject
+            args.input_directory = self.path
+            args.output_name = os.path.join(self.path, 'confinder')
+            args.databases = os.path.join(self.reffilepath, 'ConFindr', 'databases')
+            args.forward_id = '_R1'
+            args.reverse_id = '_R2'
+            args.threads = self.cpus
+            args.kmer_size = 31
+            args.number_subsamples = 5
+            args.subsample_depth = 20
+            args.kmer_cutoff = 2
+            try:
+                shutil.rmtree(args.output_name)
+            except IOError:
+                pass
+            # Create a detector object
+            confinder.run_mashsippr(args.input_directory,
+                                    args.output_name,
+                                    args.databases)
+            # Open the output report file.
+            with open(os.path.join(report), 'w') as f:
+                f.write('Sample,Genus,NumContamSNVs,NumUniqueKmers,CrossContamination,ContamStatus\n')
+            paired_reads = confinder.find_paired_reads(args.input_directory,
+                                                       forward_id=args.forward_id,
+                                                       reverse_id=args.reverse_id)
+            #
+            for pair in paired_reads:
+                sample_name = os.path.basename(list(filer(pair))[0])
+                printtime('Beginning analysis of sample {}...\n'.format(sample_name), self.start, '\033[1;34m')
+                genus = confinder.read_mashsippr_output(os.path.join(args.output_name, 'reports', 'mash.csv'),
+                                                        sample_name)
+                confinder.find_contamination(pair, args, genus)
+            printtime('Contamination detection complete!', self.start)
+        # Open the report
+        with open(report) as csv:
+            # Find the results for each of the samples
+            for sample in self.metadata:
+                # Create a GenObject to store the results
+                sample.confinder = GenObject()
+                for line in csv:
+                    # If the current line corresponds to the sample of interest
+                    if sample.name in line:
+                        # Split the line into its comma-separated constituents, and populate variables as necessary
+                        fastq, \
+                            sample.confinder.genus, \
+                            sample.confinder.num_contaminated_snvs, \
+                            sample.confinder.unique_kmers, \
+                            sample.confinder.cross_contamination, \
+                            sample.confinder.contam_status = line.rstrip().split(',')
 
     def estimate_genome_size(self):
         """
@@ -31,6 +83,7 @@ class Quality(object):
             # Run the kmer counting command
             out, err, cmd = bbtools.kmercountexact(forward_in=sorted(sample.general.fastqfiles)[0],
                                                    peaks=sample[self.analysistype].peaksfile,
+                                                   returncmd=True,
                                                    threads=self.cpus)
             # Set the command in the object
             sample[self.analysistype].kmercountexactcmd = cmd
@@ -48,6 +101,7 @@ class Quality(object):
                                                          for fastq in sorted(sample.general.fastqfiles)]
             out, err, cmd = bbtools.tadpole(forward_in=sorted(sample.general.trimmedfastqfiles)[0],
                                             forward_out=sample.general.trimmedcorrectedfastqfiles[0],
+                                            returncmd=True,
                                             mode='correct',
                                             threads=self.cpus)
             # Set the command in the object
@@ -66,6 +120,7 @@ class Quality(object):
             # Run the normalisation command
             out, err, cmd = bbtools.bbnorm(forward_in=sorted(sample.general.trimmedcorrectedfastqfiles)[0],
                                            forward_out=sample.general.normalisedreads[0],
+                                           returncmd=True,
                                            threads=self.cpus)
             sample[self.analysistype].normalisecmd = cmd
             write_to_logfile(out, err, self.logfile, sample.general.logout, sample.general.logerr, None, None)
@@ -88,6 +143,7 @@ class Quality(object):
                 # Run the merging command
                 out, err, cmd = bbtools.bbmerge(forward_in=sample.general.normalisedreads[0],
                                                 merged_reads=sample.general.mergedreads,
+                                                returncmd=True,
                                                 outu1=sample.general.unmergedforward,
                                                 outu2=sample.general.unmergedreverse,
                                                 threads=self.cpus)
@@ -99,7 +155,9 @@ class Quality(object):
     def __init__(self, inputobject):
         self.metadata = inputobject.runmetadata.samples
         self.start = inputobject.starttime
+        self.path = inputobject.path
         self.analysistype = 'quality'
+        self.reffilepath = inputobject.reffilepath
         self.cpus = inputobject.cpus
         self.logfile = inputobject.logfile
         # Initialise the quality attribute in the metadata object

@@ -7,136 +7,89 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install packages
 RUN apt-get update -y -qq && apt-get install -y \
-	bash \
-	nfs-common \
-	nfs-client \
-	alien \
+	python-dev \
 	git \
 	curl \
-	libexpat1-dev \
-	libxml2-dev \
-	libxslt-dev \
-	liblzma-dev \
-	zlib1g-dev \
-	libbz2-dev \
-	software-properties-common \
-	nano \
-	xsltproc \
-	python3-dev \
-	libncurses5-dev \ 
-        pkg-config \ 
-        automake \
-	libtool \
-	build-essential \
-	ncbi-blast+ \
-	fastx-toolkit \
+	wget \
 	python3-pip \
-	autoconf && \
+	nano && \
+	curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
+	    && bash /tmp/miniconda.sh -bfp /usr/local \
+	    && rm -rf /tmp/miniconda.sh \
+	    && conda install -y python=3 \
+	    && conda update conda && \
     	apt-get clean  && \
     	rm -rf /var/lib/apt/lists/*	
 
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
-# Add the scripts
-ADD accessoryfiles/bin /accessoryfiles
-
-# Add the databases
-#ADD accessoryfile/databases /databases
-
 # Install bcl2fastq
-RUN alien -i /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
-# Remove the rpm
-RUN rm /accessoryfiles/bcl2fastq-1.8.4-Linux-x86_64.rpm
-# Edited Config.pm supplied with bcl2fastq to comment out sub _validateEland subroutine that was causing bcl2fastq to fail with compilation errors
-COPY Config.pm /usr/local/lib/bcl2fastq-1.8.4/perl/Casava/Alignment/Config.pm
+RUN conda install -c dranew bcl2fastq
 
-# Install cpan minus, XML:Simple and dependencies for bcl2fastq 
-RUN curl -L http://cpanmin.us | perl - App::cpanminus
-RUN cpanm XML::Simple@2.24 --mirror-only --force
-
-# Add bbmap files to the path
-ENV PATH /accessoryfiles/bbmap:$PATH
+# Install bbmap 
+RUN conda install -c bioconda bbmap
 
 # Install fastqc
-ENV PATH /accessoryfiles/FastQC:$PATH
+RUN conda install -c bioconda fastqc
 
 # Install SPAdes
-ENV PATH /accessoryfiles/SPAdes/bin:$PATH
+RUN conda install -c bioconda spades
 
 # Install qualimap
-ENV PATH /accessoryfiles/qualimap:$PATH
+RUN conda install -c bioconda qualimap
 
 # Install quast
-ENV PATH /accessoryfiles/quast:$PATH
+RUN wget https://downloads.sourceforge.net/project/quast/quast-4.6.1.tar.gz
+RUN tar -xzf quast-4.6.1.tar.gz
+RUN cd quast-4.6.1 && ./setup.py install
+RUN rm quast-4.6.1.tar.gz
 
 # Install samtools
-WORKDIR /accessoryfiles/samtools
-RUN make && \ 
-    make prefix=/accessoryfiles/samtools install
-ENV PATH /accessoryfiles/samtools/bin:$PATH
+RUN conda install -c bioconda samtools
 
 # Install jellyfish
-WORKDIR /accessoryfiles/jellyfish
-RUN ./configure
-RUN make -j 4
-RUN make install
+RUN conda install -c conda-forge jellyfish
 
 # Install CLARK
-WORKDIR /accessoryfiles/CLARK
-RUN ./install.sh
-ENV PATH /accessoryfiles/CLARK:$PATH
-WORKDIR /
+RUN conda install -c bioconda clark
 
 # Install Prodigal
-ENV PATH /accessoryfiles/prodigal:$PATH
+RUN conda install -c biocore prodigal
 
-# Install mash
-ENV PATH /accessoryfiles/mash:$PATH
-
-# Install ePCR
-ENV PATH /accessoryfiles/ePCR:$PATH
-
-# Install bowtie2
-ENV PATH /accessoryfiles/bowtie2:$PATH
+# Install bowtie2 
+RUN conda install -c bioconda bowtie2
 
 # Install seqtk
-RUN cd /accessoryfiles/seqtk && make
-ENV PATH /accessoryfiles/seqtk:$PATH
+RUN conda install -c bioconda seqtk
 
 # Install fastx_toolkit
-RUN cd /accessoryfiles/libgtextutils && ./configure && make && make install
-RUN cd /accessoryfiles/fastx_toolkit && ./configure && make && make install
-
-# Install conda
-RUN bash /accessoryfiles/miniconda/Miniconda3-latest-Linux-x86_64.sh -b -p /accessoryfiles/miniconda/miniconda
-ENV PATH /accessoryfiles/miniconda/miniconda/bin:$PATH
-RUN conda update conda
-# Add Bioconda channel and other channels https://bioconda.github.io/
-RUN conda config --add channels conda-forge
-RUN conda config --add channels defaults
-RUN conda config --add channels r
-RUN conda config --add channels bioconda
-RUN conda config --add channels anaconda
+RUN conda install -c biobuilds fastx-toolkit
 
 # Install sistr_cmd and its dependencies
-RUN conda install sistr_cmd==1.0.2
+RUN conda install -c bioconda sistr_cmd==1.0.2
+
+# Install mash
+RUN conda install -c bioconda mash
 
 # Install pysam
-RUN conda install -c bioconda pysam==0.13
+RUN pip3 install pysam==0.13
+
+# Install biopython 
+RUN pip3 install biopython==1.70
 
 # Install OLCTools
-RUN pip3 install OLCTools==0.3.4
+RUN pip3 install OLCTools==0.3.19
+
+# Install sipprverse
+RUN pip3 install sipprverse==0.0.25
+
+# Install confindr
+RUN pip3 install confindr==0.2.1
+
+# Install pytest
+RUN pip3 install -U pytest
 
 # Install the pipeline
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 ENV PATH /COWBAT:$PATH
-
-# Install sipprverse
-RUN pip3 install sipprverse==0.0.2
-
-# Install python requirements
-RUN cd /accessoryfiles/requirements && pip3 install -r requirements.txt
-
-# Remove all the non-folders from the accessoryfiles folder
-RUN find /accessoryfiles -name "*" -type f -exec rm -f {} \;

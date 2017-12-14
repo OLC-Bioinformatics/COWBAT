@@ -6,6 +6,7 @@ import confindr.confindr as confinder
 from biotools import bbtools
 from csv import DictReader
 from glob import glob
+import pandas
 import shutil
 import os
 
@@ -47,7 +48,7 @@ class Quality(object):
             paired_reads = confinder.find_paired_reads(args.input_directory,
                                                        forward_id=args.forward_id,
                                                        reverse_id=args.reverse_id)
-            #
+            # Perform contamination detection on each set of paired reads
             for pair in paired_reads:
                 sample_name = os.path.basename(list(filer(pair))[0])
                 printtime('Beginning analysis of sample {}...\n'.format(sample_name), self.start, '\033[1;34m')
@@ -55,22 +56,27 @@ class Quality(object):
                                                         sample_name)
                 confinder.find_contamination(pair, args, genus)
             printtime('Contamination detection complete!', self.start)
-        # Open the report
-        with open(report) as csv:
-            # Find the results for each of the samples
-            for sample in self.metadata:
-                # Create a GenObject to store the results
-                sample.confinder = GenObject()
-                for line in csv:
-                    # If the current line corresponds to the sample of interest
-                    if sample.name in line:
-                        # Split the line into its comma-separated constituents, and populate variables as necessary
-                        fastq, \
-                            sample.confinder.genus, \
-                            sample.confinder.num_contaminated_snvs, \
-                            sample.confinder.unique_kmers, \
-                            sample.confinder.cross_contamination, \
-                            sample.confinder.contam_status = line.rstrip().split(',')
+        # Load the confindr report into a dictionary using pandas
+        # https://stackoverflow.com/questions/33620982/reading-csv-file-as-dictionary-using-pandas
+        confindr_results = pandas.read_csv(report, index_col=0).T.to_dict()
+        # Find the results for each of the samples
+        for sample in self.metadata:
+            # Create a GenObject to store the results
+            sample.confinder = GenObject()
+            # Iterate through the dictionary to find the outputs for each sample
+            for line in confindr_results:
+                # If the current line corresponds to the sample of interest
+                if sample.name in line:
+                    # Set the values using the appropriate keys as the attributes
+                    sample.confinder.genus = confindr_results[line]['Genus']
+                    sample.confinder.num_contaminated_snvs = confindr_results[line]['NumContamSNVs']
+                    sample.confinder.unique_kmers = confindr_results[line]['NumUniqueKmers']
+                    sample.confinder.cross_contamination = confindr_results[line]['CrossContamination']
+                    sample.confinder.contam_status = confindr_results[line]['ContamStatus']
+                    if sample.confinder.contam_status is True:
+                        sample.confinder.contam_status = 'Contaminated'
+                    elif sample.confinder.contam_status is False:
+                        sample.confinder.contam_status = 'Clean'
 
     def estimate_genome_size(self):
         """

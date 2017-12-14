@@ -1,41 +1,40 @@
 #!/usr/bin/env python3
-import spadespipeline.fastqCreator as fastqCreator
-import spadespipeline.metadataprinter as metadataprinter
-import spadespipeline.offhours as offhours
-import spadespipeline.quality as quality
-import spadespipeline.runMetadata as runMetadata
-import spadespipeline.spadesRun as spadesRun
-import spadespipeline.fastqmover as fastqmover
-import spadespipeline.GeneSeekr as GeneSeekrMethod
-from MLSTsippr.mlst import GeneSippr as MLSTSippr
-from spadespipeline.basicAssembly import Basic
-import spadespipeline.univec as univec
-import spadespipeline.reporter as reporter
-import spadespipeline.compress as compress
-import spadespipeline.versions as versions
-import spadespipeline.depth as depth
-import spadespipeline.quaster as quaster
-import spadespipeline.prodigal as prodigal
-import MASHsippr.mash as mash
-from sixteenS.sixteens_full import SixteenS as SixteensFull
-# from KmerContam import pipeline_contamination_detection
-from metagenomefilter import automateCLARK
-import spadespipeline.primer_finder_bbduk as vtyper
-import coreGenome.core as core
-import spadespipeline.sistr as sistr
-from serosippr.serosippr import SeroSippr
-from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 try:
     from .typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
 except ImportError:
     from typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
-import gc
-import os
-import subprocess
+from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
+from sixteenS.sixteens_full import SixteenS as SixteensFull
+import spadespipeline.metadataprinter as metadataprinter
+import spadespipeline.primer_finder_bbduk as vtyper
+import spadespipeline.fastqCreator as fastqCreator
+import spadespipeline.GeneSeekr as GeneSeekrMethod
+import spadespipeline.runMetadata as runMetadata
+from spadespipeline.basicAssembly import Basic
+import spadespipeline.fastqmover as fastqmover
+import spadespipeline.spadesRun as spadesRun
+import spadespipeline.compress as compress
+import spadespipeline.offhours as offhours
+import spadespipeline.prodigal as prodigal
+import spadespipeline.reporter as reporter
+import spadespipeline.versions as versions
+import spadespipeline.quality as quality
+import spadespipeline.quaster as quaster
+import spadespipeline.univec as univec
+import spadespipeline.depth as depth
+import spadespipeline.sistr as sistr
+from MLSTsippr.mlst import GeneSippr as MLSTSippr
+from metagenomefilter import automateCLARK
+from serosippr.serosippr import SeroSippr
+import coreGenome.core as core
+import MASHsippr.mash as mash
+from argparse import ArgumentParser
 from psutil import virtual_memory
 import multiprocessing
 from time import time
-from argparse import ArgumentParser
+import subprocess
+import gc
+import os
 
 __author__ = 'adamkoziol'
 
@@ -235,7 +234,7 @@ class RunSpades(object):
                 .format(self.customsamplesheet)
 
         self.basicassembly = args.basicassembly
-        if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, '{}SampleSheet.csv')):
+        if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
             self.basicassembly = True
             printtime('Could not find a sample sheet. Performing basic assembly (no run metadata captured)',
                       self.starttime)

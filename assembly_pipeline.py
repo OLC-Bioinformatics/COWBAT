@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
-try:
-    from .typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
-except ImportError:
-    from typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter

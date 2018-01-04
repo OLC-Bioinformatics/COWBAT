@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import Quality, GeneSippr, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import Quality, GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
@@ -57,7 +57,9 @@ class RunSpades(object):
         self.typing()
         # Create a report
         reporter.Reporter(self)
+        '''
         compress.Compress(self)
+        '''
         # Get all the versions of the software used
         versions.Versions(self)
         metadataprinter.MetadataPrinter(self)
@@ -163,7 +165,7 @@ class RunSpades(object):
         MLSTSippr(self, self.commit, self.starttime, self.homepath, 'rMLST', 1.0, True)
         metadataprinter.MetadataPrinter(self)
         # Run the 16S analyses
-        SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.985)
+        SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.95)
         metadataprinter.MetadataPrinter(self)
         # Find genes of interest
         GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False, False)
@@ -172,6 +174,7 @@ class RunSpades(object):
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
         # Resistance finding
         Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False, True)
+        ResFinder(self)
         # Prophage detection
         pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
         Prophages(pro)

@@ -3,6 +3,7 @@ from Bio.Sequencing.Applications import SamtoolsFaidxCommandline, SamtoolsIndexC
     SamtoolsSortCommandline, SamtoolsViewCommandline
 from sipprCommon.bowtie import Bowtie2CommandLine, Bowtie2BuildCommandLine
 from Bio.Blast.Applications import NcbiblastnCommandline
+from spadespipeline import metadataReader
 from argparse import ArgumentParser
 from subprocess import call
 import multiprocessing
@@ -29,26 +30,53 @@ runmetadata = list()
 def variables():
     v = ArgumentParser()
     v.path = os.path.join(testpath, 'testdata')
-    v.targetpath = os.path.join(testpath, 'testdata', 'targets')
+    v.referencefilepath = os.path.join(v.path, 'databases')
     v.customsamplesheet = os.path.join(v.path, 'SampleSheet.csv')
     v.debug = True
+    v.numreads = 2
+    v.kmerrange = '21,33,55,77,99,127'
+    v.preprocess = False
+    v.basicassembly = False
+    v.threads = multiprocessing.cpu_count()
     return v
 
 
 @pytest.fixture()
 def method_init(variables):
-    method = RunSpades(variables, '', time(), scriptpath)
+    method = RunSpades(variables, b'', time(), scriptpath)
     return method
+
+
+@pytest.fixture()
+def read_metadata(variables):
+    metadata = metadataReader.MetadataReader(variables)
+    return metadata
 
 
 method = method_init(variables())
 
 
-# def test_bcl2fastq(variables):
-#     method.createobjects()
-#     assert os.path.isfile(os.path.join(variables.path, variables.miseqfolder, '1_0',
-#                                        'Undetermined_S0_L001_R1_001.fastq.gz'))
-#
+def method_update(basicassembly=False, preprocess=False, metadataupdate=True):
+    method.basicassembly = basicassembly
+    method.preprocess = preprocess
+    #
+    if metadataupdate:
+        for sample in method.runmetadata.samples:
+            # print(sample.datastore)
+            pass
+
+
+def test_basic_link(variables):
+    method_update(basicassembly=True, metadataupdate=False)
+    method.helper()
+    assert os.path.islink(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1.fastq.gz'))
+
+
+def test_basic_read_length():
+    method.helper()
+    for sample in method.runmetadata.samples:
+        assert sample.run.forwardlength == 301
+
 # def metadata_update(analysistype):
 #     """
 #

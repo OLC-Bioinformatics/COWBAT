@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import Quality, GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import Quality, GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, \
+    Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.primer_finder_bbduk as vtyper
-import spadespipeline.fastqCreator as fastqCreator
 import spadespipeline.GeneSeekr as GeneSeekrMethod
 import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
 import spadespipeline.spadesRun as spadesRun
-import spadespipeline.compress as compress
-import spadespipeline.offhours as offhours
+# import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
 import spadespipeline.versions as versions
@@ -68,13 +67,8 @@ class RunSpades(object):
     def helper(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
         and trimming as well as the assembly"""
-        # Run the fastq creation script - if argument is provided
-        if self.fastqcreation:
-            self.runmetadata = fastqCreator.CreateFastq(self)
-            # Print the metadata to file
-            metadataprinter.MetadataPrinter(self)
         # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
-        elif self.basicassembly:
+        if self.basicassembly:
             self.runmetadata = Basic(self)
         else:
             # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
@@ -88,14 +82,8 @@ class RunSpades(object):
                 sample.commands = GenObject()
                 sample.commands.nohupcall = 'NA'
                 sample.commands.bclcall = 'NA'
-            # Run the offhours fastq linking script - if argument
-            if self.offhours:
-                offhoursobj = offhours.Offhours(self)
-                offhoursobj.assertpathsandfiles()
-                offhoursobj.numberofsamples()
-            # Move the files
-            else:
-                fastqmover.FastqMover(self)
+            # Move/link the FASTQ files to strain-specific working directories
+            fastqmover.FastqMover(self)
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
 
@@ -173,7 +161,7 @@ class RunSpades(object):
         # Plasmid finding
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
         # Resistance finding
-        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.985, False, True)
+        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False, True)
         ResFinder(self)
         # Prophage detection
         pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
@@ -216,16 +204,10 @@ class RunSpades(object):
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path, '')
-        self.offhours = args.offhours
-        self.fastqcreation = args.fastqcreation
-        self.fastqdestination = args.destinationfastq
-        self.reffilepath = os.path.join(args.referencefilepath, '')
-        self.forwardlength = args.readlengthforward
-        self.reverselength = args.readlengthreverse
-        self.numreads = 1 if self.reverselength == 0 else args.numreads
+        self.reffilepath = os.path.join(args.referencefilepath)
+        self.numreads = args.numreads
         self.kmers = args.kmerrange
         self.preprocess = args.preprocess
-        self.updatedatabases = args.updatedatabases
         # Define the start time
         self.starttime = startingtime
         self.customsamplesheet = args.customsamplesheet
@@ -242,12 +224,10 @@ class RunSpades(object):
         self.cpus = args.threads if args.threads else multiprocessing.cpu_count()
         # Assertions to ensure that the provided variables are valid
         make_path(self.path)
-        assert os.path.isdir(self.path), u'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
+        assert os.path.isdir(self.path), 'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
         self.reportpath = os.path.join(self.path, 'reports')
-        assert os.path.isdir(self.reffilepath), u'Reference file path is not a valid directory {0!r:s}'\
+        assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        self.scriptpath = os.path.join(args.scriptpath)
-        self.miseqpath = args.miseqpath
         self.commit = pipelinecommit.decode('utf-8')
         self.homepath = scriptpath
         self.logfile = os.path.join(self.path, 'logfile')
@@ -281,31 +261,7 @@ if __name__ == '__main__':
                         ' 2, unpaired-reads: 1. Default is paired-end')
     parser.add_argument('-t', '--threads',
                         help='Number of threads. Default is the number of cores in the system')
-    parser.add_argument('-o', '--offhours',
-                        action='store_true',
-                        help='Optionally run the off-hours module that will search for MiSeq runs in progress, wait '
-                             'until the run is complete, and assemble the run')
-    parser.add_argument('-F', '--fastqcreation',
-                        action='store_true',
-                        help='Optionally run the fastq creation module that will search for MiSeq runs in progress, '
-                             'run bcl2fastq to create fastq files, and assemble the run')
-    parser.add_argument('-d', '--destinationfastq',
-                        help='Optional folder path to store .fastq files created using the fastqCreation module. '
-                             'Defaults to path/miseqfolder')
-    parser.add_argument('-m', '--miseqpath',
-                        help='Path of the folder containing MiSeq run data folder')
-    parser.add_argument('-f', '--miseqfolder',
-                        help='Name of the folder containing MiSeq run data')
-    parser.add_argument('-r1', '--readlengthforward',
-                        default='full',
-                        help='Length of forward reads to use. Can specify "full" to take the full length of forward '
-                             'reads specified on the SampleSheet. Defaults to "full"')
-    parser.add_argument('-r2', '--readlengthreverse',
-                        default='full',
-                        help='Length of reverse reads to use. Can specify "full" to take the full length of reverse '
-                             'reads specified on the SampleSheet. Defaults to "full"')
     parser.add_argument('-r', '--referencefilepath',
-                        default='/spades_pipeline/SPAdesPipelineFiles',
                         help='Provide the location of the folder containing the pipeline accessory files (reference '
                              'genomes, MLST data, etc.')
     parser.add_argument('-k', '--kmerrange',
@@ -322,13 +278,6 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Perform quality trimming and error correction only. Do not assemble the trimmed + '
                              'corrected reads')
-    parser.add_argument('-u', '--updatedatabases',
-                        action='store_true',
-                        help='Optionally update (r)MLST databases')
-    parser.add_argument('-s', '--scriptpath',
-                        default='/accessoryfiles',
-                        help='Path to location of external scripts')
-
     # Get the arguments into an object
     arguments = parser.parse_args()
     starttime = time()

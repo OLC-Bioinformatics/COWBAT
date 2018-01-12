@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import Quality, GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, \
+from spadespipeline.typingclasses import GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, \
     Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
@@ -44,7 +44,8 @@ class RunSpades(object):
         # Start the assembly
         self.helper()
         # Create the quality object
-        self.qualityobject = quality.Quality(self)
+        self.create_quality_object()
+        # Run the quality analyses
         self.quality()
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
@@ -87,53 +88,174 @@ class RunSpades(object):
         # Print the metadata to file
         metadataprinter.MetadataPrinter(self)
 
+    def create_quality_object(self):
+        """
+
+        :return:
+        """
+        # Create the quality object
+        self.qualityobject = quality.Quality(self)
+
     def quality(self):
         """
         Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
         supplied sequences
         """
         # Run FastQC on the unprocessed fastq files
-        self.qualityobject.fastqcthreader('Raw')
-        # Initialise quality object
-        qual = Quality(self)
+        self.fastqc_raw()
         # Perform quality trimming and FastQC on the trimmed files
-        self.qualityobject.trimquality()
+        self.quality_trim()
+        # Run FastQC on the trimmed files
+        self.fastqc_trimmed()
         # Perform error correcting on the reads
-        qual.error_correction()
-        # Calculate the levels of contamination in the reads
-        # pipeline_contamination_detection.PipelineContaminationDetection(self)
-        qual.contamination_finder()
+        self.error_correct()
+        # Detect contamination in the reads
+        self.contamination_detection()
         # Run FastQC on the processed fastq files
-        self.qualityobject.fastqcthreader('trimmedcorrected')
+        self.fastqc_trimmedcorrected()
         # Normalise the reads to a kmer depth of 100
-        qual.normalise_reads()
+        self.normalise_reads()
         # Run FastQC on the normalised fastq files
-        self.qualityobject.fastqcthreader('normalised')
+        self.fastqc_normalised()
         # Merge paired end reads into a single file based on overlap
-        qual.merge_pairs()
+        self.merge_reads()
         # Run FastQC on the merged fastq files
-        self.qualityobject.fastqcthreader('merged')
+        self.fastqc_merged()
         metadataprinter.MetadataPrinter(self)
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
             quit()
 
+    def fastqc_raw(self):
+        """
+
+        """
+        self.qualityobject.fastqcthreader('Raw')
+        metadataprinter.MetadataPrinter(self)
+
+    def quality_trim(self):
+        """
+
+        """
+        # Perform quality trimming and FastQC on the trimmed files
+        self.qualityobject.trimquality()
+        metadataprinter.MetadataPrinter(self)
+
+    def fastqc_trimmed(self):
+        """
+
+        """
+        self.qualityobject.fastqcthreader('Trimmed')
+        metadataprinter.MetadataPrinter(self)
+
+    def error_correct(self):
+        """
+
+        """
+        # Perform error correcting on the reads
+        self.qualityobject.error_correction()
+
+    def contamination_detection(self):
+        """
+
+        """
+        # Calculate the levels of contamination in the reads
+        self.qualityobject.contamination_finder()
+        metadataprinter.MetadataPrinter(self)
+
+    def fastqc_trimmedcorrected(self):
+        """
+
+        """
+        # Run FastQC on the processed fastq files
+        self.qualityobject.fastqcthreader('trimmedcorrected')
+        metadataprinter.MetadataPrinter(self)
+
+    def normalise_reads(self):
+        """
+
+        """
+        # Normalise the reads to a kmer depth of 100
+        self.qualityobject.normalise_reads()
+        metadataprinter.MetadataPrinter(self)
+
+    def fastqc_normalised(self):
+        """
+
+        """
+        # Run FastQC on the normalised fastq files
+        self.qualityobject.fastqcthreader('normalised')
+        metadataprinter.MetadataPrinter(self)
+
+    def merge_reads(self):
+        """
+
+        """
+        # Merge paired end reads into a single file based on overlap
+        self.qualityobject.merge_pairs()
+        metadataprinter.MetadataPrinter(self)
+
+    def fastqc_merged(self):
+        """
+
+        """
+        # Run FastQC on the merged fastq files
+        self.qualityobject.fastqcthreader('merged')
+        metadataprinter.MetadataPrinter(self)
+
     def assemble(self):
         """
         Assemble genomes and perform some basic quality analyses
         """
         # Run spades
+        self.run_spades()
+        # Calculate the depth of coverage as well as other quality metrics using Qualimap
+        self.qualimap()
+        # Run quast assembly metrics
+        self.quast()
+        # ORF detection
+        self.prodigal()
+        # CLARK analyses
+        self.clark()
+
+    def run_spades(self):
+        """
+
+        """
+        # Run spades
         spadesRun.Spades(self)
+        metadataprinter.MetadataPrinter(self)
+
+    def qualimap(self):
+        """
+
+        """
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
         qual = depth.QualiMap(self)
         qual.main()
         metadataprinter.MetadataPrinter(self)
+
+    def quast(self):
+        """
+
+        """
         # Run quast assembly metrics
         quaster.Quast(self)
+        metadataprinter.MetadataPrinter(self)
+
+    def prodigal(self):
+        """
+
+        """
         # ORF detection
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
+
+    def clark(self):
+        """
+
+        """
         # Determine the amount of physical memory in the system
         mem = virtual_memory()
         # If the total amount of memory is greater than 100GB (this could probably be lowered), run CLARK

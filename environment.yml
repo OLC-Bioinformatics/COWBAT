@@ -123,6 +123,7 @@ dependencies:
 - pip:
   - attrs==17.3.0
   - biopython==1.70
+  - confindr==0.2.2
   - ipython-genutils==0.2.0
   - jupyter-core==4.4.0
   - olctools==0.3.31

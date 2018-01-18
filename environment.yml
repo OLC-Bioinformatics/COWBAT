@@ -1,7 +1,7 @@
 name: cowbat
 channels:
-- biobuilds
 - dranew
+- biobuilds
 - adamkoziol
 - conda-forge
 - defaults
@@ -13,6 +13,7 @@ dependencies:
 - bbmap=37.78=0
 - blast=2.2.31=1
 - bowtie2=2.3.4=py35pl5.22.0_0
+- clark=1.2.3.1=0
 - fastqc=0.11.6=pl5.22.0_0
 - libgtextutils=0.7=3
 - mash=1.1=0

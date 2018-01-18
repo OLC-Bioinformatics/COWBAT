@@ -39,12 +39,6 @@ RUN conda install -c bioconda spades
 # Install qualimap
 RUN conda install -c bioconda qualimap
 
-# Install quast
-RUN wget https://downloads.sourceforge.net/project/quast/quast-4.6.1.tar.gz
-RUN tar -xzf quast-4.6.1.tar.gz
-RUN cd quast-4.6.1 && ./setup.py install
-RUN rm quast-4.6.1.tar.gz
-
 # Install samtools
 RUN conda install -c bioconda samtools
 
@@ -79,13 +73,13 @@ RUN pip3 install pysam==0.13
 RUN pip3 install biopython==1.70
 
 # Install OLCTools
-RUN pip3 install OLCTools==0.3.19
+RUN pip3 install OLCTools
 
 # Install sipprverse
-RUN pip3 install sipprverse==0.0.25
+RUN pip3 install sipprverse
 
 # Install confindr
-RUN pip3 install confindr==0.2.1
+RUN pip3 install confindr
 
 # Install pytest
 RUN pip3 install -U pytest

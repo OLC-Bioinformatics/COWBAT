@@ -1,14 +1,9 @@
 #!/usr/bin/env python 3
-from Bio.Sequencing.Applications import SamtoolsFaidxCommandline, SamtoolsIndexCommandline, \
-    SamtoolsSortCommandline, SamtoolsViewCommandline
-from sipprCommon.bowtie import Bowtie2CommandLine, Bowtie2BuildCommandLine
-from Bio.Blast.Applications import NcbiblastnCommandline
+from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path
 from spadespipeline import metadataReader
 from argparse import ArgumentParser
-from subprocess import call
 import multiprocessing
 from time import time
-import logging
 import pytest
 import shutil
 import sys
@@ -21,22 +16,19 @@ from assembly_pipeline import RunSpades
 
 __author__ = 'adamkoziol'
 
-# Set global variables
-logging.basicConfig(level=logging.DEBUG)
-runmetadata = list()
-
 
 @pytest.fixture()
 def variables():
     v = ArgumentParser()
     v.path = os.path.join(testpath, 'testdata')
+    v.sequencepath = v.path
     v.referencefilepath = os.path.join(v.path, 'databases')
     v.customsamplesheet = os.path.join(v.path, 'SampleSheet.csv')
     v.debug = True
     v.numreads = 2
-    v.kmerrange = '21,33,55,77,99,127'
+    v.kmerrange = '21'
     v.preprocess = False
-    v.basicassembly = False
+    v.basicassembly = True
     v.threads = multiprocessing.cpu_count()
     return v
 
@@ -56,20 +48,49 @@ def read_metadata(variables):
 method = method_init(variables())
 
 
-def method_update(basicassembly=False, preprocess=False, metadataupdate=True):
-    method.basicassembly = basicassembly
-    method.preprocess = preprocess
-    #
-    if metadataupdate:
-        for sample in method.runmetadata.samples:
-            # print(sample.datastore)
-            pass
+def test_sistr(variables):
+    metadata = MetadataObject()
+    method.runmetadata.samples = list()
+    fasta = os.path.join(variables.path, 'NC_003198.fasta')
+    metadata.name = os.path.split(fasta)[1].split('.')[0]
+    # Initialise the general and run categories
+    metadata.general = GenObject()
+    metadata.run = GenObject()
+    metadata.general.fastqfiles = list()
+    # Set the destination folder
+    outputdir = os.path.join(variables.sequencepath, metadata.name)
+    make_path(outputdir)
+    # Add the output directory to the metadata
+    metadata.general.outputdirectory = outputdir
+    metadata.run.outputdirectory = outputdir
+    metadata.general.bestassemblyfile = True
+    # Initialise an attribute to store commands
+    metadata.commands = GenObject()
+    # Assume that all samples are Salmonella
+    metadata.general.referencegenus = 'Salmonella'
+    # Set the .fasta file as the best assembly
+    metadata.general.bestassemblyfile = fasta
+    method.runmetadata.samples.append(metadata)
+    method.sistr()
+    for sample in method.runmetadata.samples:
+        assert sample.sistr.cgmlst_genome_match == 'SAL_BA2732AA'
+    variable_update()
+
+
+def variable_update():
+    global method
+    method = method_init(variables())
 
 
 def test_basic_link(variables):
-    method_update(basicassembly=True, metadataupdate=False)
     method.helper()
     assert os.path.islink(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1.fastq.gz'))
+
+
+def test_metadata():
+    method.helper()
+    for sample in method.runmetadata.samples:
+        assert sample.name == 'NC_002695'
 
 
 def test_basic_read_length():
@@ -77,249 +98,222 @@ def test_basic_read_length():
     for sample in method.runmetadata.samples:
         assert sample.run.forwardlength == 301
 
-# def metadata_update(analysistype):
-#     """
-#
-#     :param analysistype:
-#     :return:
-#     """
-#     method.sequencepath = os.path.join(testpath, 'testdata', 'sequences', analysistype)
-#     method.reportpath = os.path.join(testpath, 'testdata', 'reports')
-#     for sample in method.runmetadata.samples:
-#         sample.name = 'unit_test'
-#         sample.general.outputdirectory = method.sequencepath
-#         sample.run.outputdirectory = method.sequencepath
-#         sample.general.fastqfiles = [os.path.join(method.sequencepath, 'reads.fastq.gz')]
-#         sample.general.trimmedcorrectedfastqfiles = sample.general.fastqfiles
-#         sample.general.logout = os.path.join(method.sequencepath, 'logout')
-#         sample.general.logerr = os.path.join(method.sequencepath, 'logerr')
-#
-#
-# def test_fastq_bait(variables):
-#     outfile = os.path.join(variables.path, 'bait', 'baited.fastq')
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     baitcall = 'bbduk.sh ref={ref} in={input} threads={cpus} outm={out}'.format(
-#         ref=os.path.join(targetpath, 'combinedtargets.fasta'),
-#         input=os.path.join(targetpath, 'genesippr.fastq.gz'),
-#         cpus=multiprocessing.cpu_count(),
-#         out=os.path.join(outfile)
-#     )
-#     call(baitcall, shell=True)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_reverse_bait(variables):
-#     outfile = os.path.join(variables.path, 'reverse_bait', 'baited_targets.fasta')
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     baitcall = 'bbduk.sh ref={ref} in={input} threads={cpus} outm={out}'.format(
-#         ref=os.path.join(targetpath, 'genesippr.fastq.gz'),
-#         input=os.path.join(targetpath, 'combinedtargets.fasta'),
-#         cpus=multiprocessing.cpu_count(),
-#         out=os.path.join(outfile)
-#     )
-#     call(baitcall, shell=True)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_bowtie2_build(variables):
-#     # Use bowtie2 wrapper to create index the target file
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     bowtie2build = Bowtie2BuildCommandLine(reference=os.path.join(targetpath, 'baitedtargets.fa'),
-#                                            bt2=os.path.join(targetpath, 'baitedtargets'))
-#
-#     bowtie2build()
-#     size = os.stat(os.path.join(targetpath, 'baitedtargets.1.bt2'))
-#     assert size.st_size > 0
-#
-#
-# def test_bowtie2_align(variables):
-#     outpath = os.path.join(variables.path, 'bait')
-#     outfile = os.path.join(outpath, 'map_test_sorted.bam')
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     # Use samtools wrapper to set up the bam sorting command
-#     samsort = SamtoolsSortCommandline(input=outfile,
-#                                       o=True,
-#                                       out_prefix="-")
-#     samtools = [
-#         # When bowtie2 maps reads to all possible locations rather than choosing a 'best' placement, the
-#         # SAM header for that read is set to 'secondary alignment', or 256. Please see:
-#         # http://davetang.org/muse/2014/03/06/understanding-bam-flags/ The script below reads in the stdin
-#         # and subtracts 256 from headers which include 256
-#         'python3 {}'.format(scriptpath),
-#         # Use samtools wrapper to set up the samtools view
-#         SamtoolsViewCommandline(b=True,
-#                                 S=True,
-#                                 h=True,
-#                                 input_file="-"),
-#         samsort]
-#     # Add custom parameters to a dictionary to be used in the bowtie2 alignment wrapper
-#     indict = {'--very-sensitive-local': True,
-#               '-U': os.path.join(targetpath, 'genesippr.fastq.gz'),
-#               '-a': True,
-#               '--threads': multiprocessing.cpu_count(),
-#               '--local': True}
-#     # Create the bowtie2 reference mapping command
-#     bowtie2align = Bowtie2CommandLine(bt2=os.path.join(targetpath, 'baitedtargets'),
-#                                       threads=multiprocessing.cpu_count(),
-#                                       samtools=samtools,
-#                                       **indict)
-#     bowtie2align(cwd=outpath)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_index_target(variables):
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     target_index = SamtoolsFaidxCommandline(reference=os.path.join(targetpath, 'baitedtargets.fa'))
-#     target_index()
-#     size = os.stat(os.path.join(targetpath, 'baitedtargets.fa.fai'))
-#     assert size.st_size > 0
-#
-#
-# def test_index_bam(variables):
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     bam_index = SamtoolsIndexCommandline(input=os.path.join(targetpath, 'genesippr_sorted.bam'))
-#     bam_index()
-#     size = os.stat(os.path.join(targetpath, 'genesippr_sorted.bam.bai'))
-#     assert size.st_size > 0
-#
-#
-# def test_subsample(variables):
-#     targetpath = os.path.join(variables.targetpath, 'blast')
-#     outpath = os.path.join(variables.path, 'blast')
-#     os.mkdir(outpath)
-#     outfile = os.path.join(outpath, 'subsampled_reads.fastq.gz')
-#     cmd = 'reformat.sh in={input} out={output} samplebasestarget=100000'.format(
-#         input=os.path.join(targetpath, 'reads.fastq.gz'),
-#         output=os.path.join(outfile))
-#     call(cmd, shell=True)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_downsample(variables):
-#     outpath = os.path.join(variables.path, 'blast')
-#     outfile = os.path.join(outpath, 'subsampled_reads.fastq')
-#     cmd = 'seqtk sample {input} 1000 > {output}' .format(
-#         input=os.path.join(outpath, 'subsampled_reads.fastq.gz'),
-#         output=outfile)
-#     call(cmd, shell=True)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_fastq_to_fasta(variables):
-#     outfile = os.path.join(variables.path, 'blast', 'subsampled_reads.fasta')
-#     cmd = 'fastq_to_fasta -i {input} -o {output}'.format(
-#         input=os.path.join(os.path.join(variables.path, 'blast', 'subsampled_reads.fastq')),
-#         output=outfile)
-#     call(cmd, shell=True)
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_make_blastdb(variables):
-#     targetpath = os.path.join(variables.targetpath, 'blast')
-#     command = 'makeblastdb -in {targets} -parse_seqids -max_file_sz 2GB -dbtype nucl -out {output}'.format(
-#         targets=os.path.join(targetpath, 'baitedtargets.fa'),
-#         output=os.path.join(targetpath, 'baitedtargets'))
-#     call(command, shell=True)
-#     outfile = os.path.join(targetpath, 'baitedtargets.nsi')
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def test_blast(variables):
-#     targetpath = os.path.join(variables.targetpath, 'blast')
-#     outpath = os.path.join(variables.path, 'blast')
-#     outfile = os.path.join(outpath, 'blast_results.csv')
-#     # Use the NCBI BLASTn command line wrapper module from BioPython to set the parameters of the search
-#     blastn = NcbiblastnCommandline(query=os.path.join(outpath, 'subsampled_reads.fasta'),
-#                                    db=os.path.join(targetpath, 'baitedtargets'),
-#                                    max_target_seqs=1,
-#                                    num_threads=multiprocessing.cpu_count(),
-#                                    outfmt="'6 qseqid sseqid positive mismatch gaps "
-#                                           "evalue bitscore slen length qstart qend qseq sstart send sseq'",
-#                                    out=outfile)
-#     blastn()
-#     size = os.stat(outfile)
-#     assert size.st_size > 0
-#
-#
-# def clean_folder(analysistype):
-#     """
-#
-#     :param analysistype:
-#     """
-#     shutil.rmtree(os.path.join(method.sequencepath, analysistype))
-#     os.remove(os.path.join(method.sequencepath, 'logout'))
-#     os.remove(os.path.join(method.sequencepath, 'logerr'))
-#     os.remove(os.path.join(method.sequencepath, 'unit_test_metadata.json'))
-#
-#
-# def test_genesippr():
-#     analysistype = 'genesippr'
-#     metadata_update(analysistype)
-#     method.run_genesippr()
-#     outfile = os.path.join(method.reportpath, '{}.csv'.format(analysistype))
-#     size = os.stat(outfile)
-#     clean_folder(analysistype)
-#     assert size.st_size > 0
-#
-#
-# def test_sixteens():
-#     analysistype = 'sixteens_full'
-#     metadata_update(analysistype)
-#     method.run_sixteens()
-#     outfile = os.path.join(method.reportpath, '{}.csv'.format(analysistype))
-#     size = os.stat(outfile)
-#     clean_folder(analysistype)
-#     assert size.st_size > 0
-#
-#
-# def test_gdcs():
-#     analysistype = 'GDCS'
-#     metadata_update(analysistype)
-#     method.run_gdcs()
-#     outfile = os.path.join(method.reportpath, '{}.csv'.format(analysistype))
-#     size = os.stat(outfile)
-#     clean_folder(analysistype)
-#     assert size.st_size > 0
-#
-# # def test_serosippr():
-# #     metadata_update('serosippr')
-# #     method.run_serosippr()
-#
-#
-# def test_clear_results(variables):
-#     shutil.rmtree(variables.path)
-#
-#
-# def test_clear_reports():
-#     shutil.rmtree(os.path.join(testpath, 'testdata', 'reports'))
-#
-#
-# def test_clear_targets(variables):
-#     targetpath = os.path.join(variables.targetpath, 'bait')
-#     os.remove(os.path.join(targetpath, 'baitedtargets.1.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.2.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.3.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.4.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.rev.1.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.rev.2.bt2'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.fa.fai'))
-#     os.remove(os.path.join(targetpath, 'genesippr_sorted.bam.bai'))
-#
-#
-# def test_clear_blast(variables):
-#     targetpath = os.path.join(variables.targetpath, 'blast')
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nsq'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nsi'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nsd'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nog'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nni'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nnd'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nin'))
-#     os.remove(os.path.join(targetpath, 'baitedtargets.nhr'))
+
+def test_quality_object():
+    method.create_quality_object()
+    assert os.path.isdir(method.qualityobject.bbduklocation)
+
+
+def test_raw_fastqc_paired():
+    method.fastqc_raw()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'Raw', 'NC_002695_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_raw_fastqc_forward():
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'Raw', 'NC_002695_R1_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_quality_trim(variables):
+    method.quality_trim()
+    outfile = os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_trimmed.fastq.gz')
+    size = os.stat(outfile)
+    assert size.st_size > 0
+
+
+def test_trimmed_fastqc():
+    method.fastqc_trimmed()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'Trimmed', 'NC_002695_R1_trimmed_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_error_correction(variables):
+    method.error_correct()
+    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_trimmed_corrected.fastq.gz'))
+
+
+def test_confindr():
+    method.contamination_detection()
+    for sample in method.runmetadata.samples:
+        assert sample.confinder.unique_kmers == 575
+
+
+def test_trimmed_corrected_fastqc():
+    method.fastqc_trimmedcorrected()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'trimmedcorrected',
+                               'NC_002695_R1_trimmed_corrected_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_read_normalisation(variables):
+    method.normalise_reads()
+    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_normalised.fastq.gz'))
+
+
+def test_normalised_fastqc():
+    method.fastqc_normalised()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'normalised',
+                               'NC_002695_R1_normalised_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_read_merging(variables):
+    method.merge_reads()
+    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_paired.fastq.gz'))
+
+
+def test_merged_fastqc():
+    method.fastqc_merged()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'merged',
+                               'NC_002695_paired_fastqc.zip')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_spades():
+    method.run_spades()
+    for sample in method.runmetadata.samples:
+        outfile = os.path.join(sample.general.outputdirectory, 'spades_output', 'contigs.fasta')
+        size = os.stat(outfile)
+        assert size.st_size > 0
+
+
+def test_qualimap():
+    method.qualimap()
+    for sample in method.runmetadata.samples:
+        assert sample.mapping.Contigs == "989"
+
+
+def test_quast():
+    method.quast()
+    for sample in method.runmetadata.samples:
+        assert sample.quast.N50 == "845"
+
+
+def test_prodigal():
+    method.prodigal()
+    for sample in method.runmetadata.samples:
+        assert sample.prodigal.predictedgenesover1000bp == 68
+
+
+def test_mash():
+    method.mash()
+    for sample in method.runmetadata.samples:
+        assert sample.mash.closestrefseq == 'GCF_000008865.1'
+
+
+def test_rmlst():
+    method.rmlst()
+    for sample in method.runmetadata.samples:
+        assert sample.rmlst.sequencetype == '2124'
+
+
+def test_sixteens():
+    method.sixteens()
+    for sample in method.runmetadata.samples:
+        assert sample.sixteens_full.avgdepth['gi|219846739|ref|NR_026331.1|'] == '15.82'
+
+
+def test_genesippr():
+    method.genesippr()
+    for sample in method.runmetadata.samples:
+        assert sample.genesippr.avgdepth['VT1'] == '17.38'
+
+
+def test_plasmids():
+    method.plasmids()
+    for sample in method.runmetadata.samples:
+        assert sample.plasmidfinder.avgdepth['IncFIB(AP001918)_1__AP001918'] == '98.66'
+
+
+def test_ressippr():
+    method.ressippr()
+    for sample in method.runmetadata.samples:
+        assert sample.resfinder.avgdepth['sul1_1_AY224185'] == '61.94'
+
+
+def test_resfinder():
+    method.resfinder()
+    for sample in method.runmetadata.samples:
+        assert sample.resfinder_assembled.protseq
+
+
+def test_prophages():
+    method.prophages(cutoff=25)
+    for sample in method.runmetadata.samples:
+        assert sample.prophages.blastresults
+
+
+def test_univec():
+    method.univec()
+    for sample in method.runmetadata.samples:
+        assert sample.univec.blastresults
+
+
+def test_virulence():
+    method.virulence()
+    for sample in method.runmetadata.samples:
+        assert sample.virulence.avgdepth['stx1:3:M19437:3'] == '16.54'
+
+
+def test_mlst():
+    method.mlst()
+    for sample in method.runmetadata.samples:
+        assert sample.mlst.sequencetype == '11'
+
+
+def test_serosippr():
+    method.serosippr()
+    for sample in method.runmetadata.samples:
+        assert sample.serosippr.o_set == ['O157']
+
+
+def test_vtyper():
+    method.vtyper()
+    for sample in method.runmetadata.samples:
+        assert sample.vtyper.profile == ['vtx1a', 'vtx2c']
+
+
+def test_coregenome():
+    method.coregenome()
+    for sample in method.runmetadata.samples:
+        assert sample.coregenome.coreresults == '1/1'
+
+
+def test_clear_results(variables):
+    shutil.rmtree(os.path.join(variables.path, 'NC_002695'))
+
+
+def test_clear_sistr(variables):
+    shutil.rmtree(os.path.join(variables.path, 'NC_003198'))
+
+
+def test_clear_confindr(variables):
+    shutil.rmtree(os.path.join(variables.path, 'confindr'))
+
+
+def test_clear_reports(variables):
+    shutil.rmtree(os.path.join(variables.path, 'reports'))
+
+
+def test_clear_assemblies(variables):
+    shutil.rmtree(os.path.join(variables.path, 'BestAssemblies'))
+
+
+def test_clear_logs(variables):
+    os.remove(os.path.join(variables.path, 'logfile_err.txt'))
+    os.remove(os.path.join(variables.path, 'logfile_out.txt'))
+    os.remove(os.path.join(variables.path, 'portal.log'))
+

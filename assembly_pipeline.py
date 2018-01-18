@@ -10,12 +10,11 @@ import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
 import spadespipeline.spadesRun as spadesRun
-# import spadespipeline.compress as compress
+import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
 import spadespipeline.versions as versions
 import spadespipeline.quality as quality
-import spadespipeline.quaster as quaster
 import spadespipeline.univec as univec
 import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
@@ -57,9 +56,7 @@ class RunSpades(object):
         self.typing()
         # Create a report
         reporter.Reporter(self)
-        '''
         compress.Compress(self)
-        '''
         # Get all the versions of the software used
         versions.Versions(self)
         metadataprinter.MetadataPrinter(self)
@@ -90,10 +87,8 @@ class RunSpades(object):
 
     def create_quality_object(self):
         """
-
-        :return:
+        Create the quality object
         """
-        # Create the quality object
         self.qualityobject = quality.Quality(self)
 
     def quality(self):
@@ -121,7 +116,6 @@ class RunSpades(object):
         self.merge_reads()
         # Run FastQC on the merged fastq files
         self.fastqc_merged()
-        metadataprinter.MetadataPrinter(self)
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
@@ -129,78 +123,71 @@ class RunSpades(object):
 
     def fastqc_raw(self):
         """
-
+        Run FastQC on the unprocessed FASTQ files
         """
         self.qualityobject.fastqcthreader('Raw')
         metadataprinter.MetadataPrinter(self)
 
     def quality_trim(self):
         """
-
+        Perform quality trimming and FastQC on the trimmed files
         """
-        # Perform quality trimming and FastQC on the trimmed files
         self.qualityobject.trimquality()
         metadataprinter.MetadataPrinter(self)
 
     def fastqc_trimmed(self):
         """
-
+        Run FastQC on the quality trimmed FASTQ files
         """
         self.qualityobject.fastqcthreader('Trimmed')
         metadataprinter.MetadataPrinter(self)
 
     def error_correct(self):
         """
-
+        Perform error correcting on the reads
         """
-        # Perform error correcting on the reads
         self.qualityobject.error_correction()
+        metadataprinter.MetadataPrinter(self)
 
     def contamination_detection(self):
         """
-
+        Calculate the levels of contamination in the reads
         """
-        # Calculate the levels of contamination in the reads
         self.qualityobject.contamination_finder()
         metadataprinter.MetadataPrinter(self)
 
     def fastqc_trimmedcorrected(self):
         """
-
+        Run FastQC on the processed fastq files
         """
-        # Run FastQC on the processed fastq files
         self.qualityobject.fastqcthreader('trimmedcorrected')
         metadataprinter.MetadataPrinter(self)
 
     def normalise_reads(self):
         """
-
+        Normalise the reads to a kmer depth of 100
         """
-        # Normalise the reads to a kmer depth of 100
         self.qualityobject.normalise_reads()
         metadataprinter.MetadataPrinter(self)
 
     def fastqc_normalised(self):
         """
-
+        Run FastQC on the normalised fastq files
         """
-        # Run FastQC on the normalised fastq files
         self.qualityobject.fastqcthreader('normalised')
         metadataprinter.MetadataPrinter(self)
 
     def merge_reads(self):
         """
-
+        Merge paired end reads into a single file based on overlap
         """
-        # Merge paired end reads into a single file based on overlap
         self.qualityobject.merge_pairs()
         metadataprinter.MetadataPrinter(self)
 
     def fastqc_merged(self):
         """
-
+        Run FastQC on the merged fastq files
         """
-        # Run FastQC on the merged fastq files
         self.qualityobject.fastqcthreader('merged')
         metadataprinter.MetadataPrinter(self)
 
@@ -213,7 +200,7 @@ class RunSpades(object):
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
         self.qualimap()
         # Run quast assembly metrics
-        self.quast()
+        self.quality_features()
         # ORF detection
         self.prodigal()
         # CLARK analyses
@@ -221,40 +208,37 @@ class RunSpades(object):
 
     def run_spades(self):
         """
-
+        Perform de novo assemblies with SPAdes
         """
-        # Run spades
         spadesRun.Spades(self)
         metadataprinter.MetadataPrinter(self)
 
     def qualimap(self):
         """
-
+        Calculate the depth of coverage as well as other quality metrics using Qualimap
         """
-        # Calculate the depth of coverage as well as other quality metrics using Qualimap
         qual = depth.QualiMap(self)
         qual.main()
         metadataprinter.MetadataPrinter(self)
 
-    def quast(self):
+    def quality_features(self):
         """
-
+        Extract features from assemblies such as total genome size, longest contig, and N50
         """
-        # Run quast assembly metrics
-        quaster.Quast(self)
+        features = quality.QualityFeatures(self)
+        features.main()
         metadataprinter.MetadataPrinter(self)
 
     def prodigal(self):
         """
-
+        Use prodigal to detect open reading frames in the assemblies
         """
-        # ORF detection
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
 
     def clark(self):
         """
-
+        Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
         """
         # Determine the amount of physical memory in the system
         mem = virtual_memory()
@@ -270,29 +254,96 @@ class RunSpades(object):
         Perform typing that does not require the genus of the organism to be known
         """
         # Run mash
-        mash.Mash(self, 'mash')
+        self.mash()
         # Run rMLST
+        self.rmlst()
+        # Run the 16S analyses
+        self.sixteens()
+        # Find genes of interest
+        self.genesippr()
+        # Plasmid finding
+        self.plasmids()
+        # Resistance finding - raw reads
+        self.ressippr()
+        # Resistance finding - assemblies
+        self.ressippr()
+        # Prophage detection
+        self.prophages()
+        # Univec contamination search
+        self.univec()
+        # Virulence
+        self.virulence()
+
+    def mash(self):
+        """
+        Run mash to determine closest refseq genome
+        """
+        mash.Mash(self, 'mash')
+        metadataprinter.MetadataPrinter(self)
+
+    def rmlst(self):
+        """
+        Run rMLST analyses
+        """
         MLSTSippr(self, self.commit, self.starttime, self.homepath, 'rMLST', 1.0, True)
         metadataprinter.MetadataPrinter(self)
-        # Run the 16S analyses
+
+    def sixteens(self):
+        """
+        Run the 16S analyses
+        """
         SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.95)
         metadataprinter.MetadataPrinter(self)
-        # Find genes of interest
+
+    def genesippr(self):
+        """
+        Find genes of interest
+        """
         GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False, False)
         metadataprinter.MetadataPrinter(self)
-        # Plasmid finding
+
+    def plasmids(self):
+        """
+        Plasmid finding
+        """
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
-        # Resistance finding
+        metadataprinter.MetadataPrinter(self)
+
+    def ressippr(self):
+        """
+        Resistance finding - raw reads
+        """
         Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False, True)
+        metadataprinter.MetadataPrinter(self)
+
+    def resfinder(self):
+        """
+        Resistance finding - assemblies
+        """
         ResFinder(self)
-        # Prophage detection
-        pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, 90, True)
+        metadataprinter.MetadataPrinter(self)
+
+    def prophages(self, cutoff=90):
+        """
+        Prophage detection
+        :param cutoff: cutoff value to be used in the analyses
+        """
+        pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, cutoff, True)
         Prophages(pro)
-        # Univec contamination search
+        metadataprinter.MetadataPrinter(self)
+
+    def univec(self):
+        """
+        Univec contamination search
+        """
         uni = univec.PipelineInit(self, 'univec', False, 80, True)
         Univec(uni)
         metadataprinter.MetadataPrinter(self)
-        # Virulence
+
+    def virulence(self):
+        """
+        Virulence gene detection
+        """
         Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
         metadataprinter.MetadataPrinter(self)
 
@@ -302,16 +353,50 @@ class RunSpades(object):
         """
         # Run modules and print metadata to file
         # MLST
-        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
+        self.mlst()
         # Serotyping
-        SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
+        self.serosippr()
         # Virulence typing
-        vtyper.PrimerFinder(self, 'vtyper')
+        self.vtyper()
         # Core genome calculation
+        self.coregenome()
+        # Sistr
+        self.sistr()
+
+    def mlst(self):
+        """
+         MLST analyses
+        """
+        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
+        metadataprinter.MetadataPrinter(self)
+
+    def serosippr(self):
+        """
+        Serotyping analyses
+        """
+        SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
+        metadataprinter.MetadataPrinter(self)
+
+    def vtyper(self):
+        """
+        Virulence typing
+        """
+        vtyper.PrimerFinder(self, 'vtyper')
+        metadataprinter.MetadataPrinter(self)
+
+    def coregenome(self):
+        """
+        Core genome calculation
+        """
         coregen = GeneSeekrMethod.PipelineInit(self, 'coregenome', True, 70, False)
         core.CoreGenome(coregen)
         core.AnnotatedCore(self)
-        # Sistr
+        metadataprinter.MetadataPrinter(self)
+
+    def sistr(self):
+        """
+        Sistr
+        """
         sistr.Sistr(self, 'sistr')
         metadataprinter.MetadataPrinter(self)
 
@@ -325,7 +410,7 @@ class RunSpades(object):
         gc.enable()
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
-        self.path = os.path.join(args.path, '')
+        self.path = os.path.join(args.path)
         self.reffilepath = os.path.join(args.referencefilepath)
         self.numreads = args.numreads
         self.kmers = args.kmerrange
@@ -407,4 +492,3 @@ if __name__ == '__main__':
     pipeline = RunSpades(arguments, commit, starttime, homepath)
     pipeline.main()
     printtime('Assembly and characterisation complete', starttime)
-    quit()

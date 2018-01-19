@@ -34,5 +34,8 @@ WORKDIR /COWBAT
 RUN conda env create
 WORKDIR /
 
+# Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
+ENV LANG C.UTF-8
+
 # Activate the environment when launching the container
 #CMD /bin/bash -c source activate cowbat

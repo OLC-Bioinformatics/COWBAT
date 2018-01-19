@@ -135,7 +135,7 @@ dependencies:
   - confindr==0.2.2
   - ipython-genutils==0.2.0
   - jupyter-core==4.4.0
-  - olctools==0.3.32
+  - olctools==0.3.33
   - pluggy==0.6.0
   - py==1.5.2
   - pysam==0.13

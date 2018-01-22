@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 15:00:25 EST 2018
+#Version	5
+chroms	1
+bases	22423
+defined	3423
+undefined	19000
+contigs	7
+scaffolds	7
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/MLST/Escherichia/combinedtargets.fasta
+bytes	3532
+last modified	1516046362000

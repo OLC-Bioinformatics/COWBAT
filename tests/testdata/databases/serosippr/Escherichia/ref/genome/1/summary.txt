@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 15:15:04 EST 2018
+#Version	5
+chroms	1
+bases	19650
+defined	3150
+undefined	16500
+contigs	2
+scaffolds	2
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/serosippr/Escherichia/combinedtargets.fasta
+bytes	3248
+last modified	1516047267000

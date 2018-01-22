@@ -37,5 +37,9 @@ WORKDIR /
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8
 
-# Activate the environment when launching the container
-#CMD /bin/bash -c source activate cowbat
+#ENTRYPOINT [ “/bin/bash”, “-c” ]
+
+# CLARK doesn't install properly from the environment file - uses biobuilds instead of bioconda
+RUN /bin/bash -c "source activate cowbat && conda install -c bioconda clark"
+
+#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"

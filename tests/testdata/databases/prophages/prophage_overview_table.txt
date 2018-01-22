@@ -1,0 +1,1443 @@
+id_prophage	file_name	host	host_id	number_of_prophages_in_host	start_position_of_prophage	end_position_of_prophage	length_of_prophage
+uid314_0.0	uid314_0.0.fsa	Clostridium thermocellum ATCC 27405	Clostridium_thermocellum_ATCC_27405_uid314	1	1938476	1998108	59633
+uid46303_0.1	uid46303_0.1.fsa	Delftia sp. Cs1-4	Delftia_Cs1_4_uid46303	2	1986783	2046619	59837
+uid46303_0.0	uid46303_0.0.fsa	Delftia sp. Cs1-4	Delftia_Cs1_4_uid46303	2	3591311	3694775	103465
+uid32641_0.0	uid32641_0.0.fsa	Streptococcus pneumoniae AP200	Streptococcus_pneumoniae_AP200_uid32641	1	1761678	1823403	61726
+uid61063_0.0	uid61063_0.0.fsa	Neisseria meningitidis M01-240355	Neisseria_meningitidis_M01_240355_uid61063	1	1108981	1132363	23383
+uid31295_0.1	uid31295_0.1.fsa	Dickeya zeae Ech1591	Dickeya_zeae_Ech1591_uid31295	3	4187022	4204689	17668
+uid31295_0.0	uid31295_0.0.fsa	Dickeya zeae Ech1591	Dickeya_zeae_Ech1591_uid31295	3	4516098	4552114	36017
+uid31295_0.2	uid31295_0.2.fsa	Dickeya zeae Ech1591	Dickeya_zeae_Ech1591_uid31295	3	2076214	2089827	13614
+uid51765_0.0	uid51765_0.0.fsa	Marinomonas mediterranea MMB-1	Marinomonas_mediterranea_MMB_1_uid51765	1	2983162	3083034	99873
+uid12416_0.0	uid12416_0.0.fsa	Pseudomonas syringae pv. phaseolicola 1448A	Pseudomonas_syringae_phaseolicola_1448A_uid12416	1	2181745	2195319	13575
+uid17417_0.0	uid17417_0.0.fsa	Dinoroseobacter shibae DFL 12	Dinoroseobacter_shibae_DFL_12_uid17417	1	100305	157705	57401
+uid50405_0.0	uid50405_0.0.fsa	Bacteroides fragilis 638R	Bacteroides_fragilis_638R_uid50405	1	5098826	5225236	126411
+uid41831_0.0	uid41831_0.0.fsa	Helicobacter pylori B8	Helicobacter_pylori_B8_uid41831	1	436496	479294	42799
+uid16203_0.0	uid16203_0.0.fsa	Brucella melitensis biovar Abortus 2308	Brucella_melitensis_biovar_Abortus_uid16203	1	597564	648203	50640
+uid28965_0.1	uid28965_0.1.fsa	Escherichia coli BL21(DE3)	Escherichia_coli_BL21_DE3__uid28965	2	1397162	1409227	12066
+uid28965_0.0	uid28965_0.0.fsa	Escherichia coli BL21(DE3)	Escherichia_coli_BL21_DE3__uid28965	2	4409850	4442281	32432
+uid37901_0.0	uid37901_0.0.fsa	Marivirga tractuosa DSM 4126	Marivirga_tractuosa_DSM_4126_uid37901	1	2331695	2358558	26864
+uid31307_0.0	uid31307_0.0.fsa	Bacillus cereus 03BB102	Bacillus_cereus_03BB102_uid31307	1	1744927	1783632	38706
+uid17445_0.0	uid17445_0.0.fsa	Marinomonas sp. MWYL1	Marinomonas_MWYL1_uid17445	1	2779784	2812880	33097
+uid32827_0.0	uid32827_0.0.fsa	Gallionella capsiferriformans ES-2	Gallionella_capsiferriformans_ES_2_uid32827	1	1554373	1637393	83021
+uid38037_0.0	uid38037_0.0.fsa	Clostridium difficile CD196	Clostridium_difficile_CD196_uid38037	1	3435586	3509509	73924
+uid32509_0.12	uid32509_0.12.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	2668409	2700895	32487
+uid32509_0.13	uid32509_0.13.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	2535756	2580147	44392
+uid32509_0.10	uid32509_0.10.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	3109202	3138823	29622
+uid32509_0.11	uid32509_0.11.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	3041748	3108783	67036
+uid32509_0.14	uid32509_0.14.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	890274	934253	43980
+uid32509_0.15	uid32509_0.15.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	612093	657903	45811
+uid32509_0.8	uid32509_0.8.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	3614648	3660534	45887
+uid32509_0.9	uid32509_0.9.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	3264365	3295796	31432
+uid32509_0.0	uid32509_0.0.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	2375526	2404698	29173
+uid32509_0.1	uid32509_0.1.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	2172689	2217794	45106
+uid32509_0.2	uid32509_0.2.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	2121712	2170211	48500
+uid32509_0.3	uid32509_0.3.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	1870473	1914877	44405
+uid32509_0.4	uid32509_0.4.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	1570456	1609157	38702
+uid32509_0.5	uid32509_0.5.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	1473817	1512603	38787
+uid32509_0.6	uid32509_0.6.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	1253867	1292373	38507
+uid32509_0.7	uid32509_0.7.fsa	Escherichia coli O26:H11 str. 11368	Escherichia_coli_O26_H11_11368_uid32509	16	1171176	1212647	41472
+uid36361_0.0	uid36361_0.0.fsa	Listeria monocytogenes 08-5578	Listeria_monocytogenes_uid36361	1	1299881	1330785	30905
+uid20241_0.0	uid20241_0.0.fsa	Shewanella halifaxensis HAW-EB4	Shewanella_halifaxensis_HAW_EB4_uid20241	1	1567718	1635052	67335
+uid398_0.0	uid398_0.0.fsa	Pediococcus pentosaceus ATCC 25745	Pediococcus_pentosaceus_ATCC_25745_uid398	1	780798	817183	36386
+uid55_0.0	uid55_0.0.fsa	Rhodobacter capsulatus SB 1003	Rhodobacter_capsulatus_SB1003_uid55	1	3101816	3141851	40036
+uid19519_0.0	uid19519_0.0.fsa	Clostridium botulinum F str. Langeland	Clostridium_botulinum_F_Langeland_uid19519	1	2533067	2552782	19716
+uid32609_0.0	uid32609_0.0.fsa	Clostridium cellulovorans 743B	Clostridium_cellulovorans_743B_uid32609	1	4787736	4803265	15530
+uid262_0.1	uid262_0.1.fsa	Magnetococcus sp. MC-1	Magnetococcus_MC-1_uid262	2	2451131	2562808	111678
+uid262_0.0	uid262_0.0.fsa	Magnetococcus sp. MC-1	Magnetococcus_MC-1_uid262	2	3422194	3617602	195409
+uid19527_0.2	uid19527_0.2.fsa	Methylobacterium chloromethanicum CM4	Methylobacterium_chloromethanicum_CM4_uid19527	4	240257	267836	27580
+uid19527_0.1	uid19527_0.1.fsa	Methylobacterium chloromethanicum CM4	Methylobacterium_chloromethanicum_CM4_uid19527	4	1549916	1691324	141409
+uid19527_0.0	uid19527_0.0.fsa	Methylobacterium chloromethanicum CM4	Methylobacterium_chloromethanicum_CM4_uid19527	4	1692687	1757140	64454
+uid19527_0.3	uid19527_0.3.fsa	Methylobacterium chloromethanicum CM4	Methylobacterium_chloromethanicum_CM4_uid19527	4	73838	136523	62686
+uid53_0.0	uid53_0.0.fsa	Acidithiobacillus ferrooxidans ATCC 23270	Acidithiobacillus_ferrooxidans_ATCC_23270_uid53	2	2144157	2224205	80049
+uid53_0.1	uid53_0.1.fsa	Acidithiobacillus ferrooxidans ATCC 23270	Acidithiobacillus_ferrooxidans_ATCC_23270_uid53	2	1022137	1142349	120213
+uid408_0.3	uid408_0.3.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	1177837	1191596	13760
+uid408_0.2	uid408_0.2.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	1886271	1920444	34174
+uid408_0.1	uid408_0.1.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	2021895	2044342	22448
+uid408_0.0	uid408_0.0.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	2612123	2687517	75395
+uid408_0.6	uid408_0.6.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	238511	252969	14459
+uid408_0.5	uid408_0.5.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	693963	737636	43674
+uid408_0.4	uid408_0.4.fsa	Shigella flexneri 2a str. 2457T	Shigella_flexneri_2a_2457T_uid408	7	897790	930670	32881
+uid29335_0.3	uid29335_0.3.fsa	Neisseria gonorrhoeae NCCP11945	Neisseria_gonorrhoeae_NCCP11945_uid29335	4	933269	951963	18695
+uid29335_0.2	uid29335_0.2.fsa	Neisseria gonorrhoeae NCCP11945	Neisseria_gonorrhoeae_NCCP11945_uid29335	4	1221846	1262212	40367
+uid29335_0.1	uid29335_0.1.fsa	Neisseria gonorrhoeae NCCP11945	Neisseria_gonorrhoeae_NCCP11945_uid29335	4	1590074	1659349	69276
+uid29335_0.0	uid29335_0.0.fsa	Neisseria gonorrhoeae NCCP11945	Neisseria_gonorrhoeae_NCCP11945_uid29335	4	1675803	1684519	8717
+uid16217_0.0	uid16217_0.0.fsa	Magnetospirillum magneticum AMB-1	Magnetospirillum_magneticum_AMB-1_uid16217	3	2029719	2086328	56610
+uid16217_0.1	uid16217_0.1.fsa	Magnetospirillum magneticum AMB-1	Magnetospirillum_magneticum_AMB-1_uid16217	3	1865830	1917257	51428
+uid16217_0.2	uid16217_0.2.fsa	Magnetospirillum magneticum AMB-1	Magnetospirillum_magneticum_AMB-1_uid16217	3	374292	446084	71793
+uid9621_0.0	uid9621_0.0.fsa	Haemophilus influenzae R2866	Haemophilus_influenzae_R2866_uid9621	2	983588	1000901	17314
+uid9621_0.1	uid9621_0.1.fsa	Haemophilus influenzae R2866	Haemophilus_influenzae_R2866_uid9621	2	523932	557182	33251
+uid323_0.0	uid323_0.0.fsa	Pseudomonas syringae pv. syringae B728a	Pseudomonas_syringae_pv_B728a_uid323	1	5447275	5510575	63301
+uid13427_0.0	uid13427_0.0.fsa	Heliobacterium modesticaldum Ice1	Heliobacterium_modesticaldum_Ice1_uid13427	1	152112	246803	94692
+uid20247_0.0	uid20247_0.0.fsa	Ureaplasma urealyticum serovar 10 str. ATCC 33699	Ureaplasma_urealyticum_serovar_10_ATCC_33699_uid20247	1	428036	471985	43950
+uid31141_0.0	uid31141_0.0.fsa	Acetobacter pasteurianus IFO 3283-01-42C	Acetobacter_pasteurianus_IFO_3283_01_42C_uid31141	1	2086380	2123688	37309
+uid17053_0.1	uid17053_0.1.fsa	Pseudomonas putida W619	Pseudomonas_putida_W619_uid17053	3	4363149	4393934	30786
+uid17053_0.0	uid17053_0.0.fsa	Pseudomonas putida W619	Pseudomonas_putida_W619_uid17053	3	4455428	4469718	14291
+uid17053_0.2	uid17053_0.2.fsa	Pseudomonas putida W619	Pseudomonas_putida_W619_uid17053	3	1440621	1469712	29092
+uid13291_0.1	uid13291_0.1.fsa	Bacillus clausii KSM-K16	Bacillus_clausii_KSM-K16_uid13291	2	1111104	1158749	47646
+uid13291_0.0	uid13291_0.0.fsa	Bacillus clausii KSM-K16	Bacillus_clausii_KSM-K16_uid13291	2	2937774	2996368	58595
+uid43533_0.0	uid43533_0.0.fsa	Lactobacillus fermentum CECT 5716	Lactobacillus_fermentum_CECT_5716_uid43533	1	539943	558557	18615
+uid39983_0.0	uid39983_0.0.fsa	Methylotenera sp. 301	Methylotenera_301_uid39983	1	2030676	2086779	56104
+uid45947_0.0	uid45947_0.0.fsa	Campylobacter jejuni subsp. jejuni S3	Campylobacter_jejuni_S3_uid45947	2	1239644	1275919	36276
+uid45947_0.1	uid45947_0.1.fsa	Campylobacter jejuni subsp. jejuni S3	Campylobacter_jejuni_S3_uid45947	2	641880	672900	31021
+uid46105_0.0	uid46105_0.0.fsa	Acinetobacter sp. DR1	Acinetobacter_DR1_uid46105	1	1519380	1707498	188119
+uid40647_0.4	uid40647_0.4.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	1765648	1811180	45533
+uid40647_0.5	uid40647_0.5.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	1533695	1579972	46278
+uid40647_0.6	uid40647_0.6.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	1396824	1449834	53011
+uid40647_0.7	uid40647_0.7.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	877189	914536	37348
+uid40647_0.0	uid40647_0.0.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	4198135	4247256	49122
+uid40647_0.1	uid40647_0.1.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	2552120	2559893	7774
+uid40647_0.2	uid40647_0.2.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	2215326	2268541	53216
+uid40647_0.3	uid40647_0.3.fsa	Escherichia coli 042	Escherichia_coli_042_uid40647	8	1832987	1843358	10372
+uid13918_0.0	uid13918_0.0.fsa	Burkholderia cenocepacia HI2424	Burkholderia_cenocepacia_HI2424_uid13918	2	135412	147178	11767
+uid13918_0.1	uid13918_0.1.fsa	Burkholderia cenocepacia HI2424	Burkholderia_cenocepacia_HI2424_uid13918	2	50034	105021	54988
+uid52949_0.0	uid52949_0.0.fsa	Lactobacillus plantarum subsp. plantarum ST-III	Lactobacillus_plantarum_ST_III_uid52949	2	2142373	2186464	44092
+uid52949_0.1	uid52949_0.1.fsa	Lactobacillus plantarum subsp. plantarum ST-III	Lactobacillus_plantarum_ST_III_uid52949	2	1801202	1839444	38243
+uid16723_0.0	uid16723_0.0.fsa	Aeromonas salmonicida subsp. salmonicida A449	Aeromonas_salmonicida_A449_uid16723	3	4121649	4157452	35804
+uid16723_0.1	uid16723_0.1.fsa	Aeromonas salmonicida subsp. salmonicida A449	Aeromonas_salmonicida_A449_uid16723	3	2140098	2176302	36205
+uid16723_0.2	uid16723_0.2.fsa	Aeromonas salmonicida subsp. salmonicida A449	Aeromonas_salmonicida_A449_uid16723	3	1640566	1672678	32113
+uid61079_0.0	uid61079_0.0.fsa	Neisseria meningitidis H44/76	Neisseria_meningitidis_H44_76_uid61079	1	1168370	1198368	29999
+uid27849_0.0	uid27849_0.0.fsa	Streptococcus dysgalactiae subsp. equisimilis GGS_124	Streptococcus_dysgalactiae_equisimilis_GGS_124_uid27849	1	2023048	2078346	55299
+uid27731_0.1	uid27731_0.1.fsa	Desulfovibrio vulgaris str. Miyazaki F	Desulfovibrio_vulgaris__Miyazaki_F__uid27731	2	862570	896154	33585
+uid27731_0.0	uid27731_0.0.fsa	Desulfovibrio vulgaris str. Miyazaki F	Desulfovibrio_vulgaris__Miyazaki_F__uid27731	2	2016313	2055510	39198
+uid12530_0.0	uid12530_0.0.fsa	Synechococcus sp. CC9311	Synechococcus_CC9311_uid12530	1	1780277	1847411	67135
+uid13040_0.0	uid13040_0.0.fsa	Ruegeria sp. TM1040	Silicibacter_TM1040_uid13040	1	569523	637490	67968
+uid13020_0.1	uid13020_0.1.fsa	Paracoccus denitrificans PD1222	Paracoccus_denitrificans_PD1222_uid13020	3	318371	359285	40915
+uid13020_0.0	uid13020_0.0.fsa	Paracoccus denitrificans PD1222	Paracoccus_denitrificans_PD1222_uid13020	3	948709	979738	31030
+uid13020_0.2	uid13020_0.2.fsa	Paracoccus denitrificans PD1222	Paracoccus_denitrificans_PD1222_uid13020	3	50705	62809	12105
+uid28805_0.0	uid28805_0.0.fsa	Oligotropha carboxidovorans OM5	Oligotropha_carboxidovorans_OM5_uid28805	1	2084355	2113430	29076
+uid61065_0.0	uid61065_0.0.fsa	Neisseria meningitidis NZ-05/33	Neisseria_meningitidis_NZ_05_33_uid61065	1	1148412	1169354	20943
+uid19705_0.0	uid19705_0.0.fsa	Actinosynnema mirum DSM 43827	Actinosynnema_mirum_DSM_43827_uid19705	1	3776444	3798493	22050
+uid33069_0.0	uid33069_0.0.fsa	Dickeya dadantii Ech703	Dickeya_dadantii_Ech703_uid33069	3	4386061	4457703	71643
+uid33069_0.1	uid33069_0.1.fsa	Dickeya dadantii Ech703	Dickeya_dadantii_Ech703_uid33069	3	4112815	4126083	13269
+uid33069_0.2	uid33069_0.2.fsa	Dickeya dadantii Ech703	Dickeya_dadantii_Ech703_uid33069	3	2474799	2497399	22601
+uid31259_0.1	uid31259_0.1.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	1807621	1883228	75608
+uid31259_0.0	uid31259_0.0.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	1988280	2004305	16026
+uid31259_0.3	uid31259_0.3.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	1426317	1438729	12413
+uid31259_0.2	uid31259_0.2.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	1498879	1549664	50786
+uid31259_0.5	uid31259_0.5.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	905288	929656	24369
+uid31259_0.4	uid31259_0.4.fsa	Candidatus Hamiltonella defensa 5AT (Acyrthosiphon pisum)	Candidatus_Hamiltonella_defensa_5AT__Acyrthosiphon_pisum__uid31259	6	1276911	1328473	51563
+uid12469_0.1	uid12469_0.1.fsa	Streptococcus pyogenes MGAS10394	Streptococcus_pyogenes_MGAS10394_uid12469	2	1120257	1173256	53000
+uid12469_0.0	uid12469_0.0.fsa	Streptococcus pyogenes MGAS10394	Streptococcus_pyogenes_MGAS10394_uid12469	2	1823591	1857331	33741
+uid50729_0.0	uid50729_0.0.fsa	Haemophilus influenzae F3031	Haemophilus_influenzae_F3031_uid50729	3	1250089	1305324	55236
+uid50729_0.1	uid50729_0.1.fsa	Haemophilus influenzae F3031	Haemophilus_influenzae_F3031_uid50729	3	858267	911373	53107
+uid50729_0.2	uid50729_0.2.fsa	Haemophilus influenzae F3031	Haemophilus_influenzae_F3031_uid50729	3	421854	449959	28106
+uid15758_0.3	uid15758_0.3.fsa	Staphylococcus aureus subsp. aureus JH1	Staphylococcus_aureus_JH1_uid15758	5	361229	397636	36408
+uid15758_0.2	uid15758_0.2.fsa	Staphylococcus aureus subsp. aureus JH1	Staphylococcus_aureus_JH1_uid15758	5	920438	956692	36255
+uid15758_0.1	uid15758_0.1.fsa	Staphylococcus aureus subsp. aureus JH1	Staphylococcus_aureus_JH1_uid15758	5	1076185	1119632	43448
+uid15758_0.0	uid15758_0.0.fsa	Staphylococcus aureus subsp. aureus JH1	Staphylococcus_aureus_JH1_uid15758	5	2134047	2171389	37343
+uid15758_0.4	uid15758_0.4.fsa	Staphylococcus aureus subsp. aureus JH1	Staphylococcus_aureus_JH1_uid15758	5	7086	37233	30148
+uid31101_0.0	uid31101_0.0.fsa	Pseudomonas aeruginosa LESB58	Pseudomonas_aeruginosa_LESB58_uid31101	1	666531	679110	12580
+uid386_0.0	uid386_0.0.fsa	Pseudomonas aeruginosa UCBPP-PA14	Pseudomonas_aeruginosa_UCBPP-PA14_uid386	2	4345187	4352941	7755
+uid386_0.1	uid386_0.1.fsa	Pseudomonas aeruginosa UCBPP-PA14	Pseudomonas_aeruginosa_UCBPP-PA14_uid386	2	688080	711431	23352
+uid63671_0.0	uid63671_0.0.fsa	Aeromonas veronii B565	Aeromonas_veronii_B565_uid63671	1	1373125	1408635	35511
+uid27853_0.0	uid27853_0.0.fsa	Francisella philomiragia subsp. philomiragia ATCC 25017	Francisella_philomiragia_ATCC_25017_uid27853	1	1629429	1687967	58539
+uid51_0.2	uid51_0.2.fsa	Desulfovibrio vulgaris str. Hildenborough	Desulfovibrio_vulgaris_Hildenborough_uid51	4	1735437	1827307	91871
+uid51_0.3	uid51_0.3.fsa	Desulfovibrio vulgaris str. Hildenborough	Desulfovibrio_vulgaris_Hildenborough_uid51	4	223394	310038	86645
+uid51_0.0	uid51_0.0.fsa	Desulfovibrio vulgaris str. Hildenborough	Desulfovibrio_vulgaris_Hildenborough_uid51	4	2936472	2977150	40679
+uid51_0.1	uid51_0.1.fsa	Desulfovibrio vulgaris str. Hildenborough	Desulfovibrio_vulgaris_Hildenborough_uid51	4	2243814	2303609	59796
+uid12514_0.0	uid12514_0.0.fsa	Brucella ovis ATCC 25840	Brucella_ovis_uid12514	1	259414	290157	30744
+uid18307_0.0	uid18307_0.0.fsa	Rhodospirillum centenum SW (Rhodocista centenaria SW)	Rhodospirillum_centenum_SW_uid18307	1	26786	76293	49508
+uid51787_0.0	uid51787_0.0.fsa	Ketogulonicigenium vulgare Y25	Ketogulonicigenium_vulgare_Y25_uid51787	1	1101710	1109515	7806
+uid13910_0.0	uid13910_0.0.fsa	Prochlorococcus marinus str. MIT 9312	Prochlorococcus_marinus_MIT_9312_uid13910	1	636754	694019	57266
+uid178_0.2	uid178_0.2.fsa	Burkholderia pseudomallei K96243	Burkholderia_pseudomallei_K96243_uid178	3	92536	153261	60726
+uid178_0.1	uid178_0.1.fsa	Burkholderia pseudomallei K96243	Burkholderia_pseudomallei_K96243_uid178	3	153540	180728	27189
+uid178_0.0	uid178_0.0.fsa	Burkholderia pseudomallei K96243	Burkholderia_pseudomallei_K96243_uid178	3	3964455	3974607	10153
+uid61191_0.1	uid61191_0.1.fsa	Bacillus subtilis BSn5	Bacillus_subtilis_BSn5_uid61191	2	631464	675245	43782
+uid61191_0.0	uid61191_0.0.fsa	Bacillus subtilis BSn5	Bacillus_subtilis_BSn5_uid61191	2	3476467	3553494	77028
+uid13400_0.1	uid13400_0.1.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	3031984	3060234	28251
+uid13400_0.0	uid13400_0.0.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	3816621	3828921	12301
+uid13400_0.3	uid13400_0.3.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	1861544	1887727	26184
+uid13400_0.2	uid13400_0.2.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	2288453	2322595	34143
+uid13400_0.5	uid13400_0.5.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	167366	178504	11139
+uid13400_0.4	uid13400_0.4.fsa	Xenorhabdus nematophila ATCC 19061	Xenorhabdus_nematophila_ATCC_19061_uid13400	6	1065796	1081779	15984
+uid66975_0.4	uid66975_0.4.fsa	Escherichia coli NA114	Escherichia_coli_NA114_uid66975	5	1228670	1264758	36089
+uid66975_0.0	uid66975_0.0.fsa	Escherichia coli NA114	Escherichia_coli_NA114_uid66975	5	4864917	4905744	40828
+uid66975_0.1	uid66975_0.1.fsa	Escherichia coli NA114	Escherichia_coli_NA114_uid66975	5	4107865	4137745	29881
+uid66975_0.2	uid66975_0.2.fsa	Escherichia coli NA114	Escherichia_coli_NA114_uid66975	5	1970337	2019898	49562
+uid66975_0.3	uid66975_0.3.fsa	Escherichia coli NA114	Escherichia_coli_NA114_uid66975	5	1268629	1306527	37899
+uid13239_0.1	uid13239_0.1.fsa	Marinobacter aquaeolei VT8	Marinobacter_aquaeolei_VT8_uid13239	4	227446	279919	52474
+uid13239_0.0	uid13239_0.0.fsa	Marinobacter aquaeolei VT8	Marinobacter_aquaeolei_VT8_uid13239	4	3518698	3552655	33958
+uid13239_0.3	uid13239_0.3.fsa	Marinobacter aquaeolei VT8	Marinobacter_aquaeolei_VT8_uid13239	4	56793	117085	60293
+uid13239_0.2	uid13239_0.2.fsa	Marinobacter aquaeolei VT8	Marinobacter_aquaeolei_VT8_uid13239	4	120386	184421	64036
+uid17109_0.0	uid17109_0.0.fsa	Salinispora arenicola CNS-205	Salinispora_arenicola_CNS-205_uid17109	1	2211135	2264100	52966
+uid61505_0.0	uid61505_0.0.fsa	Brucella melitensis M28	Brucella_melitensis_M28_uid61505	1	601433	650499	49067
+uid46089_0.0	uid46089_0.0.fsa	Marinobacter adhaerens HP15	marine_bacterium_HP15_uid46089	1	1069781	1128906	59126
+uid13461_0.0	uid13461_0.0.fsa	Robiginitalea biformata HTCC2501	Robiginitalea_biformata_HTCC2501_uid13461	1	2273496	2388327	114832
+uid13473_0.5	uid13473_0.5.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	313901	369139	55239
+uid13473_0.4	uid13473_0.4.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	1919711	1928358	8648
+uid13473_0.3	uid13473_0.3.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	2241144	2258034	16891
+uid13473_0.2	uid13473_0.2.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	2637479	2673097	35619
+uid13473_0.1	uid13473_0.1.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	2732871	2780504	47634
+uid13473_0.0	uid13473_0.0.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	3655484	3702617	47134
+uid13473_0.6	uid13473_0.6.fsa	Nitrobacter hamburgensis X14	Nitrobacter_hamburgensis_X14_uid13473	7	168852	236609	67758
+uid20079_0.2	uid20079_0.2.fsa	Escherichia coli str. K-12 substr. DH10B	Escherichia_coli_K_12_substr__DH10B_uid20079	3	1349759	1377224	27466
+uid20079_0.1	uid20079_0.1.fsa	Escherichia coli str. K-12 substr. DH10B	Escherichia_coli_K_12_substr__DH10B_uid20079	3	1499420	1521094	21675
+uid20079_0.0	uid20079_0.0.fsa	Escherichia coli str. K-12 substr. DH10B	Escherichia_coli_K_12_substr__DH10B_uid20079	3	4596581	4633615	37035
+uid13919_0.0	uid13919_0.0.fsa	Burkholderia cenocepacia AU 1054	Burkholderia_cenocepacia_AU_1054_uid13919	1	2122592	2170132	47541
+uid33411_0.10	uid33411_0.10.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	503142	560126	56985
+uid33411_0.9	uid33411_0.9.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	561616	572990	11375
+uid33411_0.8	uid33411_0.8.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	4361791	4413618	51828
+uid33411_0.5	uid33411_0.5.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	918983	932997	14015
+uid33411_0.4	uid33411_0.4.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	1509236	1584116	74881
+uid33411_0.7	uid33411_0.7.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	4625657	4638005	12349
+uid33411_0.6	uid33411_0.6.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	4950895	4977557	26663
+uid33411_0.1	uid33411_0.1.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	1992456	2039329	46874
+uid33411_0.0	uid33411_0.0.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	2040678	2080082	39405
+uid33411_0.3	uid33411_0.3.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	1867420	1905375	37956
+uid33411_0.2	uid33411_0.2.fsa	Escherichia coli IAI39	Escherichia_coli_IAI39_uid33411	11	1930399	1959481	29083
+uid20039_0.1	uid20039_0.1.fsa	Leptothrix cholodnii SP-6	Leptothrix_cholodnii_SP_6_uid20039	2	828122	842449	14328
+uid20039_0.0	uid20039_0.0.fsa	Leptothrix cholodnii SP-6	Leptothrix_cholodnii_SP_6_uid20039	2	3283123	3355589	72467
+uid34131_0.0	uid34131_0.0.fsa	Hydrogenobacter thermophilus TK-6	Hydrogenobacter_thermophilus_TK_6_uid34131	1	780255	856802	76548
+uid17643_0.0	uid17643_0.0.fsa	Shewanella baltica OS185	Shewanella_baltica_OS185_uid17643	2	2481181	2512316	31136
+uid17643_0.1	uid17643_0.1.fsa	Shewanella baltica OS185	Shewanella_baltica_OS185_uid17643	2	877506	908180	30675
+uid37877_0.1	uid37877_0.1.fsa	Erwinia pyrifoliae DSM 12163	Erwinia_pyrifoliae_DSM_12163_uid37877	2	2282167	2325037	42871
+uid37877_0.0	uid37877_0.0.fsa	Erwinia pyrifoliae DSM 12163	Erwinia_pyrifoliae_DSM_12163_uid37877	2	3575694	3663854	88161
+uid31_0.0	uid31_0.0.fsa	Klebsiella pneumoniae subsp. pneumoniae MGH 78578	Klebsiella_pneumoniae_MGH_78578_uid31	1	3803622	3834957	31336
+uid16523_0.0	uid16523_0.0.fsa	Herpetosiphon aurantiacus ATCC 23779	Herpetosiphon_aurantiacus_ATCC_23779_uid16523	1	30588	82050	51463
+uid9618_0.0	uid9618_0.0.fsa	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67	Salmonella_enterica_Choleraesuis_uid9618	3	4355149	4388053	32905
+uid9618_0.1	uid9618_0.1.fsa	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67	Salmonella_enterica_Choleraesuis_uid9618	3	1322662	1357265	34604
+uid9618_0.2	uid9618_0.2.fsa	Salmonella enterica subsp. enterica serovar Choleraesuis str. SC-B67	Salmonella_enterica_Choleraesuis_uid9618	3	1085411	1124402	38992
+uid18937_0.0	uid18937_0.0.fsa	Ralstonia pickettii 12D	Ralstonia_pickettii_12D_uid18937	1	16783	141160	124378
+uid39151_0.2	uid39151_0.2.fsa	Faecalibacterium prausnitzii SL3/3	Faecalibacterium_prausnitzii_uid39151	3	1377086	1447038	69953
+uid39151_0.0	uid39151_0.0.fsa	Faecalibacterium prausnitzii SL3/3	Faecalibacterium_prausnitzii_uid39151	3	2677348	2748713	71366
+uid39151_0.1	uid39151_0.1.fsa	Faecalibacterium prausnitzii SL3/3	Faecalibacterium_prausnitzii_uid39151	3	1902414	1956987	54574
+uid17457_0.0	uid17457_0.0.fsa	Pseudomonas mendocina ymp	Pseudomonas_mendocina_ymp_uid17457	1	4349925	4369661	19737
+uid252_0.0	uid252_0.0.fsa	Neisseria meningitidis Z2491	Neisseria_meningitidis_Z2491_uid252	1	1208979	1234096	25118
+uid19559_0.0	uid19559_0.0.fsa	Methylobacterium populi BJ001	Methylobacterium_populi_BJ001_uid19559	2	1998869	2031884	33016
+uid19559_0.1	uid19559_0.1.fsa	Methylobacterium populi BJ001	Methylobacterium_populi_BJ001_uid19559	2	1478695	1545176	66482
+uid18737_0.0	uid18737_0.0.fsa	Streptococcus suis GZ1	Streptococcus_suis_GZ1_uid18737	1	1401082	1421139	20058
+uid17_0.0	uid17_0.0.fsa	Bradyrhizobium japonicum USDA 110	Bradyrhizobium_japonicum_uid17	1	1695988	1828646	132659
+uid20831_0.0	uid20831_0.0.fsa	Slackia heliotrinireducens DSM 20476	Slackia_heliotrinireducens_DSM_20476_uid20831	1	950917	1016987	66071
+uid12997_0.0	uid12997_0.0.fsa	Acaryochloris marina MBIC11017	Acaryochloris_marina_MBIC11017_uid12997	1	173287	343468	170182
+uid49147_0.0	uid49147_0.0.fsa	Lactobacillus delbrueckii subsp. bulgaricus ND02	Lactobacillus_delbrueckii_bulgaricus_ND02_uid49147	1	1192259	1278722	86464
+uid13887_0.0	uid13887_0.0.fsa	Streptococcus pyogenes MGAS6180	Streptococcus_pyogenes_MGAS6180_uid13887	1	1227098	1267855	40758
+uid48393_0.0	uid48393_0.0.fsa	Achromobacter xylosoxidans A8	Achromobacter_xylosoxidans_A8_uid48393	1	4304598	4341642	37045
+uid43535_0.1	uid43535_0.1.fsa	Lactobacillus salivarius CECT 5713	Lactobacillus_salivarius_CECT_5713_uid43535	2	290451	330066	39616
+uid43535_0.0	uid43535_0.0.fsa	Lactobacillus salivarius CECT 5713	Lactobacillus_salivarius_CECT_5713_uid43535	2	778363	826269	47907
+uid28521_0.1	uid28521_0.1.fsa	Mycobacterium sp. Spyr1	Mycobacterium_Spyr1_uid28521	2	4293076	4332790	39715
+uid28521_0.0	uid28521_0.0.fsa	Mycobacterium sp. Spyr1	Mycobacterium_Spyr1_uid28521	2	2843	60732	57890
+uid59947_0.1	uid59947_0.1.fsa	Alteromonas sp. SN2	Alteromonas_SN2_uid59947	2	1216524	1241719	25196
+uid59947_0.0	uid59947_0.0.fsa	Alteromonas sp. SN2	Alteromonas_SN2_uid59947	2	3791342	3848724	57383
+uid38725_0.0	uid38725_0.0.fsa	Escherichia coli ABU 83972	Escherichia_coli_ABU_83972_uid38725	2	4153113	4207381	54269
+uid38725_0.1	uid38725_0.1.fsa	Escherichia coli ABU 83972	Escherichia_coli_ABU_83972_uid38725	2	1166517	1210404	43888
+uid306_0.0	uid306_0.0.fsa	Staphylococcus aureus subsp. aureus MW2	Staphylococcus_aureus_MW2_uid306	1	1533153	1574930	41778
+uid33629_0.0	uid33629_0.0.fsa	Desulfurivibrio alkaliphilus AHT2	Desulfurivibrio_alkaliphilus_AHT2_uid33629	1	2336043	2407391	71349
+uid48011_0.5	uid48011_0.5.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	292915	325205	32291
+uid48011_0.4	uid48011_0.4.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	959460	993979	34520
+uid48011_0.3	uid48011_0.3.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	1500539	1549395	48857
+uid48011_0.2	uid48011_0.2.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	1752561	1788482	35922
+uid48011_0.1	uid48011_0.1.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	2306778	2337577	30800
+uid48011_0.0	uid48011_0.0.fsa	Escherichia coli W	Escherichia_coli_W_uid48011	6	4332003	4364407	32405
+uid28711_0.0	uid28711_0.0.fsa	Haliangium ochraceum DSM 14365	Haliangium_ochraceum_DSM_14365_uid28711	1	839838	878635	38798
+uid56_0.1	uid56_0.1.fsa	Rhodobacter sphaeroides 2.4.1	Rhodobacter_sphaeroides_2_4_1_uid56	3	651823	675387	23565
+uid56_0.0	uid56_0.0.fsa	Rhodobacter sphaeroides 2.4.1	Rhodobacter_sphaeroides_2_4_1_uid56	3	1691095	1706277	15183
+uid56_0.2	uid56_0.2.fsa	Rhodobacter sphaeroides 2.4.1	Rhodobacter_sphaeroides_2_4_1_uid56	3	373569	423506	49938
+uid37925_0.1	uid37925_0.1.fsa	Arcanobacterium haemolyticum DSM 20595	Arcanobacterium_haemolyticum_DSM_20595_uid37925	2	1678915	1702242	23328
+uid37925_0.0	uid37925_0.0.fsa	Arcanobacterium haemolyticum DSM 20595	Arcanobacterium_haemolyticum_DSM_20595_uid37925	2	1787939	1859471	71533
+uid66287_0.0	uid66287_0.0.fsa	Bordetella pertussis CS	Bordetella_pertussis_CS_uid66287	1	3599670	3646672	47003
+uid36363_0.0	uid36363_0.0.fsa	Listeria monocytogenes 08-5923	Listeria_monocytogenes_08_5923_uid36363	1	1266585	1297489	30905
+uid18801_0.1	uid18801_0.1.fsa	Staphylococcus aureus subsp. aureus str. Newman	Staphylococcus_aureus_Newman_uid18801	4	1980874	2023173	42300
+uid18801_0.0	uid18801_0.0.fsa	Staphylococcus aureus subsp. aureus str. Newman	Staphylococcus_aureus_Newman_uid18801	4	2091012	2144185	53174
+uid18801_0.3	uid18801_0.3.fsa	Staphylococcus aureus subsp. aureus str. Newman	Staphylococcus_aureus_Newman_uid18801	4	320846	361724	40879
+uid18801_0.2	uid18801_0.2.fsa	Staphylococcus aureus subsp. aureus str. Newman	Staphylococcus_aureus_Newman_uid18801	4	1098898	1141347	42450
+uid13909_0.1	uid13909_0.1.fsa	Pseudomonas putida F1	Pseudomonas_putida_F1_uid13909	2	3778241	3814305	36065
+uid13909_0.0	uid13909_0.0.fsa	Pseudomonas putida F1	Pseudomonas_putida_F1_uid13909	2	4618054	4646348	28295
+uid60457_0.1	uid60457_0.1.fsa	Serratia sp. AS9	Serratia_AS9_uid60457	2	880404	895140	14737
+uid60457_0.0	uid60457_0.0.fsa	Serratia sp. AS9	Serratia_AS9_uid60457	2	3569461	3679837	110377
+uid20209_0.0	uid20209_0.0.fsa	Macrococcus caseolyticus JCSC5402	Macrococcus_caseolyticus_JCSC5402_uid20209	1	913058	1081908	168851
+uid32239_0.0	uid32239_0.0.fsa	Streptococcus suis SC84	Streptococcus_suis_SC84_uid32239	1	1453383	1463425	10043
+uid32989_0.0	uid32989_0.0.fsa	Nitrosomonas sp. AL212	Nitrosomonas_AL212_uid32989	3	2601123	2641953	40831
+uid32989_0.1	uid32989_0.1.fsa	Nitrosomonas sp. AL212	Nitrosomonas_AL212_uid32989	3	2435877	2500629	64753
+uid32989_0.2	uid32989_0.2.fsa	Nitrosomonas sp. AL212	Nitrosomonas_AL212_uid32989	3	2367622	2432739	65118
+uid52833_0.0	uid52833_0.0.fsa	Staphylococcus aureus subsp. aureus ECT-R 2	Staphylococcus_aureus_ECT_R_2_uid52833	1	1955686	1994669	38984
+uid16374_0.0	uid16374_0.0.fsa	Streptococcus pneumoniae D39	Streptococcus_pneumoniae_D39_uid16374	1	1669776	1739461	69686
+uid79_0.0	uid79_0.0.fsa	Clostridium perfringens str. 13	Clostridium_perfringens_uid79	1	1303501	1324845	21345
+uid15770_0.0	uid15770_0.0.fsa	Dehalococcoides sp. BAV1	Dehalococcoides_BAV1_uid15770	1	57557	115681	58125
+uid42891_0.0	uid42891_0.0.fsa	Brucella melitensis M5-90	Brucella_melitensis_M5_90_uid42891	1	548040	604687	56648
+uid64431_0.0	uid64431_0.0.fsa	Lactobacillus casei BD-II	Lactobacillus_casei_BD_II_uid64431	1	858889	963005	104117
+uid20477_0.1	uid20477_0.1.fsa	Methylobacterium nodulans ORS 2060	Methylobacterium_nodulans_ORS_2060_uid20477	2	7343460	7439246	95787
+uid20477_0.0	uid20477_0.0.fsa	Methylobacterium nodulans ORS 2060	Methylobacterium_nodulans_ORS_2060_uid20477	2	4093384	4189590	96207
+uid17159_0.0	uid17159_0.0.fsa	Campylobacter concisus 13826	Campylobacter_concisus_13826_uid17159	1	1582376	1609667	27292
+uid331_0.0	uid331_0.0.fsa	Pseudomonas aeruginosa PAO1	Pseudomonas_aeruginosa_uid331	2	789144	796776	7633
+uid331_0.1	uid331_0.1.fsa	Pseudomonas aeruginosa PAO1	Pseudomonas_aeruginosa_uid331	2	677083	698696	21614
+uid29551_0.0	uid29551_0.0.fsa	Meiothermus silvanus DSM 9946	Meiothermus_silvanus_DSM_9946_uid29551	1	1139531	1199919	60389
+uid32577_0.1	uid32577_0.1.fsa	Ilyobacter polytropus DSM 2926	Ilyobacter_polytropus_DSM_2926_uid32577	2	18577	66794	48218
+uid32577_0.0	uid32577_0.0.fsa	Ilyobacter polytropus DSM 2926	Ilyobacter_polytropus_DSM_2926_uid32577	2	109048	141838	32791
+uid52077_0.0	uid52077_0.0.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid52077	3	4476520	4498572	22053
+uid52077_0.1	uid52077_0.1.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid52077	3	1615804	1634890	19087
+uid52077_0.2	uid52077_0.2.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid52077	3	1178488	1188892	10405
+uid48289_0.0	uid48289_0.0.fsa	Haliscomenobacter hydrossis DSM 1100	Haliscomenobacter_hydrossis_DSM_1100_uid48289	1	6142190	6247112	104923
+uid13908_0.0	uid13908_0.0.fsa	Rhodoferax ferrireducens T118	Rhodoferax_ferrireducens_T118_uid13908	1	92545	187882	95338
+uid32027_0.0	uid32027_0.0.fsa	Caulobacter crescentus NA1000	Caulobacter_crescentus_NA1000_uid32027	1	3013149	3028719	15571
+uid42749_0.1	uid42749_0.1.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	3051610	3076512	24903
+uid42749_0.0	uid42749_0.0.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	5003502	5017203	13702
+uid42749_0.3	uid42749_0.3.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	1289847	1336503	46657
+uid42749_0.2	uid42749_0.2.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	2119086	2168310	49225
+uid42749_0.5	uid42749_0.5.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	345720	354216	8497
+uid42749_0.4	uid42749_0.4.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	5072386	5120859	48474
+uid42749_0.6	uid42749_0.6.fsa	Escherichia coli ETEC H10407	Escherichia_coli_ETEC_H10407_uid42749	7	297402	343182	45781
+uid16093_0.0	uid16093_0.0.fsa	Methylobacterium extorquens DM4	Methylobacterium_extorquens_DM4_uid16093	1	1065633	1160349	94717
+uid13492_0.0	uid13492_0.0.fsa	Clostridium ljungdahlii DSM 13528	Clostridium_ljungdahlii_ATCC_49587_uid13492	2	351702	390160	38459
+uid13492_0.1	uid13492_0.1.fsa	Clostridium ljungdahlii DSM 13528	Clostridium_ljungdahlii_ATCC_49587_uid13492	2	22791	50986	28196
+uid41115_0.1	uid41115_0.1.fsa	Lactococcus lactis subsp. lactis KF147	Lactococcus_lactis_KF147_uid41115	3	2062637	2073606	10970
+uid41115_0.0	uid41115_0.0.fsa	Lactococcus lactis subsp. lactis KF147	Lactococcus_lactis_KF147_uid41115	3	2505783	2520450	14668
+uid41115_0.2	uid41115_0.2.fsa	Lactococcus lactis subsp. lactis KF147	Lactococcus_lactis_KF147_uid41115	3	1066254	1100809	34556
+uid13490_0.0	uid13490_0.0.fsa	Burkholderia ambifaria AMMD	Burkholderia_ambifaria_AMMD_uid13490	1	2024037	2056946	32910
+uid33543_0.1	uid33543_0.1.fsa	Bacillus anthracis str. A0248	Bacillus_anthracis_A0248_uid33543	2	3443145	3505712	62568
+uid33543_0.0	uid33543_0.0.fsa	Bacillus anthracis str. A0248	Bacillus_anthracis_A0248_uid33543	2	4843720	4858266	14547
+uid27759_0.0	uid27759_0.0.fsa	Exiguobacterium sp. AT1b	Exiguobacterium_AT1b_uid27759	1	490	90046	89557
+uid30313_0.1	uid30313_0.1.fsa	Wolbachia endosymbiont of Culex quinquefasciatus Pel	Wolbachia_endosymbiont_of_Culex_quinquefasciatus_Pel_uid30313	2	398129	483289	85161
+uid30313_0.0	uid30313_0.0.fsa	Wolbachia endosymbiont of Culex quinquefasciatus Pel	Wolbachia_endosymbiont_of_Culex_quinquefasciatus_Pel_uid30313	2	1376656	1413160	36505
+uid28471_0.1	uid28471_0.1.fsa	Klebsiella pneumoniae 342	Klebsiella_pneumoniae_342_uid28471	2	2881862	2908866	27005
+uid28471_0.0	uid28471_0.0.fsa	Klebsiella pneumoniae 342	Klebsiella_pneumoniae_342_uid28471	2	3394766	3425549	30784
+uid21071_0.0	uid21071_0.0.fsa	Gluconacetobacter diazotrophicus PAl 5	Gluconacetobacter_diazotrophicus_PAl_5_JGI_uid21071	2	2945994	3017304	71311
+uid21071_0.1	uid21071_0.1.fsa	Gluconacetobacter diazotrophicus PAl 5	Gluconacetobacter_diazotrophicus_PAl_5_JGI_uid21071	2	600274	674777	74504
+uid41277_0.2	uid41277_0.2.fsa	Staphylococcus aureus subsp. aureus ED133	Staphylococcus_aureus_ED133_uid41277	3	321155	357252	36098
+uid41277_0.0	uid41277_0.0.fsa	Staphylococcus aureus subsp. aureus ED133	Staphylococcus_aureus_ED133_uid41277	3	1992140	2018463	26324
+uid41277_0.1	uid41277_0.1.fsa	Staphylococcus aureus subsp. aureus ED133	Staphylococcus_aureus_ED133_uid41277	3	1107930	1148275	40346
+uid20167_0.0	uid20167_0.0.fsa	Rhodopseudomonas palustris TIE-1	Rhodopseudomonas_palustris_TIE_1_uid20167	1	653392	745786	92395
+uid60241_0.0	uid60241_0.0.fsa	Streptococcus oralis Uo5	Streptococcus_oralis_Uo5_uid60241	1	268906	402631	133726
+uid31129_0.0	uid31129_0.0.fsa	Acetobacter pasteurianus IFO 3283-01	Acetobacter_pasteurianus_IFO_3283_01_uid31129	1	2178634	2215942	37309
+uid40557_0.0	uid40557_0.0.fsa	Pseudonocardia dioxanivorans CB1190	Pseudonocardia_dioxanivorans_CB1190_uid40557	3	6401431	6444061	42631
+uid40557_0.1	uid40557_0.1.fsa	Pseudonocardia dioxanivorans CB1190	Pseudonocardia_dioxanivorans_CB1190_uid40557	3	5167317	5219677	52361
+uid40557_0.2	uid40557_0.2.fsa	Pseudonocardia dioxanivorans CB1190	Pseudonocardia_dioxanivorans_CB1190_uid40557	3	1277895	1324867	46973
+uid46433_0.0	uid46433_0.0.fsa	Candidatus Nitrospira defluvii	Candidatus_Nitrospira_defluvii_uid46433	1	2544671	2574412	29742
+uid20585_0.0	uid20585_0.0.fsa	Erwinia tasmaniensis Et1/99	Erwinia_tasmaniensis_uid20585	1	628263	656368	28106
+uid288_0.0	uid288_0.0.fsa	Yersinia pestis KIM 10	Yersinia_pestis_KIM_10_uid288	1	2417129	2451905	34777
+uid88_0.0	uid88_0.0.fsa	Mycobacterium avium 104	Mycobacterium_avium_104_uid88	1	254394	291492	37099
+uid45969_0.0	uid45969_0.0.fsa	Edwardsiella tarda FL6-60	Edwardsiella_tarda_FL6_60_uid45969	1	2488	42309	39822
+uid29179_0.0	uid29179_0.0.fsa	Streptococcus pneumoniae CGSP14	Streptococcus_pneumoniae_CGSP14_uid29179	1	1200522	1326094	125573
+uid66525_0.0	uid66525_0.0.fsa	Lactobacillus kefiranofaciens ZW3	Lactobacillus_kefiranofaciens_ZW3_uid66525	1	32761	93827	61067
+uid17461_0.0	uid17461_0.0.fsa	Enterobacter sp. 638	Enterobacter_638_uid17461	1	3375316	3442149	66834
+uid27739_0.9	uid27739_0.9.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2943864	2979246	35383
+uid27739_0.8	uid27739_0.8.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	3252217	3293766	41550
+uid27739_0.5	uid27739_0.5.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	1535679	1581996	46318
+uid27739_0.4	uid27739_0.4.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	1679045	1738446	59402
+uid27739_0.7	uid27739_0.7.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	1180302	1214018	33717
+uid27739_0.6	uid27739_0.6.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	1485217	1519969	34753
+uid27739_0.1	uid27739_0.1.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2128537	2160455	31919
+uid27739_0.0	uid27739_0.0.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2499422	2518320	18899
+uid27739_0.3	uid27739_0.3.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	1758504	1779991	21488
+uid27739_0.2	uid27739_0.2.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2075432	2128184	52753
+uid27739_0.15	uid27739_0.15.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	302633	322329	19697
+uid27739_0.14	uid27739_0.14.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	894557	927809	33253
+uid27739_0.11	uid27739_0.11.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2807572	2839323	31752
+uid27739_0.10	uid27739_0.10.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2892265	2938380	46116
+uid27739_0.13	uid27739_0.13.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2578301	2619653	41353
+uid27739_0.12	uid27739_0.12.fsa	Escherichia coli O157:H7 str. EC4115	Escherichia_coli_O157_H7_EC4115_uid27739	16	2665891	2712855	46965
+uid316_0.0	uid316_0.0.fsa	Saccharophagus degradans 2-40	Saccharophagus_degradans_2-40_uid316	1	524008	569147	45140
+uid12460_0.0	uid12460_0.0.fsa	Propionibacterium acnes KPA171202	Propionibacterium_acnes_KPA171202_uid12460	1	1718901	1735374	16474
+uid15642_0.0	uid15642_0.0.fsa	Mycobacterium tuberculosis F11	Mycobacterium_tuberculosis_F11_uid15642	1	2983868	2992777	8910
+uid308_0.0	uid308_0.0.fsa	Thermosynechococcus elongatus BP-1	Thermosynechococcus_elongatus_uid308	1	1094091	1133987	39897
+uid17711_0.0	uid17711_0.0.fsa	Bacillus cereus AH820	Bacillus_cereus_AH820_uid17711	2	4143806	4180127	36322
+uid17711_0.1	uid17711_0.1.fsa	Bacillus cereus AH820	Bacillus_cereus_AH820_uid17711	2	529465	561041	31577
+uid36645_0.0	uid36645_0.0.fsa	Dehalococcoides sp. GT	Dehalococcoides_GT_uid36645	1	113999	210291	96293
+uid47019_0.0	uid47019_0.0.fsa	Shewanella baltica OS678	Shewanella_baltica_OS678_uid47019	1	2477229	2528214	50986
+uid29801_0.0	uid29801_0.0.fsa	Xanthomonas campestris pv. campestris	Xanthomonas_campestris_B100_uid29801	1	2762264	2865000	102737
+uid84_0.0	uid84_0.0.fsa	Lactobacillus gasseri ATCC 33323	Lactobacillus_gasseri_ATCC_33323_uid84	2	1464863	1483558	18696
+uid84_0.1	uid84_0.1.fsa	Lactobacillus gasseri ATCC 33323	Lactobacillus_gasseri_ATCC_33323_uid84	2	588136	687206	99071
+uid13011_0.0	uid13011_0.0.fsa	Pelodictyon phaeoclathratiforme BU-1	Pelodictyon_phaeoclathratiforme_BU_1_uid13011	1	912821	963991	51171
+uid255_0.1	uid255_0.1.fsa	Neisseria meningitidis FAM18	Neisseria_meningitidis_FAM18_uid255	2	847266	882028	34763
+uid255_0.0	uid255_0.0.fsa	Neisseria meningitidis FAM18	Neisseria_meningitidis_FAM18_uid255	2	952467	991507	39041
+uid46075_0.3	uid46075_0.3.fsa	Bacillus atrophaeus 1942	Bacillus_atrophaeus_1942_uid46075	4	714952	775664	60713
+uid46075_0.2	uid46075_0.2.fsa	Bacillus atrophaeus 1942	Bacillus_atrophaeus_1942_uid46075	4	1223092	1360254	137163
+uid46075_0.1	uid46075_0.1.fsa	Bacillus atrophaeus 1942	Bacillus_atrophaeus_1942_uid46075	4	1403834	1689304	285471
+uid46075_0.0	uid46075_0.0.fsa	Bacillus atrophaeus 1942	Bacillus_atrophaeus_1942_uid46075	4	1887910	1982855	94946
+uid309_0.0	uid309_0.0.fsa	Bacillus anthracis str. Ames	Bacillus_anthracis_Ames_uid309	1	4843694	4858240	14547
+uid13907_0.0	uid13907_0.0.fsa	Sphingopyxis alaskensis RB2256	Sphingopyxis_alaskensis_RB2256_uid13907	1	393767	455954	62188
+uid17409_0.4	uid17409_0.4.fsa	Burkholderia phymatum STM815	Burkholderia_phymatum_STM815_uid17409	5	2117245	2194508	77264
+uid17409_0.1	uid17409_0.1.fsa	Burkholderia phymatum STM815	Burkholderia_phymatum_STM815_uid17409	5	1970655	2054591	83937
+uid17409_0.2	uid17409_0.2.fsa	Burkholderia phymatum STM815	Burkholderia_phymatum_STM815_uid17409	5	312012	351373	39362
+uid17409_0.0	uid17409_0.0.fsa	Burkholderia phymatum STM815	Burkholderia_phymatum_STM815_uid17409	5	1776052	1809564	33513
+uid17409_0.3	uid17409_0.3.fsa	Burkholderia phymatum STM815	Burkholderia_phymatum_STM815_uid17409	5	367807	455793	87987
+uid18057_0.4	uid18057_0.4.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	1739721	1786210	46490
+uid18057_0.5	uid18057_0.5.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	1475428	1526058	50631
+uid18057_0.6	uid18057_0.6.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	608332	659475	51144
+uid18057_0.7	uid18057_0.7.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	295689	327994	32306
+uid18057_0.0	uid18057_0.0.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	2660386	2696584	36199
+uid18057_0.1	uid18057_0.1.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	2261815	2308960	47146
+uid18057_0.2	uid18057_0.2.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	2122554	2167346	44793
+uid18057_0.3	uid18057_0.3.fsa	Escherichia coli SE11	Escherichia_coli_SE11_uid18057	8	1929658	1963913	34256
+uid31099_0.3	uid31099_0.3.fsa	Haemophilus parasuis SH0165	Haemophilus_parasuis_SH0165_uid31099	4	579397	645867	66471
+uid31099_0.2	uid31099_0.2.fsa	Haemophilus parasuis SH0165	Haemophilus_parasuis_SH0165_uid31099	4	771662	826017	54356
+uid31099_0.1	uid31099_0.1.fsa	Haemophilus parasuis SH0165	Haemophilus_parasuis_SH0165_uid31099	4	1136938	1167528	30591
+uid31099_0.0	uid31099_0.0.fsa	Haemophilus parasuis SH0165	Haemophilus_parasuis_SH0165_uid31099	4	1537987	1565240	27254
+uid33373_0.0	uid33373_0.0.fsa	Escherichia coli IAI1	Escherichia_coli_IAI1_uid33373	1	1650019	1704817	54799
+uid12352_0.0	uid12352_0.0.fsa	Acinetobacter sp. ADP1	Acinetobacter_sp_ADP1_uid12352	1	2028566	2165858	137293
+uid37869_0.0	uid37869_0.0.fsa	Desulfovibrio aespoeensis Aspo-2	Desulfovibrio_aespoeensis_Aspo_2_uid37869	2	2729872	2765845	35974
+uid37869_0.1	uid37869_0.1.fsa	Desulfovibrio aespoeensis Aspo-2	Desulfovibrio_aespoeensis_Aspo_2_uid37869	2	1729749	1828189	98441
+uid63211_0.2	uid63211_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. UK-1	Salmonella_enterica_serovar_Typhimurium_UK_1_uid63211	3	1080487	1097130	16644
+uid63211_0.0	uid63211_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. UK-1	Salmonella_enterica_serovar_Typhimurium_UK_1_uid63211	3	4381589	4396538	14950
+uid63211_0.1	uid63211_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. UK-1	Salmonella_enterica_serovar_Typhimurium_UK_1_uid63211	3	2733071	2778902	45832
+uid327_0.1	uid327_0.1.fsa	Pseudomonas fluorescens Pf-5	Pseudomonas_fluorescens_Pf-5_uid327	2	1387400	1400239	12840
+uid327_0.0	uid327_0.0.fsa	Pseudomonas fluorescens Pf-5	Pseudomonas_fluorescens_Pf-5_uid327	2	2200955	2240044	39090
+uid15667_0.0	uid15667_0.0.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid15667	3	1020380	1046594	26215
+uid15667_0.1	uid15667_0.1.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid15667	3	769482	799585	30104
+uid15667_0.2	uid15667_0.2.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid15667	3	689144	719247	30104
+uid42729_0.9	uid42729_0.9.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	2406863	2459814	52952
+uid42729_0.8	uid42729_0.8.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	2460001	2515544	55544
+uid42729_0.3	uid42729_0.3.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	980789	1021475	40687
+uid42729_0.2	uid42729_0.2.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	1444732	1482196	37465
+uid42729_0.1	uid42729_0.1.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	1574630	1623387	48758
+uid42729_0.0	uid42729_0.0.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	1964881	2009817	44937
+uid42729_0.7	uid42729_0.7.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	3162414	3202379	39966
+uid42729_0.6	uid42729_0.6.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	3262608	3307573	44966
+uid42729_0.5	uid42729_0.5.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	3310177	3343136	32960
+uid42729_0.4	uid42729_0.4.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	5306263	5353674	47412
+uid42729_0.11	uid42729_0.11.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	302634	344312	41679
+uid42729_0.10	uid42729_0.10.fsa	Escherichia coli O55:H7 str. CB9615	Escherichia_coli_O55_H7_CB9615_uid42729	12	347651	363954	16304
+uid45963_0.0	uid45963_0.0.fsa	Bifidobacterium longum subsp. longum F8	Bifidobacterium_longum_F8_uid45963	1	1919862	1945233	25372
+uid10687_0.0	uid10687_0.0.fsa	Leptospira interrogans serovar Copenhageni str. Fiocruz L1-130	Leptospira_interrogans_serovar_Copenhageni_uid10687	1	173959	210543	36585
+uid16220_0.0	uid16220_0.0.fsa	Bacillus cereus Q1	Bacillus_cereus_Q1_uid16220	1	10467	49088	38622
+uid18809_0.1	uid18809_0.1.fsa	Methylobacterium sp. 4-46	Methylobacterium_4_46_uid18809	2	1588543	1686954	98412
+uid18809_0.0	uid18809_0.0.fsa	Methylobacterium sp. 4-46	Methylobacterium_4_46_uid18809	2	4577042	4590321	13280
+uid241_0.0	uid241_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	Salmonella_typhimurium_LT2_uid241	3	4348110	4428331	80222
+uid241_0.1	uid241_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	Salmonella_typhimurium_LT2_uid241	3	2334834	2344711	9878
+uid241_0.2	uid241_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. LT2	Salmonella_typhimurium_LT2_uid241	3	1026087	1143714	117628
+uid78_0.1	uid78_0.1.fsa	Clostridium difficile	Clostridium_difficile_630_uid78	4	3380278	3426336	46059
+uid78_0.0	uid78_0.0.fsa	Clostridium difficile	Clostridium_difficile_630_uid78	4	3659927	3686012	26086
+uid78_0.3	uid78_0.3.fsa	Clostridium difficile	Clostridium_difficile_630_uid78	4	1419691	1442701	23011
+uid78_0.2	uid78_0.2.fsa	Clostridium difficile	Clostridium_difficile_630_uid78	4	1546822	1596384	49563
+uid39181_0.0	uid39181_0.0.fsa	Enterococcus sp. 7L76	Enterococcus_7L76_uid39181	1	681294	693384	12091
+uid20045_0.2	uid20045_0.2.fsa	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476	Salmonella_enterica_serovar_Heidelberg_SL476_uid20045	4	1109741	1145147	35407
+uid20045_0.3	uid20045_0.3.fsa	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476	Salmonella_enterica_serovar_Heidelberg_SL476_uid20045	4	376850	412969	36120
+uid20045_0.0	uid20045_0.0.fsa	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476	Salmonella_enterica_serovar_Heidelberg_SL476_uid20045	4	4416479	4431341	14863
+uid20045_0.1	uid20045_0.1.fsa	Salmonella enterica subsp. enterica serovar Heidelberg str. SL476	Salmonella_enterica_serovar_Heidelberg_SL476_uid20045	4	3372207	3401307	29101
+uid352_0.0	uid352_0.0.fsa	Streptococcus suis P1/7	Streptococcus_suis_P1_7_uid352	1	1364976	1375017	10042
+uid53533_0.0	uid53533_0.0.fsa	Enterobacter cloacae SCF1	Enterobacter_cloacae_SCF1_uid53533	2	1943138	1988303	45166
+uid53533_0.1	uid53533_0.1.fsa	Enterobacter cloacae SCF1	Enterobacter_cloacae_SCF1_uid53533	2	1138524	1183432	44909
+uid13389_0.2	uid13389_0.2.fsa	Shewanella baltica OS195	Shewanella_baltica_OS195_uid13389	4	913214	946696	33483
+uid13389_0.1	uid13389_0.1.fsa	Shewanella baltica OS195	Shewanella_baltica_OS195_uid13389	4	2343174	2425968	82795
+uid13389_0.0	uid13389_0.0.fsa	Shewanella baltica OS195	Shewanella_baltica_OS195_uid13389	4	3441432	3491490	50059
+uid13389_0.3	uid13389_0.3.fsa	Shewanella baltica OS195	Shewanella_baltica_OS195_uid13389	4	45918	72838	26921
+uid13014_0.0	uid13014_0.0.fsa	Syntrophomonas wolfei subsp. wolfei str. Goettingen	Syntrophomonas_wolfei_Goettingen_uid13014	1	2829513	2896885	67373
+uid60483_0.4	uid60483_0.4.fsa	Yersinia enterocolitica subsp. palearctica Y11	Yersinia_enterocolitica_palearctica_Y11_uid60483	5	932811	1005885	73075
+uid60483_0.0	uid60483_0.0.fsa	Yersinia enterocolitica subsp. palearctica Y11	Yersinia_enterocolitica_palearctica_Y11_uid60483	5	2918415	2940729	22315
+uid60483_0.1	uid60483_0.1.fsa	Yersinia enterocolitica subsp. palearctica Y11	Yersinia_enterocolitica_palearctica_Y11_uid60483	5	2491586	2583103	91518
+uid60483_0.2	uid60483_0.2.fsa	Yersinia enterocolitica subsp. palearctica Y11	Yersinia_enterocolitica_palearctica_Y11_uid60483	5	1342764	1349361	6598
+uid60483_0.3	uid60483_0.3.fsa	Yersinia enterocolitica subsp. palearctica Y11	Yersinia_enterocolitica_palearctica_Y11_uid60483	5	1300955	1342416	41462
+uid61069_0.0	uid61069_0.0.fsa	Neisseria meningitidis M01-240149	Neisseria_meningitidis_M01_240149_uid61069	1	1165184	1186126	20943
+uid15757_0.0	uid15757_0.0.fsa	Staphylococcus aureus subsp. aureus JH9	Staphylococcus_aureus_JH9_uid15757	5	2134173	2171515	37343
+uid15757_0.1	uid15757_0.1.fsa	Staphylococcus aureus subsp. aureus JH9	Staphylococcus_aureus_JH9_uid15757	5	1076311	1119758	43448
+uid15757_0.2	uid15757_0.2.fsa	Staphylococcus aureus subsp. aureus JH9	Staphylococcus_aureus_JH9_uid15757	5	920563	956817	36255
+uid15757_0.3	uid15757_0.3.fsa	Staphylococcus aureus subsp. aureus JH9	Staphylococcus_aureus_JH9_uid15757	5	361159	401996	40838
+uid15757_0.4	uid15757_0.4.fsa	Staphylococcus aureus subsp. aureus JH9	Staphylococcus_aureus_JH9_uid15757	5	1879	37164	35286
+uid30577_0.1	uid30577_0.1.fsa	Photorhabdus asymbiotica	Photorhabdus_asymbiotica_uid30577	5	1866726	1881669	14944
+uid30577_0.0	uid30577_0.0.fsa	Photorhabdus asymbiotica	Photorhabdus_asymbiotica_uid30577	5	3416045	3590446	174402
+uid30577_0.3	uid30577_0.3.fsa	Photorhabdus asymbiotica	Photorhabdus_asymbiotica_uid30577	5	4610720	4638249	27530
+uid30577_0.2	uid30577_0.2.fsa	Photorhabdus asymbiotica	Photorhabdus_asymbiotica_uid30577	5	4940145	4964221	24077
+uid30577_0.4	uid30577_0.4.fsa	Photorhabdus asymbiotica	Photorhabdus_asymbiotica_uid30577	5	2686	21953	19268
+uid32513_0.9	uid32513_0.9.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	4965438	4995911	30474
+uid32513_0.1	uid32513_0.1.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	2394428	2440449	46022
+uid32513_0.0	uid32513_0.0.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	2537782	2579281	41500
+uid32513_0.3	uid32513_0.3.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	1991584	2031001	39418
+uid32513_0.2	uid32513_0.2.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	2199056	2222833	23778
+uid32513_0.5	uid32513_0.5.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	1619756	1643939	24184
+uid32513_0.4	uid32513_0.4.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	1742579	1770681	28103
+uid32513_0.7	uid32513_0.7.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	1183584	1225939	42356
+uid32513_0.6	uid32513_0.6.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	1436038	1477928	41891
+uid32513_0.11	uid32513_0.11.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	850511	881772	31262
+uid32513_0.10	uid32513_0.10.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	3317698	3344553	26856
+uid32513_0.12	uid32513_0.12.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	609054	629570	20517
+uid32513_0.8	uid32513_0.8.fsa	Escherichia coli O111:H- str. 11128	Escherichia_coli_O111_H__11128_uid32513	13	840	49888	49049
+uid28111_0.0	uid28111_0.0.fsa	Sorangium cellulosum So ce 56	Sorangium_cellulosum__So_ce_56__uid28111	1	7564761	7624745	59985
+uid49333_0.1	uid49333_0.1.fsa	Halomonas elongata DSM 2581	Halomonas_elongata_DSM_2581_uid49333	2	1853188	1936687	83500
+uid49333_0.0	uid49333_0.0.fsa	Halomonas elongata DSM 2581	Halomonas_elongata_DSM_2581_uid49333	2	3632063	3762042	129980
+uid16639_0.0	uid16639_0.0.fsa	Desulfitobacterium hafniense Y51	Desulfitobacterium_hafniense_Y51_uid16639	1	24659	82928	58270
+uid384_0.0	uid384_0.0.fsa	Bacillus cereus ATCC 14579	Bacillus_cereus_ATCC14579_uid384	1	3640647	3667922	27276
+uid10878_0.0	uid10878_0.0.fsa	Bacillus anthracis str. Sterne	Bacillus_anthracis_str_Sterne_uid10878	1	4845031	4859577	14547
+uid38503_0.0	uid38503_0.0.fsa	Rhodopseudomonas palustris DX-1	Rhodopseudomonas_palustris_DX_1_uid38503	2	3859755	3907981	48227
+uid38503_0.1	uid38503_0.1.fsa	Rhodopseudomonas palustris DX-1	Rhodopseudomonas_palustris_DX_1_uid38503	2	3135616	3191120	55505
+uid28081_0.0	uid28081_0.0.fsa	Candidatus Puniceispirillum marinum IMCC1322	alpha_proteobacterium_IMCC1322_uid28081	1	2466336	2516538	50203
+uid17423_0.0	uid17423_0.0.fsa	Geobacter lovleyi SZ	Geobacter_lovleyi_SZ_uid17423	1	1443079	1481983	38905
+uid13570_0.0	uid13570_0.0.fsa	Croceibacter atlanticus HTCC2559	Croceibacter_atlanticus_HTCC2559_uid13570	1	42089	107995	65907
+uid36507_0.0	uid36507_0.0.fsa	Yersinia pestis D106004	Yersinia_pestis_D106004_uid36507	3	2364480	2399965	35486
+uid36507_0.1	uid36507_0.1.fsa	Yersinia pestis D106004	Yersinia_pestis_D106004_uid36507	3	1406395	1423675	17281
+uid36507_0.2	uid36507_0.2.fsa	Yersinia pestis D106004	Yersinia_pestis_D106004_uid36507	3	2022	66306	64285
+uid196_0.3	uid196_0.3.fsa	Bartonella henselae str. Houston-1	Bartonella_henselae_Houston-1_uid196	4	23371	93272	69902
+uid196_0.2	uid196_0.2.fsa	Bartonella henselae str. Houston-1	Bartonella_henselae_Houston-1_uid196	4	325722	423370	97649
+uid196_0.1	uid196_0.1.fsa	Bartonella henselae str. Houston-1	Bartonella_henselae_Houston-1_uid196	4	1373239	1458431	85193
+uid196_0.0	uid196_0.0.fsa	Bartonella henselae str. Houston-1	Bartonella_henselae_Houston-1_uid196	4	1485515	1564559	79045
+uid13993_0.0	uid13993_0.0.fsa	Nitrosococcus oceani ATCC 19707	Nitrosococcus_oceani_ATCC_19707_uid13993	1	663624	719729	56106
+uid81_0.1	uid81_0.1.fsa	Clostridium tetani E88	Clostridium_tetani_E88_uid81	3	1666338	1695271	28934
+uid81_0.0	uid81_0.0.fsa	Clostridium tetani E88	Clostridium_tetani_E88_uid81	3	2248862	2278676	29815
+uid81_0.2	uid81_0.2.fsa	Clostridium tetani E88	Clostridium_tetani_E88_uid81	3	1138054	1167772	29719
+uid16394_0.0	uid16394_0.0.fsa	Thermoanaerobacter sp. X514	Thermoanaerobacter_X514_uid16394	1	1277094	1311638	34545
+uid29147_0.0	uid29147_0.0.fsa	Brevibacillus brevis NBRC 100599	Brevibacillus_brevis_NBRC_100599_uid29147	2	5633846	5700852	67007
+uid29147_0.1	uid29147_0.1.fsa	Brevibacillus brevis NBRC 100599	Brevibacillus_brevis_NBRC_100599_uid29147	2	5355737	5389691	33955
+uid371_0.0	uid371_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhi str. Ty2	Salmonella_enterica_serovar_Typhi_Ty2_uid371	5	4478556	4525815	47260
+uid371_0.1	uid371_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhi str. Ty2	Salmonella_enterica_serovar_Typhi_Ty2_uid371	5	4419989	4476650	56662
+uid371_0.2	uid371_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhi str. Ty2	Salmonella_enterica_serovar_Typhi_Ty2_uid371	5	3501128	3533229	32102
+uid371_0.3	uid371_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhi str. Ty2	Salmonella_enterica_serovar_Typhi_Ty2_uid371	5	2746767	2753913	7147
+uid371_0.4	uid371_0.4.fsa	Salmonella enterica subsp. enterica serovar Typhi str. Ty2	Salmonella_enterica_serovar_Typhi_Ty2_uid371	5	1409849	1441766	31918
+uid29549_0.0	uid29549_0.0.fsa	Gordonia bronchialis DSM 43247	Gordonia_bronchialis_DSM_43247_uid29549	1	5032674	5065165	32492
+uid297_0.1	uid297_0.1.fsa	Xanthomonas axonopodis pv. citri str. 306	Xanthomonas_citri_uid297	3	2550969	2607837	56869
+uid297_0.0	uid297_0.0.fsa	Xanthomonas axonopodis pv. citri str. 306	Xanthomonas_citri_uid297	3	3093992	3119616	25625
+uid297_0.2	uid297_0.2.fsa	Xanthomonas axonopodis pv. citri str. 306	Xanthomonas_citri_uid297	3	1211424	1259435	48012
+uid17107_0.0	uid17107_0.0.fsa	Stenotrophomonas maltophilia R551-3	Stenotrophomonas_maltophilia_R551_3_uid17107	1	1028461	1039721	11261
+uid17419_0.2	uid17419_0.2.fsa	Clostridium cellulolyticum H10	Clostridium_cellulolyticum_H10_uid17419	3	2177909	2202585	24677
+uid17419_0.1	uid17419_0.1.fsa	Clostridium cellulolyticum H10	Clostridium_cellulolyticum_H10_uid17419	3	3225140	3292137	66998
+uid17419_0.0	uid17419_0.0.fsa	Clostridium cellulolyticum H10	Clostridium_cellulolyticum_H10_uid17419	3	3372342	3391059	18718
+uid48315_0.0	uid48315_0.0.fsa	Streptococcus parasanguinis ATCC 15912	Streptococcus_parasanguinis_ATCC_15912_uid48315	1	1035301	1067888	32588
+uid31233_0.1	uid31233_0.1.fsa	Streptococcus pneumoniae ATCC 700669	Streptococcus_pneumoniae_ATCC_700669_uid31233	2	28691	42530	13840
+uid31233_0.0	uid31233_0.0.fsa	Streptococcus pneumoniae ATCC 700669	Streptococcus_pneumoniae_ATCC_700669_uid31233	2	1835303	1904625	69323
+uid28035_0.1	uid28035_0.1.fsa	Streptococcus pneumoniae Hungary19A-6	Streptococcus_pneumoniae_Hungary19A_6_uid28035	2	23497	113743	90247
+uid28035_0.0	uid28035_0.0.fsa	Streptococcus pneumoniae Hungary19A-6	Streptococcus_pneumoniae_Hungary19A_6_uid28035	2	254088	266474	12387
+uid225_0.2	uid225_0.2.fsa	Escherichia coli str. K-12 substr. MG1655	Escherichia_coli_K_12_substr__MG1655_uid225	3	564038	592401	28364
+uid225_0.0	uid225_0.0.fsa	Escherichia coli str. K-12 substr. MG1655	Escherichia_coli_K_12_substr__MG1655_uid225	3	4499283	4531807	32525
+uid225_0.1	uid225_0.1.fsa	Escherichia coli str. K-12 substr. MG1655	Escherichia_coli_K_12_substr__MG1655_uid225	3	1632334	1647065	14732
+uid18773_0.0	uid18773_0.0.fsa	Bifidobacterium longum DJO10A	Bifidobacterium_longum_DJO10A_uid18773	1	1321495	1358283	36789
+uid59863_0.0	uid59863_0.0.fsa	Verrucosispora maris AB-18-032	Verrucosispora_maris_AB_18_032_uid59863	2	2363759	2415758	52000
+uid59863_0.1	uid59863_0.1.fsa	Verrucosispora maris AB-18-032	Verrucosispora_maris_AB_18_032_uid59863	2	1538203	1612835	74633
+uid254_0.0	uid254_0.0.fsa	Burkholderia xenovorans LB400	Burkholderia_xenovorans_LB400_uid254	2	1525268	1543440	18173
+uid254_0.1	uid254_0.1.fsa	Burkholderia xenovorans LB400	Burkholderia_xenovorans_LB400_uid254	2	1399905	1513433	113529
+uid36643_0.0	uid36643_0.0.fsa	Brevundimonas subvibrioides ATCC 15264	Brevundimonas_subvibrioides_ATCC_15264_uid36643	1	1262441	1269643	7203
+uid17163_0.1	uid17163_0.1.fsa	Campylobacter jejuni subsp. doylei 269.97	Campylobacter_jejuni_doylei_269_97_uid17163	2	831626	870973	39348
+uid17163_0.0	uid17163_0.0.fsa	Campylobacter jejuni subsp. doylei 269.97	Campylobacter_jejuni_doylei_269_97_uid17163	2	963564	1005077	41514
+uid32237_0.0	uid32237_0.0.fsa	Streptococcus suis BM407	Streptococcus_suis_BM407_uid32237	1	1503703	1513765	10063
+uid61085_0.0	uid61085_0.0.fsa	Neisseria meningitidis G2136	Neisseria_meningitidis_G2136_uid61085	1	855870	880864	24995
+uid36545_0.0	uid36545_0.0.fsa	Yersinia pestis D182038	Yersinia_pestis_D182038_uid36545	2	2138048	2173533	35486
+uid36545_0.1	uid36545_0.1.fsa	Yersinia pestis D182038	Yersinia_pestis_D182038_uid36545	2	2022	68102	66081
+uid13067_0.0	uid13067_0.0.fsa	Bacteroides fragilis YCH46	Bacteroides_fragilis_YCH46_uid13067	2	2281286	2326325	45040
+uid13067_0.1	uid13067_0.1.fsa	Bacteroides fragilis YCH46	Bacteroides_fragilis_YCH46_uid13067	2	1521119	1635923	114805
+uid10696_0.4	uid10696_0.4.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	1371308	1405154	33847
+uid10696_0.3	uid10696_0.3.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	1105786	1170073	64288
+uid10696_0.2	uid10696_0.2.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	1353375	1385639	32265
+uid10696_0.1	uid10696_0.1.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	34299	103787	69489
+uid10696_0.0	uid10696_0.0.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	636158	704400	68243
+uid10696_0.5	uid10696_0.5.fsa	Burkholderia vietnamiensis G4	Burkholderia_vietnamiensis_G4_uid10696	6	101830	166239	64410
+uid47621_0.0	uid47621_0.0.fsa	Acidobacterium sp. MP5ACTX9	Acidobacterium_MP5ACTX9_uid47621	1	2292114	2342312	50199
+uid16309_0.0	uid16309_0.0.fsa	Sodalis glossinidius str. morsitans	Sodalis_glossinidius_morsitans_uid16309	3	4022608	4063482	40875
+uid16309_0.1	uid16309_0.1.fsa	Sodalis glossinidius str. morsitans	Sodalis_glossinidius_morsitans_uid16309	3	2655319	2680070	24752
+uid16309_0.2	uid16309_0.2.fsa	Sodalis glossinidius str. morsitans	Sodalis_glossinidius_morsitans_uid16309	3	1335558	1409605	74048
+uid19485_0.2	uid19485_0.2.fsa	Ochrobactrum anthropi ATCC 49188	Ochrobactrum_anthropi_ATCC_49188_uid19485	3	224745	256691	31947
+uid19485_0.0	uid19485_0.0.fsa	Ochrobactrum anthropi ATCC 49188	Ochrobactrum_anthropi_ATCC_49188_uid19485	3	2415315	2451311	35997
+uid19485_0.1	uid19485_0.1.fsa	Ochrobactrum anthropi ATCC 49188	Ochrobactrum_anthropi_ATCC_49188_uid19485	3	1575886	1600568	24683
+uid62279_0.0	uid62279_0.0.fsa	Acinetobacter baumannii TCDC-AB0715	Acinetobacter_baumannii_TCDC_AB0715_uid62279	1	2905875	2968610	62736
+uid16645_0.1	uid16645_0.1.fsa	Yersinia pestis Antiqua	Yersinia_pestis_Antiqua_uid16645	3	1095621	1112901	17281
+uid16645_0.0	uid16645_0.0.fsa	Yersinia pestis Antiqua	Yersinia_pestis_Antiqua_uid16645	3	1658232	1675025	16794
+uid16645_0.2	uid16645_0.2.fsa	Yersinia pestis Antiqua	Yersinia_pestis_Antiqua_uid16645	3	651490	661419	9930
+uid13280_0.1	uid13280_0.1.fsa	Lactobacillus salivarius UCC118	Lactobacillus_salivarius_UCC118_uid13280	2	289941	324586	34646
+uid13280_0.0	uid13280_0.0.fsa	Lactobacillus salivarius UCC118	Lactobacillus_salivarius_UCC118_uid13280	2	777765	813288	35524
+uid31539_0.0	uid31539_0.0.fsa	Staphylococcus aureus subsp. aureus TCH60	Staphylococcus_aureus_TCH60_uid31539	1	1738379	1784655	46277
+uid53917_0.0	uid53917_0.0.fsa	Methylomonas methanica MC09	Methylomonas_methanica_MC09_uid53917	1	4705730	4811516	105787
+uid19401_0.0	uid19401_0.0.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_Tohoku_uid19401	3	1496165	1540584	44420
+uid19401_0.2	uid19401_0.2.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_Tohoku_uid19401	3	477603	512168	34566
+uid19401_0.1	uid19401_0.1.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_Tohoku_uid19401	3	1620691	1665257	44567
+uid20133_0.0	uid20133_0.0.fsa	Leptospira biflexa serovar Patoc strain Patoc 1 (Paris)	Leptospira_biflexa_serovar_Patoc__Patoc_1__Paris__uid20133	1	2229748	2349282	119535
+uid32049_0.1	uid32049_0.1.fsa	Bifidobacterium longum subsp. infantis ATCC 15697	Bifidobacterium_longum_infantis_ATCC_15697_uid32049	2	1288773	1330815	42043
+uid32049_0.0	uid32049_0.0.fsa	Bifidobacterium longum subsp. infantis ATCC 15697	Bifidobacterium_longum_infantis_ATCC_15697_uid32049	2	1660718	1694330	33613
+uid32051_0.0	uid32051_0.0.fsa	Bifidobacterium longum subsp. infantis 157F	Bifidobacterium_longum_infantis_157F_uid32051	2	1207828	1246297	38470
+uid32051_0.1	uid32051_0.1.fsa	Bifidobacterium longum subsp. infantis 157F	Bifidobacterium_longum_infantis_157F_uid32051	2	1027989	1062260	34272
+uid30561_0.0	uid30561_0.0.fsa	Brucella melitensis ATCC 23457	Brucella_melitensis_ATCC_23457_uid30561	1	547808	608460	60653
+uid17823_0.0	uid17823_0.0.fsa	Xylella fastidiosa M12	Xylella_fastidiosa_M12_uid17823	2	1174995	1232036	57042
+uid17823_0.1	uid17823_0.1.fsa	Xylella fastidiosa M12	Xylella_fastidiosa_M12_uid17823	2	450069	478784	28716
+uid32571_0.5	uid32571_0.5.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	1043517	1084017	40501
+uid32571_0.4	uid32571_0.4.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	1268129	1307303	39175
+uid32571_0.7	uid32571_0.7.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	720891	761758	40868
+uid32571_0.6	uid32571_0.6.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	852446	885020	32575
+uid32571_0.1	uid32571_0.1.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	2727601	2750921	23321
+uid32571_0.0	uid32571_0.0.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	2978079	2985289	7211
+uid32571_0.3	uid32571_0.3.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	1427475	1472065	44591
+uid32571_0.2	uid32571_0.2.fsa	Escherichia coli O127:H6 str. E2348/69	Escherichia_coli_0127_H6_E2348_69_uid32571	8	1867173	1899974	32802
+uid350_0.3	uid350_0.3.fsa	Pectobacterium atrosepticum SCRI1043	Erwinia_carotovora_atroseptica_SCRI1043_uid350	4	687380	750273	62894
+uid350_0.2	uid350_0.2.fsa	Pectobacterium atrosepticum SCRI1043	Erwinia_carotovora_atroseptica_SCRI1043_uid350	4	2935893	2966671	30779
+uid350_0.1	uid350_0.1.fsa	Pectobacterium atrosepticum SCRI1043	Erwinia_carotovora_atroseptica_SCRI1043_uid350	4	3092131	3114921	22791
+uid350_0.0	uid350_0.0.fsa	Pectobacterium atrosepticum SCRI1043	Erwinia_carotovora_atroseptica_SCRI1043_uid350	4	3806995	3874501	67507
+uid344_0.0	uid344_0.0.fsa	Rhizobium leguminosarum bv. viciae 3841	Rhizobium_leguminosarum_bv_viciae_3841_uid344	1	4149193	4180509	31317
+uid16646_0.2	uid16646_0.2.fsa	Yersinia pestis Nepal516	Yersinia_pestis_Nepal516_uid16646	4	1777316	1811677	34362
+uid16646_0.0	uid16646_0.0.fsa	Yersinia pestis Nepal516	Yersinia_pestis_Nepal516_uid16646	4	3259191	3269120	9930
+uid16646_0.1	uid16646_0.1.fsa	Yersinia pestis Nepal516	Yersinia_pestis_Nepal516_uid16646	4	3073534	3090808	17275
+uid16646_0.3	uid16646_0.3.fsa	Yersinia pestis Nepal516	Yersinia_pestis_Nepal516_uid16646	4	2932	52346	49415
+uid46847_0.0	uid46847_0.0.fsa	Streptomyces bingchenggensis BCW-1	Streptomyces_bingchenggensis_BCW_1_uid46847	1	10328233	10356741	28509
+uid39689_0.0	uid39689_0.0.fsa	Neisseria meningitidis alpha14	Neisseria_meningitidis_alpha14_uid39689	2	911167	972797	61631
+uid39689_0.1	uid39689_0.1.fsa	Neisseria meningitidis alpha14	Neisseria_meningitidis_alpha14_uid39689	2	820873	854978	34106
+uid27945_0.0	uid27945_0.0.fsa	Halomicrobium mukohataei DSM 12286	Halomicrobium_mukohataei_DSM_12286_uid27945	1	424217	489383	65167
+uid18281_0.3	uid18281_0.3.fsa	Escherichia coli B str. REL606	Escherichia_coli_B_REL606_uid18281	4	536929	568822	31894
+uid18281_0.2	uid18281_0.2.fsa	Escherichia coli B str. REL606	Escherichia_coli_B_REL606_uid18281	4	881132	904605	23474
+uid18281_0.1	uid18281_0.1.fsa	Escherichia coli B str. REL606	Escherichia_coli_B_REL606_uid18281	4	1586072	1623954	37883
+uid18281_0.0	uid18281_0.0.fsa	Escherichia coli B str. REL606	Escherichia_coli_B_REL606_uid18281	4	2100409	2122347	21939
+uid34873_0.0	uid34873_0.0.fsa	Bartonella grahamii as4aup	Bartonella_grahamii_as4aup_uid34873	2	1726488	1807436	80949
+uid34873_0.1	uid34873_0.1.fsa	Bartonella grahamii as4aup	Bartonella_grahamii_as4aup_uid34873	2	1127300	1159861	32562
+uid16083_0.0	uid16083_0.0.fsa	Alkaliphilus oremlandii OhILAs	Alkaliphilus_oremlandii_OhILAs_uid16083	1	1922364	2041116	118753
+uid31383_0.0	uid31383_0.0.fsa	Prevotella melaninogenica ATCC 25845	Prevotella_melaninogenica_ATCC_25845_uid31383	1	876363	942142	65780
+uid50825_0.1	uid50825_0.1.fsa	Treponema succinifaciens DSM 2489	Treponema_succinifaciens_DSM_2489_uid50825	2	1717015	1913636	196622
+uid50825_0.0	uid50825_0.0.fsa	Treponema succinifaciens DSM 2489	Treponema_succinifaciens_DSM_2489_uid50825	2	4786	53853	49068
+uid353_0.0	uid353_0.0.fsa	Streptococcus uberis 0140J	Streptococcus_uberis_0140J_uid353	2	1764211	1827744	63534
+uid353_0.1	uid353_0.1.fsa	Streptococcus uberis 0140J	Streptococcus_uberis_0140J_uid353	2	215499	221710	6212
+uid51067_0.0	uid51067_0.0.fsa	Gardnerella vaginalis HMP9231	Gardnerella_vaginalis_HMP9231_uid51067	1	592609	614973	22365
+uid60793_0.0	uid60793_0.0.fsa	Pantoea ananatis AJ13355	Pantoea_ananatis_AJ13355_uid60793	2	3200568	3210552	9985
+uid60793_0.1	uid60793_0.1.fsa	Pantoea ananatis AJ13355	Pantoea_ananatis_AJ13355_uid60793	2	890080	921893	31814
+uid33691_0.0	uid33691_0.0.fsa	Cellulomonas fimi ATCC 484	Cellulomonas_fimi_ATCC_484_uid33691	1	175641	196601	20961
+uid61377_0.1	uid61377_0.1.fsa	Neisseria gonorrhoeae TCDC-NG08107	Neisseria_gonorrhoeae_TCDC_NG08107_uid61377	3	850230	868207	17978
+uid61377_0.0	uid61377_0.0.fsa	Neisseria gonorrhoeae TCDC-NG08107	Neisseria_gonorrhoeae_TCDC_NG08107_uid61377	3	1577042	1585286	8245
+uid61377_0.2	uid61377_0.2.fsa	Neisseria gonorrhoeae TCDC-NG08107	Neisseria_gonorrhoeae_TCDC_NG08107_uid61377	3	603984	660843	56860
+uid12468_0.0	uid12468_0.0.fsa	Bacillus cereus E33L	Bacillus_cereus_ZK_uid12468	1	3530914	3580395	49482
+uid31139_0.0	uid31139_0.0.fsa	Acetobacter pasteurianus IFO 3283-32	Acetobacter_pasteurianus_IFO_3283_32_uid31139	1	2178629	2215919	37291
+uid50759_0.1	uid50759_0.1.fsa	Staphylococcus aureus subsp. aureus JKD6159	Staphylococcus_aureus_JKD6159_uid50759	2	1515820	1559280	43461
+uid50759_0.0	uid50759_0.0.fsa	Staphylococcus aureus subsp. aureus JKD6159	Staphylococcus_aureus_JKD6159_uid50759	2	2041911	2079768	37858
+uid15754_0.2	uid15754_0.2.fsa	Rhodobacter sphaeroides ATCC 17029	Rhodobacter_sphaeroides_ATCC_17029_uid15754	4	297943	312777	14835
+uid15754_0.1	uid15754_0.1.fsa	Rhodobacter sphaeroides ATCC 17029	Rhodobacter_sphaeroides_ATCC_17029_uid15754	4	636832	681881	45050
+uid15754_0.0	uid15754_0.0.fsa	Rhodobacter sphaeroides ATCC 17029	Rhodobacter_sphaeroides_ATCC_17029_uid15754	4	1175113	1187240	12128
+uid15754_0.3	uid15754_0.3.fsa	Rhodobacter sphaeroides ATCC 17029	Rhodobacter_sphaeroides_ATCC_17029_uid15754	4	359389	398147	38759
+uid180_0.0	uid180_0.0.fsa	Brucella melitensis bv. 1 str. 16M	Brucella_melitensis_bv__1_16M_uid180	1	1356177	1404607	48431
+uid30031_0.2	uid30031_0.2.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid30031	3	1401452	1410427	8976
+uid30031_0.0	uid30031_0.0.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid30031	3	2668983	2681044	12062
+uid30031_0.1	uid30031_0.1.fsa	Escherichia coli DH1	Escherichia_coli_DH1_uid30031	3	2407969	2466478	58510
+uid284_0.0	uid284_0.0.fsa	Oceanobacillus iheyensis HTE831	Oceanobacillus_iheyensis_uid284	1	160716	232945	72230
+uid30759_0.0	uid30759_0.0.fsa	Thioalkalivibrio sp. K90mix	Thioalkalivibrio_K90mix_uid30759	1	1163235	1217050	53816
+uid17407_0.0	uid17407_0.0.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_JGI_uid17407	5	1990679	2017849	27171
+uid17407_0.2	uid17407_0.2.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_JGI_uid17407	5	1837380	1897078	59699
+uid17407_0.3	uid17407_0.3.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_JGI_uid17407	5	832340	879219	46880
+uid17407_0.1	uid17407_0.1.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_JGI_uid17407	5	1918168	1982982	64815
+uid17407_0.4	uid17407_0.4.fsa	Burkholderia multivorans ATCC 17616	Burkholderia_multivorans_ATCC_17616_JGI_uid17407	5	408658	466866	58209
+uid17187_0.0	uid17187_0.0.fsa	Verminephrobacter eiseniae EF01-2	Verminephrobacter_eiseniae_EF01-2_uid17187	1	5150138	5199826	49689
+uid30765_0.0	uid30765_0.0.fsa	Streptococcus equi subsp. equi 4047	Streptococcus_equi_4047_uid30765	1	129348	197047	67700
+uid43631_0.0	uid43631_0.0.fsa	Bacillus thuringiensis BMB171 (Bacillus thuringiensis serovar kurstaki str. BMB171)	Bacillus_thuringiensis_BMB171_uid43631	1	2502500	2529342	26843
+uid9620_0.0	uid9620_0.0.fsa	Haemophilus influenzae R2846	Haemophilus_influenzae_R2846_uid9620	1	946818	956025	9208
+uid12738_0.0	uid12738_0.0.fsa	Nocardioides sp. JS614	Nocardioides_JS614_uid12738	1	582461	638242	55782
+uid32613_0.0	uid32613_0.0.fsa	Thermoanaerobacter sp. X513	Thermoanaerobacter_X513_uid32613	1	1602744	1637287	34544
+uid21085_0.0	uid21085_0.0.fsa	Catenulispora acidiphila DSM 44928	Catenulispora_acidiphila_DSM_44928_uid21085	1	3223414	3377147	153734
+uid33775_0.0	uid33775_0.0.fsa	Escherichia coli BW2952	Escherichia_coli_BW2952_uid33775	4	4435030	4470542	35513
+uid33775_0.1	uid33775_0.1.fsa	Escherichia coli BW2952	Escherichia_coli_BW2952_uid33775	4	4135063	4174173	39111
+uid33775_0.2	uid33775_0.2.fsa	Escherichia coli BW2952	Escherichia_coli_BW2952_uid33775	4	1302083	1360592	58510
+uid33775_0.3	uid33775_0.3.fsa	Escherichia coli BW2952	Escherichia_coli_BW2952_uid33775	4	466798	495161	28364
+uid33825_0.0	uid33825_0.0.fsa	Escherichia coli LF82	Escherichia_coli_LF82_uid33825	4	2738002	2767974	29973
+uid33825_0.1	uid33825_0.1.fsa	Escherichia coli LF82	Escherichia_coli_LF82_uid33825	4	1585260	1630238	44979
+uid33825_0.2	uid33825_0.2.fsa	Escherichia coli LF82	Escherichia_coli_LF82_uid33825	4	1173160	1210718	37559
+uid33825_0.3	uid33825_0.3.fsa	Escherichia coli LF82	Escherichia_coli_LF82_uid33825	4	999027	1030766	31740
+uid30681_0.1	uid30681_0.1.fsa	Escherichia coli BL21-Gold(DE3)pLysS AG	Escherichia_coli__BL21_Gold_DE3_pLysS_AG__uid30681	2	2890760	2909886	19127
+uid30681_0.0	uid30681_0.0.fsa	Escherichia coli BL21-Gold(DE3)pLysS AG	Escherichia_coli__BL21_Gold_DE3_pLysS_AG__uid30681	2	2998466	3029305	30840
+uid13402_0.0	uid13402_0.0.fsa	Agrobacterium radiobacter K84	Agrobacterium_radiobacter_K84_uid13402	1	1810796	1819271	8476
+uid16549_0.0	uid16549_0.0.fsa	Janthinobacterium sp. Marseille	Janthinobacterium_Marseille_uid16549	1	2964527	3128964	164438
+uid20805_0.0	uid20805_0.0.fsa	Geobacillus sp. WCH70	Geobacillus_WCH70_uid20805	1	2822962	2873128	50167
+uid13242_0.0	uid13242_0.0.fsa	Aromatoleum aromaticum EbN1	Aromatoleum_aromaticum_EbN1_uid13242	3	281475	287802	6328
+uid13242_0.1	uid13242_0.1.fsa	Aromatoleum aromaticum EbN1	Aromatoleum_aromaticum_EbN1_uid13242	3	125221	152903	27683
+uid13242_0.2	uid13242_0.2.fsa	Aromatoleum aromaticum EbN1	Aromatoleum_aromaticum_EbN1_uid13242	3	36337	109037	72701
+uid33241_0.0	uid33241_0.0.fsa	Methylovorus sp. SIP3-4	Methylovorus_SIP3_4_uid33241	1	1669742	1751194	81453
+uid31001_0.0	uid31001_0.0.fsa	Gardnerella vaginalis 409-05	Gardnerella_vaginalis_409_05_uid31001	1	993779	1138542	144764
+uid13915_0.2	uid13915_0.2.fsa	Frankia sp. EAN1pec	Frankia_EAN1pec_uid13915	3	293991	329246	35256
+uid13915_0.0	uid13915_0.0.fsa	Frankia sp. EAN1pec	Frankia_EAN1pec_uid13915	3	3016135	3134613	118479
+uid13915_0.1	uid13915_0.1.fsa	Frankia sp. EAN1pec	Frankia_EAN1pec_uid13915	3	480893	523276	42384
+uid16062_0.0	uid16062_0.0.fsa	Leuconostoc citreum KM20	Leuconostoc_citreum_KM20_uid16062	1	1089478	1127868	38391
+uid31133_0.0	uid31133_0.0.fsa	Acetobacter pasteurianus IFO 3283-07	Acetobacter_pasteurianus_IFO_3283_07_uid31133	1	2178616	2215906	37291
+uid50883_0.3	uid50883_0.3.fsa	Escherichia coli UM146	Escherichia_coli_UM146_uid50883	5	1015991	1044881	28891
+uid50883_0.2	uid50883_0.2.fsa	Escherichia coli UM146	Escherichia_coli_UM146_uid50883	5	2207185	2252364	45180
+uid50883_0.1	uid50883_0.1.fsa	Escherichia coli UM146	Escherichia_coli_UM146_uid50883	5	2361895	2400882	38988
+uid50883_0.0	uid50883_0.0.fsa	Escherichia coli UM146	Escherichia_coli_UM146_uid50883	5	2721786	2731800	10015
+uid50883_0.4	uid50883_0.4.fsa	Escherichia coli UM146	Escherichia_coli_UM146_uid50883	5	715464	735958	20495
+uid20063_0.2	uid20063_0.2.fsa	Salmonella enterica subsp. enterica serovar Agona str. SL483	Salmonella_enterica_serovar_Agona_SL483_uid20063	4	2798308	2821745	23438
+uid20063_0.3	uid20063_0.3.fsa	Salmonella enterica subsp. enterica serovar Agona str. SL483	Salmonella_enterica_serovar_Agona_SL483_uid20063	4	2724711	2797064	72354
+uid20063_0.0	uid20063_0.0.fsa	Salmonella enterica subsp. enterica serovar Agona str. SL483	Salmonella_enterica_serovar_Agona_SL483_uid20063	4	4663889	4680569	16681
+uid20063_0.1	uid20063_0.1.fsa	Salmonella enterica subsp. enterica serovar Agona str. SL483	Salmonella_enterica_serovar_Agona_SL483_uid20063	4	4340075	4355024	14950
+uid28245_0.0	uid28245_0.0.fsa	Anoxybacillus flavithermus WK1	Anoxybacillus_flavithermus_WK1_uid28245	1	679750	726941	47192
+uid15685_0.0	uid15685_0.0.fsa	Acidovorax sp. JS42	Acidovorax_JS42_uid15685	3	2779968	2825799	45832
+uid15685_0.1	uid15685_0.1.fsa	Acidovorax sp. JS42	Acidovorax_JS42_uid15685	3	1605739	1659820	54082
+uid15685_0.2	uid15685_0.2.fsa	Acidovorax sp. JS42	Acidovorax_JS42_uid15685	3	1381195	1416617	35423
+uid15637_0.6	uid15637_0.6.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	815027	876203	61177
+uid15637_0.5	uid15637_0.5.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	876539	938554	62016
+uid15637_0.4	uid15637_0.4.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	986061	1000639	14579
+uid15637_0.3	uid15637_0.3.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	1148982	1185239	36258
+uid15637_0.2	uid15637_0.2.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	1303657	1350470	46814
+uid15637_0.1	uid15637_0.1.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	1759131	1778538	19408
+uid15637_0.0	uid15637_0.0.fsa	Shigella boydii CDC 3083-94	Shigella_boydii_CDC_3083_94_uid15637	7	2286597	2293743	7147
+uid34659_0.0	uid34659_0.0.fsa	Streptococcus pneumoniae TCH8431/19A	Streptococcus_pneumoniae_TCH8431_19A_uid34659	1	440309	452674	12366
+uid61185_0.0	uid61185_0.0.fsa	Enterococcus faecalis 62	Enterococcus_faecalis_62_uid61185	3	2329823	2365288	35466
+uid61185_0.1	uid61185_0.1.fsa	Enterococcus faecalis 62	Enterococcus_faecalis_62_uid61185	3	1683674	1695673	12000
+uid61185_0.2	uid61185_0.2.fsa	Enterococcus faecalis 62	Enterococcus_faecalis_62_uid61185	3	1331966	1365279	33314
+uid15713_0.0	uid15713_0.0.fsa	Pseudoalteromonas haloplanktis TAC125	Pseudoalteromonas_haloplanktis_TAC125_uid15713	1	1951779	1976320	24542
+uid32203_0.0	uid32203_0.0.fsa	Acetobacter pasteurianus IFO 3283-12	Acetobacter_pasteurianus_IFO_3283_12_uid32203	1	2178611	2215901	37291
+uid60455_0.1	uid60455_0.1.fsa	Serratia sp. AS13	Serratia_AS13_uid60455	2	880215	894951	14737
+uid60455_0.0	uid60455_0.0.fsa	Serratia sp. AS13	Serratia_AS13_uid60455	2	3569158	3679534	110377
+uid20087_0.0	uid20087_0.0.fsa	Arthrobacter phenanthrenivorans Sphe3	Arthrobacter_phenanthrenivorans_Sphe3_uid20087	1	2336785	2370959	34175
+uid15755_0.0	uid15755_0.0.fsa	Rhodobacter sphaeroides ATCC 17025	Rhodobacter_sphaeroides_ATCC_17025_uid15755	2	1389040	1441052	52013
+uid15755_0.1	uid15755_0.1.fsa	Rhodobacter sphaeroides ATCC 17025	Rhodobacter_sphaeroides_ATCC_17025_uid15755	2	1103575	1111764	8190
+uid33875_0.6	uid33875_0.6.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	1452542	1487565	35024
+uid33875_0.5	uid33875_0.5.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	1768280	1798777	30498
+uid33875_0.4	uid33875_0.4.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	2306866	2352606	45741
+uid33875_0.3	uid33875_0.3.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	2556455	2596893	40439
+uid33875_0.2	uid33875_0.2.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	3120215	3154732	34518
+uid33875_0.1	uid33875_0.1.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	3787869	3818989	31121
+uid33875_0.0	uid33875_0.0.fsa	Escherichia coli KO11	Escherichia_coli_KO11_uid33875	7	4662136	4694240	32105
+uid50409_0.1	uid50409_0.1.fsa	Haemophilus influenzae 10810	Haemophilus_influenzae_10810_uid50409	2	358164	403049	44886
+uid50409_0.0	uid50409_0.0.fsa	Haemophilus influenzae 10810	Haemophilus_influenzae_10810_uid50409	2	562036	577028	14993
+uid33803_0.1	uid33803_0.1.fsa	Pantoea sp. At-9b	Pantoea_At_9b_uid33803	2	3755448	3783617	28170
+uid33803_0.0	uid33803_0.0.fsa	Pantoea sp. At-9b	Pantoea_At_9b_uid33803	2	224961	256785	31825
+uid13954_0.0	uid13954_0.0.fsa	Burkholderia pseudomallei 1710b	Burkholderia_pseudomallei_1710b_uid13954	1	1726129	1819028	92900
+uid29529_0.0	uid29529_0.0.fsa	Sulfurospirillum deleyianum DSM 6946	Sulfurospirillum_deleyianum_DSM_6946_uid29529	2	1246892	1285271	38380
+uid29529_0.1	uid29529_0.1.fsa	Sulfurospirillum deleyianum DSM 6946	Sulfurospirillum_deleyianum_DSM_6946_uid29529	2	759498	796454	36957
+uid16351_0.0	uid16351_0.0.fsa	Escherichia coli str. K-12 substr. W3110	Escherichia_coli_K_12_substr__W3110_uid16351	1	1413714	1435388	21675
+uid13386_0.8	uid13386_0.8.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	5026603	5091593	64991
+uid13386_0.9	uid13386_0.9.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	1264357	1319235	54879
+uid13386_0.4	uid13386_0.4.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	2326737	2375034	48298
+uid13386_0.5	uid13386_0.5.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	2241097	2257518	16422
+uid13386_0.6	uid13386_0.6.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	1838853	1918454	79602
+uid13386_0.7	uid13386_0.7.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	1444757	1481385	36629
+uid13386_0.0	uid13386_0.0.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	4302323	4383334	81012
+uid13386_0.1	uid13386_0.1.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	4211201	4248827	37627
+uid13386_0.2	uid13386_0.2.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	4126399	4183520	57122
+uid13386_0.3	uid13386_0.3.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	2426385	2498262	71878
+uid13386_0.10	uid13386_0.10.fsa	Shewanella baltica OS155	Shewanella_baltica_OS155_uid13386	11	17176	72555	55380
+uid38253_0.0	uid38253_0.0.fsa	Rhodomicrobium vannielii ATCC 17100	Rhodomicrobium_vannielii_ATCC_17100_uid38253	1	3401357	3472752	71396
+uid28857_0.0	uid28857_0.0.fsa	Clostridium botulinum B str. Eklund 17B	Clostridium_botulinum_B_Eklund_17B_uid28857	2	940841	965930	25090
+uid28857_0.1	uid28857_0.1.fsa	Clostridium botulinum B str. Eklund 17B	Clostridium_botulinum_B_Eklund_17B_uid28857	2	19906	45594	25689
+uid20745_0.0	uid20745_0.0.fsa	Conexibacter woesei DSM 14684	Conexibacter_woesei_DSM_14684_uid20745	1	2781038	2798250	17213
+uid17827_0.0	uid17827_0.0.fsa	Acinetobacter baumannii ACICU	Acinetobacter_baumannii_ACICU_uid17827	1	1133293	1167821	34529
+uid50687_0.1	uid50687_0.1.fsa	Thiomonas sp. 3As	Thiomonas_3As_uid50687	3	1980031	2023773	43743
+uid50687_0.0	uid50687_0.0.fsa	Thiomonas sp. 3As	Thiomonas_3As_uid50687	3	2276244	2357192	80949
+uid50687_0.2	uid50687_0.2.fsa	Thiomonas sp. 3As	Thiomonas_3As_uid50687	3	1869523	1963420	93898
+uid251_0.0	uid251_0.0.fsa	Neisseria meningitidis MC58	Neisseria_meningitidis_MC58_uid251	1	1101164	1131162	29999
+uid17985_0.1	uid17985_0.1.fsa	Shewanella baltica OS223	Shewanella_baltica_OS223_uid17985	2	896655	925861	29207
+uid17985_0.0	uid17985_0.0.fsa	Shewanella baltica OS223	Shewanella_baltica_OS223_uid17985	2	3067642	3105722	38081
+uid43531_0.0	uid43531_0.0.fsa	Pantoea vagans C9-1	Pantoea_vagans_C9_1_uid43531	1	2857743	2886392	28650
+uid18083_0.1	uid18083_0.1.fsa	Escherichia coli ATCC 8739	Escherichia_coli_C_ATCC_8739_uid18083	2	2263784	2309557	45774
+uid18083_0.0	uid18083_0.0.fsa	Escherichia coli ATCC 8739	Escherichia_coli_C_ATCC_8739_uid18083	2	3025168	3058013	32846
+uid65323_0.0	uid65323_0.0.fsa	Staphylococcus aureus subsp. aureus T0131	Staphylococcus_aureus_T0131_uid65323	1	2064155	2106669	42515
+uid34685_0.5	uid34685_0.5.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	285654	325686	40033
+uid34685_0.4	uid34685_0.4.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	990521	1027445	36925
+uid34685_0.1	uid34685_0.1.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	3838472	3874867	36396
+uid34685_0.0	uid34685_0.0.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	4946048	4986103	40056
+uid34685_0.3	uid34685_0.3.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	2096276	2115027	18752
+uid34685_0.2	uid34685_0.2.fsa	Citrobacter rodentium ICC168	Citrobacter_rodentium_ICC168_uid34685	6	2730699	2770989	40291
+uid33641_0.0	uid33641_0.0.fsa	Thiomonas intermedia K12	Thiomonas_intermedia_K12_uid33641	1	2023796	2085012	61217
+uid64659_0.2	uid64659_0.2.fsa	Bacillus amyloliquefaciens LL3	Bacillus_amyloliquefaciens_LL3_uid64659	3	557279	603666	46388
+uid64659_0.1	uid64659_0.1.fsa	Bacillus amyloliquefaciens LL3	Bacillus_amyloliquefaciens_LL3_uid64659	3	1207059	1280989	73931
+uid64659_0.0	uid64659_0.0.fsa	Bacillus amyloliquefaciens LL3	Bacillus_amyloliquefaciens_LL3_uid64659	3	2105371	2279300	173930
+uid19469_0.0	uid19469_0.0.fsa	Escherichia coli SMS-3-5	Escherichia_coli_SMS_3_5_uid19469	3	4408933	4442221	33289
+uid19469_0.1	uid19469_0.1.fsa	Escherichia coli SMS-3-5	Escherichia_coli_SMS_3_5_uid19469	3	1189437	1212682	23246
+uid19469_0.2	uid19469_0.2.fsa	Escherichia coli SMS-3-5	Escherichia_coli_SMS_3_5_uid19469	3	955827	1015744	59918
+uid28921_0.2	uid28921_0.2.fsa	Acinetobacter baumannii AYE	Acinetobacter_baumannii_AYE_uid28921	3	72293	83644	11352
+uid28921_0.1	uid28921_0.1.fsa	Acinetobacter baumannii AYE	Acinetobacter_baumannii_AYE_uid28921	3	559971	579874	19904
+uid28921_0.0	uid28921_0.0.fsa	Acinetobacter baumannii AYE	Acinetobacter_baumannii_AYE_uid28921	3	2660074	2761606	101533
+uid13086_0.0	uid13086_0.0.fsa	Salmonella enterica subsp. enterica serovar Paratyphi A str. ATCC 9150	Salmonella_enterica_Paratypi_ATCC_9150_uid13086	1	2664055	2724833	60779
+uid13213_0.0	uid13213_0.0.fsa	Thermococcus kodakarensis KOD1	Thermococcus_kodakaraensis_KOD1_uid13213	1	1172009	1234485	62477
+uid43737_0.1	uid43737_0.1.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	3714646	3791628	76983
+uid43737_0.0	uid43737_0.0.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	3791939	3815226	23288
+uid43737_0.3	uid43737_0.3.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	1886963	1898767	11805
+uid43737_0.2	uid43737_0.2.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	2601324	2637431	36108
+uid43737_0.5	uid43737_0.5.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	694975	716244	21270
+uid43737_0.4	uid43737_0.4.fsa	Bacillus thuringiensis serovar chinensis CT-43	Bacillus_thuringiensis_serovar_chinensis_CT_43_uid43737	6	1834397	1879984	45588
+uid399_0.0	uid399_0.0.fsa	Bacteroides thetaiotaomicron VPI-5482	Bacteroides_thetaiotaomicron_VPI-5482_uid399	1	3063082	3112698	49617
+uid286_0.0	uid286_0.0.fsa	Streptococcus pyogenes MGAS8232	Streptococcus_pyogenes_MGAS8232_uid286	1	1201170	1249297	48128
+uid16235_0.0	uid16235_0.0.fsa	Escherichia coli 536	Escherichia_coli_536_uid16235	1	1187383	1228488	41106
+uid29003_0.1	uid29003_0.1.fsa	Lactobacillus buchneri NRRL B-30929	Lactobacillus_buchneri_NRRL_B_30929_uid29003	2	24058	40308	16251
+uid29003_0.0	uid29003_0.0.fsa	Lactobacillus buchneri NRRL B-30929	Lactobacillus_buchneri_NRRL_B_30929_uid29003	2	1448478	1608205	159728
+uid65483_0.0	uid65483_0.0.fsa	Gallibacterium anatis UMN179	Gallibacterium_anatis_UMN179_uid65483	1	169195	236912	67718
+uid72_0.1	uid72_0.1.fsa	Lactococcus lactis subsp. lactis Il1403	Lactococcus_lactis_uid72	2	25887	53027	27141
+uid72_0.0	uid72_0.0.fsa	Lactococcus lactis subsp. lactis Il1403	Lactococcus_lactis_uid72	2	1409731	1464225	54495
+uid4_0.0	uid4_0.0.fsa	Treponema denticola ATCC 35405	Treponema_denticola_ATCC_35405_uid4	1	1153463	1210598	57136
+uid52_0.1	uid52_0.1.fsa	Nitrosomonas europaea ATCC 19718	Nitrosomonas_europaea_uid52	3	767637	813790	46154
+uid52_0.0	uid52_0.0.fsa	Nitrosomonas europaea ATCC 19718	Nitrosomonas_europaea_uid52	3	2710395	2781527	71133
+uid52_0.2	uid52_0.2.fsa	Nitrosomonas europaea ATCC 19718	Nitrosomonas_europaea_uid52	3	268953	317307	48355
+uid313_0.0	uid313_0.0.fsa	Escherichia coli CFT073	Escherichia_coli_CFT073_uid313	5	3021386	3059859	38474
+uid313_0.1	uid313_0.1.fsa	Escherichia coli CFT073	Escherichia_coli_CFT073_uid313	5	1405985	1443915	37931
+uid313_0.2	uid313_0.2.fsa	Escherichia coli CFT073	Escherichia_coli_CFT073_uid313	5	1362864	1400824	37961
+uid313_0.3	uid313_0.3.fsa	Escherichia coli CFT073	Escherichia_coli_CFT073_uid313	5	1328014	1362813	34800
+uid313_0.4	uid313_0.4.fsa	Escherichia coli CFT073	Escherichia_coli_CFT073_uid313	5	909332	942273	32942
+uid52561_0.0	uid52561_0.0.fsa	Stigmatella aurantiaca DW4/3-1	Stigmatella_aurantiaca_DW4_3_1_uid52561	1	3125690	3235428	109739
+uid38713_0.0	uid38713_0.0.fsa	Bacillus subtilis subsp. spizizenii str. W23	Bacillus_subtilis_spizizenii_W23_uid38713	1	1957262	1994948	37687
+uid32603_0.0	uid32603_0.0.fsa	Desulfovibrio vulgaris RCH1	Desulfovibrio_vulgaris_RCH1_uid32603	1	2939415	2971454	32040
+uid16700_0.1	uid16700_0.1.fsa	Yersinia pestis Pestoides F	Yersinia_pestis_Pestoides_F_uid16700	4	2947777	2957705	9929
+uid16700_0.3	uid16700_0.3.fsa	Yersinia pestis Pestoides F	Yersinia_pestis_Pestoides_F_uid16700	4	1131740	1165511	33772
+uid16700_0.2	uid16700_0.2.fsa	Yersinia pestis Pestoides F	Yersinia_pestis_Pestoides_F_uid16700	4	2782571	2799840	17270
+uid16700_0.0	uid16700_0.0.fsa	Yersinia pestis Pestoides F	Yersinia_pestis_Pestoides_F_uid16700	4	2932	57784	54853
+uid32197_0.0	uid32197_0.0.fsa	Lactobacillus rhamnosus Lc 705	Lactobacillus_rhamnosus_Lc_705_uid32197	1	1037957	1064425	26469
+uid12638_0.1	uid12638_0.1.fsa	Candidatus Solibacter usitatus Ellin6076	Solibacter_usitatus_Ellin6076_uid12638	2	7518762	7588114	69353
+uid12638_0.0	uid12638_0.0.fsa	Candidatus Solibacter usitatus Ellin6076	Solibacter_usitatus_Ellin6076_uid12638	2	9545564	9600446	54883
+uid19061_0.0	uid19061_0.0.fsa	Gramella forsetii KT0803	Gramella_forsetii_KT0803_uid19061	1	2529395	2610159	80765
+uid41993_0.4	uid41993_0.4.fsa	Sinorhizobium meliloti AK83	Sinorhizobium_meliloti_AK83_uid41993	5	264479	310217	45739
+uid41993_0.3	uid41993_0.3.fsa	Sinorhizobium meliloti AK83	Sinorhizobium_meliloti_AK83_uid41993	5	1377501	1397952	20452
+uid41993_0.2	uid41993_0.2.fsa	Sinorhizobium meliloti AK83	Sinorhizobium_meliloti_AK83_uid41993	5	1828760	1861250	32491
+uid41993_0.1	uid41993_0.1.fsa	Sinorhizobium meliloti AK83	Sinorhizobium_meliloti_AK83_uid41993	5	2321983	2355158	33176
+uid41993_0.0	uid41993_0.0.fsa	Sinorhizobium meliloti AK83	Sinorhizobium_meliloti_AK83_uid41993	5	1157180	1198750	41571
+uid16689_0.0	uid16689_0.0.fsa	Acidithiobacillus ferrooxidans ATCC 53993	Acidithiobacillus_ferrooxidans_ATCC_53993_uid16689	1	2026815	2119158	92344
+uid39965_0.0	uid39965_0.0.fsa	Cronobacter turicensis z3032	Cronobacter_turicensis_uid39965	1	3379426	3406697	27272
+uid16302_0.0	uid16302_0.0.fsa	Streptococcus mitis B6	Streptococcus_mitis_B6_uid16302	1	329633	444891	115259
+uid34687_0.2	uid34687_0.2.fsa	Neisseria meningitidis 8013	Neisseria_meningitidis_8013_uid34687	3	1281055	1304137	23083
+uid34687_0.1	uid34687_0.1.fsa	Neisseria meningitidis 8013	Neisseria_meningitidis_8013_uid34687	3	1346379	1386315	39937
+uid34687_0.0	uid34687_0.0.fsa	Neisseria meningitidis 8013	Neisseria_meningitidis_8013_uid34687	3	1443769	1468871	25103
+uid12624_0.2	uid12624_0.2.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	2140486	2153369	12884
+uid12624_0.3	uid12624_0.3.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	2053973	2137828	83856
+uid12624_0.0	uid12624_0.0.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	3798109	3824921	26813
+uid12624_0.1	uid12624_0.1.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	2623022	2676595	53574
+uid12624_0.6	uid12624_0.6.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	554629	574635	20007
+uid12624_0.4	uid12624_0.4.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	1828299	1842776	14478
+uid12624_0.5	uid12624_0.5.fsa	Proteus mirabilis HI4320	Proteus_mirabilis_uid12624	7	901529	1040607	139079
+uid12517_0.0	uid12517_0.0.fsa	Campylobacter lari RM2100	Campylobacter_lari_RM2100_uid12517	1	789967	824739	34773
+uid16070_0.1	uid16070_0.1.fsa	Yersinia pseudotuberculosis IP 31758	Yersinia_pseudotuberculosis_IP_31758_uid16070	2	2509054	2556969	47916
+uid16070_0.0	uid16070_0.0.fsa	Yersinia pseudotuberculosis IP 31758	Yersinia_pseudotuberculosis_IP_31758_uid16070	2	3085771	3102713	16943
+uid17413_0.1	uid17413_0.1.fsa	Delftia acidovorans SPH-1	Delftia_acidovorans_SPH-1_uid17413	4	4157295	4274181	116887
+uid17413_0.0	uid17413_0.0.fsa	Delftia acidovorans SPH-1	Delftia_acidovorans_SPH-1_uid17413	4	5113782	5175128	61347
+uid17413_0.3	uid17413_0.3.fsa	Delftia acidovorans SPH-1	Delftia_acidovorans_SPH-1_uid17413	4	2106315	2156991	50677
+uid17413_0.2	uid17413_0.2.fsa	Delftia acidovorans SPH-1	Delftia_acidovorans_SPH-1_uid17413	4	2815068	2916922	101855
+uid21055_0.0	uid21055_0.0.fsa	Mycobacterium tuberculosis KZN 1435	Mycobacterium_tuberculosis_KZN_1435_uid21055	1	1434355	1443264	8910
+uid30687_0.6	uid30687_0.6.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	941724	1021566	79843
+uid30687_0.5	uid30687_0.5.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	1226471	1252622	26152
+uid30687_0.4	uid30687_0.4.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	1469415	1482031	12617
+uid30687_0.3	uid30687_0.3.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	2015142	2052880	37739
+uid30687_0.2	uid30687_0.2.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	1228217	1274645	46429
+uid30687_0.1	uid30687_0.1.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	1471371	1481492	10122
+uid30687_0.0	uid30687_0.0.fsa	Salmonella enterica subsp. enterica serovar Enteritidis str. P125109	Salmonella_enterica_serovar_Enteritidis_P125109_uid30687	7	1883913	2058948	175036
+uid301_0.0	uid301_0.0.fsa	Streptococcus pyogenes SSI-1	Streptococcus_pyogenes_SSI-1_uid301	1	625070	653780	28711
+uid32969_0.0	uid32969_0.0.fsa	Lactobacillus plantarum JDM1	Lactobacillus_plantarum_JDM1_uid32969	1	39443	67120	27678
+uid13959_0.2	uid13959_0.2.fsa	Escherichia coli HS	Escherichia_coli_HS_uid13959	4	917273	948198	30926
+uid13959_0.3	uid13959_0.3.fsa	Escherichia coli HS	Escherichia_coli_HS_uid13959	4	291831	335045	43215
+uid13959_0.0	uid13959_0.0.fsa	Escherichia coli HS	Escherichia_coli_HS_uid13959	4	2069863	2116036	46174
+uid13959_0.1	uid13959_0.1.fsa	Escherichia coli HS	Escherichia_coli_HS_uid13959	4	1656688	1673730	17043
+uid28507_0.0	uid28507_0.0.fsa	Clostridium botulinum A3 str. Loch Maree	Clostridium_botulinum_A3_Loch_Maree_uid28507	1	2053269	2146455	93187
+uid74_0.0	uid74_0.0.fsa	Bacillus cereus ATCC 10987	Bacillus_cereus_ATCC_10987_uid74	1	384456	434007	49552
+uid17733_0.0	uid17733_0.0.fsa	Bacillus cereus G9842	Bacillus_cereus_G9842_uid17733	3	3753715	3785591	31877
+uid17733_0.1	uid17733_0.1.fsa	Bacillus cereus G9842	Bacillus_cereus_G9842_uid17733	3	2753635	2794965	41331
+uid17733_0.2	uid17733_0.2.fsa	Bacillus cereus G9842	Bacillus_cereus_G9842_uid17733	3	2488622	2513122	24501
+uid53341_0.2	uid53341_0.2.fsa	Yersinia enterocolitica subsp. palearctica 105.5R(r)	Yersinia_enterocolitica_palearctica_105_5R_r__uid53341	3	1584642	1619352	34711
+uid53341_0.1	uid53341_0.1.fsa	Yersinia enterocolitica subsp. palearctica 105.5R(r)	Yersinia_enterocolitica_palearctica_105_5R_r__uid53341	3	2068497	2108501	40005
+uid53341_0.0	uid53341_0.0.fsa	Yersinia enterocolitica subsp. palearctica 105.5R(r)	Yersinia_enterocolitica_palearctica_105_5R_r__uid53341	3	3302103	3312600	10498
+uid50411_0.0	uid50411_0.0.fsa	Haemophilus parainfluenzae T3T1	Haemophilus_parainfluenzae_T3T1_uid50411	1	371407	453542	82136
+uid16720_0.3	uid16720_0.3.fsa	Pseudomonas aeruginosa PA7	Pseudomonas_aeruginosa_PA7_uid16720	5	764445	787622	23178
+uid16720_0.2	uid16720_0.2.fsa	Pseudomonas aeruginosa PA7	Pseudomonas_aeruginosa_PA7_uid16720	5	2411989	2455346	43358
+uid16720_0.1	uid16720_0.1.fsa	Pseudomonas aeruginosa PA7	Pseudomonas_aeruginosa_PA7_uid16720	5	5191294	5216684	25391
+uid16720_0.0	uid16720_0.0.fsa	Pseudomonas aeruginosa PA7	Pseudomonas_aeruginosa_PA7_uid16720	5	5295232	5305684	10453
+uid16720_0.4	uid16720_0.4.fsa	Pseudomonas aeruginosa PA7	Pseudomonas_aeruginosa_PA7_uid16720	5	687843	717925	30083
+uid19517_0.0	uid19517_0.0.fsa	Clostridium botulinum A str. ATCC 19397	Clostridium_botulinum_A_ATCC_19397_uid19517	1	3114511	3140204	25694
+uid41117_0.3	uid41117_0.3.fsa	Sinorhizobium meliloti SM11	Sinorhizobium_meliloti_SM11_uid41117	4	1869045	1915810	46766
+uid41117_0.2	uid41117_0.2.fsa	Sinorhizobium meliloti SM11	Sinorhizobium_meliloti_SM11_uid41117	4	2290832	2303882	13051
+uid41117_0.1	uid41117_0.1.fsa	Sinorhizobium meliloti SM11	Sinorhizobium_meliloti_SM11_uid41117	4	2360626	2397851	37226
+uid41117_0.0	uid41117_0.0.fsa	Sinorhizobium meliloti SM11	Sinorhizobium_meliloti_SM11_uid41117	4	1458337	1501326	42990
+uid16306_0.0	uid16306_0.0.fsa	Caulobacter sp. K31	Caulobacter_K31_uid16306	1	2349377	2426018	76642
+uid285_0.0	uid285_0.0.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	2005731	2018928	13198
+uid285_0.1	uid285_0.1.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1550281	1571722	21442
+uid285_0.2	uid285_0.2.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1376468	1392763	16296
+uid285_0.3	uid285_0.3.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1305030	1331541	26512
+uid285_0.4	uid285_0.4.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1242388	1304478	62091
+uid285_0.5	uid285_0.5.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1170935	1217907	46973
+uid285_0.6	uid285_0.6.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	1117952	1170272	52321
+uid285_0.7	uid285_0.7.fsa	Xylella fastidiosa Temecula1	Xylella_fastidiosa_Temecula1_uid285	8	454017	467611	13595
+uid39745_0.0	uid39745_0.0.fsa	Geobacter sulfurreducens KN400	Geobacter_sulfurreducens_KN400_uid39745	1	1023134	1031151	8018
+uid16293_0.0	uid16293_0.0.fsa	Campylobacter fetus subsp. fetus 82-40	Campylobacter_fetus_82-40_uid16293	1	660498	681645	21148
+uid28745_0.0	uid28745_0.0.fsa	Yersinia pseudotuberculosis PB1/+	Yersinia_pseudotuberculosis_PB1__uid28745	1	1524140	1535506	11367
+uid43059_0.0	uid43059_0.0.fsa	Halanaerobium sp. sapolanicus	Halanaerobium__sapolanicus__uid43059	2	644109	708538	64430
+uid43059_0.1	uid43059_0.1.fsa	Halanaerobium sp. sapolanicus	Halanaerobium__sapolanicus__uid43059	2	40154	90272	50119
+uid33635_0.0	uid33635_0.0.fsa	Ferroglobus placidus DSM 10642	Ferroglobus_placidus_DSM_10642_uid33635	1	359178	484984	125807
+uid42109_0.0	uid42109_0.0.fsa	Bartonella clarridgeiae 73	Bartonella_clarridgeiae_73_uid42109	1	1310404	1340156	29753
+uid16180_0.1	uid16180_0.1.fsa	Orientia tsutsugamushi str. Boryong	Orientia_tsutsugamushi_Boryong_uid16180	2	626591	663610	37020
+uid16180_0.0	uid16180_0.0.fsa	Orientia tsutsugamushi str. Boryong	Orientia_tsutsugamushi_Boryong_uid16180	2	1076243	1129430	53188
+uid29469_0.1	uid29469_0.1.fsa	Candidatus Phytoplasma australiense	Candidatus_Phytoplasma_australiense_uid29469	2	34782	91340	56559
+uid29469_0.0	uid29469_0.0.fsa	Candidatus Phytoplasma australiense	Candidatus_Phytoplasma_australiense_uid29469	2	760407	831770	71364
+uid29071_0.0	uid29071_0.0.fsa	Eubacterium rectale ATCC 33656	Eubacterium_rectale_ATCC_33656_uid29071	3	1926350	1994508	68159
+uid29071_0.1	uid29071_0.1.fsa	Eubacterium rectale ATCC 33656	Eubacterium_rectale_ATCC_33656_uid29071	3	719127	789060	69934
+uid29071_0.2	uid29071_0.2.fsa	Eubacterium rectale ATCC 33656	Eubacterium_rectale_ATCC_33656_uid29071	3	512099	587626	75528
+uid15708_0.0	uid15708_0.0.fsa	Acidovorax citrulli AAC00-1	Acidovorax_avenae_citrulli_AAC00-1_uid15708	2	3690607	3752622	62016
+uid15708_0.1	uid15708_0.1.fsa	Acidovorax citrulli AAC00-1	Acidovorax_avenae_citrulli_AAC00-1_uid15708	2	730850	776094	45245
+uid52281_0.0	uid52281_0.0.fsa	Eubacterium limosum KIST612	Eubacterium_limosum_KIST612_uid52281	1	1151758	1280955	129198
+uid43693_0.10	uid43693_0.10.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	558406	606780	48375
+uid43693_0.8	uid43693_0.8.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	5031811	5065110	33300
+uid43693_0.9	uid43693_0.9.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	920456	980339	59884
+uid43693_0.2	uid43693_0.2.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	2712816	2744193	31378
+uid43693_0.3	uid43693_0.3.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	2648615	2681960	33346
+uid43693_0.0	uid43693_0.0.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	4929855	4940757	10903
+uid43693_0.1	uid43693_0.1.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	3059975	3094634	34660
+uid43693_0.6	uid43693_0.6.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	1284563	1325701	41139
+uid43693_0.7	uid43693_0.7.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	981695	998564	16870
+uid43693_0.4	uid43693_0.4.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	2108538	2193547	85010
+uid43693_0.5	uid43693_0.5.fsa	Escherichia coli IHE3034	Escherichia_coli_IHE3034_uid43693	11	1432810	1478079	45270
+uid33639_0.1	uid33639_0.1.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	2100820	2142494	41675
+uid33639_0.0	uid33639_0.0.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	2722628	2733910	11283
+uid33639_0.3	uid33639_0.3.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	1419144	1477806	58663
+uid33639_0.2	uid33639_0.2.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	1973491	1999381	25891
+uid33639_0.5	uid33639_0.5.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	916855	930984	14130
+uid33639_0.4	uid33639_0.4.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	1232274	1245691	13418
+uid33639_0.7	uid33639_0.7.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	310421	348240	37820
+uid33639_0.6	uid33639_0.6.fsa	Shigella flexneri 2002017	Shigella_flexneri_2002017_uid33639	8	714684	762926	48243
+uid41701_0.0	uid41701_0.0.fsa	Geobacillus sp. C56-T3	Geobacillus_C56_T3_uid41701	1	2034584	2063480	28897
+uid17631_0.0	uid17631_0.0.fsa	Ralstonia pickettii 12J	Ralstonia_pickettii_12J_uid17631	1	2403290	2466766	63477
+uid13151_0.0	uid13151_0.0.fsa	Shigella sonnei Ss046	Shigella_sonnei_Ss046_uid13151	1	763755	793994	30240
+uid360_0.0	uid360_0.0.fsa	Vibrio parahaemolyticus RIMD 2210633	Vibrio_parahaemolyticus_uid360	1	1670355	1704180	33826
+uid40507_0.0	uid40507_0.0.fsa	Vibrio sp. Ex25	Vibrio_Ex25_uid40507	1	1744165	1890627	146463
+uid18797_0.2	uid18797_0.2.fsa	Lactococcus lactis subsp. cremoris MG1363	Lactococcus_lactis_cremoris_MG1363_uid18797	3	36881	51647	14767
+uid18797_0.1	uid18797_0.1.fsa	Lactococcus lactis subsp. cremoris MG1363	Lactococcus_lactis_cremoris_MG1363_uid18797	3	2064418	2107480	43063
+uid18797_0.0	uid18797_0.0.fsa	Lactococcus lactis subsp. cremoris MG1363	Lactococcus_lactis_cremoris_MG1363_uid18797	3	2210856	2227565	16710
+uid28109_0.7	uid28109_0.7.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	168755	206371	37617
+uid28109_0.6	uid28109_0.6.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	372788	407661	34874
+uid28109_0.5	uid28109_0.5.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	1722127	1786523	64397
+uid28109_0.4	uid28109_0.4.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	1888144	1963392	75249
+uid28109_0.3	uid28109_0.3.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	421330	481011	59682
+uid28109_0.2	uid28109_0.2.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	493826	545367	51542
+uid28109_0.1	uid28109_0.1.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	547914	586532	38619
+uid28109_0.0	uid28109_0.0.fsa	Bartonella tribocorum CIP 105476	Bartonella_tribocorum_CIP_105476_uid28109	8	1169045	1190623	21579
+uid19053_0.2	uid19053_0.2.fsa	Escherichia coli SE15	Escherichia_coli_SE15_uid19053	3	1141217	1184986	43770
+uid19053_0.1	uid19053_0.1.fsa	Escherichia coli SE15	Escherichia_coli_SE15_uid19053	3	1241099	1262917	21819
+uid19053_0.0	uid19053_0.0.fsa	Escherichia coli SE15	Escherichia_coli_SE15_uid19053	3	4373006	4435522	62517
+uid34809_0.1	uid34809_0.1.fsa	Staphylococcus aureus 04-02981	Staphylococcus_aureus_04_02981_uid34809	2	876209	912463	36255
+uid34809_0.0	uid34809_0.0.fsa	Staphylococcus aureus 04-02981	Staphylococcus_aureus_04_02981_uid34809	2	2039245	2080114	40870
+uid32825_0.0	uid32825_0.0.fsa	Isosphaera pallida ATCC 43644	Isosphaera_pallida_ATCC_43644_uid32825	1	3457309	3546598	89290
+uid11752_0.0	uid11752_0.0.fsa	Haemophilus influenzae 86-028NP	Haemophilus_influenzae_86_028NP_uid11752	1	1708426	1728142	19717
+uid15766_0.0	uid15766_0.0.fsa	Lactobacillus reuteri DSM 20016	Lactobacillus_reuteri_DSM_20016_uid15766	4	1132861	1185127	52267
+uid15766_0.1	uid15766_0.1.fsa	Lactobacillus reuteri DSM 20016	Lactobacillus_reuteri_DSM_20016_uid15766	4	1047164	1109220	62057
+uid15766_0.2	uid15766_0.2.fsa	Lactobacillus reuteri DSM 20016	Lactobacillus_reuteri_DSM_20016_uid15766	4	826886	915515	88630
+uid15766_0.3	uid15766_0.3.fsa	Lactobacillus reuteri DSM 20016	Lactobacillus_reuteri_DSM_20016_uid15766	4	733651	779096	45446
+uid28855_0.0	uid28855_0.0.fsa	Clostridium botulinum E3 str. Alaska E43	Clostridium_botulinum_E3_Alaska_E43_uid28855	1	919288	934304	15017
+uid28539_0.2	uid28539_0.2.fsa	Edwardsiella tarda EIB202	Edwardsiella_tarda_EIB202_uid28539	3	1699518	1744014	44497
+uid28539_0.0	uid28539_0.0.fsa	Edwardsiella tarda EIB202	Edwardsiella_tarda_EIB202_uid28539	3	3201940	3254697	52758
+uid28539_0.1	uid28539_0.1.fsa	Edwardsiella tarda EIB202	Edwardsiella_tarda_EIB202_uid28539	3	2594426	2609997	15572
+uid66837_0.1	uid66837_0.1.fsa	Ralstonia solanacearum Po82	Ralstonia_solanacearum_Po82_uid66837	2	228840	275436	46597
+uid66837_0.0	uid66837_0.0.fsa	Ralstonia solanacearum Po82	Ralstonia_solanacearum_Po82_uid66837	2	2576335	2639343	63009
+uid13913_0.0	uid13913_0.0.fsa	Nitrosomonas eutropha C91	Nitrosomonas_eutropha_C71_uid13913	5	2317875	2381372	63498
+uid13913_0.1	uid13913_0.1.fsa	Nitrosomonas eutropha C91	Nitrosomonas_eutropha_C71_uid13913	5	1924065	1973251	49187
+uid13913_0.2	uid13913_0.2.fsa	Nitrosomonas eutropha C91	Nitrosomonas_eutropha_C71_uid13913	5	1544582	1595675	51094
+uid13913_0.3	uid13913_0.3.fsa	Nitrosomonas eutropha C91	Nitrosomonas_eutropha_C71_uid13913	5	1100131	1165593	65463
+uid13913_0.4	uid13913_0.4.fsa	Nitrosomonas eutropha C91	Nitrosomonas_eutropha_C71_uid13913	5	635826	687159	51334
+uid349_0.1	uid349_0.1.fsa	Vibrio vulnificus CMCP6	Vibrio_vulnificus_CMCP6_uid349	2	57392	117995	60604
+uid349_0.0	uid349_0.0.fsa	Vibrio vulnificus CMCP6	Vibrio_vulnificus_CMCP6_uid349	2	2438314	2585231	146918
+uid329_0.1	uid329_0.1.fsa	Desulfovibrio desulfuricans subsp. desulfuricans str. G20	Desulfovibrio_desulfuricans_G20_uid329	2	917947	1028989	111043
+uid329_0.0	uid329_0.0.fsa	Desulfovibrio desulfuricans subsp. desulfuricans str. G20	Desulfovibrio_desulfuricans_G20_uid329	2	3318437	3376084	57648
+uid17463_0.0	uid17463_0.0.fsa	Burkholderia phytofirmans PsJN	Burkholderia_phytofirmans_PsJN_uid17463	1	213540	269231	55692
+uid18637_0.0	uid18637_0.0.fsa	Methylobacterium extorquens PA1	Methylobacterium_extorquens_PA1_uid18637	1	1595129	1604926	9798
+uid27_0.0	uid27_0.0.fsa	Bordetella avium 197N	Bordetella_avium_197N_uid27	1	1364542	1412495	47954
+uid330_0.1	uid330_0.1.fsa	Streptococcus agalactiae 2603V/R	Streptococcus_agalactiae_2603_uid330	2	985580	1047628	62049
+uid330_0.0	uid330_0.0.fsa	Streptococcus agalactiae 2603V/R	Streptococcus_agalactiae_2603_uid330	2	1966825	2009613	42789
+uid34_0.4	uid34_0.4.fsa	Yersinia pestis CO92	Yersinia_pestis_CO92_uid34	5	2932	52347	49416
+uid34_0.1	uid34_0.1.fsa	Yersinia pestis CO92	Yersinia_pestis_CO92_uid34	5	2363019	2409378	46360
+uid34_0.0	uid34_0.0.fsa	Yersinia pestis CO92	Yersinia_pestis_CO92_uid34	5	2554373	2608361	53989
+uid34_0.3	uid34_0.3.fsa	Yersinia pestis CO92	Yersinia_pestis_CO92_uid34	5	1234239	1244683	10445
+uid34_0.2	uid34_0.2.fsa	Yersinia pestis CO92	Yersinia_pestis_CO92_uid34	5	1392937	1416524	23588
+uid36319_0.1	uid36319_0.1.fsa	Neisseria meningitidis alpha710	Neisseria_meningitidis_alpha710_uid36319	2	992328	1028459	36132
+uid36319_0.0	uid36319_0.0.fsa	Neisseria meningitidis alpha710	Neisseria_meningitidis_alpha710_uid36319	2	1069696	1090689	20994
+uid42137_0.0	uid42137_0.0.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	2814561	2848825	34265
+uid42137_0.1	uid42137_0.1.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	2353941	2362646	8706
+uid42137_0.2	uid42137_0.2.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	1912455	1950322	37868
+uid42137_0.3	uid42137_0.3.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	1365453	1405737	40285
+uid42137_0.4	uid42137_0.4.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	1005233	1040674	35442
+uid42137_0.5	uid42137_0.5.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	914299	948765	34467
+uid42137_0.6	uid42137_0.6.fsa	Escherichia coli UMNK88	Escherichia_coli_UMNK88_uid42137	7	299021	330090	31070
+uid49399_0.2	uid49399_0.2.fsa	Xylella fastidiosa subsp. fastidiosa GB514	Xylella_fastidiosa_GB514_uid49399	3	1573877	1587470	13594
+uid49399_0.1	uid49399_0.1.fsa	Xylella fastidiosa subsp. fastidiosa GB514	Xylella_fastidiosa_GB514_uid49399	3	2264296	2308208	43913
+uid49399_0.0	uid49399_0.0.fsa	Xylella fastidiosa subsp. fastidiosa GB514	Xylella_fastidiosa_GB514_uid49399	3	2379127	2425975	46849
+uid60453_0.1	uid60453_0.1.fsa	Serratia sp. AS12	Serratia_AS12_uid60453	2	880219	894955	14737
+uid60453_0.0	uid60453_0.0.fsa	Serratia sp. AS12	Serratia_AS12_uid60453	2	3569589	3679965	110377
+uid59881_0.0	uid59881_0.0.fsa	Vibrio vulnificus MO6-24/O	Vibrio_vulnificus_MO6_24_O_uid59881	1	664034	705078	41045
+uid304_0.0	uid304_0.0.fsa	Clostridium perfringens ATCC 13124	Clostridium_perfringens_ATCC_13124_uid304	2	1791790	1809065	17276
+uid304_0.1	uid304_0.1.fsa	Clostridium perfringens ATCC 13124	Clostridium_perfringens_ATCC_13124_uid304	2	1089077	1122710	33634
+uid33067_0.4	uid33067_0.4.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. 14028S	Salmonella_enterica_serovar_Typhimurium_14028S_uid33067	5	1056587	1097951	41365
+uid33067_0.2	uid33067_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. 14028S	Salmonella_enterica_serovar_Typhimurium_14028S_uid33067	5	2095632	2133610	37979
+uid33067_0.3	uid33067_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. 14028S	Salmonella_enterica_serovar_Typhimurium_14028S_uid33067	5	1284622	1329528	44907
+uid33067_0.0	uid33067_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. 14028S	Salmonella_enterica_serovar_Typhimurium_14028S_uid33067	5	4433983	4448932	14950
+uid33067_0.1	uid33067_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. 14028S	Salmonella_enterica_serovar_Typhimurium_14028S_uid33067	5	2784866	2830650	45785
+uid335_0.0	uid335_0.0.fsa	Shewanella oneidensis MR-1	Shewanella_oneidensis_uid335	3	3076443	3114478	38036
+uid335_0.1	uid335_0.1.fsa	Shewanella oneidensis MR-1	Shewanella_oneidensis_uid335	3	2788307	2822836	34530
+uid335_0.2	uid335_0.2.fsa	Shewanella oneidensis MR-1	Shewanella_oneidensis_uid335	3	669361	694323	24963
+uid40625_0.0	uid40625_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. D23580	Salmonella_enterica_serovar_Typhimurium_uid40625	4	2357678	2367289	9612
+uid40625_0.1	uid40625_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. D23580	Salmonella_enterica_serovar_Typhimurium_uid40625	4	2066443	2105714	39272
+uid40625_0.2	uid40625_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. D23580	Salmonella_enterica_serovar_Typhimurium_uid40625	4	1021995	1128581	106587
+uid40625_0.3	uid40625_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. D23580	Salmonella_enterica_serovar_Typhimurium_uid40625	4	368857	409229	40373
+uid16079_0.0	uid16079_0.0.fsa	Mycobacterium sp. JLS	Mycobacterium_JLS_uid16079	1	2313269	2393764	80496
+uid339_0.0	uid339_0.0.fsa	Burkholderia cenocepacia J2315	Burkholderia_cenocepacia_J2315_uid339	5	1733676	1760085	26410
+uid339_0.1	uid339_0.1.fsa	Burkholderia cenocepacia J2315	Burkholderia_cenocepacia_J2315_uid339	5	100429	124868	24440
+uid339_0.4	uid339_0.4.fsa	Burkholderia cenocepacia J2315	Burkholderia_cenocepacia_J2315_uid339	5	1140270	1177899	37630
+uid339_0.2	uid339_0.2.fsa	Burkholderia cenocepacia J2315	Burkholderia_cenocepacia_J2315_uid339	5	2100844	2140930	40087
+uid339_0.3	uid339_0.3.fsa	Burkholderia cenocepacia J2315	Burkholderia_cenocepacia_J2315_uid339	5	1180216	1186780	6565
+uid15762_0.0	uid15762_0.0.fsa	Mycobacterium sp. MCS	Mycobacterium_MCS_uid15762	1	149207	181989	32783
+uid66625_0.0	uid66625_0.0.fsa	Listeria monocytogenes M7	Listeria_monocytogenes_M7_uid66625	2	2667269	2701684	34416
+uid66625_0.1	uid66625_0.1.fsa	Listeria monocytogenes M7	Listeria_monocytogenes_M7_uid66625	2	74614	106797	32184
+uid45957_0.0	uid45957_0.0.fsa	butyrate-producing bacterium SSC/2	butyrate_producing_bacterium_SSC_2_uid45957	1	1786877	1820108	33232
+uid13399_0.0	uid13399_0.0.fsa	Xenorhabdus bovienii SS-2004	Xenorhabdus_bovienii_SS_2004_uid13399	4	2600224	2627824	27601
+uid13399_0.1	uid13399_0.1.fsa	Xenorhabdus bovienii SS-2004	Xenorhabdus_bovienii_SS_2004_uid13399	4	1333153	1357081	23929
+uid13399_0.2	uid13399_0.2.fsa	Xenorhabdus bovienii SS-2004	Xenorhabdus_bovienii_SS_2004_uid13399	4	1143594	1304451	160858
+uid13399_0.3	uid13399_0.3.fsa	Xenorhabdus bovienii SS-2004	Xenorhabdus_bovienii_SS_2004_uid13399	4	987741	1041025	53285
+uid19267_0.0	uid19267_0.0.fsa	Azorhizobium caulinodans ORS 571	Azorhizobium_caulinodans_ORS_571_uid19267	1	934780	983239	48460
+uid53145_0.0	uid53145_0.0.fsa	Lactobacillus acidophilus 30SC	Lactobacillus_acidophilus_30SC_uid53145	1	1195561	1314812	119252
+uid13146_0.2	uid13146_0.2.fsa	Shigella boydii Sb227	Shigella_boydii_Sb227_uid13146	3	1189658	1219650	29993
+uid13146_0.0	uid13146_0.0.fsa	Shigella boydii Sb227	Shigella_boydii_Sb227_uid13146	3	4213293	4228675	15383
+uid13146_0.1	uid13146_0.1.fsa	Shigella boydii Sb227	Shigella_boydii_Sb227_uid13146	3	2049811	2108517	58707
+uid32993_0.0	uid32993_0.0.fsa	Desulfobulbus propionicus DSM 2032	Desulfobulbus_propionicus_DSM_2032_uid32993	1	98697	233358	134662
+uid76_0.4	uid76_0.4.fsa	Bacillus subtilis subsp. subtilis str. 168	Bacillus_subtilis_uid76	5	651977	674785	22809
+uid76_0.3	uid76_0.3.fsa	Bacillus subtilis subsp. subtilis str. 168	Bacillus_subtilis_uid76	5	1863448	1915979	52532
+uid76_0.2	uid76_0.2.fsa	Bacillus subtilis subsp. subtilis str. 168	Bacillus_subtilis_uid76	5	2003401	2061995	58595
+uid76_0.1	uid76_0.1.fsa	Bacillus subtilis subsp. subtilis str. 168	Bacillus_subtilis_uid76	5	2065042	2078626	13585
+uid76_0.0	uid76_0.0.fsa	Bacillus subtilis subsp. subtilis str. 168	Bacillus_subtilis_uid76	5	2653371	2690313	36943
+uid29567_0.0	uid29567_0.0.fsa	Staphylococcus aureus subsp. aureus str. JKD6008	Staphylococcus_aureus_JKD6008_uid29567	3	2137342	2169242	31901
+uid29567_0.1	uid29567_0.1.fsa	Staphylococcus aureus subsp. aureus str. JKD6008	Staphylococcus_aureus_JKD6008_uid29567	3	2077948	2136597	58650
+uid29567_0.2	uid29567_0.2.fsa	Staphylococcus aureus subsp. aureus str. JKD6008	Staphylococcus_aureus_JKD6008_uid29567	3	371611	406571	34961
+uid259_0.12	uid259_0.12.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	300073	323112	23040
+uid259_0.11	uid259_0.11.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	892845	930943	38099
+uid259_0.10	uid259_0.10.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	2668339	2688870	20532
+uid259_0.9	uid259_0.9.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	2743223	2788348	45126
+uid259_0.8	uid259_0.8.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	2966382	3015014	48633
+uid259_0.3	uid259_0.3.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	1330857	1391923	61067
+uid259_0.2	uid259_0.2.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	1454402	1501550	47149
+uid259_0.1	uid259_0.1.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	2116354	2165694	49341
+uid259_0.0	uid259_0.0.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	2282949	2330172	47224
+uid259_0.7	uid259_0.7.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	3551577	3557558	5982
+uid259_0.6	uid259_0.6.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	4650042	4657375	7334
+uid259_0.5	uid259_0.5.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	1058795	1105943	47149
+uid259_0.4	uid259_0.4.fsa	Escherichia coli O157:H7 str. EDL933	Escherichia_coli_O157H7_EDL933_uid259	13	1250521	1295458	44938
+uid34779_0.1	uid34779_0.1.fsa	Erwinia pyrifoliae Ep1/96	Erwinia_pyrifoliae_Ep1_96_uid34779	3	1981078	2005154	24077
+uid34779_0.0	uid34779_0.0.fsa	Erwinia pyrifoliae Ep1/96	Erwinia_pyrifoliae_Ep1_96_uid34779	3	2282116	2324984	42869
+uid34779_0.2	uid34779_0.2.fsa	Erwinia pyrifoliae Ep1/96	Erwinia_pyrifoliae_Ep1_96_uid34779	3	79749	89464	9716
+uid53317_0.0	uid53317_0.0.fsa	Helicobacter pylori Gambia94/24 (Helicobacter pylori Gam94/24)	Helicobacter_pylori_Gambia94_24_uid53317	1	161384	223172	61789
+uid66845_0.0	uid66845_0.0.fsa	Propionibacterium acnes 6609	Propionibacterium_acnes_6609_uid66845	1	1718900	1735373	16474
+uid31329_0.1	uid31329_0.1.fsa	Bacillus anthracis str. CDC 684	Bacillus_anthracis_CDC_684_uid31329	2	758528	785602	27075
+uid31329_0.0	uid31329_0.0.fsa	Bacillus anthracis str. CDC 684	Bacillus_anthracis_CDC_684_uid31329	2	4846143	4860689	14547
+uid18983_0.0	uid18983_0.0.fsa	Orientia tsutsugamushi str. Ikeda	Orientia_tsutsugamushi_Ikeda_uid18983	1	1186152	1249197	63046
+uid50751_0.1	uid50751_0.1.fsa	Alicycliphilus denitrificans K601	Alicycliphilus_denitrificans_K601_uid50751	2	1838013	1889192	51180
+uid50751_0.0	uid50751_0.0.fsa	Alicycliphilus denitrificans K601	Alicycliphilus_denitrificans_K601_uid50751	2	2255650	2305845	50196
+uid64581_0.2	uid64581_0.2.fsa	Bacillus amyloliquefaciens TA208	Bacillus_amyloliquefaciens_TA208_uid64581	3	1163118	1325962	162845
+uid64581_0.1	uid64581_0.1.fsa	Bacillus amyloliquefaciens TA208	Bacillus_amyloliquefaciens_TA208_uid64581	3	2113566	2144252	30687
+uid64581_0.0	uid64581_0.0.fsa	Bacillus amyloliquefaciens TA208	Bacillus_amyloliquefaciens_TA208_uid64581	3	3007018	3087338	80321
+uid39177_0.0	uid39177_0.0.fsa	Bacteroides xylanisolvens XB1A	Bacteroides_xylanisolvens_XB1A_uid39177	1	4821468	4930653	109186
+uid13325_0.1	uid13325_0.1.fsa	Gluconobacter oxydans 621H	Gluconobacter_oxydans_621H_uid13325	2	2538135	2570632	32498
+uid13325_0.0	uid13325_0.0.fsa	Gluconobacter oxydans 621H	Gluconobacter_oxydans_621H_uid13325	2	2643410	2683321	39912
+uid16182_0.0	uid16182_0.0.fsa	Burkholderia pseudomallei 1106a	Burkholderia_pseudomallei_1106a_uid16182	2	3567817	3621005	53189
+uid16182_0.1	uid16182_0.1.fsa	Burkholderia pseudomallei 1106a	Burkholderia_pseudomallei_1106a_uid16182	2	74338	141449	67112
+uid16313_0.1	uid16313_0.1.fsa	Staphylococcus aureus subsp. aureus USA300_FPR3757	Staphylococcus_aureus_USA300_FPR3757_uid16313	2	1548477	1591938	43462
+uid16313_0.0	uid16313_0.0.fsa	Staphylococcus aureus subsp. aureus USA300_FPR3757	Staphylococcus_aureus_USA300_FPR3757_uid16313	2	2089874	2138923	49050
+uid20707_0.1	uid20707_0.1.fsa	Streptococcus pyogenes NZ131	Streptococcus_pyogenes_NZ131_uid20707	2	749693	785704	36012
+uid20707_0.0	uid20707_0.0.fsa	Streptococcus pyogenes NZ131	Streptococcus_pyogenes_NZ131_uid20707	2	1460526	1501664	41139
+uid10638_0.3	uid10638_0.3.fsa	Yersinia pestis biovar Microtus str. 91001	Yersinia_pestis_biovar_Microtus_91001_uid10638	4	953199	970462	17264
+uid10638_0.2	uid10638_0.2.fsa	Yersinia pestis biovar Microtus str. 91001	Yersinia_pestis_biovar_Microtus_91001_uid10638	4	1138213	1147858	9646
+uid10638_0.1	uid10638_0.1.fsa	Yersinia pestis biovar Microtus str. 91001	Yersinia_pestis_biovar_Microtus_91001_uid10638	4	2148173	2158504	10332
+uid10638_0.0	uid10638_0.0.fsa	Yersinia pestis biovar Microtus str. 91001	Yersinia_pestis_biovar_Microtus_91001_uid10638	4	2018	56717	54700
+uid401_0.0	uid401_0.0.fsa	Lactococcus lactis subsp. cremoris SK11	Lactococcus_lactis_cremoris_SK11_uid401	1	1036757	1072335	35579
+uid31519_0.0	uid31519_0.0.fsa	Mobiluncus curtisii ATCC 43063	Mobiluncus_curtisii_ATCC_43063_uid31519	1	1427028	1462109	35082
+uid29543_0.0	uid29543_0.0.fsa	Brachyspira murdochii DSM 12563	Brachyspira_murdochii_DSM_12563_uid29543	1	1867822	1981783	113962
+uid16365_0.0	uid16365_0.0.fsa	Streptococcus pyogenes MGAS2096	Streptococcus_pyogenes_MGAS2096_uid16365	1	1386498	1456819	70322
+uid13474_0.0	uid13474_0.0.fsa	Nitrobacter winogradskyi Nb-255	Nitrobacter_winogradskyi_Nb-255_uid13474	1	1593574	1629857	36284
+uid63_0.0	uid63_0.0.fsa	Staphylococcus aureus RF122	Staphylococcus_aureus_RF122_uid63	1	251476	316968	65493
+uid32511_0.9	uid32511_0.9.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	571967	625508	53542
+uid32511_0.8	uid32511_0.8.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	5364246	5410117	45872
+uid32511_0.7	uid32511_0.7.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	1269364	1312149	42786
+uid32511_0.6	uid32511_0.6.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	1445683	1488589	42907
+uid32511_0.5	uid32511_0.5.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	1954837	1987328	32492
+uid32511_0.4	uid32511_0.4.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	2145794	2184138	38345
+uid32511_0.3	uid32511_0.3.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	2286999	2333861	46863
+uid32511_0.2	uid32511_0.2.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	2339467	2380532	41066
+uid32511_0.1	uid32511_0.1.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	2385943	2427505	41563
+uid32511_0.0	uid32511_0.0.fsa	Escherichia coli O103:H2 str. 12009	Escherichia_coli_O103_H2_12009_uid32511	10	3145664	3186197	40534
+uid16375_0.1	uid16375_0.1.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	2683575	2689990	6416
+uid16375_0.0	uid16375_0.0.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	2761161	2803389	42229
+uid16375_0.3	uid16375_0.3.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	2053886	2090057	36172
+uid16375_0.2	uid16375_0.2.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	2218299	2230004	11706
+uid16375_0.5	uid16375_0.5.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	1408711	1433249	24539
+uid16375_0.4	uid16375_0.4.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	1883486	1942197	58712
+uid16375_0.7	uid16375_0.7.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	742037	774677	32641
+uid16375_0.6	uid16375_0.6.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	1193003	1207560	14558
+uid16375_0.8	uid16375_0.8.fsa	Shigella flexneri 5 str. 8401	Shigella_flexneri_5_8401_uid16375	9	238374	287969	49596
+uid54033_0.0	uid54033_0.0.fsa	Pseudomonas putida BIRD-1	Pseudomonas_putida_BIRD_1_uid54033	1	3097198	3153665	56468
+uid32853_0.1	uid32853_0.1.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid32853	4	1652195	1693613	41419
+uid32853_0.2	uid32853_0.2.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid32853	4	1299272	1329803	30532
+uid32853_0.3	uid32853_0.3.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid32853	4	1221764	1252295	30532
+uid32853_0.0	uid32853_0.0.fsa	Vibrio cholerae O395	Vibrio_cholerae_O395_uid32853	4	214375	245122	30748
+uid33409_0.8	uid33409_0.8.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	909097	947152	38056
+uid33409_0.9	uid33409_0.9.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	572943	583363	10421
+uid33409_0.6	uid33409_0.6.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	3250881	3305255	54375
+uid33409_0.7	uid33409_0.7.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	3018113	3050332	32220
+uid33409_0.4	uid33409_0.4.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	4918062	4944096	26035
+uid33409_0.5	uid33409_0.5.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	3375080	3425438	50359
+uid33409_0.2	uid33409_0.2.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	1101563	1142188	40626
+uid33409_0.3	uid33409_0.3.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	5065985	5117636	51652
+uid33409_0.0	uid33409_0.0.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	2569059	2578513	9455
+uid33409_0.1	uid33409_0.1.fsa	Escherichia coli ED1a	Escherichia_coli_ED1a_uid33409	10	2237821	2287784	49964
+uid34821_0.0	uid34821_0.0.fsa	Zymomonas mobilis subsp. mobilis NCIMB 11163	Zymomonas_mobilis_NCIMB_11163_uid34821	1	1437093	1554053	116961
+uid17929_0.1	uid17929_0.1.fsa	Burkholderia cenocepacia MC0-3	Burkholderia_cenocepacia_MC0_3_uid17929	2	198560	235488	36929
+uid17929_0.0	uid17929_0.0.fsa	Burkholderia cenocepacia MC0-3	Burkholderia_cenocepacia_MC0_3_uid17929	2	1406086	1416592	10507
+uid236_0.0	uid236_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhi str. CT18	Salmonella_typhi_uid236	1	2785	47193	44409
+uid43653_0.0	uid43653_0.0.fsa	Methanothermococcus okinawensis IH1	Methanothermococcus_okinawensis_IH1_uid43653	1	286706	325030	38325
+uid50341_0.2	uid50341_0.2.fsa	Agrobacterium sp. H13-3	Agrobacterium_H13_3_uid50341	3	889259	931244	41986
+uid50341_0.0	uid50341_0.0.fsa	Agrobacterium sp. H13-3	Agrobacterium_H13_3_uid50341	3	1759551	1772280	12730
+uid50341_0.1	uid50341_0.1.fsa	Agrobacterium sp. H13-3	Agrobacterium_H13_3_uid50341	3	1437208	1465671	28464
+uid42395_0.0	uid42395_0.0.fsa	Staphylococcus lugdunensis HKU09-01	Staphylococcus_lugdunensis_HKU09_01_uid42395	1	2299451	2354055	54605
+uid12521_0.0	uid12521_0.0.fsa	Clostridium phage phiSM101	Clostridium_perfringens_SM101_uid12521	1	6108	8542	2435
+uid42243_0.0	uid42243_0.0.fsa	Mahella australiensis 50-1 BON	Mahella_australiensis_50_1_BON_uid42243	1	2949298	3000302	51005
+uid10690_0.0	uid10690_0.0.fsa	Chelativorans sp. BNC1	Mesorhizobium_BNC1_uid10690	1	2023051	2038561	15511
+uid10774_0.0	uid10774_0.0.fsa	Burkholderia thailandensis E264	Burkholderia_thailandensis_E264_uid10774	1	1197986	1238551	40566
+uid13_0.0	uid13_0.0.fsa	Ralstonia solanacearum GMI1000	Ralstonia_solanacearum_uid13	4	3429949	3490315	60367
+uid13_0.1	uid13_0.1.fsa	Ralstonia solanacearum GMI1000	Ralstonia_solanacearum_uid13	4	2092849	2115573	22725
+uid13_0.2	uid13_0.2.fsa	Ralstonia solanacearum GMI1000	Ralstonia_solanacearum_uid13	4	1797957	1820009	22053
+uid13_0.3	uid13_0.3.fsa	Ralstonia solanacearum GMI1000	Ralstonia_solanacearum_uid13	4	879632	939437	59806
+uid31111_0.0	uid31111_0.0.fsa	Rhodobacter sphaeroides KD131	Rhodobacter_sphaeroides_KD131_uid31111	1	789538	801675	12138
+uid15759_0.0	uid15759_0.0.fsa	Psychrobacter sp. PRwf-1	Psychrobacter_PRwf-1_uid15759	1	1802156	1839207	37052
+uid37717_0.0	uid37717_0.0.fsa	Burkholderia sp. CCGE1001	Burkholderia_CCGE1001_uid37717	1	1233370	1320031	86662
+uid40221_0.0	uid40221_0.0.fsa	Dehalogenimonas lykanthroporepellens BL-DC-9	Dehalogenimonas_lykanthroporepellens_BL_DC_9_uid40221	1	1604159	1666563	62405
+uid42255_0.0	uid42255_0.0.fsa	Ruminococcus albus 7	Ruminococcus_albus_7_uid42255	1	103399	169720	66322
+uid13435_0.0	uid13435_0.0.fsa	Lactobacillus sakei subsp. sakei 23K	Lactobacillus_sakei_23K_uid13435	1	716005	748363	32359
+uid19065_0.0	uid19065_0.0.fsa	Clostridium kluyveri DSM 555	Clostridium_kluyveri_DSM_555_uid19065	4	2671760	2725270	53511
+uid19065_0.1	uid19065_0.1.fsa	Clostridium kluyveri DSM 555	Clostridium_kluyveri_DSM_555_uid19065	4	2046034	2066482	20449
+uid19065_0.2	uid19065_0.2.fsa	Clostridium kluyveri DSM 555	Clostridium_kluyveri_DSM_555_uid19065	4	1880976	2044129	163154
+uid19065_0.3	uid19065_0.3.fsa	Clostridium kluyveri DSM 555	Clostridium_kluyveri_DSM_555_uid19065	4	15606	57112	41507
+uid29399_0.0	uid29399_0.0.fsa	Tsukamurella paurometabola DSM 20162	Tsukamurella_paurometabola_DSM_20162_uid29399	1	267433	309519	42087
+uid40055_0.0	uid40055_0.0.fsa	Bacteroides salanitronis DSM 18170	Bacteroides_salanitronis_DSM_18170_uid40055	1	4087334	4108444	21111
+uid39547_0.1	uid39547_0.1.fsa	Staphylococcus aureus subsp. aureus ED98	Staphylococcus_aureus_ED98_uid39547	2	830711	878457	47747
+uid39547_0.0	uid39547_0.0.fsa	Staphylococcus aureus subsp. aureus ED98	Staphylococcus_aureus_ED98_uid39547	2	879120	896138	17019
+uid18747_0.0	uid18747_0.0.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	4411352	4426558	15207
+uid18747_0.1	uid18747_0.1.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	4231918	4257179	25262
+uid18747_0.2	uid18747_0.2.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	2850220	2888421	38202
+uid18747_0.3	uid18747_0.3.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	2731854	2779148	47295
+uid18747_0.4	uid18747_0.4.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	1135987	1175157	39171
+uid18747_0.5	uid18747_0.5.fsa	Salmonella enterica subsp. enterica serovar Newport str. SL254	Salmonella_enterica_serovar_Newport_SL254_uid18747	6	1060622	1104186	43565
+uid328_0.0	uid328_0.0.fsa	Bifidobacterium longum NCC2705	Bifidobacterium_longum_uid328	1	1298692	1312867	14176
+uid29975_0.0	uid29975_0.0.fsa	Acidovorax ebreus TPSY	Diaphorobacter_TPSY_uid29975	1	3381510	3457284	75775
+uid1422_0.0	uid1422_0.0.fsa	Mycoplasma arthritidis 158L3-1	Mycoplasma_arthritidis_158L3_1_uid1422	1	706929	721810	14882
+uid16304_0.1	uid16304_0.1.fsa	Sinorhizobium medicae WSM419	Sinorhizobium_medicae_WSM419_uid16304	2	1381534	1425749	44216
+uid16304_0.0	uid16304_0.0.fsa	Sinorhizobium medicae WSM419	Sinorhizobium_medicae_WSM419_uid16304	2	1717608	1759656	42049
+uid38_0.0	uid38_0.0.fsa	Haemophilus ducreyi 35000HP	Haemophilus_ducreyi_35000HP_uid38	1	364820	408075	43256
+uid13117_0.0	uid13117_0.0.fsa	Nocardia farcinica IFM 10152	Nocardia_farcinica_IFM10152_uid13117	1	2183995	2253498	69504
+uid17155_0.0	uid17155_0.0.fsa	Streptococcus suis 98HAH33	Streptococcus_suis_98HAH33_uid17155	1	1440616	1473183	32568
+uid41663_0.1	uid41663_0.1.fsa	Alicycliphilus denitrificans BC	Alicycliphilus_denitrificans_BC_uid41663	4	1881411	1932152	50742
+uid41663_0.0	uid41663_0.0.fsa	Alicycliphilus denitrificans BC	Alicycliphilus_denitrificans_BC_uid41663	4	2118668	2145208	26541
+uid41663_0.3	uid41663_0.3.fsa	Alicycliphilus denitrificans BC	Alicycliphilus_denitrificans_BC_uid41663	4	1330845	1353099	22255
+uid41663_0.2	uid41663_0.2.fsa	Alicycliphilus denitrificans BC	Alicycliphilus_denitrificans_BC_uid41663	4	1503230	1555289	52060
+uid61073_0.0	uid61073_0.0.fsa	Neisseria meningitidis M04-240196	Neisseria_meningitidis_M04_240196_uid61073	1	1159730	1189353	29624
+uid292_0.0	uid292_0.0.fsa	Streptococcus pneumoniae 670-6B	Streptococcus_pneumoniae_670_6B_uid292	3	1971316	2037422	66107
+uid292_0.1	uid292_0.1.fsa	Streptococcus pneumoniae 670-6B	Streptococcus_pneumoniae_670_6B_uid292	3	57606	75951	18346
+uid292_0.2	uid292_0.2.fsa	Streptococcus pneumoniae 670-6B	Streptococcus_pneumoniae_670_6B_uid292	3	5323	43891	38569
+uid32105_0.0	uid32105_0.0.fsa	Desulfovibrio magneticus RS-1	Desulfovibrio_magneticus_RS_1_uid32105	1	2690065	2766820	76756
+uid13960_0.2	uid13960_0.2.fsa	Escherichia coli E24377A	Escherichia_coli_E24377A_uid13960	5	1262112	1288105	25994
+uid13960_0.3	uid13960_0.3.fsa	Escherichia coli E24377A	Escherichia_coli_E24377A_uid13960	5	1000694	1073474	72781
+uid13960_0.0	uid13960_0.0.fsa	Escherichia coli E24377A	Escherichia_coli_E24377A_uid13960	5	2173343	2221208	47866
+uid13960_0.1	uid13960_0.1.fsa	Escherichia coli E24377A	Escherichia_coli_E24377A_uid13960	5	1401710	1441693	39984
+uid13960_0.4	uid13960_0.4.fsa	Escherichia coli E24377A	Escherichia_coli_E24377A_uid13960	5	826880	853459	26580
+uid30703_0.2	uid30703_0.2.fsa	Aliivibrio salmonicida LFI1238	Aliivibrio_salmonicida_LFI1238_uid30703	3	857360	866237	8878
+uid30703_0.0	uid30703_0.0.fsa	Aliivibrio salmonicida LFI1238	Aliivibrio_salmonicida_LFI1238_uid30703	3	1128907	1139064	10158
+uid30703_0.1	uid30703_0.1.fsa	Aliivibrio salmonicida LFI1238	Aliivibrio_salmonicida_LFI1238_uid30703	3	1064843	1127942	63100
+uid13145_0.0	uid13145_0.0.fsa	Shigella dysenteriae Sd197	Shigella_dysenteriae_uid13145	1	1919220	1924252	5033
+uid16364_0.1	uid16364_0.1.fsa	Streptococcus pyogenes MGAS10270	Streptococcus_pyogenes_MGAS10270_uid16364	2	1254682	1294953	40272
+uid16364_0.0	uid16364_0.0.fsa	Streptococcus pyogenes MGAS10270	Streptococcus_pyogenes_MGAS10270_uid16364	2	1836801	1886714	49914
+uid31327_0.1	uid31327_0.1.fsa	Listeria monocytogenes L99	Listeria_monocytogenes_serotype_4a_L99_uid31327	2	71438	108934	37497
+uid31327_0.0	uid31327_0.0.fsa	Listeria monocytogenes L99	Listeria_monocytogenes_serotype_4a_L99_uid31327	2	1224779	1267819	43041
+uid29411_0.0	uid29411_0.0.fsa	Planctomyces limnophilus DSM 3776	Planctomyces_limnophilus_DSM_3776_uid29411	1	3082	25166	22085
+uid29203_0.1	uid29203_0.1.fsa	Comamonas testosteroni CNB-2	Comamonas_testosteroni_CNB_1_uid29203	3	1693241	1739454	46214
+uid29203_0.0	uid29203_0.0.fsa	Comamonas testosteroni CNB-2	Comamonas_testosteroni_CNB_1_uid29203	3	2135658	2199023	63366
+uid29203_0.2	uid29203_0.2.fsa	Comamonas testosteroni CNB-2	Comamonas_testosteroni_CNB_1_uid29203	3	1628092	1685901	57810
+uid50683_0.1	uid50683_0.1.fsa	Ralstonia solanacearum PSI07	Ralstonia_solanacearum_PSI07_uid50683	2	205483	251418	45936
+uid50683_0.0	uid50683_0.0.fsa	Ralstonia solanacearum PSI07	Ralstonia_solanacearum_PSI07_uid50683	2	1513205	1549263	36059
+uid250_0.0	uid250_0.0.fsa	Cupriavidus metallidurans CH34	Cupriavidus_metallidurans_CH34_uid250	3	1359445	1396637	37193
+uid250_0.2	uid250_0.2.fsa	Cupriavidus metallidurans CH34	Cupriavidus_metallidurans_CH34_uid250	3	1652812	1687252	34441
+uid250_0.1	uid250_0.1.fsa	Cupriavidus metallidurans CH34	Cupriavidus_metallidurans_CH34_uid250	3	2514916	2526753	11838
+uid33375_0.8	uid33375_0.8.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	4953652	4999418	45767
+uid33375_0.9	uid33375_0.9.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	607720	618791	11072
+uid33375_0.0	uid33375_0.0.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	4821397	4876874	55478
+uid33375_0.1	uid33375_0.1.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	2847870	2871103	23234
+uid33375_0.2	uid33375_0.2.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	2800301	2847459	47159
+uid33375_0.3	uid33375_0.3.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	2493355	2521791	28437
+uid33375_0.4	uid33375_0.4.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	2169276	2205467	36192
+uid33375_0.5	uid33375_0.5.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	2060817	2078167	17351
+uid33375_0.6	uid33375_0.6.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	1330591	1377186	46596
+uid33375_0.7	uid33375_0.7.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	1181079	1223757	42679
+uid33375_0.10	uid33375_0.10.fsa	Escherichia coli S88	Escherichia_coli_S88_uid33375	11	558506	605419	46914
+uid29409_0.1	uid29409_0.1.fsa	Listeria monocytogenes HCC23	Listeria_monocytogenes_HCC23_uid29409	3	2498391	2563624	65234
+uid29409_0.0	uid29409_0.0.fsa	Listeria monocytogenes HCC23	Listeria_monocytogenes_HCC23_uid29409	3	2923136	2958191	35056
+uid29409_0.2	uid29409_0.2.fsa	Listeria monocytogenes HCC23	Listeria_monocytogenes_HCC23_uid29409	3	1391822	1431218	39397
+uid66901_0.1	uid66901_0.1.fsa	Novosphingobium sp. PP1Y	Novosphingobium_PP1Y_uid66901	2	261588	282995	21408
+uid66901_0.0	uid66901_0.0.fsa	Novosphingobium sp. PP1Y	Novosphingobium_PP1Y_uid66901	2	328363	388060	59698
+uid38039_0.0	uid38039_0.0.fsa	Clostridium difficile R20291	Clostridium_difficile_R20291_uid38039	1	3516317	3590240	73924
+uid13006_0.2	uid13006_0.2.fsa	Alkaliphilus metalliredigens QYMF	Alkaliphilus_metalliredigens_QYMF_uid13006	3	2562174	2643677	81504
+uid13006_0.1	uid13006_0.1.fsa	Alkaliphilus metalliredigens QYMF	Alkaliphilus_metalliredigens_QYMF_uid13006	3	4066822	4123647	56826
+uid13006_0.0	uid13006_0.0.fsa	Alkaliphilus metalliredigens QYMF	Alkaliphilus_metalliredigens_QYMF_uid13006	3	4477448	4524097	46650
+uid16366_0.1	uid16366_0.1.fsa	Streptococcus pyogenes MGAS10750	Streptococcus_pyogenes_MGAS10750_uid16366	3	1621728	1670248	48521
+uid16366_0.0	uid16366_0.0.fsa	Streptococcus pyogenes MGAS10750	Streptococcus_pyogenes_MGAS10750_uid16366	3	1866256	1900164	33909
+uid16366_0.2	uid16366_0.2.fsa	Streptococcus pyogenes MGAS10750	Streptococcus_pyogenes_MGAS10750_uid16366	3	735890	841762	105873
+uid20993_0.4	uid20993_0.4.fsa	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594	Salmonella_enterica_serovar_Paratyphi_C_RKS4594_uid20993	5	917587	947043	29457
+uid20993_0.2	uid20993_0.2.fsa	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594	Salmonella_enterica_serovar_Paratyphi_C_RKS4594_uid20993	5	1324408	1373103	48696
+uid20993_0.3	uid20993_0.3.fsa	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594	Salmonella_enterica_serovar_Paratyphi_C_RKS4594_uid20993	5	1067502	1104205	36704
+uid20993_0.0	uid20993_0.0.fsa	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594	Salmonella_enterica_serovar_Paratyphi_C_RKS4594_uid20993	5	4279051	4358367	79317
+uid20993_0.1	uid20993_0.1.fsa	Salmonella enterica subsp. enterica serovar Paratyphi C strain RKS4594	Salmonella_enterica_serovar_Paratyphi_C_RKS4594_uid20993	5	2735771	2775911	40141
+uid60377_0.2	uid60377_0.2.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	1901185	1937861	36677
+uid60377_0.3	uid60377_0.3.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	1725066	1733895	8830
+uid60377_0.0	uid60377_0.0.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	2270226	2315913	45688
+uid60377_0.1	uid60377_0.1.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	2146593	2180599	34007
+uid60377_0.4	uid60377_0.4.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	1019818	1054102	34285
+uid60377_0.5	uid60377_0.5.fsa	Lactococcus lactis subsp. lactis CV56	Lactococcus_lactis_CV56_uid60377	6	36265	49721	13457
+uid34681_0.0	uid34681_0.0.fsa	Methanobrevibacter ruminantium M1	Methanobrevibacter_ruminantium_M1_uid34681	1	404653	451354	46702
+uid70_0.1	uid70_0.1.fsa	Enterococcus faecalis V583	Enterococcus_faecalis_V583_uid70	2	1398097	1455995	57899
+uid70_0.0	uid70_0.0.fsa	Enterococcus faecalis V583	Enterococcus_faecalis_V583_uid70	2	1961337	2051830	90494
+uid29427_0.1	uid29427_0.1.fsa	Staphylococcus aureus subsp. aureus ST398	Staphylococcus_aureus_ST398_uid29427	2	370475	414038	43564
+uid29427_0.0	uid29427_0.0.fsa	Staphylococcus aureus subsp. aureus ST398	Staphylococcus_aureus_ST398_uid29427	2	1600447	1643185	42739
+uid244_0.0	uid244_0.0.fsa	Nostoc sp. PCC 7120 (Anabaena sp. PCC 7120)	Nostoc_sp_uid244	1	4853111	4910614	57504
+uid13418_0.0	uid13418_0.0.fsa	Polaromonas naphthalenivorans CJ2	Polaromonas_naphthalenivorans_CJ2_uid13418	1	67549	117353	49805
+uid13121_0.0	uid13121_0.0.fsa	Polaromonas sp. JS666	Polaromonas_JS666_uid13121	1	3937552	3973429	35878
+uid30045_0.9	uid30045_0.9.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2892830	2939981	47152
+uid30045_0.8	uid30045_0.8.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	3207088	3255289	48202
+uid30045_0.7	uid30045_0.7.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1167539	1214033	46495
+uid30045_0.6	uid30045_0.6.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1313189	1361728	48540
+uid30045_0.5	uid30045_0.5.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1485505	1520075	34571
+uid30045_0.4	uid30045_0.4.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1535967	1582284	46318
+uid30045_0.3	uid30045_0.3.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1678019	1737421	59403
+uid30045_0.2	uid30045_0.2.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	1750162	1778967	28806
+uid30045_0.1	uid30045_0.1.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2081144	2129823	48680
+uid30045_0.0	uid30045_0.0.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2138464	2160162	21699
+uid30045_0.13	uid30045_0.13.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2498403	2517301	18899
+uid30045_0.12	uid30045_0.12.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2577281	2618633	41353
+uid30045_0.11	uid30045_0.11.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2664872	2705835	40964
+uid30045_0.10	uid30045_0.10.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	2806852	2838303	31452
+uid30045_0.15	uid30045_0.15.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	302633	327083	24451
+uid30045_0.14	uid30045_0.14.fsa	Escherichia coli O157:H7 str. TW14359	Escherichia_coli_O157_H7_TW14359_uid30045	16	896150	929131	32982
+uid310_0.3	uid310_0.3.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	1394857	1421884	27028
+uid310_0.2	uid310_0.2.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	1917075	1943263	26189
+uid310_0.1	uid310_0.1.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	2049694	2069029	19336
+uid310_0.0	uid310_0.0.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	2687879	2694073	6195
+uid310_0.7	uid310_0.7.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	311291	328079	16789
+uid310_0.6	uid310_0.6.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	697731	747734	50004
+uid310_0.5	uid310_0.5.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	903199	930981	27783
+uid310_0.4	uid310_0.4.fsa	Shigella flexneri 2a str. 301	Shigella_flexneri_2a_uid310	8	1174923	1188703	13781
+uid19459_0.1	uid19459_0.1.fsa	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633	Salmonella_enterica_serovar_Schwarzengrund_CVM19633_uid19459	4	2125574	2163363	37790
+uid19459_0.0	uid19459_0.0.fsa	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633	Salmonella_enterica_serovar_Schwarzengrund_CVM19633_uid19459	4	4322903	4354387	31485
+uid19459_0.3	uid19459_0.3.fsa	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633	Salmonella_enterica_serovar_Schwarzengrund_CVM19633_uid19459	4	600701	643159	42459
+uid19459_0.2	uid19459_0.2.fsa	Salmonella enterica subsp. enterica serovar Schwarzengrund str. CVM19633	Salmonella_enterica_serovar_Schwarzengrund_CVM19633_uid19459	4	650260	689144	38885
+uid41719_0.1	uid41719_0.1.fsa	Bacillus amyloliquefaciens DSM 7	Bacillus_amyloliquefaciens_DSM7_uid41719	2	570696	617268	46573
+uid41719_0.0	uid41719_0.0.fsa	Bacillus amyloliquefaciens DSM 7	Bacillus_amyloliquefaciens_DSM7_uid41719	2	1861912	1908298	46387
+uid21069_0.0	uid21069_0.0.fsa	Klebsiella pneumoniae subsp. pneumoniae NTUH-K2044	Klebsiella_pneumoniae_NTUH_K2044_uid21069	1	2089612	2119036	29425
+uid16081_0.0	uid16081_0.0.fsa	Mycobacterium sp. KMS	Mycobacterium_KMS_uid16081	1	175266	204779	29514
+uid220_0.0	uid220_0.0.fsa	Prochlorococcus marinus str. MIT 9313	Prochlorococcus_marinus_MIT9313_uid220	1	259848	298703	38856
+uid37277_0.0	uid37277_0.0.fsa	Caulobacter segnis ATCC 21756	Caulobacter_segnis_ATCC_21756_uid37277	1	1061658	1070566	8909
+uid28037_0.1	uid28037_0.1.fsa	Streptococcus pneumoniae Taiwan19F-14	Streptococcus_pneumoniae_Taiwan19F_14_uid28037	2	3563	23357	19795
+uid28037_0.0	uid28037_0.0.fsa	Streptococcus pneumoniae Taiwan19F-14	Streptococcus_pneumoniae_Taiwan19F_14_uid28037	2	198096	210462	12367
+uid30505_0.2	uid30505_0.2.fsa	Yersinia pestis biovar Medievalis str. Harbin 35	Yersinia_pestis_biovar_Medievalis_Harbin_35_uid30505	3	1136401	1146013	9613
+uid30505_0.1	uid30505_0.1.fsa	Yersinia pestis biovar Medievalis str. Harbin 35	Yersinia_pestis_biovar_Medievalis_Harbin_35_uid30505	3	2857877	2875156	17280
+uid30505_0.0	uid30505_0.0.fsa	Yersinia pestis biovar Medievalis str. Harbin 35	Yersinia_pestis_biovar_Medievalis_Harbin_35_uid30505	3	2018	50714	48697
+uid33415_0.1	uid33415_0.1.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	4984262	5031277	47016
+uid33415_0.0	uid33415_0.0.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	5039828	5075358	35531
+uid33415_0.3	uid33415_0.3.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	3049026	3088533	39508
+uid33415_0.2	uid33415_0.2.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	3514897	3538934	24038
+uid33415_0.5	uid33415_0.5.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	1409888	1451910	42023
+uid33415_0.4	uid33415_0.4.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	1842081	1886468	44388
+uid33415_0.7	uid33415_0.7.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	1000061	1029323	29263
+uid33415_0.6	uid33415_0.6.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	1350195	1398144	47950
+uid33415_0.8	uid33415_0.8.fsa	Escherichia coli UMN026	Escherichia_coli_UMN026_uid33415	9	644943	690999	46057
+uid20_0.0	uid20_0.0.fsa	Methylobacterium extorquens AM1	Methylobacterium_extorquens_AM1_uid20	2	4012704	4164500	151797
+uid20_0.1	uid20_0.1.fsa	Methylobacterium extorquens AM1	Methylobacterium_extorquens_AM1_uid20	2	1344051	1387051	43001
+uid65659_0.0	uid65659_0.0.fsa	Pusillimonas sp. T7-7	Pusillimonas_T7_7_uid65659	2	2995072	3010425	15354
+uid65659_0.1	uid65659_0.1.fsa	Pusillimonas sp. T7-7	Pusillimonas_T7_7_uid65659	2	2616959	2666054	49096
+uid37719_0.1	uid37719_0.1.fsa	Burkholderia sp. CCGE1002	Burkholderia_CCGE1002_uid37719	2	1009088	1054158	45071
+uid37719_0.0	uid37719_0.0.fsa	Burkholderia sp. CCGE1002	Burkholderia_CCGE1002_uid37719	2	272167	359644	87478
+uid37659_0.2	uid37659_0.2.fsa	Starkeya novella DSM 506	Starkeya_novella_DSM_506_uid37659	3	1669	50095	48427
+uid37659_0.1	uid37659_0.1.fsa	Starkeya novella DSM 506	Starkeya_novella_DSM_506_uid37659	3	2017204	2056362	39159
+uid37659_0.0	uid37659_0.0.fsa	Starkeya novella DSM 506	Starkeya_novella_DSM_506_uid37659	3	2163564	2176032	12469
+uid42073_0.1	uid42073_0.1.fsa	Lactobacillus amylovorus GRL 1112	Lactobacillus_amylovorus_GRL_1112_uid42073	2	999674	1142327	142654
+uid42073_0.0	uid42073_0.0.fsa	Lactobacillus amylovorus GRL 1112	Lactobacillus_amylovorus_GRL_1112_uid42073	2	1441625	1484880	43256
+uid16184_0.1	uid16184_0.1.fsa	Clostridium phytofermentans ISDg	Clostridium_phytofermentans_ISDg_uid16184	2	1010397	1023249	12853
+uid16184_0.0	uid16184_0.0.fsa	Clostridium phytofermentans ISDg	Clostridium_phytofermentans_ISDg_uid16184	2	2597738	2690895	93158
+uid226_0.1	uid226_0.1.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	2211826	2237100	25275
+uid226_0.0	uid226_0.0.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	2593128	2612026	18899
+uid226_0.3	uid226_0.3.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1923455	1969743	46289
+uid226_0.2	uid226_0.2.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	2161103	2203914	42812
+uid226_0.5	uid226_0.5.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1637504	1653011	15508
+uid226_0.4	uid226_0.4.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1757549	1804219	46671
+uid226_0.7	uid226_0.7.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1541626	1579041	37416
+uid226_0.6	uid226_0.6.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1594751	1637052	42302
+uid226_0.9	uid226_0.9.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	2897038	2933397	36360
+uid226_0.8	uid226_0.8.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	5042064	5074429	32366
+uid226_0.12	uid226_0.12.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	901806	924173	22368
+uid226_0.11	uid226_0.11.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	1161297	1202485	41189
+uid226_0.10	uid226_0.10.fsa	Escherichia coli O157:H7 str. Sakai	Escherichia_coli_O157H7_uid226	13	2670961	2711983	41023
+uid34839_0.0	uid34839_0.0.fsa	Rhodococcus opacus B4	Rhodococcus_opacus_B4_uid34839	1	204160	295885	91726
+uid30_0.1	uid30_0.1.fsa	Dickeya dadantii 3937	Dickeya_dadantii_3937_uid30	3	858294	959004	100711
+uid30_0.0	uid30_0.0.fsa	Dickeya dadantii 3937	Dickeya_dadantii_3937_uid30	3	2698473	2760902	62430
+uid30_0.2	uid30_0.2.fsa	Dickeya dadantii 3937	Dickeya_dadantii_3937_uid30	3	185989	193465	7477
+uid61001_0.0	uid61001_0.0.fsa	Haemophilus influenzae F3047	Haemophilus_influenzae_F3047_uid61001	1	1647647	1694406	46760
+uid28743_0.0	uid28743_0.0.fsa	Yersinia pseudotuberculosis YPIII	Yersinia_pseudotuberculosis_YPIII_uid28743	1	2536599	2613390	76792
+uid46623_0.0	uid46623_0.0.fsa	Lactococcus lactis subsp. cremoris NZ9000	Lactococcus_lactis_cremoris_NZ9000_uid46623	2	2211673	2228382	16710
+uid46623_0.1	uid46623_0.1.fsa	Lactococcus lactis subsp. cremoris NZ9000	Lactococcus_lactis_cremoris_NZ9000_uid46623	2	2065234	2104110	38877
+uid17715_0.0	uid17715_0.0.fsa	Bacillus cereus AH187	Bacillus_cereus_AH187_uid17715	1	573369	623220	49852
+uid21111_0.2	uid21111_0.2.fsa	Acinetobacter baumannii AB0057	Acinetobacter_baumannii_AB0057_uid21111	3	1297496	1384276	86781
+uid21111_0.1	uid21111_0.1.fsa	Acinetobacter baumannii AB0057	Acinetobacter_baumannii_AB0057_uid21111	3	2746669	2807552	60884
+uid21111_0.0	uid21111_0.0.fsa	Acinetobacter baumannii AB0057	Acinetobacter_baumannii_AB0057_uid21111	3	3276012	3363106	87095
+uid15761_0.2	uid15761_0.2.fsa	Mycobacterium vanbaalenii PYR-1	Mycobacterium_vanbaalenii_PYR-1_uid15761	3	495898	554574	58677
+uid15761_0.1	uid15761_0.1.fsa	Mycobacterium vanbaalenii PYR-1	Mycobacterium_vanbaalenii_PYR-1_uid15761	3	1155647	1186116	30470
+uid15761_0.0	uid15761_0.0.fsa	Mycobacterium vanbaalenii PYR-1	Mycobacterium_vanbaalenii_PYR-1_uid15761	3	4162852	4175064	12213
+uid190_0.0	uid190_0.0.fsa	Yersinia enterocolitica subsp. enterocolitica 8081	Yersinia_enterocolitica_8081_uid190	1	1991800	2022489	30690
+uid28043_0.0	uid28043_0.0.fsa	Streptococcus pneumoniae 70585	Streptococcus_pneumoniae_70585_uid28043	1	1793053	1859880	66828
+uid18457_0.0	uid18457_0.0.fsa	Xylella fastidiosa M23	Xylella_fastidiosa_M23_uid18457	3	1285583	1327421	41839
+uid18457_0.1	uid18457_0.1.fsa	Xylella fastidiosa M23	Xylella_fastidiosa_M23_uid18457	3	1213240	1227447	14208
+uid18457_0.2	uid18457_0.2.fsa	Xylella fastidiosa M23	Xylella_fastidiosa_M23_uid18457	3	1147791	1207492	59702
+uid9633_0.1	uid9633_0.1.fsa	Psychrobacter arcticus 273-4	Psychrobacter_arcticum_273-4_uid9633	2	552271	585093	32823
+uid9633_0.0	uid9633_0.0.fsa	Psychrobacter arcticus 273-4	Psychrobacter_arcticum_273-4_uid9633	2	1149562	1223710	74149
+uid10784_0.2	uid10784_0.2.fsa	Bacillus anthracis str. Ames Ancestor	Bacillus_anthracis_Ames_0581_uid10784	3	445947	485743	39797
+uid10784_0.1	uid10784_0.1.fsa	Bacillus anthracis str. Ames Ancestor	Bacillus_anthracis_Ames_0581_uid10784	3	1060181	1092243	32063
+uid10784_0.0	uid10784_0.0.fsa	Bacillus anthracis str. Ames Ancestor	Bacillus_anthracis_Ames_0581_uid10784	3	4843820	4858366	14547
+uid16067_0.3	uid16067_0.3.fsa	Yersinia pestis Angola	Yersinia_pestis_Angola_uid16067	4	60471	76733	16263
+uid16067_0.2	uid16067_0.2.fsa	Yersinia pestis Angola	Yersinia_pestis_Angola_uid16067	4	1493777	1527240	33464
+uid16067_0.1	uid16067_0.1.fsa	Yersinia pestis Angola	Yersinia_pestis_Angola_uid16067	4	2279515	2296790	17276
+uid16067_0.0	uid16067_0.0.fsa	Yersinia pestis Angola	Yersinia_pestis_Angola_uid16067	4	2489252	2511174	21923
+uid28041_0.0	uid28041_0.0.fsa	Streptococcus pneumoniae P1031	Streptococcus_pneumoniae_P1031_uid28041	1	1742623	1811521	68899
+uid272_0.0	uid272_0.0.fsa	Wolbachia endosymbiont of Drosophila melanogaster	Wolbachia_endosymbiont_of_Drosophila_melanogaster_uid272	1	623343	633879	10537
+uid13001_0.0	uid13001_0.0.fsa	Acinetobacter baumannii	Acinetobacter_baumannii_SDF_uid13001	1	795946	844608	48663
+uid63293_0.0	uid63293_0.0.fsa	Polymorphum gilvum SL003B-26A1	Polymorphum_gilvum_SL003B_26A1_uid63293	3	3150993	3161452	10460
+uid63293_0.1	uid63293_0.1.fsa	Polymorphum gilvum SL003B-26A1	Polymorphum_gilvum_SL003B_26A1_uid63293	3	2763242	2822482	59241
+uid63293_0.2	uid63293_0.2.fsa	Polymorphum gilvum SL003B-26A1	Polymorphum_gilvum_SL003B_26A1_uid63293	3	648897	702269	53373
+uid30983_0.0	uid30983_0.0.fsa	Thermosediminibacter oceani DSM 16646	Thermosediminibacter_oceani_DSM_16646_uid30983	1	1238096	1266079	27984
+uid21053_0.0	uid21053_0.0.fsa	Mycobacterium tuberculosis KZN 4207	Mycobacterium_tuberculosis_KZN_4207_uid21053	1	1434299	1443208	8910
+uid17459_0.0	uid17459_0.0.fsa	Serratia proteamaculans 568	Serratia_proteamaculans_568_uid17459	2	954219	970705	16487
+uid17459_0.1	uid17459_0.1.fsa	Serratia proteamaculans 568	Serratia_proteamaculans_568_uid17459	2	1209	44190	42982
+uid60407_0.1	uid60407_0.1.fsa	Clostridium botulinum BKT015925	Clostridium_botulinum_BKT015925_uid60407	2	1296334	1325235	28902
+uid60407_0.0	uid60407_0.0.fsa	Clostridium botulinum BKT015925	Clostridium_botulinum_BKT015925_uid60407	2	7865	61596	53732
+uid30689_0.0	uid30689_0.0.fsa	Salmonella enterica subsp. enterica serovar Gallinarum str. 287/91	Salmonella_enterica_serovar_Gallinarum_287_91_uid30689	1	1262955	1316824	53870
+uid13391_0.0	uid13391_0.0.fsa	Shewanella frigidimarina NCIMB 400	Shewanella_frigidimarina_NCIMB_400_uid13391	1	4068282	4143766	75485
+uid29431_0.0	uid29431_0.0.fsa	Denitrovibrio acetiphilus DSM 12809	Denitrovibrio_acetiphilus_DSM_12809_uid29431	2	2806109	2868067	61959
+uid29431_0.1	uid29431_0.1.fsa	Denitrovibrio acetiphilus DSM 12809	Denitrovibrio_acetiphilus_DSM_12809_uid29431	2	649008	710364	61357
+uid269_0.0	uid269_0.0.fsa	Streptococcus pyogenes M1 GAS	Streptococcus_pyogenes_M1_GAS_uid269	1	1773458	1785658	12201
+uid61187_0.0	uid61187_0.0.fsa	Streptococcus parauberis KCTC 11537	Streptococcus_parauberis_KCTC_11537_uid61187	2	1487654	1509957	22304
+uid61187_0.1	uid61187_0.1.fsa	Streptococcus parauberis KCTC 11537	Streptococcus_parauberis_KCTC_11537_uid61187	2	889412	927900	38489
+uid56087_0.5	uid56087_0.5.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	1062352	1100036	37685
+uid56087_0.4	uid56087_0.4.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	2041795	2079774	37980
+uid56087_0.1	uid56087_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	2880640	2923880	43241
+uid56087_0.0	uid56087_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	4441734	4456683	14950
+uid56087_0.3	uid56087_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	2332550	2342427	9878
+uid56087_0.2	uid56087_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. ST4/74	Salmonella_enterica_serovar_Typhimurium_4_74_uid56087	6	2815382	2877218	61837
+uid444_0.1	uid444_0.1.fsa	Chromobacterium violaceum ATCC 12472	Chromobacterium_violaceum_uid444	2	353384	368792	15409
+uid444_0.0	uid444_0.0.fsa	Chromobacterium violaceum ATCC 12472	Chromobacterium_violaceum_uid444	2	427983	450397	22415
+uid12950_0.0	uid12950_0.0.fsa	Yersinia pseudotuberculosis IP 32953	Yersinia_pseudotuberculosis_IP32953_uid12950	1	1519217	1543209	23993
+uid13423_0.0	uid13423_0.0.fsa	Deinococcus geothermalis DSM 11300	Deinococcus_geothermalis_DSM_11300_uid13423	1	102587	165228	62642
+uid17629_0.0	uid17629_0.0.fsa	Pseudomonas putida GB-1	Pseudomonas_putida_GB_1_uid17629	2	3832647	3869656	37010
+uid17629_0.1	uid17629_0.1.fsa	Pseudomonas putida GB-1	Pseudomonas_putida_GB_1_uid17629	2	1341043	1376072	35030
+uid1430_0.0	uid1430_0.0.fsa	Vibrio vulnificus YJ016	Vibrio_vulnificus_YJ016_uid1430	1	1719762	1877279	157518
+uid311_0.0	uid311_0.0.fsa	Streptococcus pyogenes MGAS315	Streptococcus_pyogenes_MGAS315_uid311	1	748027	793050	45024
+uid45793_0.1	uid45793_0.1.fsa	Enterobacter cloacae subsp. cloacae ATCC 13047	Enterobacter_cloacae_ATCC_13047_uid45793	2	672598	693337	20740
+uid45793_0.0	uid45793_0.0.fsa	Enterobacter cloacae subsp. cloacae ATCC 13047	Enterobacter_cloacae_ATCC_13047_uid45793	2	1676953	1745864	68912
+uid31293_0.1	uid31293_0.1.fsa	Pectobacterium wasabiae WPP163	Pectobacterium_wasabiae_WPP163_uid31293	2	1669144	1730224	61081
+uid31293_0.0	uid31293_0.0.fsa	Pectobacterium wasabiae WPP163	Pectobacterium_wasabiae_WPP163_uid31293	2	3144791	3156278	11488
+uid267_0.0	uid267_0.0.fsa	Pseudomonas putida KT2440	Pseudomonas_putida_KT2440_uid267	4	4383049	4411138	28090
+uid267_0.1	uid267_0.1.fsa	Pseudomonas putida KT2440	Pseudomonas_putida_KT2440_uid267	4	3412988	3446647	33660
+uid267_0.2	uid267_0.2.fsa	Pseudomonas putida KT2440	Pseudomonas_putida_KT2440_uid267	4	2586633	2625819	39187
+uid267_0.3	uid267_0.3.fsa	Pseudomonas putida KT2440	Pseudomonas_putida_KT2440_uid267	4	1738082	1768399	30318
+uid37279_0.0	uid37279_0.0.fsa	Corynebacterium aurimucosum ATCC 700975	Corynebacterium_aurimucosum_ATCC_700975_uid37279	1	2152537	2220897	68361
+uid359_0.0	uid359_0.0.fsa	Pseudomonas syringae pv. tomato str. DC3000	Pseudomonas_syringae_tomato_DC3000_uid359	2	4518980	4573776	54797
+uid359_0.1	uid359_0.1.fsa	Pseudomonas syringae pv. tomato str. DC3000	Pseudomonas_syringae_tomato_DC3000_uid359	2	3824867	3853512	28646
+uid42477_0.1	uid42477_0.1.fsa	Sinorhizobium meliloti BL225C	Sinorhizobium_meliloti_BL225C_uid42477	2	1366668	1436114	69447
+uid42477_0.0	uid42477_0.0.fsa	Sinorhizobium meliloti BL225C	Sinorhizobium_meliloti_BL225C_uid42477	2	1728213	1786511	58299
+uid39311_0.0	uid39311_0.0.fsa	Pseudoalteromonas sp. SM9913	Pseudoalteromonas_SM9913_uid39311	1	1266689	1295572	28884
+uid41553_0.0	uid41553_0.0.fsa	Clostridium thermocellum DSM 1313	Clostridium_thermocellum_DSM_1313_uid41553	1	2783692	2810376	26685
+uid33165_0.0	uid33165_0.0.fsa	Thermoanaerobacterium thermosaccharolyticum DSM 571	Thermoanaerobacterium_thermosaccharolyticum_DSM_571_uid33165	1	816028	833233	17206
+uid85_0.0	uid85_0.0.fsa	Listeria monocytogenes serotype 4b str. F2365	Listeria_monocytogenes_4b_F2365_uid85	1	132867	143137	10271
+uid19489_0.0	uid19489_0.0.fsa	Staphylococcus aureus subsp. aureus USA300_TCH1516	Staphylococcus_aureus_USA300_TCH1516_uid19489	2	2090512	2128286	37775
+uid19489_0.1	uid19489_0.1.fsa	Staphylococcus aureus subsp. aureus USA300_TCH1516	Staphylococcus_aureus_USA300_TCH1516_uid19489	2	1562424	1605885	43462
+uid270_0.0	uid270_0.0.fsa	Streptococcus pyogenes str. Manfredo	Streptococcus_pyogenes_Manfredo_uid270	2	1763674	1775617	11944
+uid270_0.1	uid270_0.1.fsa	Streptococcus pyogenes str. Manfredo	Streptococcus_pyogenes_Manfredo_uid270	2	1032184	1081403	49220
+uid60447_0.0	uid60447_0.0.fsa	Bacillus thuringiensis serovar finitimus YBT-020	Bacillus_thuringiensis_serovar_finitimus_YBT_020_uid60447	1	1049263	1208654	159392
+uid41025_0.1	uid41025_0.1.fsa	Oligotropha carboxidovorans OM5	Oligotropha_carboxidovorans_OM5_uid41025	3	2011089	2036060	24972
+uid41025_0.0	uid41025_0.0.fsa	Oligotropha carboxidovorans OM5	Oligotropha_carboxidovorans_OM5_uid41025	3	2576904	2626130	49227
+uid41025_0.2	uid41025_0.2.fsa	Oligotropha carboxidovorans OM5	Oligotropha_carboxidovorans_OM5_uid41025	3	1577389	1595654	18266
+uid33901_0.2	uid33901_0.2.fsa	Burkholderia glumae BGR1	Burkholderia_glumae_BGR1_uid33901	3	1820205	1929503	109299
+uid33901_0.0	uid33901_0.0.fsa	Burkholderia glumae BGR1	Burkholderia_glumae_BGR1_uid33901	3	2700541	2755037	54497
+uid33901_0.1	uid33901_0.1.fsa	Burkholderia glumae BGR1	Burkholderia_glumae_BGR1_uid33901	3	42403	109856	67454
+uid15733_0.0	uid15733_0.0.fsa	Cupriavidus taiwanensis LMG 19424	Cupriavidus_taiwanensis_uid15733	1	920860	959553	38694
+uid47605_0.0	uid47605_0.0.fsa	Desulfotomaculum ruminis DSM 2154	Desulfotomaculum_ruminis_DSM_2154_uid47605	1	1296534	1345914	49381
+uid36547_0.2	uid36547_0.2.fsa	Yersinia pestis Z176003	Yersinia_pestis_Z176003_uid36547	3	1464296	1487918	23623
+uid36547_0.1	uid36547_0.1.fsa	Yersinia pestis Z176003	Yersinia_pestis_Z176003_uid36547	3	2210440	2245926	35487
+uid36547_0.0	uid36547_0.0.fsa	Yersinia pestis Z176003	Yersinia_pestis_Z176003_uid36547	3	2022	66308	64287
+uid29077_0.0	uid29077_0.0.fsa	Clostridium botulinum Ba4 str. 657	Clostridium_botulinum_Ba4_657_uid29077	1	1789649	1909510	119862
+uid33369_0.0	uid33369_0.0.fsa	Escherichia fergusonii ATCC 35469	Escherichia_fergusonii_ATCC_35469_uid33369	1	824270	833058	8789
+uid271_0.4	uid271_0.4.fsa	Xylella fastidiosa 9a5c	Xylella_fastidiosa_uid271	5	607242	658470	51229
+uid271_0.1	uid271_0.1.fsa	Xylella fastidiosa 9a5c	Xylella_fastidiosa_uid271	5	2177071	2198532	21462
+uid271_0.0	uid271_0.0.fsa	Xylella fastidiosa 9a5c	Xylella_fastidiosa_uid271	5	2361812	2404268	42457
+uid271_0.3	uid271_0.3.fsa	Xylella fastidiosa 9a5c	Xylella_fastidiosa_uid271	5	661716	690375	28660
+uid271_0.2	uid271_0.2.fsa	Xylella fastidiosa 9a5c	Xylella_fastidiosa_uid271	5	1585980	1609821	23842
+uid15756_0.0	uid15756_0.0.fsa	Xanthobacter autotrophicus Py2	Xanthobacter_autotrophicus_Py2_uid15756	1	3499795	3513228	13434
+uid41221_0.2	uid41221_0.2.fsa	Escherichia coli O83:H1 str. NRG 857C	Escherichia_coli_O83_H1_NRG_857C_uid41221	3	994776	1023635	28860
+uid41221_0.1	uid41221_0.1.fsa	Escherichia coli O83:H1 str. NRG 857C	Escherichia_coli_O83_H1_NRG_857C_uid41221	3	1171022	1219478	48457
+uid41221_0.0	uid41221_0.0.fsa	Escherichia coli O83:H1 str. NRG 857C	Escherichia_coli_O83_H1_NRG_857C_uid41221	3	1594072	1637302	43231
+uid50601_0.4	uid50601_0.4.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	603538	642139	38602
+uid50601_0.3	uid50601_0.3.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	756739	770764	14026
+uid50601_0.2	uid50601_0.2.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	1603250	1637457	34208
+uid50601_0.1	uid50601_0.1.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	1939445	1972142	32698
+uid50601_0.0	uid50601_0.0.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	2755679	2783263	27585
+uid50601_0.6	uid50601_0.6.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	59539	126612	67074
+uid50601_0.5	uid50601_0.5.fsa	Rahnella sp. Y9602	Rahnella_Y9602_uid50601	7	27841	99826	71986
+uid33413_0.3	uid33413_0.3.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	2665518	2705093	39576
+uid33413_0.2	uid33413_0.2.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	4748987	4807925	58939
+uid33413_0.1	uid33413_0.1.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	5001456	5046437	44982
+uid33413_0.0	uid33413_0.0.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	5046932	5055448	8517
+uid33413_0.6	uid33413_0.6.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	1408280	1457708	49429
+uid33413_0.5	uid33413_0.5.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	2142257	2174829	32573
+uid33413_0.4	uid33413_0.4.fsa	Escherichia coli 55989	Escherichia_coli_55989_uid33413	7	2291810	2309160	17351
+uid19467_0.2	uid19467_0.2.fsa	Salmonella enterica subsp. enterica serovar Dublin str. CT_02021853	Salmonella_enterica_serovar_Dublin_CT_02021853_uid19467	5	1351456	1403215	51760
+uid19467_0.3	uid19467_0.3.fsa	Salmonella enterica subsp. enterica serovar Dublin str. CT_02021853	Salmonella_enterica_serovar_Dublin_CT_02021853_uid19467	5	1080095	1122193	42099
+uid19467_0.0	uid19467_0.0.fsa	Salmonella enterica subsp. enterica serovar Dublin str. CT_02021853	Salmonella_enterica_serovar_Dublin_CT_02021853_uid19467	5	2923345	2956027	32683
+uid19467_0.1	uid19467_0.1.fsa	Salmonella enterica subsp. enterica serovar Dublin str. CT_02021853	Salmonella_enterica_serovar_Dublin_CT_02021853_uid19467	5	2148820	2189654	40835
+uid19467_0.4	uid19467_0.4.fsa	Salmonella enterica subsp. enterica serovar Dublin str. CT_02021853	Salmonella_enterica_serovar_Dublin_CT_02021853_uid19467	5	617064	655515	38452
+uid39685_0.0	uid39685_0.0.fsa	Helicobacter pylori B38	Helicobacter_pylori_B38_uid39685	1	1513749	1520449	6701
+uid34729_0.0	uid34729_0.0.fsa	Streptococcus gallolyticus UCN34	Streptococcus_gallolyticus_UCN34_uid34729	1	1738037	1804737	66701
+uid15746_0.0	uid15746_0.0.fsa	Prochlorococcus marinus str. MIT 9301	Prochlorococcus_marinus_MIT_9301_uid15746	1	658159	687800	29642
+uid64503_0.1	uid64503_0.1.fsa	Burkholderia gladioli BSR3	Burkholderia_gladioli_BSR3_uid64503	3	2106198	2114665	8468
+uid64503_0.0	uid64503_0.0.fsa	Burkholderia gladioli BSR3	Burkholderia_gladioli_BSR3_uid64503	3	3473457	3492842	19386
+uid64503_0.2	uid64503_0.2.fsa	Burkholderia gladioli BSR3	Burkholderia_gladioli_BSR3_uid64503	3	142996	165902	22907
+uid49451_0.0	uid49451_0.0.fsa	Shewanella baltica OS117	Shewanella_baltica_OS117_uid49451	3	5161957	5218791	56835
+uid49451_0.1	uid49451_0.1.fsa	Shewanella baltica OS117	Shewanella_baltica_OS117_uid49451	3	4305642	4347502	41861
+uid49451_0.2	uid49451_0.2.fsa	Shewanella baltica OS117	Shewanella_baltica_OS117_uid49451	3	2553539	2636555	83017
+uid17227_0.2	uid17227_0.2.fsa	Desulfovibrio vulgaris DP4	Desulfovibrio_vulgaris_DP4_uid17227	4	1272991	1309492	36502
+uid17227_0.3	uid17227_0.3.fsa	Desulfovibrio vulgaris DP4	Desulfovibrio_vulgaris_DP4_uid17227	4	1049047	1092838	43792
+uid17227_0.0	uid17227_0.0.fsa	Desulfovibrio vulgaris DP4	Desulfovibrio_vulgaris_DP4_uid17227	4	3202788	3232809	30022
+uid17227_0.1	uid17227_0.1.fsa	Desulfovibrio vulgaris DP4	Desulfovibrio_vulgaris_DP4_uid17227	4	1712922	1768194	55273
+uid17477_0.0	uid17477_0.0.fsa	Acinetobacter baumannii ATCC 17978	Acinetobacter_baumannii_ATCC_17978_uid17477	1	1829393	1855268	25876
+uid18883_0.1	uid18883_0.1.fsa	Mycobacterium tuberculosis H37Ra	Mycobacterium_tuberculosis_H37Ra_uid18883	2	1780831	1790023	9193
+uid18883_0.0	uid18883_0.0.fsa	Mycobacterium tuberculosis H37Ra	Mycobacterium_tuberculosis_H37Ra_uid18883	2	2982519	2992786	10268
+uid12986_0.0	uid12986_0.0.fsa	Vibrio fischeri ES114	Vibrio_fischeri_ES114_uid12986	1	2241156	2265756	24601
+uid29537_0.2	uid29537_0.2.fsa	Nakamurella multipartita DSM 44233	Nakamurella_multipartita_DSM_44233_uid29537	3	1336864	1363936	27073
+uid29537_0.1	uid29537_0.1.fsa	Nakamurella multipartita DSM 44233	Nakamurella_multipartita_DSM_44233_uid29537	3	3906189	3971791	65603
+uid29537_0.0	uid29537_0.0.fsa	Nakamurella multipartita DSM 44233	Nakamurella_multipartita_DSM_44233_uid29537	3	4059933	4111646	51714
+uid13903_0.0	uid13903_0.0.fsa	Shewanella sp. MR-7	Shewanella_MR-7_uid13903	1	799903	855461	55559
+uid51915_0.0	uid51915_0.0.fsa	Burkholderia rhizoxinica HKI 454	Burkholderia_rhizoxinica_HKI_454_uid51915	1	165544	196054	30511
+uid32195_0.1	uid32195_0.1.fsa	Lactobacillus rhamnosus GG	Lactobacillus_rhamnosus_GG_uid32195	2	1102527	1142252	39726
+uid32195_0.0	uid32195_0.0.fsa	Lactobacillus rhamnosus GG	Lactobacillus_rhamnosus_GG_uid32195	2	1528627	1556616	27990
+uid265_0.0	uid265_0.0.fsa	Staphylococcus aureus subsp. aureus MRSA252	Staphylococcus_aureus_aureus_MRSA252_uid265	1	1593824	1632022	38199
+uid45951_0.1	uid45951_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	2872794	2924880	52087
+uid45951_0.0	uid45951_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	4525530	4540479	14950
+uid45951_0.3	uid45951_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	2727230	2772217	44988
+uid45951_0.2	uid45951_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	2804985	2872667	67683
+uid45951_0.5	uid45951_0.5.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	368887	407131	38245
+uid45951_0.4	uid45951_0.4.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. T000240	Salmonella_enterica_serovar_Typhimurium_T000240_uid45951	6	1095886	1141399	45514
+uid46291_0.0	uid46291_0.0.fsa	Propionibacterium freudenreichii subsp. shermanii CIRM-BIA1	Propionibacterium_freudenreichii_shermanii_CIP_103027_uid46291	1	2267516	2301057	33542
+uid43757_0.1	uid43757_0.1.fsa	Erwinia amylovora ATCC 49946	Erwinia_amylovora_ATCC_49946_uid43757	2	341046	352323	11278
+uid43757_0.0	uid43757_0.0.fsa	Erwinia amylovora ATCC 49946	Erwinia_amylovora_ATCC_49946_uid43757	2	1933508	1961045	27538
+uid50407_0.3	uid50407_0.3.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. SL1344	Salmonella_enterica_serovar_Typhimurium_SL1344_uid50407	4	1898702	1925490	26789
+uid50407_0.2	uid50407_0.2.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. SL1344	Salmonella_enterica_serovar_Typhimurium_SL1344_uid50407	4	2040503	2081525	41023
+uid50407_0.1	uid50407_0.1.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. SL1344	Salmonella_enterica_serovar_Typhimurium_SL1344_uid50407	4	2331729	2342463	10735
+uid50407_0.0	uid50407_0.0.fsa	Salmonella enterica subsp. enterica serovar Typhimurium str. SL1344	Salmonella_enterica_serovar_Typhimurium_SL1344_uid50407	4	4441123	4458703	17581
+uid39729_0.0	uid39729_0.0.fsa	Ethanoligenens harbinense YUAN-3	Ethanoligenens_harbinense_YUAN_3_uid39729	1	508920	558541	49622
+uid32595_0.0	uid32595_0.0.fsa	Asticcacaulis excentricus CB 48	Asticcacaulis_excentricus_CB_48_uid32595	1	346021	391506	45486
+uid40837_0.0	uid40837_0.0.fsa	Leuconostoc kimchii IMSNU 11154	Leuconostoc_kimchii_IMSNU11154_uid40837	1	746319	759076	12758
+uid34853_0.0	uid34853_0.0.fsa	Edwardsiella ictaluri 93-146	Edwardsiella_ictaluri_93_146_uid34853	1	1737904	1815254	77351
+uid27947_0.0	uid27947_0.0.fsa	Desulfotomaculum acetoxidans DSM 771	Desulfotomaculum_acetoxidans_DSM_771_uid27947	2	2598569	2661586	63018
+uid27947_0.1	uid27947_0.1.fsa	Desulfotomaculum acetoxidans DSM 771	Desulfotomaculum_acetoxidans_DSM_771_uid27947	2	2382791	2416388	33598
+uid52019_0.0	uid52019_0.0.fsa	Paenibacillus polymyxa SC2	Paenibacillus_polymyxa_SC2_uid52019	1	3633932	3703749	69818
+uid15760_0.2	uid15760_0.2.fsa	Mycobacterium gilvum PYR-GCK	Mycobacterium_gilvum_PYR-GCK_uid15760	3	588274	642000	53727
+uid15760_0.1	uid15760_0.1.fsa	Mycobacterium gilvum PYR-GCK	Mycobacterium_gilvum_PYR-GCK_uid15760	3	3364870	3419580	54711
+uid15760_0.0	uid15760_0.0.fsa	Mycobacterium gilvum PYR-GCK	Mycobacterium_gilvum_PYR-GCK_uid15760	3	131208	184044	52837
+uid238_0.0	uid238_0.0.fsa	Staphylococcus aureus subsp. aureus COL	Staphylococcus_aureus_COL_uid238	1	354785	388623	33839
+uid10646_0.0	uid10646_0.0.fsa	Ralstonia eutropha JMP134	Ralstonia_eutropha_JMP134_uid10646	1	2609137	2646654	37518
+uid20713_0.0	uid20713_0.0.fsa	Escherichia coli BL21(DE3)	Escherichia_coli_BL21_DE3__uid20713	3	1567602	1594051	26450
+uid20713_0.1	uid20713_0.1.fsa	Escherichia coli BL21(DE3)	Escherichia_coli_BL21_DE3__uid20713	3	872499	892602	20104
+uid20713_0.2	uid20713_0.2.fsa	Escherichia coli BL21(DE3)	Escherichia_coli_BL21_DE3__uid20713	3	771107	789767	18661
+uid40781_0.1	uid40781_0.1.fsa	Geobacillus thermoglucosidasius C56-YS93	Geobacillus_thermoglucosidasius_C56_YS93_uid40781	2	741988	778987	37000
+uid40781_0.0	uid40781_0.0.fsa	Geobacillus thermoglucosidasius C56-YS93	Geobacillus_thermoglucosidasius_C56_YS93_uid40781	2	1890494	1943538	53045
+uid16137_0.0	uid16137_0.0.fsa	Bradyrhizobium sp. BTAi1	Bradyrhizobium_BTAi1_uid16137	1	6019763	6048978	29216
+uid31289_0.0	uid31289_0.0.fsa	Pectobacterium carotovorum subsp. carotovorum PC1	Pectobacterium_carotovorum_PC1_uid31289	2	3573374	3606619	33246
+uid31289_0.1	uid31289_0.1.fsa	Pectobacterium carotovorum subsp. carotovorum PC1	Pectobacterium_carotovorum_PC1_uid31289	2	2989228	3020928	31701
+uid16718_0.6	uid16718_0.6.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	1467071	1519706	52636
+uid16718_0.7	uid16718_0.7.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	1326979	1372478	45500
+uid16718_0.4	uid16718_0.4.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	2259657	2282420	22764
+uid16718_0.5	uid16718_0.5.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	2054544	2091975	37432
+uid16718_0.2	uid16718_0.2.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	2739422	2778893	39472
+uid16718_0.3	uid16718_0.3.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	2570223	2604537	34315
+uid16718_0.0	uid16718_0.0.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	5014998	5048001	33004
+uid16718_0.1	uid16718_0.1.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	2920995	2950704	29710
+uid16718_0.8	uid16718_0.8.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	1178855	1217751	38897
+uid16718_0.9	uid16718_0.9.fsa	Escherichia coli APEC O1	Escherichia_coli_APEC_O1_uid16718	10	919802	952969	33168
+uid46_0.0	uid46_0.0.fsa	Bacteroides fragilis NCTC 9343	Bacteroides_fragilis_NCTC_9434_uid46	1	1962055	2075198	113144
+uid30453_0.0	uid30453_0.0.fsa	Variovorax paradoxus S110	Variovorax_paradoxus_S110_uid30453	1	2570796	2639242	68447
+uid34781_0.4	uid34781_0.4.fsa	Erwinia billingiae Eb661	Erwinia_billingiae_Eb661_uid34781	5	106494	139131	32638
+uid34781_0.0	uid34781_0.0.fsa	Erwinia billingiae Eb661	Erwinia_billingiae_Eb661_uid34781	5	4910908	4946401	35494
+uid34781_0.1	uid34781_0.1.fsa	Erwinia billingiae Eb661	Erwinia_billingiae_Eb661_uid34781	5	3531569	3577505	45937
+uid34781_0.2	uid34781_0.2.fsa	Erwinia billingiae Eb661	Erwinia_billingiae_Eb661_uid34781	5	2981657	3015556	33900
+uid34781_0.3	uid34781_0.3.fsa	Erwinia billingiae Eb661	Erwinia_billingiae_Eb661_uid34781	5	1248024	1279246	31223
+uid204_0.0	uid204_0.0.fsa	Novosphingobium aromaticivorans DSM 12444	Novosphingobium_aromaticivorans_DSM_12444_uid204	1	665462	692093	26632
+uid18999_0.0	uid18999_0.0.fsa	Brucella abortus S19	Brucella_abortus_S19_uid18999	1	547639	606255	58617
+uid13372_0.1	uid13372_0.1.fsa	Agrobacterium vitis S4	Agrobacterium_vitis_S4_uid13372	4	1879238	1926400	47163
+uid13372_0.3	uid13372_0.3.fsa	Agrobacterium vitis S4	Agrobacterium_vitis_S4_uid13372	4	732159	749117	16959
+uid13372_0.2	uid13372_0.2.fsa	Agrobacterium vitis S4	Agrobacterium_vitis_S4_uid13372	4	1612077	1642955	30879
+uid13372_0.0	uid13372_0.0.fsa	Agrobacterium vitis S4	Agrobacterium_vitis_S4_uid13372	4	1167800	1199635	31836
+uid16259_0.2	uid16259_0.2.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	2597497	2634913	37417
+uid16259_0.3	uid16259_0.3.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	1653155	1660757	7603
+uid16259_0.0	uid16259_0.0.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	4987411	5026146	38736
+uid16259_0.1	uid16259_0.1.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	2902003	2935677	33675
+uid16259_0.6	uid16259_0.6.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	912093	948388	36296
+uid16259_0.4	uid16259_0.4.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	1388571	1433257	44687
+uid16259_0.5	uid16259_0.5.fsa	Escherichia coli UTI89	Escherichia_coli_UTI89_uid16259	7	1241467	1280455	38989

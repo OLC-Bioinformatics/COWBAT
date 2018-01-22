@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 11:46:37 EST 2018
+#Version	5
+chroms	1
+bases	48366
+defined	32366
+undefined	16000
+contigs	1
+scaffolds	1
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/prophages/combinedtargets.tfa
+bytes	32918
+last modified	1372254705000

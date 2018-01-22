@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 10:16:38 EST 2018
+#Version	5
+chroms	1
+bases	18202
+defined	1202
+undefined	17000
+contigs	3
+scaffolds	3
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/plasmidfinder/combinedtargets.fasta
+bytes	1300
+last modified	1513358583000

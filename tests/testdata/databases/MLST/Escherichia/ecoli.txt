@@ -1,0 +1,2 @@
+ST	adk	fumC	gyrB	icd	mdh	purA	recA	clonal_complex
+11	12	12	8	12	15	2	2

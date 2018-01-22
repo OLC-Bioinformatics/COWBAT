@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 10:32:42 EST 2018
+#Version	5
+chroms	1
+bases	82355
+defined	41355
+undefined	41000
+contigs	51
+scaffolds	51
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/resfinder/combinedtargets.fasta
+bytes	42969
+last modified	1515075680000

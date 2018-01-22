@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 15:50:04 EST 2018
+#Version	5
+chroms	1
+bases	19369
+defined	3369
+undefined	16000
+contigs	1
+scaffolds	1
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/coregenome/Escherichia/core_combined.tfa
+bytes	3436
+last modified	1516048651000

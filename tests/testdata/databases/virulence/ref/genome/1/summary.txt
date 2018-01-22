@@ -1,0 +1,13 @@
+#Summary
+#Generated on	Mon Jan 15 13:21:55 EST 2018
+#Version	5
+chroms	1
+bases	265820
+defined	178311
+undefined	87509
+contigs	144
+scaffolds	144
+interpad	500
+source	/home/adamkoziol/PycharmProjects/COWBAT/tests/testdata/databases/virulence/combinedtargets.fasta
+bytes	182036
+last modified	1510053793000

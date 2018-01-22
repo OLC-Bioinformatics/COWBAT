@@ -7,6 +7,8 @@ SPAdesPipeline
 
 #### [Read the Docs](http://olc-bioinformatics.github.io/COWBAT/)
 
+[![Build Status](https://travis-ci.org/OLC-Bioinformatics/COWBAT.svg?branch=master)](https://travis-ci.org/OLC-Bioinformatics/COWBAT)
+
 # Introduction
 
 This pipeline is designed to be able to assemble and type raw fastq data generated using an Illumina MiSeq.

@@ -98,12 +98,11 @@ class DatabaseSetup(object):
             with open(completefile, 'w') as complete:
                 complete.write('\n'.join(glob(os.path.join(self.databasepath, 'rMLST', '*'))))
 
-    def mlst(self):
+    def mlst(self, genera={'Escherichia', 'Vibrio', 'Campylobacter', 'Listeria', 'Bacillus', 'Staphylococcus'}):
         """
         Download the necessary up-to-date MLST profiles and alleles
         """
         printtime('Downloading MLST databases', self.start)
-        genera = ['Escherichia', 'Vibrio', 'Campylobacter', 'Listeria', 'Bacillus']
         for genus in genera:
             # Create an object to pass to the get_mlst script
             args = MetadataObject()
@@ -193,7 +192,7 @@ class DatabaseSetup(object):
         make_path(self.databasepath)
         self.start = args.start
         # Determine the location of the CLARK scripts
-        self.clarkpath = os.path.dirname(shutil.which('estimate_abundance.sh'))
+        self.clarkpath = os.path.dirname(shutil.which('CLARK'))
         self.logfile = os.path.join(self.databasepath, 'logfile')
         # Delete log files form previous iterations of the script in this folder
         clear_logfile(self.logfile)

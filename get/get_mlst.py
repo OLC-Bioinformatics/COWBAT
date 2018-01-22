@@ -141,7 +141,8 @@ def main(args):
                           'Vibrio': 'Vibrio parahaemolyticus',
                           'Campylobacter': 'Campylobacter jejuni',
                           'Listeria': 'Listeria monocytogenes',
-                          'Bacillus': 'Bacillus cereus'}
+                          'Bacillus': 'Bacillus cereus',
+                          'Staphylococcus': "Staphylococcus aureus"}
     # Set the appropriate profile based on the dictionary key:value pairs
     try:
         args.genus = organismdictionary[args.species]

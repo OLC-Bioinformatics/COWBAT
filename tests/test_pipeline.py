@@ -196,10 +196,10 @@ def test_qualimap():
         assert sample.mapping.Contigs == "989"
 
 
-def test_quast():
-    method.quast()
+def test_quality_features():
+    method.quality_features()
     for sample in method.runmetadata.samples:
-        assert sample.quast.N50 == "845"
+        assert sample.quality_features.n50 == 845
 
 
 def test_prodigal():

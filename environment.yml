@@ -130,16 +130,16 @@ dependencies:
 - bcl2fastq=2.19.0=1
 - boost_lib=1.54.0=1
 - pip:
-  - attrs==17.3.0
+  - attrs==17.4.0
   - biopython==1.70
-  - confindr==0.2.2
+  - confindr==0.2.3
   - ipython-genutils==0.2.0
   - jupyter-core==4.4.0
-  - olctools==0.3.34
+  - olctools (/home/adamkoziol/PycharmProjects/OLCTools)==0.3.34
   - pluggy==0.6.0
   - py==1.5.2
   - pysam==0.13
-  - pytest==3.3.1
+  - pytest==3.3.2
   - sipprverse==0.0.32
   - sistr-cmd==1.0.2
   - tables==3.4.2

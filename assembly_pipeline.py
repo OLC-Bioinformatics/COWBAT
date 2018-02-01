@@ -266,7 +266,7 @@ class RunSpades(object):
         # Resistance finding - raw reads
         self.ressippr()
         # Resistance finding - assemblies
-        self.ressippr()
+        self.resfinder()
         # Prophage detection
         self.prophages()
         # Univec contamination search

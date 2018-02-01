@@ -142,11 +142,12 @@ def main(args):
                           'Campylobacter': 'Campylobacter jejuni',
                           'Listeria': 'Listeria monocytogenes',
                           'Bacillus': 'Bacillus cereus',
-                          'Staphylococcus': "Staphylococcus aureus"}
+                          'Staphylococcus': "Staphylococcus aureus",
+                          'Salmonella': 'Salmonella enterica'}
     # Set the appropriate profile based on the dictionary key:value pairs
     try:
         args.genus = organismdictionary[args.species]
-    except KeyError:
+    except (KeyError, AttributeError):
         pass
     with url.urlopen(args.repository_url) as docfile:
         doc = xml.parse(docfile)

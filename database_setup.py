@@ -6,6 +6,7 @@ import get.get_mlst as get_mlst
 from argparse import ArgumentParser
 from time import time
 from glob import glob
+import fileinput
 import tarfile
 import shutil
 import os
@@ -19,14 +20,16 @@ class DatabaseSetup(object):
         Run the methods
         """
         self.olc_databases()
+        self.confindr()
         self.clark()
         self.mash()
         self.rmlst()
         self.mlst()
-        self.cge_db_downloader('plasmidfinder', 'plasmidfinder_db', 'fsa')
-        self.cge_db_downloader('resfinder', 'resfinder_db', 'fsa')
-        self.cge_db_downloader('virulence', 'virulencefinder_db', 'fsa')
-        self.cge_db_downloader('serosippr', 'serotypefinder_db', 'fsa')
+        self.cge_db_downloader('plasmidfinder', 'plasmidfinder_db', 'fsa', 'tfa')
+        self.cge_db_downloader('resfinder', 'resfinder_db', 'fsa', 'tfa')
+        self.notes()
+        self.cge_db_downloader('virulence', 'virulencefinder_db', 'fsa', 'tfa')
+        self.cge_db_downloader('serosippr', 'serotypefinder_db', 'fsa', 'tfa')
         self.univec()
 
     def olc_databases(self):
@@ -41,12 +44,31 @@ class DatabaseSetup(object):
         # Download the databases
         self.database_download(targetcall, self.databasepath)
         # Extract the databases from the archives
+        printtime('Extracting databases from archives', self.start)
         for gz in glob(os.path.join(self.databasepath, '*.gz')):
             with tarfile.open(gz, 'r:gz') as tar:
                 # Decompress the archive
-                tar.extractall()
+                tar.extractall(path=self.databasepath)
             # Delete the archive file
             os.remove(gz)
+
+    def confindr(self):
+        """
+        Download and extract the .tar file containing the ConFindr database from figshare.
+        """
+        databasepath = self.create_database_folder('ConFindr')
+        tar_file = os.path.join(databasepath, 'confindr.tar')
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827251'\
+            .format(out=tar_file)
+        self.database_download(targetcall, databasepath)
+        # Extract the databases from the archives
+        printtime('Extracting database from archives', self.start)
+        if not os.path.isfile(os.path.join(databasepath, 'complete')):
+            with tarfile.open(tar_file, 'r') as tar:
+                # Decompress the archive
+                tar.extractall(path=databasepath)
+            # Delete the archive file
+            os.remove(tar_file)
 
     def clark(self):
         """
@@ -98,7 +120,8 @@ class DatabaseSetup(object):
             with open(completefile, 'w') as complete:
                 complete.write('\n'.join(glob(os.path.join(self.databasepath, 'rMLST', '*'))))
 
-    def mlst(self, genera={'Escherichia', 'Vibrio', 'Campylobacter', 'Listeria', 'Bacillus', 'Staphylococcus'}):
+    def mlst(self, genera={'Escherichia', 'Vibrio', 'Campylobacter', 'Listeria', 'Bacillus', 'Staphylococcus',
+                           'Salmonella'}):
         """
         Download the necessary up-to-date MLST profiles and alleles
         """
@@ -121,12 +144,13 @@ class DatabaseSetup(object):
                 with open(completefile, 'w') as complete:
                     complete.write('\n'.join(glob(os.path.join(args.path, '*'))))
 
-    def cge_db_downloader(self, analysistype, dbname, extension):
+    def cge_db_downloader(self, analysistype, dbname, extension_in, extension_out):
         """
         Clones CGE databases into appropriate folder. Creates properly formatted file with non-redundant sequences
         :param analysistype: The name of the database folder to create
         :param dbname: The name of the database repository on bitbucket
-        :param extension: The file extension of the FASTA files
+        :param extension_in: The file extension of the FASTA files in the database
+        :param extension_out: The desired extension for the FASTA files
         """
         printtime('Downloading {} database'.format(analysistype), self.start)
         if analysistype == 'serosippr':
@@ -138,11 +162,39 @@ class DatabaseSetup(object):
                     atype=databasepath)
         # Download the database
         self.database_download(targetcall, databasepath)
+        # Create a variable to use in creating the combined targets file
+        extension = extension_in
+        # If the extension_out is different than extension_in, rename the files to have the appropriate extension
+        if extension_in != extension_out:
+            # Create a list of all the FASTA files with the input extension
+            fastafiles = glob(os.path.join(databasepath, '*.{ext}'.format(ext=extension_in)))
+            for fasta in fastafiles:
+                # Split the extension
+                filename = os.path.splitext(fasta)[0]
+                # Rename the files
+                os.rename(fasta, '{fn}.{ex}'.format(fn=filename,
+                                                    ex=extension_out))
+            # Update the variable to use when creating the combined targets file
+            extension = extension_out
+        # Create the combined targets file to use in the OLC pipelines
         if not os.path.isfile(os.path.join(databasepath, 'combinedtargets.fasta')):
             # Create the combinedtargets.fasta file - this will combine all the FASTA files in the downloaded database
             # into a properly-formatted, non-redundant FASTA database
             databasefiles = glob(os.path.join(databasepath, '*.{ext}'.format(ext=extension)))
             combinetargets(databasefiles, databasepath)
+
+    def notes(self):
+        """
+        Clean the notes.txt file that comes with the resfinder database; it contains certain definitions with commas.
+        Replace all commas in the file with semicolons
+        """
+        databasepath = self.create_database_folder('resfinder')
+        # Open the notes file with fileinput to allow inplace editing
+        with fileinput.FileInput(os.path.join(databasepath, 'notes.txt'), inplace=True, backup='.bak') \
+                as notes:
+            for line in notes:
+                # Replace all commas with semicolons
+                print(line.replace(',', ';'), end='')
 
     def univec(self):
         """
@@ -179,6 +231,7 @@ class DatabaseSetup(object):
         # Run the system call if the database is not already downloaded
         if not os.path.isfile(completefile):
             out, err = run_subprocess(targetcall)
+            print(out, err)
             # Write the out and err streams to the master files
             write_to_logfile(out, err, self.logfile, None, None, None, None)
             if complete:

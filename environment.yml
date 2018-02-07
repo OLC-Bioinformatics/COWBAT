@@ -1,8 +1,8 @@
 name: cowbat
 channels:
-- dranew
 - biobuilds
 - eclarke
+- dranew
 - adamkoziol
 - conda-forge
 - defaults
@@ -139,7 +139,7 @@ dependencies:
   - interop==1.1.3
   - ipython-genutils==0.2.0
   - jupyter-core==4.4.0
-  - olctools==0.3.37
+  - olctools==0.3.38
   - pluggy==0.6.0
   - py==1.5.2
   - pysam==0.13

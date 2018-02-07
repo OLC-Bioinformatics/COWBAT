@@ -27,19 +27,16 @@ ENV PATH $HOME/miniconda/bin:$PATH
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
+#-------
+
 # Install the pipeline
-RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 ENV PATH /COWBAT:$PATH
+RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /COWBAT
 RUN conda env create
 WORKDIR /
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8
-
-#ENTRYPOINT [ “/bin/bash”, “-c” ]
-
-# CLARK doesn't install properly from the environment file - uses biobuilds instead of bioconda
-#RUN /bin/bash -c "source activate cowbat && conda install -c eclarke clark"
 
 #CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"

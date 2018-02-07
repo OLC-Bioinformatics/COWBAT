@@ -40,6 +40,6 @@ ENV LANG C.UTF-8
 #ENTRYPOINT [ “/bin/bash”, “-c” ]
 
 # CLARK doesn't install properly from the environment file - uses biobuilds instead of bioconda
-RUN /bin/bash -c "source activate cowbat && conda install -c bioconda clark"
+#RUN /bin/bash -c "source activate cowbat && conda install -c eclarke clark"
 
 #CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"

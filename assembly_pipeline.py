@@ -55,6 +55,7 @@ class RunSpades(object):
         self.typing()
         # Create a report
         reporter.Reporter(self)
+        # Compress or remove all large, temporary files created by the pipeline
         compress.Compress(self)
         # Get all the versions of the software used
         versions.Versions(self)

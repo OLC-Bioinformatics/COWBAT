@@ -205,13 +205,13 @@ def test_quality_features():
 def test_prodigal():
     method.prodigal()
     for sample in method.runmetadata.samples:
-        assert sample.prodigal.predictedgenesover1000bp == 68
+        assert 65 <= sample.prodigal.predictedgenesover1000bp <= 69
 
 
 def test_mash():
     method.mash()
     for sample in method.runmetadata.samples:
-        assert sample.mash.closestrefseq == 'GCF_000008865.1'
+        assert sample.mash.closestrefseq == 'Escherichia coli O157:H7 str. Sakai'
 
 
 def test_rmlst():

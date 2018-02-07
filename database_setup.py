@@ -201,9 +201,15 @@ class DatabaseSetup(object):
         Download the UniVec core database using wget
         """
         databasepath = self.create_database_folder('univec')
+        #
+        outputfile = os.path.join(databasepath, 'UniVec_core.tfa')
         targetcall = 'wget -O {} ftp://ftp.ncbi.nlm.nih.gov/pub/UniVec/UniVec_Core'\
-            .format(os.path.join(databasepath, 'UniVec_core.tfa'))
+            .format(outputfile)
         self.database_download(targetcall, databasepath)
+        # Create a copy of the file with a .fasta extension
+        if os.path.isfile(outputfile):
+            renamed = os.path.splitext(outputfile)[0] + '.fasta'
+            shutil.copy(outputfile, renamed)
 
     def create_database_folder(self, database):
         """

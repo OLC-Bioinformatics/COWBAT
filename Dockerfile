@@ -29,8 +29,8 @@ RUN pip3 install --upgrade pip
 
 #------
 
-ENV PATH /COWBAT:$PATH
 # Install the pipeline
+ENV PATH /COWBAT:$PATH
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /COWBAT
 RUN conda env create

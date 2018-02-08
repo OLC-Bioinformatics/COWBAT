@@ -1,8 +1,8 @@
 name: cowbat
 channels:
+- eclarke
 - biobuilds
 - dranew
-- eclarke
 - adamkoziol
 - conda-forge
 - defaults

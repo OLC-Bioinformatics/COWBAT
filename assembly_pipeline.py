@@ -381,7 +381,8 @@ class RunSpades(object):
         """
         Virulence typing
         """
-        vtyper.PrimerFinder(self, 'vtyper')
+        vtype = vtyper.PrimerFinder(self, 'vtyper')
+        vtype.main()
         metadataprinter.MetadataPrinter(self)
 
     def coregenome(self):

@@ -265,7 +265,7 @@ def test_univec():
 def test_virulence():
     method.virulence()
     for sample in method.runmetadata.samples:
-        assert sample.virulence.avgdepth['stx1:3:M19437:3'] == '16.54'
+        assert sample.virulence.avgdepth['stx1_3_M19437_3'] == '16.54'
 
 
 def test_mlst():

@@ -27,10 +27,10 @@ ENV PATH $HOME/miniconda/bin:$PATH
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
-#-------
+#------
 
-# Install the pipeline
 ENV PATH /COWBAT:$PATH
+# Install the pipeline
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /COWBAT
 RUN conda env create

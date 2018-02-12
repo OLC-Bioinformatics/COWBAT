@@ -10,6 +10,5 @@ before_install:
   - conda update -q conda
   - conda env create -f environment.yml
   - source activate cowbat 
-  - conda install -c bioconda clark
 script:
   - pytest tests/test_pipeline.py

@@ -2,8 +2,8 @@
     "docs": [
         {
             "location": "/",
-            "text": "COWBAT Documentation\n\n\nCFIA OLC Workflow for Bacterial Assembly and Typing\n\n\n\n\nCommands\n\n\n\n\nmkdocs new [dir-name]\n - Create a new project.\n\n\nmkdocs serve\n - Start the live-reloading docs server.\n\n\nmkdocs build\n - Build the documentation site.\n\n\nmkdocs help\n - Print this help message.\n\n\n\n\nProject layout\n\n\nmkdocs.yml    # The configuration file.\ndocs/\n    index.md  # The documentation homepage.\n    ...       # Other markdown pages, images and other files.",
-            "title": "COWBAT Documentation"
+            "text": "COWBAT Documentation\n\n\nCFIA OLC Workflow for B\ufe0facterial Assembly and Typing\n\n\n\n\nThis pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq\n\n\nLinks\n\n\nOverview\n\n\nInstallation\n\n\nTutorial\n\n\nTests\n\n\nQuality control\n\n\nAssembly\n\n\nTyping",
+            "title": "Home"
         },
         {
             "location": "/#cowbat-documentation",
@@ -12,18 +12,93 @@
         },
         {
             "location": "/#cfia-olc-workflow-for-bacterial-assembly-and-typing",
+            "text": "This pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq",
+            "title": "CFIA OLC Workflow for B\ufe0facterial Assembly and Typing"
+        },
+        {
+            "location": "/#links",
+            "text": "Overview  Installation  Tutorial  Tests  Quality control  Assembly  Typing",
+            "title": "Links"
+        },
+        {
+            "location": "/overview/",
+            "text": "Overview",
+            "title": "Overview"
+        },
+        {
+            "location": "/overview/#overview",
             "text": "",
-            "title": "CFIA OLC Workflow for Bacterial Assembly and Typing"
+            "title": "Overview"
         },
         {
-            "location": "/#commands",
-            "text": "mkdocs new [dir-name]  - Create a new project.  mkdocs serve  - Start the live-reloading docs server.  mkdocs build  - Build the documentation site.  mkdocs help  - Print this help message.",
-            "title": "Commands"
+            "location": "/installation/",
+            "text": "COWBAT Installation\n\n\nDependencies\n\n\n\n\nLinux system\n\n\nConda\n\n\n\n\nThe way I install conda:\n\n\nwget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh\nbash miniconda.sh -b -p $HOME/miniconda\nexport PATH=\"$HOME/miniconda/bin:$PATH\"\nconda config --set always_yes yes\nconda update -q conda\n\n\n\n\nThe easiest way to install COWBAT is to download the source code \nGitHub Link\n\n\ngit clone https://github.com/OLC-Bioinformatics/COWBAT.git\ncd COWBAT\nexport PATH=\"/path/to/repository/COWBAT:$PATH\"\nconda env create -f environment.yml\nsource activate cowbat\n\n\n\n\nDatabases\n\n\nUse the database_setup.py script included in the repository. This will download and set up all required databases.\n\n\nNOTE: If you want rMLST databases, you must contact Keith Jolley (keith.jolley@zoo.ox.ac.uk)\nfor an account, and for the necessary keys.\n\n\npython database_setup.py -d /PATH/TO/DESIRED/LOCATION \n\n\n\n\nTesting\n\n\nUnit tests",
+            "title": "Installation"
         },
         {
-            "location": "/#project-layout",
-            "text": "mkdocs.yml    # The configuration file.\ndocs/\n    index.md  # The documentation homepage.\n    ...       # Other markdown pages, images and other files.",
-            "title": "Project layout"
+            "location": "/installation/#cowbat-installation",
+            "text": "",
+            "title": "COWBAT Installation"
+        },
+        {
+            "location": "/installation/#dependencies",
+            "text": "Linux system  Conda   The way I install conda:  wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh\nbash miniconda.sh -b -p $HOME/miniconda\nexport PATH=\"$HOME/miniconda/bin:$PATH\"\nconda config --set always_yes yes\nconda update -q conda  The easiest way to install COWBAT is to download the source code  GitHub Link  git clone https://github.com/OLC-Bioinformatics/COWBAT.git\ncd COWBAT\nexport PATH=\"/path/to/repository/COWBAT:$PATH\"\nconda env create -f environment.yml\nsource activate cowbat",
+            "title": "Dependencies"
+        },
+        {
+            "location": "/installation/#databases",
+            "text": "Use the database_setup.py script included in the repository. This will download and set up all required databases.  NOTE: If you want rMLST databases, you must contact Keith Jolley (keith.jolley@zoo.ox.ac.uk)\nfor an account, and for the necessary keys.  python database_setup.py -d /PATH/TO/DESIRED/LOCATION",
+            "title": "Databases"
+        },
+        {
+            "location": "/installation/#testing",
+            "text": "Unit tests",
+            "title": "Testing"
+        },
+        {
+            "location": "/tutorial/",
+            "text": "Tutorial\n\n\nBasic settings\n\n\nThe pipeline is designed to run with a minimum of two supplied parameters:\n\n\n* path to FASTQ sequence data\n* path to reference database (-r)\n\n\n\nThe following command will run the pipeline on the supplied sequences with default parameters\n\n\nassembly_pipeline.py /path/to/sequences -r /path/to/database\n\n\n\n\n\nOptional parameters\n\n\nThere are a number of optional parameters than can be supplied to the assembly_pipeline.py script\n\n\nusage: assembly_pipeline.py [-h] [-v] [-n NUMREADS] [-t THREADS]\n                            [-k KMERRANGE] [-c CUSTOMSAMPLESHEET] [-b] [-p]\n\nAssemble genomes from Illumina fastq files\n\noptional arguments:\n  -h, --help            show this help message and exit\n  -v, --version         show program's version number and exit\n  -n NUMREADS, --numreads NUMREADS\n                        Specify the number of reads. Paired-reads: 2,\n                        unpaired-reads: 1. Default is paired-end\n  -t THREADS, --threads THREADS\n                        Number of threads. Default is the number of cores in\n                        the system\n  -k KMERRANGE, --kmerrange KMERRANGE\n                        The range of kmers used in SPAdes assembly. Default is\n                        21,33,55,77,99,127\n  -c CUSTOMSAMPLESHEET, --customsamplesheet CUSTOMSAMPLESHEET\n                        Path of folder containing a custom sample sheet and\n                        name of sample sheet file e.g.\n                        /home/name/folder/BackupSampleSheet.csv. Note that\n                        this sheet must still have the same format of Illumina\n                        SampleSheet.csv files\n  -b, --basicassembly   Performs a basic de novo assembly, and does not\n                        collect run metadata\n  -p, --preprocess      Perform quality trimming and error correction only. Do\n                        not assemble the trimmed + corrected reads",
+            "title": "Tutorial"
+        },
+        {
+            "location": "/tutorial/#tutorial",
+            "text": "",
+            "title": "Tutorial"
+        },
+        {
+            "location": "/tutorial/#basic-settings",
+            "text": "The pipeline is designed to run with a minimum of two supplied parameters:  * path to FASTQ sequence data\n* path to reference database (-r)  The following command will run the pipeline on the supplied sequences with default parameters  assembly_pipeline.py /path/to/sequences -r /path/to/database",
+            "title": "Basic settings"
+        },
+        {
+            "location": "/tutorial/#optional-parameters",
+            "text": "There are a number of optional parameters than can be supplied to the assembly_pipeline.py script  usage: assembly_pipeline.py [-h] [-v] [-n NUMREADS] [-t THREADS]\n                            [-k KMERRANGE] [-c CUSTOMSAMPLESHEET] [-b] [-p]\n\nAssemble genomes from Illumina fastq files\n\noptional arguments:\n  -h, --help            show this help message and exit\n  -v, --version         show program's version number and exit\n  -n NUMREADS, --numreads NUMREADS\n                        Specify the number of reads. Paired-reads: 2,\n                        unpaired-reads: 1. Default is paired-end\n  -t THREADS, --threads THREADS\n                        Number of threads. Default is the number of cores in\n                        the system\n  -k KMERRANGE, --kmerrange KMERRANGE\n                        The range of kmers used in SPAdes assembly. Default is\n                        21,33,55,77,99,127\n  -c CUSTOMSAMPLESHEET, --customsamplesheet CUSTOMSAMPLESHEET\n                        Path of folder containing a custom sample sheet and\n                        name of sample sheet file e.g.\n                        /home/name/folder/BackupSampleSheet.csv. Note that\n                        this sheet must still have the same format of Illumina\n                        SampleSheet.csv files\n  -b, --basicassembly   Performs a basic de novo assembly, and does not\n                        collect run metadata\n  -p, --preprocess      Perform quality trimming and error correction only. Do\n                        not assemble the trimmed + corrected reads",
+            "title": "Optional parameters"
+        },
+        {
+            "location": "/tests/",
+            "text": "Tests\n\n\nA test script and test datasets are included in the repository to ensure that installation of the script and dependencies \nwas successful. To run the unit tests (make sure that the cowbat conda environment is active):\n\n\ncd COWBAT\npytest\n\n\n\n\nIf any test fails, check the output to see where the issues occurred",
+            "title": "Tests"
+        },
+        {
+            "location": "/tests/#tests",
+            "text": "A test script and test datasets are included in the repository to ensure that installation of the script and dependencies \nwas successful. To run the unit tests (make sure that the cowbat conda environment is active):  cd COWBAT\npytest  If any test fails, check the output to see where the issues occurred",
+            "title": "Tests"
+        },
+        {
+            "location": "/quality/",
+            "text": "",
+            "title": "Quality control"
+        },
+        {
+            "location": "/assembly/",
+            "text": "",
+            "title": "Assembly"
+        },
+        {
+            "location": "/typing/",
+            "text": "",
+            "title": "Typing"
         }
     ]
 }

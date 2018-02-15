@@ -1,2 +1,12 @@
 site_name: COWBAT Documentation
 theme: readthedocs
+
+pages:
+    - Home: 'index.md'
+    - Overview: 'overview.md'
+    - Installation: 'installation.md'
+    - Tutorial: 'tutorial.md'
+    - Tests: 'tests.md'
+    - Quality control: 'quality.md'
+    - Assembly: 'assembly.md'
+    - Typing: 'typing.md'

@@ -4,16 +4,26 @@
 
 ![alt text](./img/cowbat.png "COWBAT")
 
-## Commands
+This pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs help` - Print this help message.
+## Links
 
-## Project layout
+[Overview](overview.md)
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+
+[Installation](installation.md)
+
+
+[Tutorial](tutorial.md)
+
+
+[Tests](tests.md)
+
+
+[Quality control](quality.md)
+
+
+[Assembly](assembly.md)
+
+
+[Typing](typing.md)

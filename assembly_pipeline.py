@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
@@ -263,7 +263,6 @@ class RunSpades(object):
         self.sixteens()
         # Calculate the presence/absence of GDCS
         self.run_gdcs()
-        quit()
         # Find genes of interest
         self.genesippr()
         # Plasmid finding
@@ -304,7 +303,6 @@ class RunSpades(object):
         """
 
         """
-        from spadespipeline.typingclasses import GDCS
         # Run the GDCS analysis
         GeneSippr(self, self.commit, self.starttime, self.homepath, 'GDCS', 0.95, True, False)
         # Create the reports

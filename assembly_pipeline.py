@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GeneSippr, ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
@@ -19,6 +19,7 @@ import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
+from genesippr.genesippr import GeneSippr
 from serosippr.serosippr import SeroSippr
 import coreGenome.core as core
 import MASHsippr.mash as mash
@@ -116,6 +117,7 @@ class RunSpades(object):
         self.merge_reads()
         # Run FastQC on the merged fastq files
         self.fastqc_merged()
+
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
@@ -259,6 +261,9 @@ class RunSpades(object):
         self.rmlst()
         # Run the 16S analyses
         self.sixteens()
+        # Calculate the presence/absence of GDCS
+        self.run_gdcs()
+        quit()
         # Find genes of interest
         self.genesippr()
         # Plasmid finding
@@ -293,6 +298,17 @@ class RunSpades(object):
         Run the 16S analyses
         """
         SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.95)
+        metadataprinter.MetadataPrinter(self)
+
+    def run_gdcs(self):
+        """
+
+        """
+        from spadespipeline.typingclasses import GDCS
+        # Run the GDCS analysis
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'GDCS', 0.95, True, False)
+        # Create the reports
+        GDCS(self)
         metadataprinter.MetadataPrinter(self)
 
     def genesippr(self):

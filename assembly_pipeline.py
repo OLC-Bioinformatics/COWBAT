@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, Univec, Virulence
+from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Univec, \
+    Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
@@ -205,6 +206,8 @@ class RunSpades(object):
         self.quality_features()
         # ORF detection
         self.prodigal()
+        # Assembly quality determination
+        self.genome_qaml()
         # CLARK analyses
         self.clark()
 
@@ -238,6 +241,14 @@ class RunSpades(object):
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
 
+    def genome_qaml(self):
+        """
+        Use GenomeQAML to determine the quality of the assemblies
+        """
+        g_qaml = quality.GenomeQAML(self)
+        g_qaml.main()
+        metadataprinter.MetadataPrinter(self)
+
     def clark(self):
         """
         Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
@@ -267,6 +278,8 @@ class RunSpades(object):
         self.genesippr()
         # Plasmid finding
         self.plasmids()
+        # Plasmid extracting
+        self.plasmid_extractor()
         # Resistance finding - raw reads
         self.ressippr()
         # Resistance finding - assemblies
@@ -321,6 +334,14 @@ class RunSpades(object):
         Plasmid finding
         """
         Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
+        metadataprinter.MetadataPrinter(self)
+
+    def plasmid_extractor(self):
+        """
+        Extracts and types plasmid sequences
+        """
+        plasmids = PlasmidExtractor(self)
+        plasmids.main()
         metadataprinter.MetadataPrinter(self)
 
     def ressippr(self):
@@ -462,7 +483,6 @@ class RunSpades(object):
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
-    # from .accessoryFunctions import printtime
     # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]

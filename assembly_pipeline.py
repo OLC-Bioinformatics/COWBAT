@@ -13,7 +13,6 @@ import spadespipeline.spadesRun as spadesRun
 import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
-import spadespipeline.versions as versions
 import spadespipeline.quality as quality
 import spadespipeline.univec as univec
 import spadespipeline.depth as depth
@@ -29,7 +28,6 @@ from psutil import virtual_memory
 import multiprocessing
 from time import time
 import subprocess
-import gc
 import os
 
 __author__ = 'adamkoziol'
@@ -59,10 +57,7 @@ class RunSpades(object):
         reporter.Reporter(self)
         # Compress or remove all large, temporary files created by the pipeline
         compress.Compress(self)
-        # Get all the versions of the software used
-        versions.Versions(self)
         metadataprinter.MetadataPrinter(self)
-        gc.collect()
 
     def helper(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
@@ -118,7 +113,6 @@ class RunSpades(object):
         self.merge_reads()
         # Run FastQC on the merged fastq files
         self.fastqc_merged()
-
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
@@ -443,7 +437,6 @@ class RunSpades(object):
         """
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit.decode('utf-8')),
                   startingtime, '\033[1;94m')
-        gc.enable()
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path)
@@ -457,7 +450,6 @@ class RunSpades(object):
         if self.customsamplesheet:
             assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {}'\
                 .format(self.customsamplesheet)
-
         self.basicassembly = args.basicassembly
         if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
             self.basicassembly = True

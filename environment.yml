@@ -32,6 +32,7 @@ dependencies:
   - seqtk=1.2=0
   - sistr_cmd=1.0.2=py35_0
   - spades=3.11.1=py35_zlib1.2.8_0
+  - tablet=1.17.08.17=1
   - anaconda-client=1.6.5=py_0
   - asn1crypto=0.22.0=py35_0
   - blas=1.1=openblas
@@ -144,15 +145,15 @@ dependencies:
     - markdown==2.6.11
     - markupsafe==1.0
     - mkdocs==0.17.2
-    - olctools==0.3.45
+    - olctools==0.3.46
     - plasmidextractor==0.2.3
     - pluggy==0.6.0
     - py==1.5.2
-    - pysam==0.14
+    - pysam==0.13
     - pytest==3.4.1
     - scikit-learn==0.19.1
     - scipy==1.0.0
-    - sipprverse==0.0.34
+    - sipprverse==0.0.35
     - sklearn==0.0
     - tables==3.4.2
     - tornado==4.5.3

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Univec, \
+from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, Univec, \
     Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
@@ -20,7 +20,6 @@ import spadespipeline.sistr as sistr
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
 from genesippr.genesippr import GeneSippr
-from serosippr.serosippr import SeroSippr
 import coreGenome.core as core
 import MASHsippr.mash as mash
 from argparse import ArgumentParser
@@ -93,6 +92,9 @@ class RunSpades(object):
         Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
         supplied sequences
         """
+        # Validate that the FASTQ files are in the proper format, and that there are no issues e.g. different numbers
+        # of forward and reverse reads, read length longer than quality score length, proper extension
+        self.fastq_validate()
         # Run FastQC on the unprocessed fastq files
         self.fastqc_raw()
         # Perform quality trimming and FastQC on the trimmed files
@@ -117,6 +119,13 @@ class RunSpades(object):
         if self.preprocess:
             printtime('Pre-processing complete', starttime)
             quit()
+
+    def fastq_validate(self):
+        """
+
+        """
+        self.qualityobject.validate_fastq()
+        metadataprinter.MetadataPrinter(self)
 
     def fastqc_raw(self):
         """
@@ -308,7 +317,8 @@ class RunSpades(object):
 
     def run_gdcs(self):
         """
-
+        Determine the presence of genomically-dispersed conserved sequences for Escherichia, Listeria, and Salmonella
+        strains
         """
         # Run the GDCS analysis
         GeneSippr(self, self.commit, self.starttime, self.homepath, 'GDCS', 0.95, True, False)
@@ -403,7 +413,7 @@ class RunSpades(object):
         """
         Serotyping analyses
         """
-        SeroSippr(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
+        Serotype(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
         metadataprinter.MetadataPrinter(self)
 
     def vtyper(self):

@@ -288,7 +288,7 @@ def test_serosippr():
 def test_vtyper():
     method.vtyper()
     for sample in method.runmetadata.samples:
-        assert sample.vtyper.profile == ['vtx1a', 'vtx2b', 'vtx1d']
+        assert 'vtx1a' in sample.vtyper.profile
 
 
 def test_coregenome():

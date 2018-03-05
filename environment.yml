@@ -1,8 +1,8 @@
 name: cowbat
 channels:
+  - dranew
   - eclarke
   - biobuilds
-  - dranew
   - conda-forge
   - bioconda
   - defaults
@@ -145,7 +145,7 @@ dependencies:
     - markdown==2.6.11
     - markupsafe==1.0
     - mkdocs==0.17.2
-    - olctools==0.3.46
+    - olctools==0.3.48
     - plasmidextractor==0.2.3
     - pluggy==0.6.0
     - py==1.5.2

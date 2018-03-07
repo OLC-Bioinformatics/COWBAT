@@ -1,10 +1,10 @@
 name: cowbat
 channels:
-  - dranew
   - eclarke
   - biobuilds
-  - conda-forge
+  - dranew
   - bioconda
+  - conda-forge
   - defaults
 dependencies:
   - fastx-toolkit=0.0.14=pl5.22.0_2
@@ -145,7 +145,7 @@ dependencies:
     - markdown==2.6.11
     - markupsafe==1.0
     - mkdocs==0.17.2
-    - olctools==0.3.48
+    - olctools==0.3.50
     - plasmidextractor==0.2.3
     - pluggy==0.6.0
     - py==1.5.2
@@ -153,7 +153,7 @@ dependencies:
     - pytest==3.4.1
     - scikit-learn==0.19.1
     - scipy==1.0.0
-    - sipprverse==0.0.35
+    - sipprverse==0.0.38
     - sklearn==0.0
     - tables==3.4.2
     - tornado==4.5.3

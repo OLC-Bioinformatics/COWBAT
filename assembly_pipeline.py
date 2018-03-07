@@ -330,7 +330,7 @@ class RunSpades(object):
         """
         Find genes of interest
         """
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.8, False, False)
+        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.95, False, False)
         metadataprinter.MetadataPrinter(self)
 
     def plasmids(self):

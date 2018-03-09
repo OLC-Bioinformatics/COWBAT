@@ -5,6 +5,8 @@ MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
 
 ENV DEBIAN_FRONTEND noninteractive
 
+
+
 # Install packages
 RUN apt-get update -y -qq && apt-get install -y \
 	python-dev \
@@ -13,16 +15,23 @@ RUN apt-get update -y -qq && apt-get install -y \
 	wget \
 	python3-pip \
 	ttf-dejavu \
-	nano && \
-	curl -sSL https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -o /tmp/miniconda.sh \
-	    && bash /tmp/miniconda.sh -bfp /usr/local \
-	    && rm -rf /tmp/miniconda.sh \
-	    && conda install -y python=3 \
-	    && conda update conda && \
-    	rm -rf /var/lib/apt/lists/*	
+	nano  
+
+ENV PATH /usr/sbin:$PATH
+RUN useradd -ms /bin/bash/ ubuntu
+USER ubuntu
+
+WORKDIR HOME
+RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /home/ubuntu/miniconda.sh
+RUN bash /home/ubuntu/miniconda.sh -b -p /home/ubuntu/miniconda
+ENV PATH /home/ubuntu/miniconda/bin:$PATH
+RUN echo $PATH
+	    # && rm -rf miniconda.sh \
+RUN conda install -y python=3 \
+	    && conda update conda	
 
 # Add miniconda to the PATH
-ENV PATH $HOME/miniconda/bin:$PATH
+# ENV PATH $HOME/miniconda/bin:$PATH
 
 # Upgrade pip
 RUN pip3 install --upgrade pip
@@ -30,11 +39,12 @@ RUN pip3 install --upgrade pip
 #------
 
 # Install the pipeline
-ENV PATH /COWBAT:$PATH
+WORKDIR /home/ubuntu/
+ENV PATH /home/ubuntu/COWBAT:$PATH
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
-WORKDIR /COWBAT
+WORKDIR /home/ubuntu/COWBAT
 RUN conda env create
-WORKDIR /
+
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8

@@ -321,8 +321,6 @@ class RunSpades(object):
         strains
         """
         # Run the GDCS analysis
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'GDCS', 0.95, True, False)
-        # Create the reports
         GDCS(self)
         metadataprinter.MetadataPrinter(self)
 

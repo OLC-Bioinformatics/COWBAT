@@ -140,7 +140,9 @@
 <ul>
 <li>Linux system</li>
 <li><a href="https://conda.io/docs/user-guide/install/linux.html">Conda</a></li>
+<li><a href="https://www.docker.com/">Docker</a></li>
 </ul>
+<h4 id="conda-method">Conda method</h4>
 <p>The way I install conda:</p>
 <pre><code>wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p $HOME/miniconda
@@ -155,6 +157,18 @@ cd COWBAT
 export PATH=&quot;/path/to/repository/COWBAT:$PATH&quot;
 conda env create -f environment.yml
 source activate cowbat
+</code></pre>
+
+<h4 id="docker-method">Docker method</h4>
+<p>Docker must already be installed</p>
+<p>The docker image relies on conda to install all the dependencies, so the cowbat environment must be sourced within 
+the container prior to launch. The supplied command below launches container, and immediately sources the environment, and runs the 
+pipeline, but it is also possible to run those commands separately from within the container. For additional details on the run
+command, please see <a href="../tutorial/">the tutorial</a>.</p>
+<pre><code>git clone https://github.com/OLC-Bioinformatics/COWBAT.git
+cd COWBAT
+docker build -t cowbat:latest .
+docker run -it --name cowbat --rm cowbat:latest /bin/bash -c &quot;source activate cowbat &amp;&amp; assembly_pipeline.py /path/to/sequence -r /path/to/database&quot;
 </code></pre>
 
 <h3 id="databases">Databases</h3>

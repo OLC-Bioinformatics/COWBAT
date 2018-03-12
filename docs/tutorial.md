@@ -25,15 +25,17 @@ usage: assembly_pipeline.py [-h] [-v] [-n NUMREADS] [-t THREADS]
 Assemble genomes from Illumina fastq files
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -n NUMREADS, --numreads NUMREADS
+  -h,                   --help
+                        show this help message and exit
+  -v,                   --version
+                        show program's version number and exit
+  -n NUMREADS,          --numreads NUMREADS
                         Specify the number of reads. Paired-reads: 2,
                         unpaired-reads: 1. Default is paired-end
-  -t THREADS, --threads THREADS
+  -t THREADS,           --threads THREADS
                         Number of threads. Default is the number of cores in
                         the system
-  -k KMERRANGE, --kmerrange KMERRANGE
+  -k KMERRANGE,         --kmerrange KMERRANGE
                         The range of kmers used in SPAdes assembly. Default is
                         21,33,55,77,99,127
   -c CUSTOMSAMPLESHEET, --customsamplesheet CUSTOMSAMPLESHEET
@@ -42,8 +44,10 @@ optional arguments:
                         /home/name/folder/BackupSampleSheet.csv. Note that
                         this sheet must still have the same format of Illumina
                         SampleSheet.csv files
-  -b, --basicassembly   Performs a basic de novo assembly, and does not
+  -b,                   --basicassembly   
+                        Performs a basic de novo assembly, and does not
                         collect run metadata
-  -p, --preprocess      Perform quality trimming and error correction only. Do
+  -p,                   --preprocess      
+                        Perform quality trimming and error correction only. Do
                         not assemble the trimmed + corrected reads
 ```

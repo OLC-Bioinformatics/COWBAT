@@ -4,6 +4,9 @@
 
 * Linux system
 * [Conda](https://conda.io/docs/user-guide/install/linux.html)
+* [Docker](https://www.docker.com/)
+
+#### Conda method
 
 The way I install conda:
 
@@ -23,6 +26,22 @@ cd COWBAT
 export PATH="/path/to/repository/COWBAT:$PATH"
 conda env create -f environment.yml
 source activate cowbat
+```
+
+#### Docker method
+
+Docker must already be installed
+
+The docker image relies on conda to install all the dependencies, so the cowbat environment must be sourced within 
+the container prior to launch. The supplied command below launches container, and immediately sources the environment, and runs the 
+pipeline, but it is also possible to run those commands separately from within the container. For additional details on the run
+command, please see [the tutorial](tutorial.md).
+
+```
+git clone https://github.com/OLC-Bioinformatics/COWBAT.git
+cd COWBAT
+docker build -t cowbat:latest .
+docker run -it --name cowbat --rm cowbat:latest /bin/bash -c "source activate cowbat && assembly_pipeline.py /path/to/sequence -r /path/to/database"
 ```
 
 ### Databases

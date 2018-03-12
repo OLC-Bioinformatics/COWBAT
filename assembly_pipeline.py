@@ -122,7 +122,7 @@ class RunSpades(object):
 
     def fastq_validate(self):
         """
-
+        Attempt to detect and fix issues with the FASTQ files
         """
         self.qualityobject.validate_fastq()
         metadataprinter.MetadataPrinter(self)

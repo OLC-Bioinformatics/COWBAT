@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, Univec, \
-    Virulence
+from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
+    Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
@@ -89,7 +89,7 @@ class RunSpades(object):
 
     def quality(self):
         """
-        Creates quality objects and runs the quality assessment (FastQC), and quality trimming (bbduk) on the
+        Creates quality objects and runs quality assessments and quality processes on the
         supplied sequences
         """
         # Validate that the FASTQ files are in the proper format, and that there are no issues e.g. different numbers
@@ -117,7 +117,7 @@ class RunSpades(object):
         self.fastqc_merged()
         # Exit if only pre-processing of data is requested
         if self.preprocess:
-            printtime('Pre-processing complete', starttime)
+            printtime('Pre-processing complete', self.starttime)
             quit()
 
     def fastq_validate(self):
@@ -438,13 +438,13 @@ class RunSpades(object):
         sistr.Sistr(self, 'sistr')
         metadataprinter.MetadataPrinter(self)
 
-    def __init__(self, args, pipelinecommit, startingtime, scriptpath):
+    def __init__(self, args):
         """
-        :param args: list of arguments passed to the script
         Initialises the variables required for this class
+        :param args: list of arguments passed to the script
         """
-        printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'.format(pipelinecommit.decode('utf-8')),
-                  startingtime, '\033[1;94m')
+        printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'
+                  .format(args.pipelinecommit.decode('utf-8')), args.startingtime, '\033[1;94m')
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path)
@@ -453,7 +453,7 @@ class RunSpades(object):
         self.kmers = args.kmerrange
         self.preprocess = args.preprocess
         # Define the start time
-        self.starttime = startingtime
+        self.starttime = args.startingtime
         self.customsamplesheet = args.customsamplesheet
         if self.customsamplesheet:
             assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {}'\
@@ -471,8 +471,8 @@ class RunSpades(object):
         self.reportpath = os.path.join(self.path, 'reports')
         assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        self.commit = pipelinecommit.decode('utf-8')
-        self.homepath = scriptpath
+        self.commit = args.pipelinecommit.decode('utf-8')
+        self.homepath = args.scriptpath
         self.logfile = os.path.join(self.path, 'logfile')
         self.runinfo = str()
         self.pipeline = True
@@ -522,8 +522,10 @@ if __name__ == '__main__':
                              'corrected reads')
     # Get the arguments into an object
     arguments = parser.parse_args()
-    starttime = time()
+    arguments.starttime = time()
+    arguments.homepath = homepath
+    arguments.commit = commit
     # Run the pipeline
-    pipeline = RunSpades(arguments, commit, starttime, homepath)
+    pipeline = RunSpades(arguments)
     pipeline.main()
-    printtime('Assembly and characterisation complete', starttime)
+    printtime('Assembly and characterisation complete', arguments.starttime)

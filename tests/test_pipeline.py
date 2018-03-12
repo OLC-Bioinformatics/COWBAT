@@ -30,12 +30,15 @@ def variables():
     v.preprocess = False
     v.basicassembly = True
     v.threads = multiprocessing.cpu_count()
+    v.startingtime = time()
+    v.commit = b''
+    v.scriptpath = scriptpath
     return v
 
 
 @pytest.fixture()
 def method_init(variables):
-    method = RunSpades(variables, b'', time(), scriptpath)
+    method = RunSpades(variables)
     return method
 
 

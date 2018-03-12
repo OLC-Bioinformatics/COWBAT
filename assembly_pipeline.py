@@ -444,7 +444,7 @@ class RunSpades(object):
         :param args: list of arguments passed to the script
         """
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'
-                  .format(args.pipelinecommit.decode('utf-8')), args.startingtime, '\033[1;94m')
+                  .format(args.commit.decode('utf-8')), args.startingtime, '\033[1;94m')
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.path)
@@ -471,7 +471,7 @@ class RunSpades(object):
         self.reportpath = os.path.join(self.path, 'reports')
         assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        self.commit = args.pipelinecommit.decode('utf-8')
+        self.commit = args.commit.decode('utf-8')
         self.homepath = args.scriptpath
         self.logfile = os.path.join(self.path, 'logfile')
         self.runinfo = str()
@@ -522,10 +522,10 @@ if __name__ == '__main__':
                              'corrected reads')
     # Get the arguments into an object
     arguments = parser.parse_args()
-    arguments.starttime = time()
+    arguments.startingtime = time()
     arguments.homepath = homepath
     arguments.commit = commit
     # Run the pipeline
     pipeline = RunSpades(arguments)
     pipeline.main()
-    printtime('Assembly and characterisation complete', arguments.starttime)
+    printtime('Assembly and characterisation complete', arguments.startingtime)

@@ -472,7 +472,7 @@ class RunSpades(object):
         assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
         self.commit = args.commit.decode('utf-8')
-        self.homepath = args.scriptpath
+        self.homepath = args.homepath
         self.logfile = os.path.join(self.path, 'logfile')
         self.runinfo = str()
         self.pipeline = True

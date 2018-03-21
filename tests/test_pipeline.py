@@ -32,7 +32,7 @@ def variables():
     v.threads = multiprocessing.cpu_count()
     v.startingtime = time()
     v.commit = b''
-    v.scriptpath = scriptpath
+    v.homepath = scriptpath
     return v
 
 

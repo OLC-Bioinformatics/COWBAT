@@ -1,7 +1,7 @@
 name: cowbat
 channels:
-  - biobuilds
   - eclarke
+  - biobuilds
   - dranew
   - bioconda
   - conda-forge
@@ -153,7 +153,7 @@ dependencies:
     - pytest==3.4.1
     - scikit-learn==0.19.1
     - scipy==1.0.0
-    - sipprverse==0.0.42
+    - sipprverse==0.0.43
     - sklearn==0.0
     - tables==3.4.2
     - tornado==4.5.3

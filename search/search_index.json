@@ -2,23 +2,18 @@
     "docs": [
         {
             "location": "/",
-            "text": "COWBAT Documentation\n\n\nCFIA OLC Workflow for B\ufe0facterial Assembly and Typing\n\n\n\n\nThis pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq\n\n\nLinks\n\n\nOverview\n\n\nInstallation\n\n\nTutorial\n\n\nTests\n\n\nQuality control\n\n\nAssembly\n\n\nTyping",
+            "text": "CFIA OLC Workflow for B\ufe0facterial Assembly and Typing\n\n\nGitHub Repo\n\n\n\n\nThis pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq",
             "title": "Home"
         },
         {
-            "location": "/#cowbat-documentation",
-            "text": "",
-            "title": "COWBAT Documentation"
-        },
-        {
             "location": "/#cfia-olc-workflow-for-bacterial-assembly-and-typing",
-            "text": "This pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq",
+            "text": "",
             "title": "CFIA OLC Workflow for B\ufe0facterial Assembly and Typing"
         },
         {
-            "location": "/#links",
-            "text": "Overview  Installation  Tutorial  Tests  Quality control  Assembly  Typing",
-            "title": "Links"
+            "location": "/#github-repo",
+            "text": "This pipeline is designed to automatically perform quality control, assemble, and type FASTQ-formatted reads from an Illumina MiSeq",
+            "title": "GitHub Repo"
         },
         {
             "location": "/overview/",
@@ -94,16 +89,6 @@
             "location": "/tests/#tests",
             "text": "A test script and test datasets are included in the repository to ensure that installation of the script and dependencies \nwas successful. To run the unit tests (make sure that the cowbat conda environment is active):  cd COWBAT\npytest  If any test fails, check the output to see where the issues occurred",
             "title": "Tests"
-        },
-        {
-            "location": "/quality/",
-            "text": "",
-            "title": "Quality control"
-        },
-        {
-            "location": "/assembly/",
-            "text": "",
-            "title": "Assembly"
         },
         {
             "location": "/typing/",

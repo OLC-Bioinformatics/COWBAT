@@ -1,5 +1,6 @@
 site_name: COWBAT Documentation
 theme: readthedocs
+repo_url: 'https://github.com/OLC-Bioinformatics/COWBAT'
 
 pages:
     - Home: 'index.md'
@@ -7,6 +8,4 @@ pages:
     - Installation: 'installation.md'
     - Tutorial: 'tutorial.md'
     - Tests: 'tests.md'
-    - Quality control: 'quality.md'
-    - Assembly: 'assembly.md'
     - Typing: 'typing.md'

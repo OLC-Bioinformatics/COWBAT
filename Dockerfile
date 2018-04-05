@@ -45,6 +45,8 @@ RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /home/ubuntu/COWBAT
 RUN conda env create
 
+# Install skesa
+RUN wget -O $HOME/miniconda/bin/skesa https://ftp.ncbi.nlm.nih.gov/pub/agarwala/skesa/skesa.static && chmod 775 $HOME/miniconda/bin/skesa
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8

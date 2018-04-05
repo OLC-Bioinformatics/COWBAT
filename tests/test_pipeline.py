@@ -156,38 +156,10 @@ def test_trimmed_corrected_fastqc():
         assert size.st_size > 0
 
 
-def test_read_normalisation(variables):
-    method.normalise_reads()
-    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_normalised.fastq.gz'))
-
-
-def test_normalised_fastqc():
-    method.fastqc_normalised()
+def test_assemble_genomes():
+    method.assemble_genomes()
     for sample in method.runmetadata.samples:
-        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'normalised',
-                               'NC_002695_R1_normalised_fastqc.zip')
-        size = os.stat(outfile)
-        assert size.st_size > 0
-
-
-def test_read_merging(variables):
-    method.merge_reads()
-    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_paired.fastq.gz'))
-
-
-def test_merged_fastqc():
-    method.fastqc_merged()
-    for sample in method.runmetadata.samples:
-        outfile = os.path.join(sample.general.outputdirectory, 'fastqc', 'merged',
-                               'NC_002695_paired_fastqc.zip')
-        size = os.stat(outfile)
-        assert size.st_size > 0
-
-
-def test_spades():
-    method.run_spades()
-    for sample in method.runmetadata.samples:
-        outfile = os.path.join(sample.general.outputdirectory, 'spades_output', 'contigs.fasta')
+        outfile = os.path.join(sample.general.outputdirectory, 'assembly_output', 'NC_002695_unfiltered.fasta')
         size = os.stat(outfile)
         assert size.st_size > 0
 
@@ -324,4 +296,3 @@ def test_clear_logs(variables):
     os.remove(os.path.join(variables.path, 'logfile_err.txt'))
     os.remove(os.path.join(variables.path, 'logfile_out.txt'))
     os.remove(os.path.join(variables.path, 'portal.log'))
-

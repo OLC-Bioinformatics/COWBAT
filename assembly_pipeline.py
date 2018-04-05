@@ -9,7 +9,6 @@ import spadespipeline.GeneSeekr as GeneSeekrMethod
 import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
-import spadespipeline.spadesRun as spadesRun
 import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
@@ -17,6 +16,7 @@ import spadespipeline.quality as quality
 import spadespipeline.univec as univec
 import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
+import spadespipeline.skesa as skesa
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
 from genesippr.genesippr import GeneSippr
@@ -107,14 +107,6 @@ class RunSpades(object):
         self.contamination_detection()
         # Run FastQC on the processed fastq files
         self.fastqc_trimmedcorrected()
-        # Normalise the reads to a kmer depth of 100
-        self.normalise_reads()
-        # Run FastQC on the normalised fastq files
-        self.fastqc_normalised()
-        # Merge paired end reads into a single file based on overlap
-        self.merge_reads()
-        # Run FastQC on the merged fastq files
-        self.fastqc_merged()
         # Exit if only pre-processing of data is requested
         if self.preprocess:
             printtime('Pre-processing complete', self.starttime)
@@ -169,40 +161,12 @@ class RunSpades(object):
         self.qualityobject.fastqcthreader('trimmedcorrected')
         metadataprinter.MetadataPrinter(self)
 
-    def normalise_reads(self):
-        """
-        Normalise the reads to a kmer depth of 100
-        """
-        self.qualityobject.normalise_reads()
-        metadataprinter.MetadataPrinter(self)
-
-    def fastqc_normalised(self):
-        """
-        Run FastQC on the normalised fastq files
-        """
-        self.qualityobject.fastqcthreader('normalised')
-        metadataprinter.MetadataPrinter(self)
-
-    def merge_reads(self):
-        """
-        Merge paired end reads into a single file based on overlap
-        """
-        self.qualityobject.merge_pairs()
-        metadataprinter.MetadataPrinter(self)
-
-    def fastqc_merged(self):
-        """
-        Run FastQC on the merged fastq files
-        """
-        self.qualityobject.fastqcthreader('merged')
-        metadataprinter.MetadataPrinter(self)
-
     def assemble(self):
         """
         Assemble genomes and perform some basic quality analyses
         """
-        # Run spades
-        self.run_spades()
+        # Assemble genomes
+        self.assemble_genomes()
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
         self.qualimap()
         # Run quast assembly metrics
@@ -214,11 +178,12 @@ class RunSpades(object):
         # CLARK analyses
         self.clark()
 
-    def run_spades(self):
+    def assemble_genomes(self):
         """
-        Perform de novo assemblies with SPAdes
+        Use skesa to assemble genomes
         """
-        spadesRun.Spades(self)
+        assembly = skesa.Skesa(self)
+        assembly.main()
         metadataprinter.MetadataPrinter(self)
 
     def qualimap(self):
@@ -450,7 +415,6 @@ class RunSpades(object):
         self.path = os.path.join(args.path)
         self.reffilepath = os.path.join(args.referencefilepath)
         self.numreads = args.numreads
-        self.kmers = args.kmerrange
         self.preprocess = args.preprocess
         # Define the start time
         self.starttime = args.startingtime
@@ -506,9 +470,6 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--referencefilepath',
                         help='Provide the location of the folder containing the pipeline accessory files (reference '
                              'genomes, MLST data, etc.')
-    parser.add_argument('-k', '--kmerrange',
-                        default='21,33,55,77,99,127',
-                        help='The range of kmers used in SPAdes assembly. Default is 21,33,55,77,99,127')
     parser.add_argument('-c', '--customsamplesheet',
                         help='Path of folder containing a custom sample sheet and name of sample sheet file '
                              'e.g. /home/name/folder/BackupSampleSheet.csv. Note that this sheet must still have the '

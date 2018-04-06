@@ -20,10 +20,9 @@ __author__ = 'adamkoziol'
 @pytest.fixture()
 def variables():
     v = ArgumentParser()
-    v.path = os.path.join(testpath, 'testdata')
-    v.sequencepath = v.path
-    v.referencefilepath = os.path.join(v.path, 'databases')
-    v.customsamplesheet = os.path.join(v.path, 'SampleSheet.csv')
+    v.sequencepath = os.path.join(testpath, 'testdata')
+    v.referencefilepath = os.path.join(v.sequencepath, 'databases')
+    v.customsamplesheet = os.path.join(v.sequencepath, 'SampleSheet.csv')
     v.debug = True
     v.numreads = 2
     v.kmerrange = '21'
@@ -54,7 +53,7 @@ method = method_init(variables())
 def test_sistr(variables):
     metadata = MetadataObject()
     method.runmetadata.samples = list()
-    fasta = os.path.join(variables.path, 'NC_003198.fasta')
+    fasta = os.path.join(variables.sequencepath, 'NC_003198.fasta')
     metadata.name = os.path.split(fasta)[1].split('.')[0]
     # Initialise the general and run categories
     metadata.general = GenObject()
@@ -87,7 +86,7 @@ def variable_update():
 
 def test_basic_link(variables):
     method.helper()
-    assert os.path.islink(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1.fastq.gz'))
+    assert os.path.islink(os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1.fastq.gz'))
 
 
 def test_metadata():
@@ -123,7 +122,7 @@ def test_raw_fastqc_forward():
 
 def test_quality_trim(variables):
     method.quality_trim()
-    outfile = os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_trimmed.fastq.gz')
+    outfile = os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed.fastq.gz')
     size = os.stat(outfile)
     assert size.st_size > 0
 
@@ -138,7 +137,7 @@ def test_trimmed_fastqc():
 
 def test_error_correction(variables):
     method.error_correct()
-    assert os.path.isfile(os.path.join(variables.path, 'NC_002695', 'NC_002695_R1_trimmed_corrected.fastq.gz'))
+    assert os.path.isfile(os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed_corrected.fastq.gz'))
 
 
 def test_confindr():
@@ -273,26 +272,26 @@ def test_coregenome():
 
 
 def test_clear_results(variables):
-    shutil.rmtree(os.path.join(variables.path, 'NC_002695'))
+    shutil.rmtree(os.path.join(variables.sequencepath, 'NC_002695'))
 
 
 def test_clear_sistr(variables):
-    shutil.rmtree(os.path.join(variables.path, 'NC_003198'))
+    shutil.rmtree(os.path.join(variables.sequencepath, 'NC_003198'))
 
 
 def test_clear_confindr(variables):
-    shutil.rmtree(os.path.join(variables.path, 'confindr'))
+    shutil.rmtree(os.path.join(variables.sequencepath, 'confindr'))
 
 
 def test_clear_reports(variables):
-    shutil.rmtree(os.path.join(variables.path, 'reports'))
+    shutil.rmtree(os.path.join(variables.sequencepath, 'reports'))
 
 
 def test_clear_assemblies(variables):
-    shutil.rmtree(os.path.join(variables.path, 'BestAssemblies'))
+    shutil.rmtree(os.path.join(variables.sequencepath, 'BestAssemblies'))
 
 
 def test_clear_logs(variables):
-    os.remove(os.path.join(variables.path, 'logfile_err.txt'))
-    os.remove(os.path.join(variables.path, 'logfile_out.txt'))
-    os.remove(os.path.join(variables.path, 'portal.log'))
+    os.remove(os.path.join(variables.sequencepath, 'logfile_err.txt'))
+    os.remove(os.path.join(variables.sequencepath, 'logfile_out.txt'))
+    os.remove(os.path.join(variables.sequencepath, 'portal.log'))

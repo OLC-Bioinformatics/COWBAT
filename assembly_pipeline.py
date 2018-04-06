@@ -412,7 +412,7 @@ class RunSpades(object):
                   .format(args.commit.decode('utf-8')), args.startingtime, '\033[1;94m')
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
-        self.path = os.path.join(args.path)
+        self.path = os.path.join(args.sequencepath)
         self.reffilepath = os.path.join(args.referencefilepath)
         self.numreads = args.numreads
         self.preprocess = args.preprocess
@@ -458,8 +458,9 @@ if __name__ == '__main__':
     parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
     parser.add_argument('-v', '--version',
                         action='version', version='%(prog)s commit {}'.format(commit))
-    parser.add_argument('path',
-                        help='Specify path')
+    parser.add_argument('-s', '--sequencepath',
+                        required=True,
+                        help='Path to folder containing sequencing reads')
     parser.add_argument('-n', '--numreads',
                         default=2,
                         type=int,

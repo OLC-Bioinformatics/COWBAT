@@ -32,7 +32,7 @@ import os
 __author__ = 'adamkoziol'
 
 
-class RunSpades(object):
+class RunAssemble(object):
 
     def main(self):
         """
@@ -488,6 +488,6 @@ if __name__ == '__main__':
     arguments.homepath = homepath
     arguments.commit = commit
     # Run the pipeline
-    pipeline = RunSpades(arguments)
+    pipeline = RunAssemble(arguments)
     pipeline.main()
     printtime('Assembly and characterisation complete', arguments.startingtime)

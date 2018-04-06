@@ -12,7 +12,7 @@ import os
 testpath = os.path.abspath(os.path.dirname(__file__))
 scriptpath = os.path.join(testpath, '..')
 sys.path.append(scriptpath)
-from assembly_pipeline import RunSpades
+from assembly_pipeline import RunAssemble
 
 __author__ = 'adamkoziol'
 
@@ -37,7 +37,7 @@ def variables():
 
 @pytest.fixture()
 def method_init(variables):
-    method = RunSpades(variables)
+    method = RunAssemble(variables)
     return method
 
 

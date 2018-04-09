@@ -10,8 +10,6 @@ before_install:
   - conda update -q conda
   - conda env create -f environment.yml
   - source activate cowbat 
-  - wget -O $HOME/miniconda/bin/skesa https://ftp.ncbi.nlm.nih.gov/pub/agarwala/skesa/skesa.static
-  - chmod 775 $HOME/miniconda/bin/skesa
   
 script:
   - pytest tests/test_pipeline.py

@@ -1,9 +1,8 @@
 name: cowbat
 channels:
-  - eclarke
   - biobuilds
-  - conda-forge
   - dranew
+  - conda-forge
   - bioconda
   - defaults
 dependencies:
@@ -13,6 +12,7 @@ dependencies:
   - bedtools=2.27.1=0
   - blast=2.2.31=1
   - bowtie2=2.3.4=py35pl5.22.0_0
+  - clark=1.2.5=0
   - fastqc=0.11.6=pl5.22.0_0
   - fastx_toolkit=0.0.14=pl5.22.0_5
   - jellyfish=2.2.6=0
@@ -113,7 +113,7 @@ dependencies:
   - numpy=1.14.2=py35hdbf6ddf_1
   - openblas=0.2.20=4
   - openblas-devel=0.2.20=4
-  - openjdk=8.0.152=h46b5887_1
+  - openjdk=8.0.121=1
   - openssl=1.0.2o=h20670df_0
   - pandas=0.22.0=py35hf484d3e_0
   - pcre=8.41=hc27e229_1
@@ -140,7 +140,6 @@ dependencies:
   - bcl2fastq=2.19.0=1
   - boost_lib=1.54.0=1
   - gsl=1.16=0
-  - clark=1.2.3=1
   - pip:
     - attrs==17.4.0
     - biopython==1.71
@@ -153,7 +152,7 @@ dependencies:
     - markdown==2.6.11
     - markupsafe==1.0
     - mkdocs==0.17.2
-    - olctools==0.3.56
+    - olctools==0.3.57
     - plasmidextractor==0.2.3
     - pluggy==0.6.0
     - py==1.5.2

@@ -17,6 +17,7 @@ import spadespipeline.univec as univec
 import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
 import spadespipeline.skesa as skesa
+import spadespipeline.phix as phix
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
 from genesippr.genesippr import GeneSippr
@@ -71,6 +72,9 @@ class RunAssemble(object):
             self.runmetadata = runMetadata.Metadata(self)
             # Extract the flowcell ID and the instrument name if the RunInfo.xml file was provided
             self.runmetadata.parseruninfo()
+            # Extract PhiX mapping information from the run
+            phi = phix.PhiX(self)
+            phi.main()
             # Populate the lack of bclcall and nohup call into the metadata sheet
             for sample in self.runmetadata.samples:
                 sample.commands = GenObject()

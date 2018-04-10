@@ -465,6 +465,10 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--sequencepath',
                         required=True,
                         help='Path to folder containing sequencing reads')
+    parser.add_argument('-r', '--referencefilepath',
+                        required=True,
+                        help='Provide the location of the folder containing the pipeline accessory files (reference '
+                             'genomes, MLST data, etc.')
     parser.add_argument('-n', '--numreads',
                         default=2,
                         type=int,
@@ -472,9 +476,6 @@ if __name__ == '__main__':
                         ' 2, unpaired-reads: 1. Default is paired-end')
     parser.add_argument('-t', '--threads',
                         help='Number of threads. Default is the number of cores in the system')
-    parser.add_argument('-r', '--referencefilepath',
-                        help='Provide the location of the folder containing the pipeline accessory files (reference '
-                             'genomes, MLST data, etc.')
     parser.add_argument('-c', '--customsamplesheet',
                         help='Path of folder containing a custom sample sheet and name of sample sheet file '
                              'e.g. /home/name/folder/BackupSampleSheet.csv. Note that this sheet must still have the '
@@ -484,7 +485,7 @@ if __name__ == '__main__':
                         help='Performs a basic de novo assembly, and does not collect run metadata')
     parser.add_argument('-p', '--preprocess',
                         action='store_true',
-                        help='Perform quality trimming and error correction only. Do not assemble the trimmed + '
+                        help='Performs quality trimming and error correction only. Does not assemble the trimmed + '
                              'corrected reads')
     # Get the arguments into an object
     arguments = parser.parse_args()

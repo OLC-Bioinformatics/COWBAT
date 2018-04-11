@@ -231,6 +231,7 @@ class RunAssemble(object):
         if mem.total >= 100000000000:
             # Run CLARK typing on the .fastq and .fasta files
             automateCLARK.PipelineInit(self)
+            metadataprinter.MetadataPrinter(self)
         else:
             printtime('Not enough RAM to run CLARK!', self.starttime)
 
@@ -432,7 +433,7 @@ class RunAssemble(object):
             printtime('Could not find a sample sheet. Performing basic assembly (no run metadata captured)',
                       self.starttime)
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
-        self.cpus = args.threads if args.threads else multiprocessing.cpu_count()
+        self.cpus = args.threads if args.threads else multiprocessing.cpu_count() - 1
         # Assertions to ensure that the provided variables are valid
         make_path(self.path)
         assert os.path.isdir(self.path), 'Supplied path location is not a valid directory {0!r:s}'.format(self.path)

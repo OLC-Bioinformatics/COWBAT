@@ -186,15 +186,29 @@ class DatabaseSetup(object):
     def notes(self):
         """
         Clean the notes.txt file that comes with the resfinder database; it contains certain definitions with commas.
-        Replace all commas in the file with semicolons
+        Replace all commas in the file with semicolons. Append necessary changes to end of file
         """
         databasepath = self.create_database_folder('resfinder')
+        # Load the file containing necessary changes to the resfinder notes.txt file
+        with open(os.path.join(self.databasepath, 'resfinder_changes.txt'), 'r') as res_changes:
+            changes = res_changes.read().splitlines()
+        # Create a list to store all the entries in the notes file - will be used to ensure that the changes are not
+        # entered more than once
+        lines = list()
         # Open the notes file with fileinput to allow inplace editing
-        with fileinput.FileInput(os.path.join(databasepath, 'notes.txt'), inplace=True, backup='.bak') \
+        note_file = os.path.join(databasepath, 'notes.txt')
+        with fileinput.FileInput(note_file, inplace=True, backup='.bak') \
                 as notes:
             for line in notes:
                 # Replace all commas with semicolons
                 print(line.replace(',', ';'), end='')
+                lines.append(line)
+        # Append changes to the end of the notes file
+        with open(note_file, 'a') as notes:
+            for change in changes:
+                # Ensure that the changes have not already been added once
+                if change + '\n' not in lines:
+                    notes.write('{change}\n'.format(change=change))
 
     def univec(self):
         """

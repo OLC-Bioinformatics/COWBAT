@@ -320,7 +320,8 @@ class RunAssemble(object):
         """
         Resistance finding - raw reads
         """
-        Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False, True)
+        res = Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False, True)
+        res.main()
         metadataprinter.MetadataPrinter(self)
 
     def resfinder(self):

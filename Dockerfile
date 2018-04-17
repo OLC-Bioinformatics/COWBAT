@@ -5,8 +5,6 @@ MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
 
 ENV DEBIAN_FRONTEND noninteractive
 
-
-
 # Install packages
 RUN apt-get update -y -qq && apt-get install -y \
 	python-dev \
@@ -36,8 +34,6 @@ RUN conda install -y python=3 \
 # Upgrade pip
 RUN pip3 install --upgrade pip
 
-#------
-
 # Install the pipeline
 WORKDIR /home/ubuntu/
 ENV PATH /home/ubuntu/COWBAT:$PATH
@@ -45,10 +41,7 @@ RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /home/ubuntu/COWBAT
 RUN conda env create
 
-# Install skesa
-RUN wget -O $HOME/miniconda/bin/skesa https://ftp.ncbi.nlm.nih.gov/pub/agarwala/skesa/skesa.static && chmod 775 $HOME/miniconda/bin/skesa
-
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8
 
-#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"
+#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py -s /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"

@@ -32,7 +32,7 @@ RUN conda install -y python=3 \
 # ENV PATH $HOME/miniconda/bin:$PATH
 
 # Upgrade pip
-RUN pip3 install --upgrade pip
+RUN pip install --upgrade pip
 
 # Install the pipeline
 WORKDIR /home/ubuntu/

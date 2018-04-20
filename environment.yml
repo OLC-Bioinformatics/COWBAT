@@ -173,7 +173,7 @@ dependencies:
   - pytest==3.4.1
   - scikit-learn==0.19.1
   - scipy==1.0.0
-  - sipprverse==0.0.56
+  - sipprverse==0.0.57
   - sistr-cmd==1.0.2
   - sklearn==0.0
   - tables==3.4.2

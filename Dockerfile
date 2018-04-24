@@ -39,6 +39,7 @@ WORKDIR /home/ubuntu/
 ENV PATH /home/ubuntu/COWBAT:$PATH
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /home/ubuntu/COWBAT
+RUN git fetch --tags
 RUN conda env create
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database

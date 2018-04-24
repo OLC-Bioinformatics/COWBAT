@@ -45,8 +45,6 @@ class RunAssemble(object):
         self.create_quality_object()
         # Run the quality analyses
         self.quality()
-        # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
         # Perform assembly
         self.assemble()
         # Perform genus-agnostic typing
@@ -112,6 +110,7 @@ class RunAssemble(object):
         # Run FastQC on the processed fastq files
         self.fastqc_trimmedcorrected()
         # Exit if only pre-processing of data is requested
+        metadataprinter.MetadataPrinter(self)
         if self.preprocess:
             printtime('Pre-processing complete', self.starttime)
             quit()
@@ -231,6 +230,7 @@ class RunAssemble(object):
         if mem.total >= 100000000000:
             # Run CLARK typing on the .fastq and .fasta files
             automateCLARK.PipelineInit(self)
+            automateCLARK.PipelineInit(self, 'fastq')
             metadataprinter.MetadataPrinter(self)
         else:
             printtime('Not enough RAM to run CLARK!', self.starttime)

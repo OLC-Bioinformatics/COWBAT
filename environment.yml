@@ -165,7 +165,7 @@ dependencies:
   - mkdocs==0.17.2
   - mkl-fft==1.0.0
   - mkl-random==1.0.1
-  - olctools==0.3.70
+  - olctools==0.3.71
   - plasmidextractor==0.2.3
   - pluggy==0.6.0
   - py==1.5.2
@@ -173,7 +173,7 @@ dependencies:
   - pytest==3.4.1
   - scikit-learn==0.19.1
   - scipy==1.0.0
-  - sipprverse==0.0.59
+  - sipprverse==0.0.60
   - sistr-cmd==1.0.2
   - sklearn==0.0
   - tables==3.4.2

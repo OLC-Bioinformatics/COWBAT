@@ -41,7 +41,7 @@ command, please see [the tutorial](tutorial.md).
 git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 cd COWBAT
 docker build -t cowbat:latest .
-docker run -it --name cowbat --rm cowbat:latest /bin/bash -c "source activate cowbat && assembly_pipeline.py /path/to/sequence -r /path/to/database"
+docker run -it --name cowbat --rm cowbat:latest /bin/bash -c "source activate cowbat && assembly_pipeline.py -s /path/to/sequences -r /path/to/database"
 ```
 
 ### Databases

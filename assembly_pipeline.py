@@ -231,9 +231,12 @@ class RunAssemble(object):
             # Run CLARK typing on the .fastq and .fasta files
             automateCLARK.PipelineInit(self)
             automateCLARK.PipelineInit(self, 'fastq')
-            metadataprinter.MetadataPrinter(self)
+
         else:
-            printtime('Not enough RAM to run CLARK!', self.starttime)
+            # Run CLARK typing on the .fastq and .fasta files
+            automateCLARK.PipelineInit(self, light=True)
+            automateCLARK.PipelineInit(self, 'fastq', light=True)
+        metadataprinter.MetadataPrinter(self)
 
     def agnostictyping(self):
         """

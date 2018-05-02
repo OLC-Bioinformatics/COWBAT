@@ -83,6 +83,10 @@ class DatabaseSetup(object):
                     dbpath=databasepath)
         # Download the database
         self.database_download(targetcall, databasepath)
+        # Append the '--light' option to the target call to download the light version of the database as well
+        targetcall += ' --light'
+        # Download the light database
+        self.database_download(targetcall, databasepath)
 
     def mash(self):
         """

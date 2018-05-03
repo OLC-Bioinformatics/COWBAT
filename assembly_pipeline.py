@@ -170,10 +170,12 @@ class RunAssemble(object):
         """
         # Assemble genomes
         self.assemble_genomes()
+        # Calculate assembly metrics on raw assemblies
+        self.quality_features('raw')
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
         self.qualimap()
-        # Run quast assembly metrics
-        self.quality_features()
+        # Calculate assembly metrics on polished assemblies
+        self.quality_features('polished')
         # ORF detection
         self.prodigal()
         # Assembly quality determination
@@ -197,11 +199,11 @@ class RunAssemble(object):
         qual.main()
         metadataprinter.MetadataPrinter(self)
 
-    def quality_features(self):
+    def quality_features(self, analysis):
         """
         Extract features from assemblies such as total genome size, longest contig, and N50
         """
-        features = quality.QualityFeatures(self)
+        features = quality.QualityFeatures(self, analysis)
         features.main()
         metadataprinter.MetadataPrinter(self)
 

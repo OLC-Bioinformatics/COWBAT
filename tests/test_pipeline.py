@@ -163,16 +163,22 @@ def test_assemble_genomes():
         assert size.st_size > 0
 
 
+def test_quality_features_raw():
+    method.quality_features('raw')
+    for sample in method.runmetadata.samples:
+        assert sample.quality_features_raw.n50 >= 500
+
+
 def test_qualimap():
     method.qualimap()
     for sample in method.runmetadata.samples:
         assert int(sample.mapping.Contigs) >= 500
 
 
-def test_quality_features():
-    method.quality_features()
+def test_quality_features_polished():
+    method.quality_features('polished')
     for sample in method.runmetadata.samples:
-        assert sample.quality_features.n50 >= 845
+        assert sample.quality_features_polished.n50 >= 500
 
 
 def test_prodigal():

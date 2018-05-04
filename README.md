@@ -1,6 +1,3 @@
-SPAdesPipeline
-==============
-
 ![alt text](cowbat.png "Cowbat")
 
 ### CFIA OLC Workflow for Bacterial Assembly and Typing

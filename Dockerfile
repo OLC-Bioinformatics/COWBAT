@@ -1,5 +1,5 @@
 # Dockerfile for COWBAT
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
 

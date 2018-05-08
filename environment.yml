@@ -1,185 +1,177 @@
 name: cowbat
 channels:
-- dranew
-- biobuilds
-- adamkoziol
-- conda-forge
-- defaults
-- r
-- bioconda
-- anaconda
+  - biobuilds
+  - dranew
+  - bioconda
+  - conda-forge
+  - defaults
 dependencies:
-- fastx-toolkit=0.0.14=pl5.22.0_1
-- bbmap=37.99=0
-- bcftools=1.8=1
-- bedtools=2.27.1=1
-- blast=2.2.31=1
-- bowtie2=2.3.4.1=py35pl5.22.0_0
-- clark=1.2.5=0
-- fastqc=0.11.7=pl5.22.0_2
-- fastx_toolkit=0.0.14=pl5.22.0_6
-- kmc=3.0.1=noasmlib_2
-- libdeflate=0.8=0
-- libgtextutils=0.7=3
-- mafft=7.313=0
-- mash=2.0=gsl2.2_2
-- perl-app-cpanminus=1.7043=pl5.22.0_0
-- perl-gd=2.56=pl5.22.0_6
-- perl-gdgraph=1.49=pl5.22.0_3
-- perl-gdgraph-histogram=1.1=pl5.22.0_1
-- perl-gdtextutil=0.86=pl5.22.0_3
-- perl-perlio-gzip=0.19=pl5.22.0_2
-- pilon=1.22=py35_0
-- prodigal=2.6.3=0
-- qualimap=2.2.2a=1
-- samtools=1.8=3
-- seqtk=1.2=1
-- sistr_cmd=1.0.2=py35_0
-- skesa=2.1=0
-- spades=3.11.1=py35_zlib1.2.11_1
-- tablet=1.17.08.17=1
-- anaconda-client=1.6.14=py_0
-- asn1crypto=0.24.0=py35_0
-- blas=1.1=openblas
-- blosc=1.14.0=1
-- boost=1.67.0=py35_0
-- boost-cpp=1.67.0=0
-- bzip2=1.0.6=1
-- ca-certificates=2018.4.16=0
-- cairo=1.14.10=0
-- capnproto=0.6.1=0
-- certifi=2018.4.16=py35_0
-- cffi=1.11.5=py35_0
-- chardet=3.0.4=py35_0
-- click=6.7=py_1
-- clyent=1.2.2=py35_0
-- cryptography=2.2.1=py35_0
-- curl=7.59.0=1
-- cython=0.28.2=py35_0
-- dbus=1.11.0=0
-- decorator=4.3.0=py_0
-- expat=2.2.5=0
-- fontconfig=2.12.6=0
-- freetype=2.8.1=0
-- gettext=0.19.8.1=0
-- giflib=5.1.4=0
-- glib=2.55.0=0
-- gmp=6.1.2=0
-- gnuplot=5.2.2=hfb11a44_0
-- gnutls=3.5.17=0
-- graphite2=1.3.11=0
-- gsl=2.2.1=blas_openblas_4
-- gst-plugins-base=1.8.0=0
-- gstreamer=1.8.0=1
-- harfbuzz=1.7.6=0
-- hdf5=1.10.1=2
-- icu=58.2=0
-- idna=2.6=py35_1
-- ipython_genutils=0.2.0=py35_0
-- jellyfish=0.6.1=py35_0
-- jpeg=9b=2
-- jsonschema=2.6.0=py35_1
-- jupyter_core=4.4.0=py_0
-- krb5=1.14.6=0
-- libffi=3.2.1=3
-- libgd=2.2.5=3
-- libiconv=1.15=0
-- libidn11=1.33=0
-- libpng=1.6.34=0
-- libssh2=1.8.0=2
-- libtiff=4.0.9=0
-- libwebp=0.5.2=7
-- libxcb=1.13=0
-- libxml2=2.9.8=0
-- lzo=2.10=0
-- mkl_fft=1.0.2=py35_0
-- mkl_random=1.0.1=py35_0
-- nbformat=4.4.0=py35_0
-- ncurses=5.9=10
-- nettle=3.3=0
-- nose=1.3.7=py35_2
-- numexpr=2.6.5=py35_0
-- numpy=1.14.3=py35_blas_openblas_200
-- openblas=0.2.20=7
-- openjdk=8.0.144=zulu8.23.0.3_1
-- openssl=1.0.2o=0
-- pandas=0.22.0=py35_1
-- pango=1.40.14=0
-- pcre=8.41=1
-- perl=5.22.0.1=0
-- pip=9.0.3=py35_0
-- pixman=0.34.0=2
-- psutil=5.4.5=py35_0
-- pycparser=2.18=py35_0
-- pyopenssl=17.5.0=py35_1
-- pysocks=1.6.8=py35_1
-- pytables=3.4.3=py35_8
-- python=3.5.5=1
-- python-dateutil=2.7.2=py_0
-- pytz=2018.4=py_0
-- pyyaml=3.12=py35_1
-- qt=5.6.2=7
-- rauth=0.7.3=py_0
-- readline=7.0=0
-- requests=2.18.4=py35_1
-- setuptools=39.1.0=py35_0
-- six=1.11.0=py35_1
-- sqlite=3.20.1=2
-- tbb=2018_20171205=0
-- tk=8.6.7=0
-- traitlets=4.3.2=py35_0
-- urllib3=1.22=py35_0
-- wheel=0.31.0=py35_0
-- xorg-libxau=1.0.8=3
-- xorg-libxdmcp=1.1.2=3
-- xz=5.2.3=0
-- yaml=0.1.7=0
-- zlib=1.2.11=0
-- intel-openmp=2018.0.0=8
-- libboost=1.65.1=habcd387_4
-- libcurl=7.59.0=h1ad7b7a_0
-- libgcc=7.2.0=h69d50b8_2
-- libgcc-ng=7.2.0=hdf63c60_3
-- libgfortran=3.0.0=1
-- libgfortran-ng=7.2.0=hdf63c60_3
-- libopenblas=0.2.20=h9ac9557_4
-- libstdcxx-ng=7.2.0=hdf63c60_3
-- mkl=2018.0.2=1
-- openblas-devel=0.2.20=4
-- py-boost=1.65.1=py35hf484d3e_4
-- pycurl=7.43.0.1=py35hb7f436b_0
-- bcl2fastq=2.19.0=1
-- boost_lib=1.54.0=1
-- pip:
-  - attrs==17.4.0
-  - biopython==1.71
-  - confindr==0.2.5
-  - docopt==0.6.2
-  - genomeqaml==0.0.11
-  - interop==1.1.4
-  - ipython-genutils==0.2.0
-  - jinja2==2.10
-  - jupyter-core==4.4.0
-  - livereload==2.5.1
-  - markdown==2.6.11
-  - markupsafe==1.0
-  - mkdocs==0.17.2
-  - mkl-fft==1.0.2
-  - mkl-random==1.0.1
-  - olctools==0.3.82
-  - plasmidextractor==0.2.3
-  - pluggy==0.6.0
-  - py==1.5.2
-  - pysam==0.13
-  - pytest==3.4.1
-  - scikit-learn==0.19.1
-  - scipy==1.0.0
-  - sipprverse==0.0.62
-  - sistr-cmd==1.0.2
-  - sklearn==0.0
-  - tables==3.4.3
-  - tornado==4.5.3
-  - xlsxwriter==1.0.2
-  - yarg==0.1.9
-prefix: /home/adamkoziol/miniconda3/envs/cowbat
+  - fastx-toolkit=0.0.14=pl5.22.0_1
+  - prodigal=2.6.3=0
+  - bbmap=37.99=0
+  - bcftools=1.8=1
+  - bedtools=2.27.1=1
+  - blast=2.2.31=1
+  - bowtie2=2.3.4.1=py35pl5.22.0_0
+  - clark=1.2.5=0
+  - fastqc=0.11.7=pl5.22.0_2
+  - fastx_toolkit=0.0.14=pl5.22.0_6
+  - jellyfish=2.2.6=0
+  - kmc=3.0.1=noasmlib_2
+  - libdeflate=0.8=0
+  - libgtextutils=0.7=3
+  - mafft=7.313=0
+  - mash=2.0=gsl2.2_2
+  - perl-app-cpanminus=1.7043=pl5.22.0_0
+  - perl-gd=2.56=pl5.22.0_6
+  - perl-gdgraph=1.49=pl5.22.0_3
+  - perl-gdgraph-histogram=1.1=pl5.22.0_1
+  - perl-gdtextutil=0.86=pl5.22.0_3
+  - perl-perlio-gzip=0.19=pl5.22.0_2
+  - pilon=1.22=py35_0
+  - qualimap=2.2.2a=1
+  - samtools=1.8=3
+  - seqtk=1.2=1
+  - sistr_cmd=1.0.2=py35_0
+  - skesa=2.1=0
+  - spades=3.11.1=py35_zlib1.2.11_1
+  - tablet=1.17.08.17=1
+  - anaconda-client=1.6.14=py_0
+  - asn1crypto=0.24.0=py35_0
+  - blas=1.1=openblas
+  - blosc=1.14.0=1
+  - boost=1.67.0=py35_0
+  - boost-cpp=1.67.0=0
+  - bzip2=1.0.6=1
+  - ca-certificates=2018.4.16=0
+  - cairo=1.14.10=0
+  - capnproto=0.6.1=0
+  - cffi=1.11.5=py35_0
+  - chardet=3.0.4=py35_0
+  - click=6.7=py_1
+  - clyent=1.2.2=py35_0
+  - cryptography=2.2.1=py35_0
+  - curl=7.59.0=1
+  - cython=0.28.2=py35_0
+  - dbus=1.11.0=0
+  - decorator=4.3.0=py_0
+  - expat=2.2.5=0
+  - fontconfig=2.12.6=0
+  - freetype=2.8.1=0
+  - gettext=0.19.8.1=0
+  - giflib=5.1.4=0
+  - glib=2.55.0=0
+  - gmp=6.1.2=0
+  - gnuplot=5.2.2=hfb11a44_0
+  - gnutls=3.5.17=0
+  - graphite2=1.3.11=0
+  - gsl=2.2.1=blas_openblas_4
+  - gst-plugins-base=1.8.0=0
+  - gstreamer=1.8.0=1
+  - harfbuzz=1.7.6=0
+  - hdf5=1.10.1=2
+  - icu=58.2=0
+  - idna=2.6=py35_1
+  - ipython_genutils=0.2.0=py35_0
+  - jpeg=9b=2
+  - jsonschema=2.6.0=py35_1
+  - jupyter_core=4.4.0=py_0
+  - krb5=1.14.6=0
+  - libffi=3.2.1=3
+  - libgd=2.2.5=3
+  - libiconv=1.15=0
+  - libidn11=1.33=0
+  - libpng=1.6.34=0
+  - libssh2=1.8.0=2
+  - libtiff=4.0.9=0
+  - libwebp=0.5.2=7
+  - libxcb=1.13=0
+  - libxml2=2.9.8=0
+  - lzo=2.10=0
+  - mkl_fft=1.0.2=py35_0
+  - mkl_random=1.0.1=py35_0
+  - nbformat=4.4.0=py35_0
+  - ncurses=5.9=10
+  - nettle=3.3=0
+  - nose=1.3.7=py35_2
+  - numexpr=2.6.5=py35_0
+  - numpy=1.14.3=py35_blas_openblas_200
+  - openblas=0.2.20=7
+  - openjdk=8.0.144=zulu8.23.0.3_1
+  - openssl=1.0.2o=0
+  - pandas=0.22.0=py35_1
+  - pango=1.40.14=0
+  - pcre=8.41=1
+  - perl=5.22.0.1=0
+  - pip=9.0.3=py35_0
+  - pixman=0.34.0=2
+  - psutil=5.4.5=py35_0
+  - pycparser=2.18=py35_0
+  - pyopenssl=17.5.0=py35_1
+  - pysocks=1.6.8=py35_1
+  - pytables=3.4.3=py35_8
+  - python=3.5.5=1
+  - python-dateutil=2.7.2=py_0
+  - pytz=2018.4=py_0
+  - pyyaml=3.12=py35_1
+  - qt=5.6.2=7
+  - rauth=0.7.3=py_0
+  - readline=7.0=0
+  - requests=2.18.4=py35_1
+  - setuptools=39.1.0=py35_0
+  - six=1.11.0=py35_1
+  - sqlite=3.20.1=2
+  - tbb=2018_20171205=0
+  - tk=8.6.7=0
+  - traitlets=4.3.2=py35_0
+  - urllib3=1.22=py35_0
+  - wheel=0.31.0=py35_0
+  - xorg-libxau=1.0.8=3
+  - xorg-libxdmcp=1.1.2=3
+  - xz=5.2.3=0
+  - yaml=0.1.7=0
+  - zlib=1.2.11=0
+  - certifi=2018.4.16=py35_0
+  - intel-openmp=2018.0.0=8
+  - libboost=1.65.1=habcd387_4
+  - libcurl=7.59.0=h1ad7b7a_0
+  - libgcc=7.2.0=h69d50b8_2
+  - libgcc-ng=7.2.0=hdf63c60_3
+  - libgfortran=3.0.0=1
+  - libgfortran-ng=7.2.0=hdf63c60_3
+  - libopenblas=0.2.20=h9ac9557_4
+  - libstdcxx-ng=7.2.0=hdf63c60_3
+  - mkl=2018.0.2=1
+  - openblas-devel=0.2.20=4
+  - py-boost=1.65.1=py35hf484d3e_4
+  - pycurl=7.43.0.1=py35hb7f436b_0
+  - bcl2fastq=2.19.0=1
+  - boost_lib=1.54.0=1
+  - pip:
+    - attrs==17.4.0
+    - biopython==1.71
+    - confindr==0.2.5
+    - docopt==0.6.2
+    - genomeqaml==0.0.11
+    - interop==1.1.4
+    - jinja2==2.10
+    - livereload==2.5.1
+    - markdown==2.6.11
+    - markupsafe==1.0
+    - mkdocs==0.17.2
+    - olctools==0.3.82
+    - plasmidextractor==0.2.3
+    - pluggy==0.6.0
+    - py==1.5.2
+    - pysam==0.13
+    - pytest==3.4.1
+    - scikit-learn==0.19.1
+    - scipy==1.0.0
+    - sipprverse==0.0.62
+    - sklearn==0.0
+    - tables==3.4.3
+    - tornado==4.5.3
+    - xlsxwriter==1.0.2
+    - yarg==0.1.9
+prefix: /home/adamkoziol/miniconda/envs/cowbat
 

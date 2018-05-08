@@ -16,7 +16,6 @@ GenomeQAML==0.0.11
 idna==2.6
 interop==1.1.4
 ipython-genutils==0.2.0
-jellyfish==0.6.1
 Jinja2==2.10
 jsonschema==2.6.0
 jupyter-core==4.4.0

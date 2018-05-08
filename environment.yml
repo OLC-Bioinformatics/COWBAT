@@ -1,7 +1,7 @@
 name: cowbat
 channels:
-- biobuilds
 - dranew
+- biobuilds
 - adamkoziol
 - conda-forge
 - defaults

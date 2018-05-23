@@ -21,6 +21,7 @@ class DatabaseSetup(object):
         """
         self.olc_databases()
         self.confindr()
+        self.plasmidextractor()
         self.clark()
         self.mash()
         self.rmlst()
@@ -31,6 +32,23 @@ class DatabaseSetup(object):
         self.cge_db_downloader('virulence', 'virulencefinder_db', 'fsa', 'tfa')
         self.cge_db_downloader('serosippr', 'serotypefinder_db', 'fsa', 'tfa')
         self.univec()
+
+    def plasmidextractor(self):
+        """
+        Download plasmidextractor databases.
+        """
+        databasepath = self.create_database_folder('plasmidextractor')
+        tar_file = os.path.join(databasepath, 'plasmidextractor.tar')
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827323'.format(out=tar_file)
+        self.database_download(targetcall, databasepath, complete=False)
+        # Extract the databases from the archives
+        printtime('Extracting plasmidextractor database from archives', self.start)
+        if not os.path.isfile(os.path.join(databasepath, 'complete')):
+            with tarfile.open(tar_file, 'r') as tar:
+                # Decompress the archive
+                tar.extractall(path=databasepath)
+            # Delete the archive file
+            os.remove(tar_file)
 
     def olc_databases(self):
         """
@@ -60,7 +78,7 @@ class DatabaseSetup(object):
         tar_file = os.path.join(databasepath, 'confindr.tar')
         targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827251'\
             .format(out=tar_file)
-        self.database_download(targetcall, databasepath)
+        self.database_download(targetcall, databasepath, complete=False)
         # Extract the databases from the archives
         printtime('Extracting database from archives', self.start)
         if not os.path.isfile(os.path.join(databasepath, 'complete')):

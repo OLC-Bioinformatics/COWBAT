@@ -78,7 +78,8 @@ class DatabaseSetup(object):
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('clark')
         # Set the call to create the database
-        targetcall = 'cd {clarkpath} && ./set_targets.sh {dbpath} bacteria --species'\
+        # IMPORTANT: This will only work with conda, so we're forcing people into using it.
+        targetcall = 'cd {clarkpath} && ../opt/clark/set_targets.sh {dbpath} bacteria --species'\
             .format(clarkpath=self.clarkpath,
                     dbpath=databasepath)
         # Download the database

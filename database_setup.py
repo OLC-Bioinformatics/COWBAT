@@ -47,6 +47,12 @@ class DatabaseSetup(object):
             with tarfile.open(tar_file, 'r') as tar:
                 # Decompress the archive
                 tar.extractall(path=databasepath)
+                # Move folders/files that were within the 'databases' folder up one level and delete the empty dir.
+                things_to_move_up = glob(os.path.join(databasepath, 'databases', '*'))
+                for thing in things_to_move_up:
+                    shutil.move(thing, databasepath)
+                os.rmdir(os.path.join(databasepath, 'databases'))
+
             # Delete the archive file
             os.remove(tar_file)
 

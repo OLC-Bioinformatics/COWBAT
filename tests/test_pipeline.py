@@ -143,7 +143,7 @@ def test_error_correction(variables):
 def test_confindr():
     method.contamination_detection()
     for sample in method.runmetadata.samples:
-        assert sample.confinder.unique_kmers >= 575
+        assert sample.confindr.unique_kmers >= 575
 
 
 def test_trimmed_corrected_fastqc():

@@ -101,16 +101,12 @@ class DatabaseSetup(object):
         """
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('clark')
-        # Set the call to create the database
+        # Set the call to create the database. Use the --light option to specify the lightweight database
         # IMPORTANT: This will only work with conda, so we're forcing people into using it.
-        targetcall = 'cd {clarkpath} && ../opt/clark/set_targets.sh {dbpath} bacteria --species'\
+        targetcall = 'cd {clarkpath} && ../opt/clark/set_targets.sh {dbpath} bacteria --species --light'\
             .format(clarkpath=self.clarkpath,
                     dbpath=databasepath)
         # Download the database
-        self.database_download(targetcall, databasepath)
-        # Append the '--light' option to the target call to download the light version of the database as well
-        targetcall += ' --light'
-        # Download the light database
         self.database_download(targetcall, databasepath)
 
     def mash(self):

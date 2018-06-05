@@ -77,15 +77,11 @@ class DatabaseSetup(object):
         """
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('clark')
-        # Set the call to create the database
-        targetcall = 'cd {clarkpath} && ./set_targets.sh {dbpath} bacteria --species'\
+        # Set the call to create the database - use the --light option, as we don't require the full database
+        targetcall = 'cd {clarkpath} && ./set_targets.sh {dbpath} bacteria --species --light'\
             .format(clarkpath=self.clarkpath,
                     dbpath=databasepath)
         # Download the database
-        self.database_download(targetcall, databasepath)
-        # Append the '--light' option to the target call to download the light version of the database as well
-        targetcall += ' --light'
-        # Download the light database
         self.database_download(targetcall, databasepath)
 
     def mash(self):

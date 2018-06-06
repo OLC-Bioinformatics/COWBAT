@@ -58,7 +58,7 @@ class DatabaseSetup(object):
         """
         databasepath = self.create_database_folder('ConFindr')
         tar_file = os.path.join(databasepath, 'confindr.tar')
-        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827251'\
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/11864267'\
             .format(out=tar_file)
         self.database_download(targetcall, databasepath)
         # Extract the databases from the archives

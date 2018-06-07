@@ -21,6 +21,7 @@ class DatabaseSetup(object):
         """
         self.olc_databases()
         self.confindr()
+        self.plasmidextractor()
         self.clark()
         self.mash()
         self.rmlst()
@@ -60,7 +61,25 @@ class DatabaseSetup(object):
         tar_file = os.path.join(databasepath, 'confindr.tar')
         targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/11864267'\
             .format(out=tar_file)
-        self.database_download(targetcall, databasepath)
+        self.database_download(targetcall, databasepath, complete=False)
+        # Extract the databases from the archives
+        printtime('Extracting database from archives', self.start)
+        if not os.path.isfile(os.path.join(databasepath, 'complete')):
+            with tarfile.open(tar_file, 'r') as tar:
+                # Decompress the archive
+                tar.extractall(path=databasepath)
+            # Delete the archive file
+            os.remove(tar_file)
+
+    def plasmidextractor(self):
+        """
+        Download and extract the .tar file containing the PlasmidExtractor database from figshare.
+        """
+        databasepath = self.create_database_folder('plasmidextractor')
+        tar_file = os.path.join(databasepath, 'confindr.tar')
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827323'\
+            .format(out=tar_file)
+        self.database_download(targetcall, databasepath, complete=False)
         # Extract the databases from the archives
         printtime('Extracting database from archives', self.start)
         if not os.path.isfile(os.path.join(databasepath, 'complete')):
@@ -78,7 +97,7 @@ class DatabaseSetup(object):
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('clark')
         # Set the call to create the database - use the --light option, as we don't require the full database
-        targetcall = 'cd {clarkpath} && ./set_targets.sh {dbpath} bacteria --species --light'\
+        targetcall = 'cd {clarkpath} && ../opt/clark/set_targets.sh {dbpath} bacteria --species --light'\
             .format(clarkpath=self.clarkpath,
                     dbpath=databasepath)
         # Download the database

@@ -29,7 +29,7 @@ nbformat==4.4.0
 nose==1.3.7
 numexpr==2.6.5
 numpy==1.14.3
-OLCTools==0.3.88
+OLCTools==0.3.89
 pandas==0.22.0
 plasmidextractor==0.2.3
 pluggy==0.6.0

@@ -28,33 +28,10 @@ class DatabaseSetup(object):
         self.mlst()
         self.cge_db_downloader('plasmidfinder', 'plasmidfinder_db', 'fsa', 'tfa')
         self.cge_db_downloader('resfinder', 'resfinder_db', 'fsa', 'tfa')
-        self.notes()
+        # self.notes()
         self.cge_db_downloader('virulence', 'virulencefinder_db', 'fsa', 'tfa')
         self.cge_db_downloader('serosippr', 'serotypefinder_db', 'fsa', 'tfa')
         self.univec()
-
-    def plasmidextractor(self):
-        """
-        Download plasmidextractor databases.
-        """
-        databasepath = self.create_database_folder('plasmidextractor')
-        tar_file = os.path.join(databasepath, 'plasmidextractor.tar')
-        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827323'.format(out=tar_file)
-        self.database_download(targetcall, databasepath, complete=False)
-        # Extract the databases from the archives
-        printtime('Extracting plasmidextractor database from archives', self.start)
-        if not os.path.isfile(os.path.join(databasepath, 'complete')):
-            with tarfile.open(tar_file, 'r') as tar:
-                # Decompress the archive
-                tar.extractall(path=databasepath)
-                # Move folders/files that were within the 'databases' folder up one level and delete the empty dir.
-                things_to_move_up = glob(os.path.join(databasepath, 'databases', '*'))
-                for thing in things_to_move_up:
-                    shutil.move(thing, databasepath)
-                os.rmdir(os.path.join(databasepath, 'databases'))
-
-            # Delete the archive file
-            os.remove(tar_file)
 
     def olc_databases(self):
         """
@@ -82,7 +59,25 @@ class DatabaseSetup(object):
         """
         databasepath = self.create_database_folder('ConFindr')
         tar_file = os.path.join(databasepath, 'confindr.tar')
-        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827251'\
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/11864267'\
+            .format(out=tar_file)
+        self.database_download(targetcall, databasepath, complete=False)
+        # Extract the databases from the archives
+        printtime('Extracting database from archives', self.start)
+        if not os.path.isfile(os.path.join(databasepath, 'complete')):
+            with tarfile.open(tar_file, 'r') as tar:
+                # Decompress the archive
+                tar.extractall(path=databasepath)
+            # Delete the archive file
+            os.remove(tar_file)
+
+    def plasmidextractor(self):
+        """
+        Download and extract the .tar file containing the PlasmidExtractor database from figshare.
+        """
+        databasepath = self.create_database_folder('plasmidextractor')
+        tar_file = os.path.join(databasepath, 'confindr.tar')
+        targetcall = 'wget -O {out} https://ndownloader.figshare.com/files/9827323'\
             .format(out=tar_file)
         self.database_download(targetcall, databasepath, complete=False)
         # Extract the databases from the archives
@@ -101,8 +96,7 @@ class DatabaseSetup(object):
         """
         # Create the folder in which the database is to be stored
         databasepath = self.create_database_folder('clark')
-        # Set the call to create the database. Use the --light option to specify the lightweight database
-        # IMPORTANT: This will only work with conda, so we're forcing people into using it.
+        # Set the call to create the database - use the --light option, as we don't require the full database
         targetcall = 'cd {clarkpath} && ../opt/clark/set_targets.sh {dbpath} bacteria --species --light'\
             .format(clarkpath=self.clarkpath,
                     dbpath=databasepath)

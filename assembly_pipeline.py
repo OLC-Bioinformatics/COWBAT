@@ -357,7 +357,8 @@ class RunAssemble(object):
         """
         Virulence gene detection
         """
-        Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
+        vir = Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
+        vir.reporter()
         metadataprinter.MetadataPrinter(self)
 
     def typing(self):

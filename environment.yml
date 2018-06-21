@@ -1,7 +1,7 @@
 name: cowbat
 channels:
-- dranew
 - biobuilds
+- dranew
 - adamkoziol
 - conda-forge
 - defaults
@@ -156,27 +156,32 @@ dependencies:
   - attrs==17.4.0
   - biopython==1.71
   - confindr==0.2.5
+  - cycler==0.10.0
   - docopt==0.6.2
   - genomeqaml==0.0.11
   - interop==1.1.4
   - ipython-genutils==0.2.0
   - jinja2==2.10
   - jupyter-core==4.4.0
+  - kiwisolver==1.0.1
   - livereload==2.5.1
   - markdown==2.6.11
   - markupsafe==1.0
+  - matplotlib==2.2.2
   - mkdocs==0.17.2
   - mkl-fft==1.0.0
   - mkl-random==1.0.1
-  - olctools==0.3.90
+  - olctools==0.3.91
   - plasmidextractor==0.2.3
   - pluggy==0.6.0
   - py==1.5.2
+  - pyparsing==2.2.0
   - pysam==0.13
   - pytest==3.4.1
   - scikit-learn==0.19.1
   - scipy==1.0.0
-  - sipprverse==0.0.69
+  - seaborn==0.8.1
+  - sipprverse==0.0.73
   - sistr-cmd==1.0.2
   - sklearn==0.0
   - tables==3.4.3

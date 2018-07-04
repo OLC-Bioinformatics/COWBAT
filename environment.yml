@@ -16,8 +16,10 @@ dependencies:
 - blast=2.5.0=h3727419_3
 - bowtie2=2.3.4.1=py35h2d50403_1
 - clark=1.2.5=0
-- fastqc=0.11.7=4
+- fastqc=0.11.7=pl5.22.0_0
 - fastx_toolkit=0.0.14=pl5.22.0_6
+- jellyfish=2.2.10=h2d50403_0
+- jemalloc=4.5.0=0
 - kmc=3.1.0=0
 - libdeflate=1.0=h470a237_0
 - libgtextutils=0.7=3
@@ -76,7 +78,6 @@ dependencies:
 - icu=58.2=hfc679d8_0
 - idna=2.7=py35_0
 - ipython_genutils=0.2.0=py35_0
-- jellyfish=0.6.1=py35_0
 - jpeg=9c=h470a237_0
 - jsonschema=2.6.0=py35_1
 - jupyter_core=4.4.0=py_0
@@ -101,7 +102,6 @@ dependencies:
 - numexpr=2.6.5=py35_0
 - numpy=1.14.5=py35_blas_openblashd3ea46f_200
 - openblas=0.2.20=8
-- openjdk=8.0.144=zulu8.23.0.3_1
 - openssl=1.0.2o=0
 - pandas=0.23.1=py35_0
 - pango=1.40.14=0
@@ -136,6 +136,7 @@ dependencies:
 - xz=5.2.3=0
 - yaml=0.1.7=0
 - zlib=1.2.11=h470a237_3
+- font-ttf-dejavu-sans-mono=2.37=h6964260_0
 - intel-openmp=2018.0.3=0
 - libboost=1.65.1=habcd387_4
 - libcurl=7.60.0=h1ad7b7a_0
@@ -148,13 +149,14 @@ dependencies:
 - mkl=2018.0.3=1
 - numpy-base=1.14.3=py35h0ea5e3f_1
 - openblas-devel=0.2.20=7
+- openjdk=8.0.121=1
 - py-boost=1.65.1=py35hf484d3e_4
 - pycurl=7.43.0.2=py35hb7f436b_0
 - bcl2fastq=2.19.0=1
 - boost_lib=1.54.0=1
 - pip:
   - attrs==17.4.0
-  - biopython==1.71
+  - biopython==1.72
   - confindr==0.2.5
   - cycler==0.10.0
   - docopt==0.6.2

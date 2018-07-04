@@ -325,7 +325,7 @@ class RunAssemble(object):
         """
         Resistance finding - raw reads
         """
-        res = Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.8, False, True)
+        res = Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.7, False, True)
         res.main()
         metadataprinter.MetadataPrinter(self)
 
@@ -388,7 +388,7 @@ class RunAssemble(object):
         """
         Serotyping analyses
         """
-        Serotype(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.95, True)
+        Serotype(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.90, True)
         metadataprinter.MetadataPrinter(self)
 
     def vtyper(self):

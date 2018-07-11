@@ -164,6 +164,7 @@ dependencies:
   - interop==1.1.4
   - ipython-genutils==0.2.0
   - jinja2==2.10
+  - jsonpickle==0.9.6
   - jupyter-core==4.4.0
   - kiwisolver==1.0.1
   - livereload==2.5.1
@@ -173,7 +174,7 @@ dependencies:
   - mkdocs==0.17.2
   - mkl-fft==1.0.2
   - mkl-random==1.0.1
-  - olctools==0.3.93
+  - olctools==0.3.95
   - plasmidextractor==0.2.3
   - pluggy==0.6.0
   - py==1.5.2

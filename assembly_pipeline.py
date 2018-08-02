@@ -2,6 +2,7 @@
 from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
     Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
+from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.primer_finder_bbduk as vtyper
@@ -372,6 +373,8 @@ class RunAssemble(object):
         self.serosippr()
         # Virulence typing
         self.vtyper()
+        # Assembly-based vtyper
+        self.legacy_vtyper()
         # Core genome calculation
         self.coregenome()
         # Sistr
@@ -399,6 +402,14 @@ class RunAssemble(object):
         vtype.main()
         metadataprinter.MetadataPrinter(self)
 
+    def legacy_vtyper(self):
+        """
+        Legacy vtyper - uses ePCR
+        """
+        vtyper = LegacyVtyper(self, 'legacy_vtyper')
+        vtyper.vtyper()
+        metadataprinter.MetadataPrinter(self)
+
     def coregenome(self):
         """
         Core genome calculation
@@ -421,7 +432,7 @@ class RunAssemble(object):
         :param args: list of arguments passed to the script
         """
         printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'
-                  .format(args.commit.decode('utf-8')), args.startingtime, '\033[1;94m')
+                  .format(args.commit.decode('utf-8')), args.startingtime)
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.sequencepath)

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, ResFinder, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
+from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
     Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
 from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
@@ -14,7 +14,6 @@ import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
 import spadespipeline.quality as quality
-import spadespipeline.univec as univec
 import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
 import spadespipeline.skesa as skesa
@@ -22,6 +21,7 @@ import spadespipeline.phix as phix
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
 from genesippr.genesippr import GeneSippr
+from geneseekr.geneseekr import BLAST
 import coreGenome.core as core
 import MASHsippr.mash as mash
 from argparse import ArgumentParser
@@ -334,7 +334,8 @@ class RunAssemble(object):
         """
         Resistance finding - assemblies
         """
-        ResFinder(self)
+        resfinder = BLAST(self, analysistype='resfinder_assembled')
+        resfinder.seekr()
         metadataprinter.MetadataPrinter(self)
 
     def prophages(self, cutoff=90):
@@ -342,16 +343,16 @@ class RunAssemble(object):
         Prophage detection
         :param cutoff: cutoff value to be used in the analyses
         """
-        pro = GeneSeekrMethod.PipelineInit(self, 'prophages', False, cutoff, True)
-        Prophages(pro)
+        prophages = Prophages(self, analysistype='prophages', cutoff=cutoff)
+        prophages.seekr()
         metadataprinter.MetadataPrinter(self)
 
     def univec(self):
         """
         Univec contamination search
         """
-        uni = univec.PipelineInit(self, 'univec', False, 80, True)
-        Univec(uni)
+        univec = Univec(self, analysistype='univec', cutoff=80)
+        univec.seekr()
         metadataprinter.MetadataPrinter(self)
 
     def virulence(self):
@@ -406,8 +407,8 @@ class RunAssemble(object):
         """
         Legacy vtyper - uses ePCR
         """
-        vtyper = LegacyVtyper(self, 'legacy_vtyper')
-        vtyper.vtyper()
+        legacy_vtyper = LegacyVtyper(self, 'legacy_vtyper')
+        legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(self)
 
     def coregenome(self):

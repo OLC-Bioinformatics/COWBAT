@@ -1,15 +1,23 @@
 name: cowbat
 channels:
   - dranew
-  - anaconda
-  - conda-forge
   - biobuilds
+  - conda-forge
+  - anaconda
   - olcbioinformatics
   - bioconda
   - defaults
 dependencies:
   - biopython=1.72=py35h04863e7_0
+  - blas=1.0=openblas
   - ca-certificates=2018.03.07=0
+  - certifi=2018.4.16=py35_0
+  - conda=4.5.11=py35_0
+  - numexpr=2.6.7=py35h6cfcb94_0
+  - numpy=1.15.0=py35h2aefc1b_0
+  - numpy-base=1.15.0=py35h7cdd4dd_0
+  - openblas=0.2.19=0
+  - openblas-devel=0.2.20=7
   - openssl=1.0.2o=h20670df_0
   - argtable2=2.13=0
   - clustalomega=1.2.4=1
@@ -47,7 +55,6 @@ dependencies:
   - tablet=1.17.08.17=1
   - cairo=1.14.10=0
   - capnproto=0.6.1=0
-  - certifi=2018.4.16=py35_0
   - dbus=1.11.0=0
   - freetype=2.8.1=0
   - glib=2.55.0=0
@@ -71,7 +78,6 @@ dependencies:
   - anaconda-client=1.6.14=py35_0
   - asn1crypto=0.24.0=py35_0
   - beautifulsoup4=4.6.1=py35_0
-  - blas=1.0=mkl
   - blosc=1.14.3=hdbcaa40_0
   - boost=1.65.1=py35_4
   - boost-cpp=1.65.1=h14c3975_4
@@ -80,7 +86,6 @@ dependencies:
   - chardet=3.0.4=py35hb6e9ddf_1
   - click=6.7=py35h353a69f_0
   - clyent=1.2.2=py35h491ffcb_1
-  - conda=4.5.9=py35_0
   - conda-build=3.12.0=py35_1
   - conda-env=2.6.0=1
   - cryptography=2.2.2=py35h14c3975_0
@@ -129,12 +134,7 @@ dependencies:
   - msgpack-python=0.5.6=py35h6bb024c_0
   - nbformat=4.4.0=py35h12e6e07_0
   - nose=1.3.7=py35hdc64897_2
-  - numexpr=2.6.5=py35h7bf3b9c_0
-  - numpy=1.14.3=py35hcd700cb_1
-  - numpy-base=1.14.3=py35h9be14a7_1
   - olefile=0.45.1=py35_0
-  - openblas=0.2.19=0
-  - openblas-devel=0.2.20=4
   - openjdk=8.0.152=h46b5887_1
   - pango=1.40.11=h8191d47_0
   - patchelf=0.9=hf484d3e_2

@@ -1,9 +1,9 @@
 name: cowbat
 channels:
-  - anaconda
-  - biobuilds
   - dranew
+  - anaconda
   - conda-forge
+  - biobuilds
   - olcbioinformatics
   - bioconda
   - defaults
@@ -29,7 +29,7 @@ dependencies:
   - libdeflate=0.8=0
   - libgtextutils=0.7=3
   - mafft=7.313=0
-  - mash=2.0=h9dd4a16_3
+  - mash=2.0=gsl2.2_2
   - mmtf-python=1.0.2=py35_0
   - perl-app-cpanminus=1.7043=pl5.22.0_0
   - perl-gd=2.56=pl5.22.0_6

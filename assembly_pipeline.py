@@ -6,7 +6,6 @@ from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
 from sixteenS.sixteens_full import SixteenS as SixteensFull
 import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.primer_finder_bbduk as vtyper
-import spadespipeline.GeneSeekr as GeneSeekrMethod
 import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
@@ -415,8 +414,8 @@ class RunAssemble(object):
         """
         Core genome calculation
         """
-        coregen = GeneSeekrMethod.PipelineInit(self, 'coregenome', True, 70, False)
-        core.CoreGenome(coregen)
+        coregen = core.CoreGenome(self, analysistype='coregenome', genus_specific=True)
+        coregen.seekr()
         core.AnnotatedCore(self)
         metadataprinter.MetadataPrinter(self)
 

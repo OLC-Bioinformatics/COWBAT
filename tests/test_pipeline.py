@@ -202,7 +202,7 @@ def test_rmlst():
 def test_sixteens():
     method.sixteens()
     for sample in method.runmetadata.samples:
-        assert float(sample.sixteens_full.avgdepth['gi|219846739|ref|NR_026331.1|']) >= 15.82
+        assert float(sample.sixteens_full.results['gi|219846739|ref|NR_026331.1|']) >= 99
 
 
 def test_gdcs():
@@ -214,7 +214,7 @@ def test_gdcs():
 def test_genesippr():
     method.genesippr()
     for sample in method.runmetadata.samples:
-        assert float(sample.genesippr.avgdepth['VT1']) >= 17.38
+        assert sample.genesippr.results['VT1'] == '100.00'
 
 
 def test_plasmids():
@@ -232,7 +232,7 @@ def test_ressippr():
 def test_resfinder():
     method.resfinder()
     for sample in method.runmetadata.samples:
-        assert sample.resfinder_assembled.protseq
+        assert sample.resfinder_assembled.blastresults['sul1_1_AY224185'] >= 81
 
 
 def test_prophages():
@@ -250,7 +250,7 @@ def test_univec():
 def test_virulence():
     method.virulence()
     for sample in method.runmetadata.samples:
-        assert float(sample.virulence.avgdepth['stx1_3_M19437_3']) >= 16.54
+        assert float(sample.virulence.results['stx1:3:M19437:3']) >= 99
 
 
 def test_mlst():
@@ -295,6 +295,9 @@ def test_clear_reports(variables):
 
 def test_clear_assemblies(variables):
     shutil.rmtree(os.path.join(variables.sequencepath, 'BestAssemblies'))
+
+def test_clear_raw_assemblies(variables):
+    shutil.rmtree(os.path.join(variables.sequencepath, 'raw_assemblies'))
 
 
 def test_clear_logs(variables):

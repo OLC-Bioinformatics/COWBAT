@@ -11,7 +11,7 @@ clyent==1.2.2
 conda==4.5.9
 conda-build==3.12.0
 confindr==0.2.5
-cryptography==2.2.2
+cryptography==2.3.1
 cycler==0.10.0
 Cython==0.28.2
 decorator==4.3.0

@@ -1,7 +1,7 @@
 name: cowbat
 channels:
-  - biobuilds
   - anaconda
+  - biobuilds
   - dranew
   - conda-forge
   - olcbioinformatics
@@ -133,7 +133,7 @@ dependencies:
   - numpy=1.14.3=py35hcd700cb_1
   - numpy-base=1.14.3=py35h9be14a7_1
   - olefile=0.45.1=py35_0
-  - openblas=0.2.20=4
+  - openblas=0.2.19=0
   - openblas-devel=0.2.20=4
   - openjdk=8.0.152=h46b5887_1
   - pango=1.40.11=h8191d47_0

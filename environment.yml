@@ -1,9 +1,9 @@
 name: cowbat
 channels:
+  - anaconda
   - dranew
   - biobuilds
   - conda-forge
-  - anaconda
   - olcbioinformatics
   - bioconda
   - defaults
@@ -174,7 +174,7 @@ dependencies:
   - zlib=1.2.11=ha838bed_2
   - bcl2fastq=2.19.0=1
   - boost_lib=1.54.0=1
-  - geneseekr=0.1.4=py35h39e3cac_0
+  - geneseekr=0.1.5=py35h39e3cac_0
   - olctools=0.4.0=py35_0
   - sipprverse=0.0.76=py35h39e3cac_0
   - pip:

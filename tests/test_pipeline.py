@@ -64,6 +64,8 @@ def test_sistr(variables):
     make_path(outputdir)
     # Add the output directory to the metadata
     metadata.general.outputdirectory = outputdir
+    metadata.general.logout = os.path.join(outputdir, 'out')
+    metadata.general.logerr = os.path.join(outputdir, 'err')
     metadata.run.outputdirectory = outputdir
     metadata.general.bestassemblyfile = True
     # Initialise an attribute to store commands
@@ -143,7 +145,7 @@ def test_error_correction(variables):
 def test_confindr():
     method.contamination_detection()
     for sample in method.runmetadata.samples:
-        assert sample.confindr.unique_kmers >= 575
+        assert sample.confindr.num_contaminated_snvs == 0
 
 
 def test_trimmed_corrected_fastqc():
@@ -250,7 +252,7 @@ def test_univec():
 def test_virulence():
     method.virulence()
     for sample in method.runmetadata.samples:
-        assert float(sample.virulence.results['stx1:3:M19437:3']) >= 99
+        assert sample.virulence.snplocations['stx1:3:M19437:3'] == [503]
 
 
 def test_mlst():
@@ -303,4 +305,3 @@ def test_clear_raw_assemblies(variables):
 def test_clear_logs(variables):
     os.remove(os.path.join(variables.sequencepath, 'logfile_err.txt'))
     os.remove(os.path.join(variables.sequencepath, 'logfile_out.txt'))
-    os.remove(os.path.join(variables.sequencepath, 'portal.log'))

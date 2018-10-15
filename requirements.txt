@@ -21,7 +21,7 @@ more-itertools==4.3.0
 numexpr==2.6.6
 numpy==1.14.2
 -e git+https://github.com/lowandrew/OLCTools.git@b66e0f8e2a3804cf9d1229fdccf7ad09d020bdd5#egg=OLCTools
-openpyxl==2.4.0b1
+openpyxl==2.5.8
 pandas==0.23.4
 pluggy==0.7.1
 psutil==5.4.7

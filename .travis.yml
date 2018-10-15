@@ -9,7 +9,8 @@ before_install:
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
   - conda env create -f environment.yml
-  - source activate cowbat 
+  - source activate cowbat
   
 script:
-  - pytest tests/test_pipeline.py
+  - python -m pytest tests/test_imports.py
+  - python -m pytest tests/test_pipeline.py

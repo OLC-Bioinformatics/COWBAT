@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
 from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
     Univec, Virulence
-from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, printtime, make_path
+from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
 from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
+import accessoryFunctions.metadataprinter as metadataprinter
 from sixteenS.sixteens_full import SixteenS as SixteensFull
-import spadespipeline.metadataprinter as metadataprinter
 import spadespipeline.primer_finder_bbduk as vtyper
 import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
+from spadespipeline.mobrecon import MobRecon
 import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
@@ -20,7 +21,7 @@ import spadespipeline.phix as phix
 from MLSTsippr.mlst import GeneSippr as MLSTSippr
 from metagenomefilter import automateCLARK
 from genesippr.genesippr import GeneSippr
-from geneseekr.geneseekr import BLAST
+from geneseekr.blast import BLAST
 import coreGenome.core as core
 import MASHsippr.mash as mash
 from argparse import ArgumentParser
@@ -28,6 +29,7 @@ from psutil import virtual_memory
 import multiprocessing
 from time import time
 import subprocess
+import logging
 import os
 
 __author__ = 'adamkoziol'
@@ -55,23 +57,23 @@ class RunAssemble(object):
         reporter.Reporter(self)
         # Compress or remove all large, temporary files created by the pipeline
         compress.Compress(self)
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def helper(self):
         """Helper function for file creation (if desired), manipulation, quality assessment,
         and trimming as well as the assembly"""
         # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
         if self.basicassembly:
-            self.runmetadata = Basic(self)
+            self.runmetadata = Basic(inputobject=self)
         else:
             # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
             # RunInfo.xml files
             self.runinfo = os.path.join(self.path, 'RunInfo.xml')
-            self.runmetadata = runMetadata.Metadata(self)
+            self.runmetadata = runMetadata.Metadata(passed=self)
             # Extract the flowcell ID and the instrument name if the RunInfo.xml file was provided
             self.runmetadata.parseruninfo()
             # Extract PhiX mapping information from the run
-            phi = phix.PhiX(self)
+            phi = phix.PhiX(inputobject=self)
             phi.main()
             # Populate the lack of bclcall and nohup call into the metadata sheet
             for sample in self.runmetadata.samples:
@@ -79,15 +81,15 @@ class RunAssemble(object):
                 sample.commands.nohupcall = 'NA'
                 sample.commands.bclcall = 'NA'
             # Move/link the FASTQ files to strain-specific working directories
-            fastqmover.FastqMover(self)
+            fastqmover.FastqMover(inputobject=self)
         # Print the metadata to file
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def create_quality_object(self):
         """
         Create the quality object
         """
-        self.qualityobject = quality.Quality(self)
+        self.qualityobject = quality.Quality(inputobject=self)
 
     def quality(self):
         """
@@ -110,9 +112,9 @@ class RunAssemble(object):
         # Run FastQC on the processed fastq files
         self.fastqc_trimmedcorrected()
         # Exit if only pre-processing of data is requested
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
         if self.preprocess:
-            printtime('Pre-processing complete', self.starttime)
+            logging.info('Pre-processing complete')
             quit()
 
     def fastq_validate(self):
@@ -120,49 +122,49 @@ class RunAssemble(object):
         Attempt to detect and fix issues with the FASTQ files
         """
         self.qualityobject.validate_fastq()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_raw(self):
         """
         Run FastQC on the unprocessed FASTQ files
         """
-        self.qualityobject.fastqcthreader('Raw')
-        metadataprinter.MetadataPrinter(self)
+        self.qualityobject.fastqcthreader(level='Raw')
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def quality_trim(self):
         """
         Perform quality trimming and FastQC on the trimmed files
         """
         self.qualityobject.trimquality()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmed(self):
         """
         Run FastQC on the quality trimmed FASTQ files
         """
-        self.qualityobject.fastqcthreader('Trimmed')
-        metadataprinter.MetadataPrinter(self)
+        self.qualityobject.fastqcthreader(level='Trimmed')
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def error_correct(self):
         """
         Perform error correcting on the reads
         """
         self.qualityobject.error_correction()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def contamination_detection(self):
         """
         Calculate the levels of contamination in the reads
         """
         self.qualityobject.contamination_finder()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmedcorrected(self):
         """
         Run FastQC on the processed fastq files
         """
-        self.qualityobject.fastqcthreader('trimmedcorrected')
-        metadataprinter.MetadataPrinter(self)
+        self.qualityobject.fastqcthreader(level='trimmedcorrected')
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def assemble(self):
         """
@@ -171,11 +173,11 @@ class RunAssemble(object):
         # Assemble genomes
         self.assemble_genomes()
         # Calculate assembly metrics on raw assemblies
-        self.quality_features('raw')
+        self.quality_features(analysis='raw')
         # Calculate the depth of coverage as well as other quality metrics using Qualimap
         self.qualimap()
         # Calculate assembly metrics on polished assemblies
-        self.quality_features('polished')
+        self.quality_features(analysis='polished')
         # ORF detection
         self.prodigal()
         # Assembly quality determination
@@ -187,23 +189,24 @@ class RunAssemble(object):
         """
         Use skesa to assemble genomes
         """
-        assembly = skesa.Skesa(self)
+        assembly = skesa.Skesa(inputobject=self)
         assembly.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def qualimap(self):
         """
         Calculate the depth of coverage as well as other quality metrics using Qualimap
         """
-        qual = depth.QualiMap(self)
+        qual = depth.QualiMap(inputobject=self)
         qual.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def quality_features(self, analysis):
         """
         Extract features from assemblies such as total genome size, longest contig, and N50
         """
-        features = quality.QualityFeatures(self, analysis)
+        features = quality.QualityFeatures(inputobject=self,
+                                           analysis=analysis)
         features.main()
         metadataprinter.MetadataPrinter(self)
 
@@ -218,9 +221,9 @@ class RunAssemble(object):
         """
         Use GenomeQAML to determine the quality of the assemblies
         """
-        g_qaml = quality.GenomeQAML(self)
+        g_qaml = quality.GenomeQAML(inputobject=self)
         g_qaml.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def clark(self):
         """
@@ -231,14 +234,18 @@ class RunAssemble(object):
         # If the total amount of memory is greater than 100GB (this could probably be lowered), run CLARK
         if mem.total >= 100000000000:
             # Run CLARK typing on the .fastq and .fasta files
-            automateCLARK.PipelineInit(self)
-            automateCLARK.PipelineInit(self, 'fastq')
+            automateCLARK.PipelineInit(inputobject=self)
+            automateCLARK.PipelineInit(inputobject=self,
+                                       extension='fastq')
 
         else:
             # Run CLARK typing on the .fastq and .fasta files
-            automateCLARK.PipelineInit(self, light=True)
-            automateCLARK.PipelineInit(self, 'fastq', light=True)
-        metadataprinter.MetadataPrinter(self)
+            automateCLARK.PipelineInit(inputobject=self,
+                                       light=True)
+            automateCLARK.PipelineInit(inputobject=self,
+                                       extension='fastq',
+                                       light=True)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def agnostictyping(self):
         """
@@ -262,6 +269,8 @@ class RunAssemble(object):
         self.ressippr()
         # Resistance finding - assemblies
         self.resfinder()
+        # Run MOB-suite
+        self.mob_suite()
         # Prophage detection
         self.prophages()
         # Univec contamination search
@@ -273,22 +282,34 @@ class RunAssemble(object):
         """
         Run mash to determine closest refseq genome
         """
-        mash.Mash(self, 'mash')
-        metadataprinter.MetadataPrinter(self)
+        mash.Mash(inputobject=self,
+                  analysistype='mash')
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def rmlst(self):
         """
         Run rMLST analyses
         """
-        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'rMLST', 1.0, True)
-        metadataprinter.MetadataPrinter(self)
+        MLSTSippr(args=self,
+                  pipelinecommit=self.commit,
+                  startingtime=self.starttime,
+                  scriptpath=self.homepath,
+                  analysistype='rMLST',
+                  cutoff=1.0,
+                  pipeline=True)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def sixteens(self):
         """
         Run the 16S analyses
         """
-        SixteensFull(self, self.commit, self.starttime, self.homepath, 'sixteens_full', 0.95)
-        metadataprinter.MetadataPrinter(self)
+        SixteensFull(args=self,
+                     pipelinecommit=self.commit,
+                     startingtime=self.starttime,
+                     scriptpath=self.homepath,
+                     analysistype='sixteens_full',
+                     cutoff=0.95)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def run_gdcs(self):
         """
@@ -296,71 +317,118 @@ class RunAssemble(object):
         strains
         """
         # Run the GDCS analysis
-        GDCS(self)
-        metadataprinter.MetadataPrinter(self)
+        GDCS(inputobject=self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def genesippr(self):
         """
         Find genes of interest
         """
-        GeneSippr(self, self.commit, self.starttime, self.homepath, 'genesippr', 0.95, False, False)
-        metadataprinter.MetadataPrinter(self)
+        GeneSippr(args=self,
+                  pipelinecommit=self.commit,
+                  startingtime=self.starttime,
+                  scriptpath=self.homepath,
+                  analysistype='genesippr',
+                  cutoff=0.95,
+                  pipeline=False,
+                  revbait=False)
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def mob_suite(self):
+        """
+
+        """
+        mob = MobRecon(metadata=self.runmetadata.samples,
+                       analysistype='mobrecon',
+                       databasepath=self.reffilepath,
+                       threads=self.cpus,
+                       logfile=self.logfile,
+                       reportpath=self.reportpath)
+        mob.mob_recon()
+        metadataprinter.MetadataPrinter(inputobject=self)
+        quit()
 
     def plasmids(self):
         """
         Plasmid finding
         """
-        Plasmids(self, self.commit, self.starttime, self.homepath, 'plasmidfinder', 0.8, False, True)
-        metadataprinter.MetadataPrinter(self)
+        Plasmids(args=self,
+                 pipelinecommit=self.commit,
+                 startingtime=self.starttime,
+                 scriptpath=self.homepath,
+                 analysistype='plasmidfinder',
+                 cutoff=0.8,
+                 pipeline=False,
+                 revbait=True)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def plasmid_extractor(self):
         """
         Extracts and types plasmid sequences
         """
-        plasmids = PlasmidExtractor(self)
+        plasmids = PlasmidExtractor(inputobject=self)
         plasmids.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def ressippr(self):
         """
         Resistance finding - raw reads
         """
-        res = Resistance(self, self.commit, self.starttime, self.homepath, 'resfinder', 0.7, False, True)
+        res = Resistance(args=self,
+                         pipelinecommit=self.commit,
+                         startingtime=self.starttime,
+                         scriptpath=self.homepath,
+                         analysistype='resfinder',
+                         cutoff=0.7,
+                         pipeline=False,
+                         revbait=True)
         res.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def resfinder(self):
         """
         Resistance finding - assemblies
         """
-        resfinder = BLAST(self, analysistype='resfinder_assembled')
+        resfinder = BLAST(args=self,
+                          analysistype='resfinder_assembled')
         resfinder.seekr()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def prophages(self, cutoff=90):
         """
         Prophage detection
         :param cutoff: cutoff value to be used in the analyses
         """
-        prophages = Prophages(self, analysistype='prophages', cutoff=cutoff)
+        prophages = Prophages(args=self,
+                              analysistype='prophages',
+                              cutoff=cutoff)
         prophages.seekr()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def univec(self):
         """
         Univec contamination search
         """
-        univec = Univec(self, analysistype='univec', cutoff=80)
+        univec = Univec(args=self,
+                        analysistype='univec',
+                        cutoff=80)
         univec.seekr()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def virulence(self):
         """
         Virulence gene detection
         """
-        vir = Virulence(self, self.commit, self.starttime, self.homepath, 'virulence', 0.95, False, True)
+        vir = Virulence(args=self,
+                        pipelinecommit=self.commit,
+                        startingtime=self.starttime,
+                        scriptpath=self.homepath,
+                        analysistype='virulence',
+                        cutoff=0.95,
+                        pipeline=False,
+                        revbait=True)
         vir.reporter()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def typing(self):
         """
@@ -384,55 +452,73 @@ class RunAssemble(object):
         """
          MLST analyses
         """
-        MLSTSippr(self, self.commit, self.starttime, self.homepath, 'MLST', 1.0, True)
-        metadataprinter.MetadataPrinter(self)
+        MLSTSippr(args=self,
+                  pipelinecommit=self.commit,
+                  startingtime=self.starttime,
+                  scriptpath=self.homepath,
+                  analysistype='MLST',
+                  cutoff=1.0,
+                  pipeline=True)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def serosippr(self):
         """
         Serotyping analyses
         """
-        Serotype(self, self.commit, self.starttime, self.homepath, 'serosippr', 0.90, True)
-        metadataprinter.MetadataPrinter(self)
+        Serotype(args=self,
+                 pipelinecommit=self.commit,
+                 startingtime=self.starttime,
+                 scriptpath=self.homepath,
+                 analysistype='serosippr',
+                 cutoff=0.90,
+                 pipeline=True)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def vtyper(self):
         """
         Virulence typing
         """
-        vtype = vtyper.PrimerFinder(self, 'vtyper')
+        vtype = vtyper.PrimerFinder(args=self,
+                                    analysistype='vtyper')
         vtype.main()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def legacy_vtyper(self):
         """
         Legacy vtyper - uses ePCR
         """
-        legacy_vtyper = LegacyVtyper(self, 'legacy_vtyper')
+        legacy_vtyper = LegacyVtyper(inputobject=self,
+                                     analysistype='legacy_vtyper')
         legacy_vtyper.vtyper()
-        metadataprinter.MetadataPrinter(self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def coregenome(self):
         """
         Core genome calculation
         """
-        coregen = core.CoreGenome(self, analysistype='coregenome', genus_specific=True)
+        coregen = core.CoreGenome(args=self,
+                                  analysistype='coregenome',
+                                  genus_specific=True)
         coregen.seekr()
-        core.AnnotatedCore(self)
-        metadataprinter.MetadataPrinter(self)
+        core.AnnotatedCore(inputobject=self)
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def sistr(self):
         """
         Sistr
         """
-        sistr.Sistr(self, 'sistr')
-        metadataprinter.MetadataPrinter(self)
+        sistr.Sistr(inputobject=self,
+                    analysistype='sistr')
+        metadataprinter.MetadataPrinter(inputobject=self)
 
     def __init__(self, args):
         """
         Initialises the variables required for this class
         :param args: list of arguments passed to the script
         """
-        printtime('Welcome to the CFIA de novo bacterial assembly pipeline {}'
-                  .format(args.commit.decode('utf-8')), args.startingtime)
+        SetupLogging()
+        logging.info('Welcome to the CFIA de novo bacterial assembly pipeline {}'
+                     .format(args.commit.decode('utf-8')))
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.sequencepath)
@@ -448,8 +534,7 @@ class RunAssemble(object):
         self.basicassembly = args.basicassembly
         if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
             self.basicassembly = True
-            printtime('Could not find a sample sheet. Performing basic assembly (no run metadata captured)',
-                      self.starttime)
+            logging.warning('Could not find a sample sheet. Performing basic assembly (no run metadata captured)')
         # Use the argument for the number of threads to use, or default to the number of cpus in the system
         self.cpus = args.threads if args.threads else multiprocessing.cpu_count() - 1
         # Assertions to ensure that the provided variables are valid
@@ -514,4 +599,4 @@ if __name__ == '__main__':
     # Run the pipeline
     pipeline = RunAssemble(arguments)
     pipeline.main()
-    printtime('Assembly and characterisation complete', arguments.startingtime)
+    logging.info('Assembly and characterisation complete')

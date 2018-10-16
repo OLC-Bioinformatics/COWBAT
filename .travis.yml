@@ -13,4 +13,4 @@ before_install:
   
 script:
   - python -m pytest tests/test_imports.py
-  - python -m pytest tests/test_pipeline.py
+  - python -m pytest tests/test_pipeline.py -s -v

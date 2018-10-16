@@ -2,7 +2,7 @@ atomicwrites==1.2.1
 attrs==18.2.0
 bio-assembly-refinement==0.5.1
 biopython==1.71
-certifi==2018.8.24
+certifi==2018.10.15
 chardet==3.0.4
 circlator==1.5.5
 Click==7.0

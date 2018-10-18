@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Plasmids, PlasmidExtractor, Serotype, \
-    Univec, Virulence
+from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Virulence
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
 from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import accessoryFunctions.metadataprinter as metadataprinter
@@ -156,7 +155,7 @@ class RunAssemble(object):
         """
         Calculate the levels of contamination in the reads
         """
-        self.qualityobject.contamination_finder()
+        self.qualityobject.contamination_finder(report_path=self.reportpath)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmedcorrected(self):
@@ -261,10 +260,6 @@ class RunAssemble(object):
         self.run_gdcs()
         # Find genes of interest
         self.genesippr()
-        # Plasmid finding
-        self.plasmids()
-        # Plasmid extracting
-        self.plasmid_extractor()
         # Resistance finding - raw reads
         self.ressippr()
         # Resistance finding - assemblies
@@ -345,29 +340,6 @@ class RunAssemble(object):
                        logfile=self.logfile,
                        reportpath=self.reportpath)
         mob.mob_recon()
-        metadataprinter.MetadataPrinter(inputobject=self)
-        quit()
-
-    def plasmids(self):
-        """
-        Plasmid finding
-        """
-        Plasmids(args=self,
-                 pipelinecommit=self.commit,
-                 startingtime=self.starttime,
-                 scriptpath=self.homepath,
-                 analysistype='plasmidfinder',
-                 cutoff=0.8,
-                 pipeline=False,
-                 revbait=True)
-        metadataprinter.MetadataPrinter(inputobject=self)
-
-    def plasmid_extractor(self):
-        """
-        Extracts and types plasmid sequences
-        """
-        plasmids = PlasmidExtractor(inputobject=self)
-        plasmids.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def ressippr(self):

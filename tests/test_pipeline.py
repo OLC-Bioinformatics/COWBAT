@@ -219,12 +219,6 @@ def test_genesippr():
         assert sample.genesippr.results['VT1'] == '100.00'
 
 
-def test_plasmids():
-    method.plasmids()
-    for sample in method.runmetadata.samples:
-        assert float(sample.plasmidfinder.avgdepth['IncFIB(AP001918)_1__AP001918']) >= 98.66
-
-
 def test_ressippr():
     method.ressippr()
     for sample in method.runmetadata.samples:
@@ -267,10 +261,10 @@ def test_serosippr():
         assert sample.serosippr.o_set == ['O157']
 
 
-def test_vtyper():
-    method.vtyper()
+def test_legacy_vtyper():
+    method.legacy_vtyper()
     for sample in method.runmetadata.samples:
-        assert 'vtx1a' in sample.vtyper.profile
+        assert 'vtx2f' in sample.legacy_vtyper.toxinprofile
 
 
 def test_coregenome():

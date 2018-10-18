@@ -4,7 +4,6 @@ from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, mak
 from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import accessoryFunctions.metadataprinter as metadataprinter
 from sixteenS.sixteens_full import SixteenS as SixteensFull
-import spadespipeline.primer_finder_bbduk as vtyper
 import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
@@ -411,8 +410,6 @@ class RunAssemble(object):
         self.mlst()
         # Serotyping
         self.serosippr()
-        # Virulence typing
-        self.vtyper()
         # Assembly-based vtyper
         self.legacy_vtyper()
         # Core genome calculation
@@ -444,15 +441,6 @@ class RunAssemble(object):
                  analysistype='serosippr',
                  cutoff=0.90,
                  pipeline=True)
-        metadataprinter.MetadataPrinter(inputobject=self)
-
-    def vtyper(self):
-        """
-        Virulence typing
-        """
-        vtype = vtyper.PrimerFinder(args=self,
-                                    analysistype='vtyper')
-        vtype.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def legacy_vtyper(self):

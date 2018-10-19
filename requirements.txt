@@ -1,7 +1,7 @@
 atomicwrites==1.2.1
 attrs==18.2.0
 bio-assembly-refinement==0.5.1
-biopython==1.72
+biopython==1.70
 certifi==2018.10.15
 chardet==3.0.4
 circlator==1.5.5
@@ -26,7 +26,7 @@ numexpr==2.6.8
 numpy==1.15.0
 OLCTools==0.5.7
 olefile==0.46
-openpyxl==2.5.9
+openpyxl==2.4.0b1
 pandas==0.23.4
 Pillow==5.3.0
 pluggy==0.7.1

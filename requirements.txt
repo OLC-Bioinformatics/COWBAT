@@ -22,7 +22,7 @@ more-itertools==4.3.0
 msgpack==0.5.6
 numexpr==2.6.6
 numpy==1.15.2
-OLCTools==0.5.6
+OLCTools==0.5.7
 olefile==0.46
 openpyxl==2.4.0b1
 pandas==0.23.4

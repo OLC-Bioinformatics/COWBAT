@@ -23,7 +23,6 @@ from geneseekr.blast import BLAST
 import coreGenome.core as core
 import MASHsippr.mash as mash
 from argparse import ArgumentParser
-from psutil import virtual_memory
 import multiprocessing
 from time import time
 import subprocess
@@ -227,23 +226,14 @@ class RunAssemble(object):
         """
         Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
         """
-        # Determine the amount of physical memory in the system
-        mem = virtual_memory()
-        # If the total amount of memory is greater than 100GB (this could probably be lowered), run CLARK
-        if mem.total >= 100000000000:
-            # Run CLARK typing on the .fastq and .fasta files
-            automateCLARK.PipelineInit(inputobject=self)
-            automateCLARK.PipelineInit(inputobject=self,
-                                       extension='fastq')
-
-        else:
-            # Run CLARK typing on the .fastq and .fasta files
-            automateCLARK.PipelineInit(inputobject=self,
-                                       light=True)
-            automateCLARK.PipelineInit(inputobject=self,
-                                       extension='fastq',
-                                       light=True)
-        metadataprinter.MetadataPrinter(inputobject=self)
+        # Run CLARK typing on the .fastq and .fasta files
+        automateCLARK.PipelineInit(inputobject=self,
+                                   extension='fasta',
+                                   light=True
+                                   )
+        automateCLARK.PipelineInit(inputobject=self,
+                                   extension='fastq',
+                                   light=True)
 
     def agnostictyping(self):
         """

@@ -82,7 +82,7 @@ class Validate(object):
                 # If n50 can't be calculated because an data quality was too low for any assembly to be produced,
                 # it ends up showing up as ND. If that happens, check that that's what was supposed to happen.
                 if n50 == 'ND':
-                    if self.n50_ranges[row['SeqID']][0] != 'ND':
+                    if self.n50_ranges[row['SeqID']][0] != 'ND' and self.n50_ranges[row['SeqID']][0] != 0:
                         logging.warning('WARNING: Expected N50 did not match for {sample}. Found ND, but expected'
                                         ' {expected_n50}'
                                         .format(sample=row['SeqID'],
@@ -120,7 +120,10 @@ class Validate(object):
                                                          range_top=self.total_length_ranges[row['SeqID']][1]))
                     self.warning_flag = True
                 # Mean insert size
-                mean_ins = float(row['MeanInsertSize'])
+                try:
+                    mean_ins = float(row['MeanInsertSize'])
+                except ValueError:
+                    mean_ins = 0
                 if not self.mean_insert_size_ranges[row['SeqID']][0] <= mean_ins <= self.mean_insert_size_ranges[row['SeqID']][1]:
                     logging.warning('WARNING: Mean insert size for {sample} did not fall in expected range. '
                                     'Mean insert size was {mean_insert_size}. Expected range is from {range_bottom} to '
@@ -130,7 +133,10 @@ class Validate(object):
                                                          range_top=self.mean_insert_size_ranges[row['SeqID']][1]))
                     self.warning_flag = True
                 # Average coverage depth
-                avg_cov_depth = float(row['AverageCoverageDepth'])
+                try:
+                    avg_cov_depth = float(row['AverageCoverageDepth'])
+                except ValueError:
+                    avg_cov_depth = 0
                 if not self.avg_cov_depth_ranges[row['SeqID']][0] <= avg_cov_depth <= self.avg_cov_depth_ranges[row['SeqID']][1]:
                     logging.warning('WARNING: Average coverage depth for {sample} did not fall in expected range. '
                                     'Average coverage depth was {avg_cov_depth}. Expected range is from {range_b} to '
@@ -151,7 +157,10 @@ class Validate(object):
                                                        range_t=self.num_predicted_genes[row['SeqID']][1]))
                     self.warning_flag = True
                 # Number MASH matching hashes
-                matching_hashes = float(row['MASH_NumMatchingHashes'].split('/')[0])
+                try:
+                    matching_hashes = float(row['MASH_NumMatchingHashes'].split('/')[0])
+                except ValueError:
+                    matching_hashes = 0
                 if not self.mash_matching_hashes[row['SeqID']][0] <= matching_hashes <= \
                        self.mash_matching_hashes[row['SeqID']][1]:
                     logging.warning(
@@ -232,7 +241,7 @@ class Validate(object):
             '2014-SEQ-0933': 'Clean',
             '2014-SEQ-1049': 'Clean',
             '2015-SEQ-0423': 'Clean',
-            '2015-SEQ-0626': 'Clean',
+            '2015-SEQ-0626': 'Contaminated',
             '2015-SEQ-1361': 'Clean',
             '2017-HCLON-0380': 'Clean',
             '2017-SEQ-0905': 'Clean',
@@ -359,7 +368,7 @@ class Validate(object):
             '2017-HCLON-0380': [350, 400],
             '2017-SEQ-0905': [250, 275],
             '2017-SEQ-1501': [375, 425],
-            '2018-STH-0076': [350, 400]
+            '2018-STH-0076': [0, 400]
         }
         # These I can't see ever needing to change - we should have a very good idea of what depth things are.
         # Should raise a fairly major warning if this value is outside the expected ranges.
@@ -375,7 +384,7 @@ class Validate(object):
             '2017-HCLON-0380': [55, 75],
             '2017-SEQ-0905': [95, 115],
             '2017-SEQ-1501': [125, 145],
-            '2018-STH-0076': [1, 10]
+            '2018-STH-0076': [0, 10]
         }
         self.num_predicted_genes = {
             '2013-SEQ-0132': [6200, 6400],

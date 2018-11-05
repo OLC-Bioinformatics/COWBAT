@@ -25,10 +25,10 @@ import MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
 from time import time
-import subprocess
 import logging
 import os
 
+__version__ = '0.4.2'
 __author__ = 'adamkoziol'
 
 
@@ -274,13 +274,14 @@ class RunAssemble(object):
         """
         Run rMLST analyses
         """
-        MLSTSippr(args=self,
-                  pipelinecommit=self.commit,
-                  startingtime=self.starttime,
-                  scriptpath=self.homepath,
-                  analysistype='rMLST',
-                  cutoff=1.0,
-                  pipeline=True)
+        rmlst = MLSTSippr(args=self,
+                          pipelinecommit=self.commit,
+                          startingtime=self.starttime,
+                          scriptpath=self.homepath,
+                          analysistype='rMLST',
+                          pipeline=True,
+                          cutoff=1.0)
+        rmlst.runner()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def sixteens(self):
@@ -362,7 +363,8 @@ class RunAssemble(object):
         """
         prophages = Prophages(args=self,
                               analysistype='prophages',
-                              cutoff=cutoff)
+                              cutoff=cutoff,
+                              unique=True)
         prophages.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -372,7 +374,8 @@ class RunAssemble(object):
         """
         univec = Univec(args=self,
                         analysistype='univec',
-                        cutoff=80)
+                        cutoff=80,
+                        unique=True)
         univec.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -411,13 +414,14 @@ class RunAssemble(object):
         """
          MLST analyses
         """
-        MLSTSippr(args=self,
-                  pipelinecommit=self.commit,
-                  startingtime=self.starttime,
-                  scriptpath=self.homepath,
-                  analysistype='MLST',
-                  cutoff=1.0,
-                  pipeline=True)
+        mlst = MLSTSippr(args=self,
+                         pipelinecommit=self.commit,
+                         startingtime=self.starttime,
+                         scriptpath=self.homepath,
+                         analysistype='MLST',
+                         cutoff=1.0,
+                         pipeline=True)
+        mlst.runner()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def serosippr(self):
@@ -468,7 +472,7 @@ class RunAssemble(object):
         """
         SetupLogging()
         logging.info('Welcome to the CFIA de novo bacterial assembly pipeline {}'
-                     .format(args.commit.decode('utf-8')))
+                     .format(__version__))
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
         self.path = os.path.join(args.sequencepath)
@@ -493,7 +497,7 @@ class RunAssemble(object):
         self.reportpath = os.path.join(self.path, 'reports')
         assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
-        self.commit = args.commit.decode('utf-8')
+        self.commit = __version__
         self.homepath = args.homepath
         self.logfile = os.path.join(self.path, 'logfile')
         self.runinfo = str()
@@ -505,17 +509,12 @@ class RunAssemble(object):
 
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
-    # Get the current commit of the pipeline from git
     # Extract the path of the current script from the full path + file name
     homepath = os.path.split(os.path.abspath(__file__))[0]
-    # Find the commit of the script by running a command to change to the directory containing the script and run
-    # a git command to return the short version of the commit hash
-    commit = subprocess.Popen('cd {} && git tag | tail -n 1'.format(homepath),
-                              shell=True, stdout=subprocess.PIPE).communicate()[0].rstrip()
     # Parser for arguments
     parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
     parser.add_argument('-v', '--version',
-                        action='version', version='%(prog)s commit {}'.format(commit))
+                        action='version', version='%(prog)s commit {}'.format(__version__))
     parser.add_argument('-s', '--sequencepath',
                         required=True,
                         help='Path to folder containing sequencing reads')
@@ -545,7 +544,6 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
     arguments.startingtime = time()
     arguments.homepath = homepath
-    arguments.commit = commit
     # Run the pipeline
     pipeline = RunAssemble(arguments)
     pipeline.main()

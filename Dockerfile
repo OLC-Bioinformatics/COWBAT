@@ -1,7 +1,7 @@
 # Dockerfile for COWBAT
 FROM ubuntu:18.04
 
-MAINTAINER Dr. Adam G. Koziol <adam.koziol@inspection.gc.ca>
+MAINTAINER Dr. Adam G. Koziol <adam.koziol@canada.ca>
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -25,9 +25,9 @@ RUN bash /home/ubuntu/miniconda.sh -b -p /home/ubuntu/miniconda
 ENV PATH /home/ubuntu/miniconda/bin:$PATH
 RUN echo $PATH
 	    # && rm -rf miniconda.sh \
-RUN conda install -y python=3 \
-	    && conda update conda	
-
+RUN conda install -y python=3.6 && conda update conda	
+RUN conda config --add channels conda-forge
+RUN conda config --add channels bioconda
 # Add miniconda to the PATH
 # ENV PATH $HOME/miniconda/bin:$PATH
 
@@ -40,9 +40,14 @@ ENV PATH /home/ubuntu/COWBAT:$PATH
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /home/ubuntu/COWBAT
 RUN git fetch --tags
-RUN conda env create
+RUN conda env create -f environment.yml
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8
 
-#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py -s /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.2.1/databases"
+# Work-around to get MOB-suite dependencies to work
+USER root
+RUN ln -s /home/ubuntu/miniconda/envs/cowbat/bin/show-coords /usr/local/bin/show-coords
+USER ubuntu
+
+#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py -s /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.3.4/databases"

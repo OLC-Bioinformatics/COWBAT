@@ -199,7 +199,7 @@ class Validate(object):
         else:
             logging.info('All checks complete, no warnings encountered. COWBAT successfully validated! :D')
 
-    def __init__(self, run_folder):
+    def __init__(self, run_folder, assembly_typing):
         """
 
         :param run_folder:
@@ -211,6 +211,7 @@ class Validate(object):
         self.combined_metadata = os.path.join(self.run_folder, 'reports', 'combinedMetadata.csv')
         # Set a flag. If we make it through with no errors (flag is false) logging.info out a nice happy message.
         self.warning_flag = False
+        self.assembly = assembly_typing
         # Create dictionaries that show what answers should be (for categorical stuff like SamplePurity or Genus) or
         # have ranges of values (for things like N50 or number of contigs. These might vary somewhat, but broadly should
         # remain the same.
@@ -231,22 +232,6 @@ class Validate(object):
             '2017-SEQ-0905': 'Acinetobacter',
             '2017-SEQ-1501': 'Listeria',
             '2018-STH-0076': 'ND'
-        }
-        # This should also be able to stay the same, unless ConFindr gets very reworked or a new contamination detection
-        # tool comes out.
-        self.expected_contam = {
-            '2013-SEQ-0132': 'Clean',
-            '2014-SEQ-0136': 'Clean',
-            '2014-SEQ-0276': 'Clean',
-            '2014-SEQ-0933': 'Clean',
-            '2014-SEQ-1049': 'Clean',
-            '2015-SEQ-0423': 'Clean',
-            '2015-SEQ-0626': 'Contaminated',
-            '2015-SEQ-1361': 'Clean',
-            '2017-HCLON-0380': 'Clean',
-            '2017-SEQ-0905': 'Clean',
-            '2017-SEQ-1501': 'Clean',
-            '2018-STH-0076': 'Clean'
         }
         # I don't see any reason for these to change, barring us getting way better at somehow pulling rMLST out of
         # extremely low coverage assemblies
@@ -354,38 +339,6 @@ class Validate(object):
             '2017-SEQ-1501': [2900000, 3100000],
             '2018-STH-0076': [0, 10000]
         }
-        # These I can't see ever needing to change - we should have a very good idea of what depth things are.
-        # Should raise a fairly major warning if this value is outside the expected ranges.
-        self.mean_insert_size_ranges = {
-            '2013-SEQ-0132': [400, 450],
-            '2014-SEQ-0136': [325, 375],
-            '2014-SEQ-0276': [550, 600],
-            '2014-SEQ-0933': [300, 350],
-            '2014-SEQ-1049': [425, 475],
-            '2015-SEQ-0423': [375, 425],
-            '2015-SEQ-0626': [500, 550],
-            '2015-SEQ-1361': [400, 450],
-            '2017-HCLON-0380': [350, 400],
-            '2017-SEQ-0905': [250, 275],
-            '2017-SEQ-1501': [375, 425],
-            '2018-STH-0076': [0, 400]
-        }
-        # These I can't see ever needing to change - we should have a very good idea of what depth things are.
-        # Should raise a fairly major warning if this value is outside the expected ranges.
-        self.avg_cov_depth_ranges = {
-            '2013-SEQ-0132': [5, 20],
-            '2014-SEQ-0136': [30, 50],
-            '2014-SEQ-0276': [90, 110],
-            '2014-SEQ-0933': [140, 160],
-            '2014-SEQ-1049': [120, 140],
-            '2015-SEQ-0423': [1, 20],
-            '2015-SEQ-0626': [70, 90],
-            '2015-SEQ-1361': [140, 160],
-            '2017-HCLON-0380': [55, 75],
-            '2017-SEQ-0905': [95, 115],
-            '2017-SEQ-1501': [125, 145],
-            '2018-STH-0076': [0, 10]
-        }
         self.num_predicted_genes = {
             '2013-SEQ-0132': [6200, 6400],
             '2014-SEQ-0136': [3000, 3200],
@@ -400,20 +353,131 @@ class Validate(object):
             '2017-SEQ-1501': [2850, 3050],
             '2018-STH-0076': [0, 100]
         }
-        self.mash_matching_hashes = {
-            '2013-SEQ-0132': [900, 950],
-            '2014-SEQ-0136': [900, 950],
-            '2014-SEQ-0276': [835, 885],
-            '2014-SEQ-0933': [865, 915],
-            '2014-SEQ-1049': [900, 950],
-            '2015-SEQ-0423': [865, 915],
-            '2015-SEQ-0626': [350, 400],
-            '2015-SEQ-1361': [800, 850],
-            '2017-HCLON-0380': [675, 725],
-            '2017-SEQ-0905': [800, 850],
-            '2017-SEQ-1501': [900, 950],
-            '2018-STH-0076': [0, 50]
-        }
+        # These dictionaries look different depending on whether the assembly typing pipeline or COWBAT was used
+        if not self.assembly:
+            # This should also be able to stay the same, unless ConFindr gets very reworked or a new contamination
+            # detection tool comes out.
+            self.expected_contam = {
+                '2013-SEQ-0132': 'Clean',
+                '2014-SEQ-0136': 'Clean',
+                '2014-SEQ-0276': 'Clean',
+                '2014-SEQ-0933': 'Clean',
+                '2014-SEQ-1049': 'Clean',
+                '2015-SEQ-0423': 'Clean',
+                '2015-SEQ-0626': 'Contaminated',
+                '2015-SEQ-1361': 'Clean',
+                '2017-HCLON-0380': 'Clean',
+                '2017-SEQ-0905': 'Clean',
+                '2017-SEQ-1501': 'Clean',
+                '2018-STH-0076': 'Clean'
+            }
+            # These I can't see ever needing to change - we should have a very good idea of what depth things are.
+            # Should raise a fairly major warning if this value is outside the expected ranges.
+            self.mean_insert_size_ranges = {
+                '2013-SEQ-0132': [400, 450],
+                '2014-SEQ-0136': [325, 375],
+                '2014-SEQ-0276': [550, 600],
+                '2014-SEQ-0933': [300, 350],
+                '2014-SEQ-1049': [425, 475],
+                '2015-SEQ-0423': [375, 425],
+                '2015-SEQ-0626': [500, 550],
+                '2015-SEQ-1361': [400, 450],
+                '2017-HCLON-0380': [350, 400],
+                '2017-SEQ-0905': [250, 275],
+                '2017-SEQ-1501': [375, 425],
+                '2018-STH-0076': [0, 400]
+            }
+            # These I can't see ever needing to change - we should have a very good idea of what depth things are.
+            # Should raise a fairly major warning if this value is outside the expected ranges.
+            self.avg_cov_depth_ranges = {
+                '2013-SEQ-0132': [5, 20],
+                '2014-SEQ-0136': [30, 50],
+                '2014-SEQ-0276': [90, 110],
+                '2014-SEQ-0933': [140, 160],
+                '2014-SEQ-1049': [120, 140],
+                '2015-SEQ-0423': [1, 20],
+                '2015-SEQ-0626': [70, 90],
+                '2015-SEQ-1361': [140, 160],
+                '2017-HCLON-0380': [55, 75],
+                '2017-SEQ-0905': [95, 115],
+                '2017-SEQ-1501': [125, 145],
+                '2018-STH-0076': [0, 10]
+            }
+            self.mash_matching_hashes = {
+                '2013-SEQ-0132': [900, 950],
+                '2014-SEQ-0136': [900, 950],
+                '2014-SEQ-0276': [835, 885],
+                '2014-SEQ-0933': [865, 915],
+                '2014-SEQ-1049': [900, 950],
+                '2015-SEQ-0423': [865, 915],
+                '2015-SEQ-0626': [350, 400],
+                '2015-SEQ-1361': [800, 850],
+                '2017-HCLON-0380': [675, 725],
+                '2017-SEQ-0905': [800, 850],
+                '2017-SEQ-1501': [900, 950],
+                '2018-STH-0076': [0, 50]
+            }
+        else:
+            self.expected_contam = {
+                '2013-SEQ-0132': 'ND',
+                '2014-SEQ-0136': 'ND',
+                '2014-SEQ-0276': 'ND',
+                '2014-SEQ-0933': 'ND',
+                '2014-SEQ-1049': 'ND',
+                '2015-SEQ-0423': 'ND',
+                '2015-SEQ-0626': 'ND',
+                '2015-SEQ-1361': 'ND',
+                '2017-HCLON-0380': 'ND',
+                '2017-SEQ-0905': 'ND',
+                '2017-SEQ-1501': 'ND',
+                '2018-STH-0076': 'ND'
+            }
+            # These I can't see ever needing to change - we should have a very good idea of what depth things are.
+            # Should raise a fairly major warning if this value is outside the expected ranges.
+            self.mean_insert_size_ranges = {
+                '2013-SEQ-0132': [0, 0],
+                '2014-SEQ-0136': [0, 0],
+                '2014-SEQ-0276': [0, 0],
+                '2014-SEQ-0933': [0, 0],
+                '2014-SEQ-1049': [0, 0],
+                '2015-SEQ-0423': [0, 0],
+                '2015-SEQ-0626': [0, 0],
+                '2015-SEQ-1361': [0, 0],
+                '2017-HCLON-0380': [0, 0],
+                '2017-SEQ-0905': [0, 0],
+                '2017-SEQ-1501': [0, 0],
+                '2018-STH-0076': [0, 0]
+            }
+            # These I can't see ever needing to change - we should have a very good idea of what depth things are.
+            # Should raise a fairly major warning if this value is outside the expected ranges.
+            self.avg_cov_depth_ranges = {
+                '2013-SEQ-0132': [0, 0],
+                '2014-SEQ-0136': [0, 0],
+                '2014-SEQ-0276': [0, 0],
+                '2014-SEQ-0933': [0, 0],
+                '2014-SEQ-1049': [0, 0],
+                '2015-SEQ-0423': [0, 0],
+                '2015-SEQ-0626': [0, 0],
+                '2015-SEQ-1361': [0, 0],
+                '2017-HCLON-0380': [0, 0],
+                '2017-SEQ-0905': [0, 0],
+                '2017-SEQ-1501': [0, 0],
+                '2018-STH-0076': [0, 0]
+            }
+            self.mash_matching_hashes = {
+                '2013-SEQ-0132': [850, 950],
+                '2014-SEQ-0136': [900, 1000],
+                '2014-SEQ-0276': [900, 1000],
+                '2014-SEQ-0933': [900, 1000],
+                '2014-SEQ-1049': [900, 1000],
+                '2015-SEQ-0423': [800, 905],
+                '2015-SEQ-0626': [450, 550],
+                '2015-SEQ-1361': [900, 1000],
+                '2017-HCLON-0380': [725, 825],
+                '2017-SEQ-0905': [825, 925],
+                '2017-SEQ-1501': [900, 1000],
+                '2018-STH-0076': [0, 50]
+            }
 
 
 if __name__ == '__main__':
@@ -422,8 +486,13 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--run_folder',
                         required=True,
                         help='Provide the location of the folder containing the pipeline reports')
+    parser.add_argument('-a', '--assembly',
+                        action='store_true',
+                        default=False,
+                        help='The assembly typing pipeline was used to process the run, rather than full COWBAT')
     # Get the arguments into an object
     arguments = parser.parse_args()
     # Run the pipeline
-    validation = Validate(run_folder=arguments.run_folder)
+    validation = Validate(run_folder=arguments.run_folder,
+                          assembly_typing=arguments.assembly)
     validation.main()

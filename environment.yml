@@ -2,6 +2,7 @@ name: cowbat
 channels:
   - bioconda
   - conda-forge
+  - dranew
   - defaults
 dependencies:
   - amos=3.1.0=py36pl5.22.0_3
@@ -201,17 +202,20 @@ dependencies:
     - attrs==18.2.0
     - chardet==3.0.4
     - click==7.0
-    - confindr==0.4.3
+    - confindr==0.4.4
     - cycler==0.10.0
-    - geneseekr==0.2.0
+    - deepdiff==3.3.0
+    - geneseekr==0.2.3
     - genomeqaml==0.0.11
     - idna==2.7
     - interop==1.1.6
+    - jsonpickle==1.0
     - kiwisolver==1.0.1
     - matplotlib==3.0.0
     - more-itertools==4.3.0
     - msgpack==0.5.6
-    - olctools==0.5.9
+    - olcnastools==1.1.5
+    - olctools==0.6.0
     - pluggy==0.7.1
     - psutil==5.4.7
     - py==1.7.0
@@ -221,10 +225,11 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.0.90
+    - sipprverse==0.0.94
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23
+    - xlrd==1.1.0
     - xlsxwriter==1.1.1
 prefix: /home/adamkoziol/miniconda3/envs/cowbat
 

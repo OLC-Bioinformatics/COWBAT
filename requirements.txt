@@ -6,14 +6,16 @@ certifi==2018.10.15
 chardet==3.0.4
 circlator==1.5.5
 Click==7.0
-confindr==0.4.3
+-e git+https://github.com/lowandrew/ConFindr.git@0672e2daae32b1cdf6d0c76a651d4774d9c07495#egg=confindr
 cycler==0.10.0
+deepdiff==3.3.0
 et-xmlfile==1.0.1
-geneseekr==0.2.0
+-e git+https://github.com/OLC-Bioinformatics/GeneSeekr.git@72edb6f2e99c3c0eceb8ec1d9408ce81103ce516#egg=geneseekr
 GenomeQAML==0.0.11
 idna==2.7
 interop==1.1.6
 jdcal==1.4
+jsonpickle==1.0
 kiwisolver==1.0.1
 matplotlib==3.0.0
 mmtf-python==1.1.2
@@ -22,7 +24,8 @@ more-itertools==4.3.0
 msgpack==0.5.6
 numexpr==2.6.8
 numpy==1.15.2
-OLCTools==0.5.9
+olcnastools==1.1.5
+OLCTools==0.6.0
 olefile==0.46
 openpyxl==2.4.0b1
 pandas==0.23.4
@@ -44,10 +47,11 @@ requests==2.19.1
 scikit-learn==0.20.0
 scipy==1.1.0
 seaborn==0.9.0
-sipprverse==0.0.90
+sipprverse==0.0.94
 sistr-cmd==1.0.2
 six==1.11.0
 sklearn==0.0
 tables==3.4.4
 urllib3==1.23
+xlrd==1.1.0
 XlsxWriter==1.1.1

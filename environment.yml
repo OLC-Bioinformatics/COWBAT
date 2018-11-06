@@ -225,7 +225,7 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.0.94
+    - sipprverse==0.0.96
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23

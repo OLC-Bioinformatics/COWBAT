@@ -28,7 +28,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.4.2'
+__version__ = '0.4.3'
 __author__ = 'adamkoziol'
 
 

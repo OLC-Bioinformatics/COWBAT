@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 __author__ = 'adamkoziol'
 setup(
     name="COWBAT",
-    version="0.4.2",
+    version="0.4.3",
     include_package_data=True,
     license='MIT',
     author='Adam Koziol',

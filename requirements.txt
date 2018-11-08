@@ -10,7 +10,7 @@ confindr==0.4.6
 cycler==0.10.0
 deepdiff==3.3.0
 et-xmlfile==1.0.1
-geneseekr==0.2.3
+geneseekr==0.2.4
 GenomeQAML==0.0.11
 idna==2.7
 interop==1.1.6
@@ -25,7 +25,7 @@ msgpack==0.5.6
 numexpr==2.6.8
 numpy==1.15.2
 olcnastools==1.1.5
-OLCTools==0.6.1
+OLCTools==0.6.2
 olefile==0.46
 openpyxl==2.4.0b1
 pandas==0.23.4
@@ -47,7 +47,7 @@ requests==2.19.1
 scikit-learn==0.20.0
 scipy==1.1.0
 seaborn==0.9.0
-sipprverse==0.0.97
+sipprverse==0.0.98
 sistr-cmd==1.0.2
 six==1.11.0
 sklearn==0.0

@@ -205,7 +205,7 @@ dependencies:
     - confindr==0.4.6
     - cycler==0.10.0
     - deepdiff==3.3.0
-    - geneseekr==0.2.3
+    - geneseekr==0.2.4
     - genomeqaml==0.0.11
     - idna==2.7
     - interop==1.1.6
@@ -215,7 +215,7 @@ dependencies:
     - more-itertools==4.3.0
     - msgpack==0.5.6
     - olcnastools==1.1.5
-    - olctools==0.6.1
+    - olctools==0.6.2
     - pluggy==0.7.1
     - psutil==5.4.7
     - py==1.7.0
@@ -225,7 +225,7 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.0.97
+    - sipprverse==0.0.98
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23

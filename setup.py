@@ -3,11 +3,11 @@ from setuptools import setup, find_packages
 __author__ = 'adamkoziol'
 setup(
     name="COWBAT",
-    version="0.4.3",
+    version="0.4.4",
     include_package_data=True,
     license='MIT',
     author='Adam Koziol',
-    author_email='adam.koziol@inspection.gc.ca',
+    author_email='adam.koziol@canada.ca',
     description='CFIA OLC Workflow for Bacterial Assembly and Typing',
     url='https://github.com/OLC-Bioinformatics/COWBAT',
     long_description=open('README.md').read()

@@ -1,36 +1,22 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Virulence
-from accessoryFunctions.accessoryFunctions import filer, MetadataObject, GenObject, make_path, relative_symlink, SetupLogging, write_to_logfile
-from spadespipeline.createobject import ObjectCreation
-# from confindr_wrappers import mash as mash
+from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
 from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import accessoryFunctions.metadataprinter as metadataprinter
-from sixteenS.sixteens_full import SixteenS as SixteensFull
-import spadespipeline.runMetadata as runMetadata
-from spadespipeline.basicAssembly import Basic
-import spadespipeline.fastqmover as fastqmover
+from spadespipeline.typingclasses import Prophages, Univec
+from spadespipeline.createobject import ObjectCreation
 from spadespipeline.mobrecon import MobRecon
-import spadespipeline.compress as compress
+from metagenomefilter import automateCLARK
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
 import spadespipeline.quality as quality
-import spadespipeline.depth as depth
 import spadespipeline.sistr as sistr
-import spadespipeline.skesa as skesa
-import spadespipeline.phix as phix
-from MLSTsippr.mlst import GeneSippr as MLSTSippr
-from metagenomefilter import automateCLARK
-from genesippr.genesippr import GeneSippr
 from geneseekr.blast import BLAST
 import coreGenome.core as core
 import MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
-from glob import glob
 from time import time
-import subprocess
 import logging
-import click
 import os
 
 __version__ = '0.0.01'
@@ -196,7 +182,8 @@ class Typing(object):
         Find genes of interest
         """
         geneseekr = BLAST(args=self,
-                          analysistype='genesippr')
+                          analysistype='genesippr',
+                          cutoff=95)
         geneseekr.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -225,7 +212,6 @@ class Typing(object):
     def prophages(self):
         """
         Prophage detection
-        :param cutoff: cutoff value to be used in the analyses
         """
         prophages = Prophages(args=self,
                               analysistype='prophages',
@@ -339,10 +325,10 @@ class Typing(object):
             sample.genesippr.results = dict()
             try:
                 for gene, percentid in sample.genesippr.blastresults.items():
-                    if percentid > 80:
+                    if percentid > 95:
                         sample.genesippr.report_output.add(gene.split('_')[0])
             except AttributeError:
-                sample.genesippr.report_output = 'ND'
+                sample.genesippr.report_output = list()
             sample.genesippr.report_output = sorted(list(sample.genesippr.report_output))
         # Create a report
         reporter.Reporter(inputobject=self,

@@ -203,7 +203,7 @@ dependencies:
     - chardet==3.0.4
     - click==7.0
     - confindr==0.4.6
-    - cowbat==0.4.4
+    - cowbat==0.4.4.1
     - cycler==0.10.0
     - deepdiff==3.3.0
     - geneseekr==0.2.6

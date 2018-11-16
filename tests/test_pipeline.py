@@ -1,19 +1,16 @@
 #!/usr/bin/env python 3
 from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path
+from cowbat.assembly_pipeline import RunAssemble
 from spadespipeline import metadataReader
 from argparse import ArgumentParser
 import multiprocessing
 from time import time
 import pytest
 import shutil
-import sys
 import os
 
 testpath = os.path.abspath(os.path.dirname(__file__))
 scriptpath = os.path.join(testpath, '..')
-sys.path.append(scriptpath)
-from assembly_pipeline import RunAssemble
-
 __author__ = 'adamkoziol'
 
 

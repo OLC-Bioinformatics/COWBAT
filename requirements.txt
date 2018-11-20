@@ -7,7 +7,7 @@ chardet==3.0.4
 circlator==1.5.5
 Click==7.0
 confindr==0.4.6
-COWBAT==0.4.4.1
+COWBAT==0.4.4.2
 cycler==0.10.0
 deepdiff==3.3.0
 et-xmlfile==1.0.1

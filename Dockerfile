@@ -36,7 +36,7 @@ RUN pip install --upgrade pip
 
 # Install the pipeline
 WORKDIR /home/ubuntu/
-ENV PATH /home/ubuntu/COWBAT:$PATH
+ENV PATH /home/ubuntu/COWBAT/cowbat:$PATH
 RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
 WORKDIR /home/ubuntu/COWBAT
 RUN git fetch --tags

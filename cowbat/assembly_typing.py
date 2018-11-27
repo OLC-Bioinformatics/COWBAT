@@ -318,8 +318,8 @@ class Typing(object):
         for sample in self.runmetadata.samples:
             sample.confindr = GenObject()
             sample.mapping = GenObject()
-            sample.mapping.MeanInsertSize = 'ND'
-            sample.mapping.MeanCoveragedata = 'ND'
+            sample.mapping.MeanInsertSize = 0
+            sample.mapping.MeanCoveragedata = 0
             sample.mlst.results = sample.mlst.blastresults
             sample.genesippr.report_output = set()
             sample.genesippr.results = dict()

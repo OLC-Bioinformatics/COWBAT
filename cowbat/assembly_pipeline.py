@@ -28,7 +28,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.4.4.2'
+__version__ = '0.4.4.3'
 __author__ = 'adamkoziol'
 
 
@@ -391,7 +391,8 @@ class RunAssemble(object):
                         cutoff=0.95,
                         pipeline=False,
                         revbait=True)
-        vir.reporter()
+        if not os.path.isfile(os.path.join(self.reportpath, 'virulence.csv')):
+            vir.reporter()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def typing(self):

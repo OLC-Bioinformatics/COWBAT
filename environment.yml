@@ -203,10 +203,10 @@ dependencies:
     - chardet==3.0.4
     - click==7.0
     - confindr==0.4.6
-    - cowbat==0.4.4.2
+    - cowbat==0.4.4.3
     - cycler==0.10.0
     - deepdiff==3.3.0
-    - geneseekr==0.2.6
+    - geneseekr==0.2.7
     - genomeqaml==0.0.11
     - idna==2.7
     - interop==1.1.6
@@ -216,7 +216,7 @@ dependencies:
     - more-itertools==4.3.0
     - msgpack==0.5.6
     - olcnastools==1.1.5
-    - olctools==0.6.4
+    - olctools==0.6.5
     - pluggy==0.7.1
     - psutil==5.4.7
     - py==1.7.0
@@ -226,7 +226,7 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.2.10
+    - sipprverse==0.2.11
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23

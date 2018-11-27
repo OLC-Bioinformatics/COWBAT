@@ -7,11 +7,11 @@ chardet==3.0.4
 circlator==1.5.5
 Click==7.0
 confindr==0.4.6
-COWBAT==0.4.4.2
+COWBAT==0.4.4.3
 cycler==0.10.0
 deepdiff==3.3.0
 et-xmlfile==1.0.1
-geneseekr==0.2.6
+geneseekr==0.2.7
 GenomeQAML==0.0.11
 idna==2.7
 interop==1.1.6
@@ -26,7 +26,7 @@ msgpack==0.5.6
 numexpr==2.6.8
 numpy==1.15.4
 olcnastools==1.1.5
-OLCTools==0.6.4
+OLCTools==0.6.5
 olefile==0.46
 openpyxl==2.4.0b1
 pandas==0.23.4
@@ -48,7 +48,7 @@ requests==2.19.1
 scikit-learn==0.20.0
 scipy==1.1.0
 seaborn==0.9.0
-sipprverse==0.2.10
+sipprverse==0.2.11
 sistr-cmd==1.0.2
 six==1.11.0
 sklearn==0.0

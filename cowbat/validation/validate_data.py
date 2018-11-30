@@ -58,7 +58,7 @@ class Validate(object):
                                             sample=row['SeqID'],
                                             found_rmlst=row['rMLST_Result']))
                     self.warning_flag = True
-                # SISRE cgMLST
+                # SISTR cgMLST
                 if self.expected_sistr_cgmlst[row['SeqID']] != row['SISTR_serovar_cgMLST']:
                     logging.warning('WARNING: Expected SISTR_serovar_cgMLST to be {expected_cgmlst} for {sample}, '
                                     'but got SISTR_serovar_cgMLST {found_cgmlst}!'
@@ -76,7 +76,44 @@ class Validate(object):
                                                 sample=row['SeqID'],
                                                 found_vtyper=row['Legacy_Vtyper_Profile']))
                         self.warning_flag = True
-
+                # AMR
+                amr_items = row['AMR_Profile'].split(';')
+                for gene in self.expected_amr_profile[row['SeqID']]:
+                    gene_present = False
+                    for item in amr_items:
+                        if gene in item:
+                            gene_present = True
+                    if not gene_present:
+                        logging.warning(
+                            'WARNING: Expected AMR_Profile to be {expected_amr} for {sample}, '
+                            'but got AMR_Profile {found_amr}!'
+                            .format(expected_amr=self.expected_amr_profile[row['SeqID']],
+                                    sample=row['SeqID'],
+                                    found_amr=row['AMR_Profile']))
+                        self.warning_flag = True
+                # Plasmids
+                plasmid_items = row['PlasmidProfile'].split(';')
+                for plasmid in self.expected_plasmid_profile[row['SeqID']]:
+                    plasmid_present = False
+                    for observed_plasmid in plasmid_items:
+                        if plasmid in observed_plasmid:
+                            plasmid_present = True
+                    if not plasmid_present:
+                        logging.warning(
+                            'WARNING: Expected PlasmidProfile to be {expected_plasmid} for {sample}, '
+                            'but got PlasmidProfile {found_plasmid}!'
+                                .format(expected_plasmid=self.expected_plasmid_profile[row['SeqID']],
+                                        sample=row['SeqID'],
+                                        found_plasmid=row['PlasmidProfile']))
+                        self.warning_flag = True
+                # Escherichia coli serotyping
+                if self.expected_ecoli_serotype_profile[row['SeqID']] != row['E_coli_Serotype']:
+                    logging.warning('WARNING: Expected E_coli_Serotype to be {expected_serotype} for {sample}, '
+                                    'but got E_coli_Serotype {found_serotype}!'
+                                    .format(expected_serotype=self.expected_ecoli_serotype_profile[row['SeqID']],
+                                            sample=row['SeqID'],
+                                            found_serotype=row['E_coli_Serotype']))
+                    self.warning_flag = True
                 # Verify data that we allow ranges for (and also sometimes shows up as 0 or ND, depending on the column)
                 n50 = row['N50']
                 # If n50 can't be calculated because an data quality was too low for any assembly to be produced,
@@ -144,6 +181,16 @@ class Validate(object):
                                                        avg_cov_depth=avg_cov_depth,
                                                        range_b=self.avg_cov_depth_ranges[row['SeqID']][0],
                                                        range_t=self.avg_cov_depth_ranges[row['SeqID']][1]))
+                    self.warning_flag = True
+                # % GC
+                percent_gc = float(row['PercentGC'])
+                if not self.percent_gc[row['SeqID']][0] <= percent_gc <= self.percent_gc[row['SeqID']][1]:
+                    logging.warning('WARNING: PercentGC for {sample} did not fall in expected range. '
+                                    'PercentGC was {observed_gc}. Expected range is from {range_bottom} to '
+                                    '{range_top}'.format(sample=row['SeqID'],
+                                                         observed_gc=percent_gc,
+                                                         range_bottom=self.percent_gc[row['SeqID']][0],
+                                                         range_top=self.percent_gc[row['SeqID']][1]))
                     self.warning_flag = True
                 # Number of predicted genes
                 num_predicted_genes = float(row['TotalPredictedGenes'])
@@ -215,9 +262,6 @@ class Validate(object):
         # Create dictionaries that show what answers should be (for categorical stuff like SamplePurity or Genus) or
         # have ranges of values (for things like N50 or number of contigs. These might vary somewhat, but broadly should
         # remain the same.
-        # TODO: Add more things to check - maybe coverage depth, percent GC, AMR resistance, GeneSeekr profiles?
-        # Confer with Adam/Cathy about this.
-
         # I see no reason for genus predictions to end up changing - these should be good to stay the same forever.
         self.expected_genera = {
             '2013-SEQ-0132': 'Escherichia',
@@ -231,7 +275,9 @@ class Validate(object):
             '2017-HCLON-0380': 'Escherichia',
             '2017-SEQ-0905': 'Acinetobacter',
             '2017-SEQ-1501': 'Listeria',
-            '2018-STH-0076': 'ND'
+            '2018-STH-0076': 'ND',
+            '2016-SEQ-1221': 'Enterobacter',
+            '2018-SEQ-0843': 'Vibrio'
         }
         # I don't see any reason for these to change, barring us getting way better at somehow pulling rMLST out of
         # extremely low coverage assemblies
@@ -247,7 +293,9 @@ class Validate(object):
             '2017-HCLON-0380': '2011',
             '2017-SEQ-0905': '9659',
             '2017-SEQ-1501': '32448',
-            '2018-STH-0076': 'new'
+            '2018-STH-0076': 'new',
+            '2016-SEQ-1221': 'new',
+            '2018-SEQ-0843': '49463'
         }
         self.expected_sistr_cgmlst = {
             '2013-SEQ-0132': 'ND',
@@ -261,7 +309,9 @@ class Validate(object):
             '2017-HCLON-0380': 'ND',
             '2017-SEQ-0905': 'ND',
             '2017-SEQ-1501': 'ND',
-            '2018-STH-0076': 'ND'
+            '2018-STH-0076': 'ND',
+            '2016-SEQ-1221': 'ND',
+            '2018-SEQ-0843': 'ND'
         }
         self.expected_marker_genes = {
             '2013-SEQ-0132': ['uidA', 'VT2'],
@@ -275,7 +325,9 @@ class Validate(object):
             '2017-HCLON-0380': ['uidA'],
             '2017-SEQ-0905': ['ND'],
             '2017-SEQ-1501': ['hlyALm', 'IGS', 'inlJ'],
-            '2018-STH-0076': ['ND']
+            '2018-STH-0076': ['ND'],
+            '2016-SEQ-1221': ['ND'],
+            '2018-SEQ-0843': ['groEL', 'r72h', 'tlh', 'trh']
         }
         self.expected_vtyper_profile = {
             '2013-SEQ-0132': ['vtx2a'],
@@ -289,7 +341,62 @@ class Validate(object):
             '2017-HCLON-0380': ['ND'],
             '2017-SEQ-0905': ['ND'],
             '2017-SEQ-1501': ['ND'],
-            '2018-STH-0076': ['ND']
+            '2018-STH-0076': ['ND'],
+            '2016-SEQ-1221': ['ND'],
+            '2018-SEQ-0843': ['ND']
+        }
+        self.expected_amr_profile = {
+            '2013-SEQ-0132': ['aadA1', 'sul1', 'tet(A)'],
+            '2014-SEQ-0136': ['fosX'],
+            '2014-SEQ-0276': ['mdf(A)'],
+            '2014-SEQ-0933': ['fosX'],
+            '2014-SEQ-1049': ["aac(6')-Iaa"],
+            '2015-SEQ-0423': ["aac(6')-Iaa"],
+            '2015-SEQ-0626': ['ND'],
+            '2015-SEQ-1361': ['tet(B)', 'aadA1', 'dfrA1'],
+            '2017-HCLON-0380': ["aph(3'')-Ib", 'aph(6)-Id', 'sul2', 'blaCMY', 'mdf(A)'],
+            '2017-SEQ-0905': ['blaADC', 'blaOXA'],
+            '2017-SEQ-1501': ['fosX'],
+            '2018-STH-0076': ['ND'],
+            '2016-SEQ-1221': ['oqxA', 'oqxB', 'blaACT', 'blaIMI', 'fosA'],
+            '2018-SEQ-0843': ['tet(34)', 'tet(35)', 'blaCARB']
+        }
+        self.expected_plasmid_profile = {
+            '2013-SEQ-0132': ['1070', '1558', '30(ColRNDI_rep_cluster_1857)', '3422', '490', '795', '825',
+                              'novel_0(IncFIA)'],
+            '2014-SEQ-0136': ['novel_0(rep_cluster_102'],
+            '2014-SEQ-0276': ['14(ColRNDI_rep_cluster_1857)', '1558(ND)', '2911(ND)'],
+            '2014-SEQ-0933': ['novel_0(rep_cluster_110)'],
+            '2014-SEQ-1049': ['ND'],
+            '2015-SEQ-0423': ['4495(ND)', '4597(ND)'],
+            '2015-SEQ-0626': ['ND'],
+            '2015-SEQ-1361': ['novel_0(rep_cluster_1155)'],
+            '2017-HCLON-0380': ['1014(ND)', '2086(ND)', '284(ColRNDI_rep_cluster_1857)',
+                                '357(ColRNDI_rep_cluster_1987)', '469(rep_cluster_1778)', '476(ND)', '489(ND)',
+                                '511(ND)', '835(ND)', 'novel_0(ND)', 'novel_1(ColRNDI_rep_cluster_1994)',
+                                'novel_2(rep_cluster_1778', 'ColRNDI_rep_cluster_1291)',
+                                'novel_3(ColRNDI_rep_cluster_1885)'],
+            '2017-SEQ-0905': ['ND'],
+            '2017-SEQ-1501': ['242(rep_cluster_102)'],
+            '2018-STH-0076': ['ND'],
+            '2016-SEQ-1221': ['618(ND)', 'novel_0(IncFII)'],
+            '2018-SEQ-0843': ['ND']
+        }
+        self.expected_ecoli_serotype_profile = {
+            '2013-SEQ-0132': 'O-untypeable:H7 (100.0)',
+            '2014-SEQ-0136': 'ND',
+            '2014-SEQ-0276': 'O157 (100.0):H7 (100.0)',
+            '2014-SEQ-0933': 'ND',
+            '2014-SEQ-1049': 'ND',
+            '2015-SEQ-0423': 'ND',
+            '2015-SEQ-0626': 'ND',
+            '2015-SEQ-1361': 'ND',
+            '2017-HCLON-0380': 'O126 (100.0):H-untypeable',
+            '2017-SEQ-0905': 'ND',
+            '2017-SEQ-1501': 'ND',
+            '2018-STH-0076': 'ND',
+            '2016-SEQ-1221': 'ND',
+            '2018-SEQ-0843': 'ND'
         }
         # These N50 ranges are very generous - unless a new assembler that does way better than SKESA/SPAdes comes out,
         # I can't see a reason that they would need to be changed.
@@ -305,7 +412,9 @@ class Validate(object):
             '2017-HCLON-0380': [80000, 140000],
             '2017-SEQ-0905': [30000, 60000],
             '2017-SEQ-1501': [200000, 375000],
-            '2018-STH-0076': [0, 500]
+            '2018-STH-0076': [0, 500],
+            '2016-SEQ-1221': [225000, 300000],
+            '2018-SEQ-0843': [150000, 225000]
         }
         # These are in the same boat as N50 ranges. Barring a fairly revolutionary new assembler, should be broad enough
         # that they won't need to be changed.
@@ -321,7 +430,27 @@ class Validate(object):
             '2017-HCLON-0380': [150, 325],
             '2017-SEQ-0905': [140, 230],
             '2017-SEQ-1501': [15, 45],
-            '2018-STH-0076': [0, 50]
+            '2018-STH-0076': [0, 50],
+            '2016-SEQ-1221': [60, 85],
+            '2018-SEQ-0843': [50, 75]
+        }
+        # These are in the same boat as N50 ranges. Barring a fairly revolutionary new assembler, should be broad enough
+        # that they won't need to be changed.
+        self.percent_gc = {
+            '2013-SEQ-0132': [49, 51],
+            '2014-SEQ-0136': [37, 39],
+            '2014-SEQ-0276': [49, 51],
+            '2014-SEQ-0933': [37, 39],
+            '2014-SEQ-1049': [51, 53],
+            '2015-SEQ-0423': [51, 53],
+            '2015-SEQ-0626': [59, 61],
+            '2015-SEQ-1361': [39, 41],
+            '2017-HCLON-0380': [49, 51],
+            '2017-SEQ-0905': [38, 40],
+            '2017-SEQ-1501': [37, 39],
+            '2018-STH-0076': [0, 5],
+            '2016-SEQ-1221': [54, 56],
+            '2018-SEQ-0843': [44, 46]
         }
         # These I can't see ever needing to change - we should have a very good idea of what length things are.
         # Should raise a fairly major warning if range limits are ever exceeded.
@@ -337,7 +466,9 @@ class Validate(object):
             '2017-HCLON-0380': [5100000, 5500000],
             '2017-SEQ-0905': [3700000, 4100000],
             '2017-SEQ-1501': [2900000, 3100000],
-            '2018-STH-0076': [0, 10000]
+            '2018-STH-0076': [0, 10000],
+            '2016-SEQ-1221': [4600000, 4850000],
+            '2018-SEQ-0843': [5000000, 5250000]
         }
         self.num_predicted_genes = {
             '2013-SEQ-0132': [6200, 6400],
@@ -351,7 +482,9 @@ class Validate(object):
             '2017-HCLON-0380': [5050, 5250],
             '2017-SEQ-0905': [3600, 3800],
             '2017-SEQ-1501': [2850, 3050],
-            '2018-STH-0076': [0, 100]
+            '2018-STH-0076': [0, 100],
+            '2016-SEQ-1221': [4300, 4600],
+            '2018-SEQ-0843': [4500, 4700]
         }
         # These dictionaries look different depending on whether the assembly typing pipeline or COWBAT was used
         if not self.assembly:
@@ -369,7 +502,9 @@ class Validate(object):
                 '2017-HCLON-0380': 'Clean',
                 '2017-SEQ-0905': 'Clean',
                 '2017-SEQ-1501': 'Clean',
-                '2018-STH-0076': 'Clean'
+                '2018-STH-0076': 'Clean',
+                '2016-SEQ-1221': 'Clean',
+                '2018-SEQ-0843': 'Clean'
             }
             # These I can't see ever needing to change - we should have a very good idea of what depth things are.
             # Should raise a fairly major warning if this value is outside the expected ranges.
@@ -385,7 +520,9 @@ class Validate(object):
                 '2017-HCLON-0380': [350, 400],
                 '2017-SEQ-0905': [250, 275],
                 '2017-SEQ-1501': [375, 425],
-                '2018-STH-0076': [0, 400]
+                '2018-STH-0076': [0, 400],
+                '2016-SEQ-1221': [350, 400],
+                '2018-SEQ-0843': [372, 425]
             }
             # These I can't see ever needing to change - we should have a very good idea of what depth things are.
             # Should raise a fairly major warning if this value is outside the expected ranges.
@@ -401,21 +538,25 @@ class Validate(object):
                 '2017-HCLON-0380': [55, 75],
                 '2017-SEQ-0905': [95, 115],
                 '2017-SEQ-1501': [125, 145],
-                '2018-STH-0076': [0, 10]
+                '2018-STH-0076': [0, 10],
+                '2016-SEQ-1221': [135, 155],
+                '2018-SEQ-0843': [140, 160]
             }
             self.mash_matching_hashes = {
-                '2013-SEQ-0132': [900, 950],
-                '2014-SEQ-0136': [900, 950],
-                '2014-SEQ-0276': [835, 885],
-                '2014-SEQ-0933': [865, 915],
-                '2014-SEQ-1049': [900, 950],
-                '2015-SEQ-0423': [865, 915],
-                '2015-SEQ-0626': [350, 400],
-                '2015-SEQ-1361': [800, 850],
-                '2017-HCLON-0380': [675, 725],
-                '2017-SEQ-0905': [800, 850],
-                '2017-SEQ-1501': [900, 950],
-                '2018-STH-0076': [0, 50]
+                '2013-SEQ-0132': [875, 950],
+                '2014-SEQ-0136': [900, 975],
+                '2014-SEQ-0276': [850, 950],
+                '2014-SEQ-0933': [925, 995],
+                '2014-SEQ-1049': [950, 999],
+                '2015-SEQ-0423': [825, 915],
+                '2015-SEQ-0626': [350, 500],
+                '2015-SEQ-1361': [900, 975],
+                '2017-HCLON-0380': [700, 800],
+                '2017-SEQ-0905': [800, 900],
+                '2017-SEQ-1501': [900, 999],
+                '2018-STH-0076': [0, 50],
+                '2016-SEQ-1221': [800, 900],
+                '2018-SEQ-0843': [900, 999]
             }
         else:
             self.expected_contam = {
@@ -430,7 +571,9 @@ class Validate(object):
                 '2017-HCLON-0380': 'ND',
                 '2017-SEQ-0905': 'ND',
                 '2017-SEQ-1501': 'ND',
-                '2018-STH-0076': 'ND'
+                '2018-STH-0076': 'ND',
+                '2016-SEQ-1221': 'ND',
+                '2018-SEQ-0843': 'ND'
             }
             # These I can't see ever needing to change - we should have a very good idea of what depth things are.
             # Should raise a fairly major warning if this value is outside the expected ranges.
@@ -446,7 +589,9 @@ class Validate(object):
                 '2017-HCLON-0380': [0, 0],
                 '2017-SEQ-0905': [0, 0],
                 '2017-SEQ-1501': [0, 0],
-                '2018-STH-0076': [0, 0]
+                '2018-STH-0076': [0, 0],
+                '2016-SEQ-1221': [0, 0],
+                '2018-SEQ-0843': [0, 0]
             }
             # These I can't see ever needing to change - we should have a very good idea of what depth things are.
             # Should raise a fairly major warning if this value is outside the expected ranges.
@@ -462,7 +607,9 @@ class Validate(object):
                 '2017-HCLON-0380': [0, 0],
                 '2017-SEQ-0905': [0, 0],
                 '2017-SEQ-1501': [0, 0],
-                '2018-STH-0076': [0, 0]
+                '2018-STH-0076': [0, 0],
+                '2016-SEQ-1221': [0, 0],
+                '2018-SEQ-0843': [0, 0]
             }
             self.mash_matching_hashes = {
                 '2013-SEQ-0132': [850, 950],
@@ -476,7 +623,9 @@ class Validate(object):
                 '2017-HCLON-0380': [725, 825],
                 '2017-SEQ-0905': [825, 925],
                 '2017-SEQ-1501': [900, 1000],
-                '2018-STH-0076': [0, 50]
+                '2018-STH-0076': [0, 50],
+                '2016-SEQ-1221': [800, 900],
+                '2018-SEQ-0843': [900, 999]
             }
 
 

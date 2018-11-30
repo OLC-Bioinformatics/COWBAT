@@ -165,10 +165,10 @@ docker run -it --name cowbat --rm cowbat:latest /bin/bash -c &quot;source activa
 </code></pre>
 
 <h3 id="databases">Databases</h3>
-<p>Use the database_setup.py script included in the repository. This will download and set up all required databases.</p>
+<p>Use the database setup script included in OLCTools. This will download and set up all required databases.</p>
 <p>NOTE: If you want rMLST databases, you must contact Keith Jolley (keith.jolley@zoo.ox.ac.uk)
 for an account, and for the necessary keys.</p>
-<pre><code>python database_setup.py -d /PATH/TO/DESIRED/LOCATION 
+<pre><code>python -m databasesetup.database_setup -d /PATH/TO/DESIRED/LOCATION -c /PATH/TO/RMLST/CREDENTIALS
 </code></pre>
 
 <h3 id="testing">Testing</h3>

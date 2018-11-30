@@ -6,8 +6,8 @@ certifi==2018.10.15
 chardet==3.0.4
 circlator==1.5.5
 Click==7.0
-confindr==0.4.6
-COWBAT==0.4.4.3
+confindr==0.4.7
+COWBAT==0.4.4.5
 cycler==0.10.0
 deepdiff==3.3.0
 et-xmlfile==1.0.1
@@ -26,7 +26,7 @@ msgpack==0.5.6
 numexpr==2.6.8
 numpy==1.15.4
 olcnastools==1.1.5
-OLCTools==0.6.6
+-e git+https://github.com/lowandrew/OLCTools.git@d75189e54fac6c44ac80b87a3a5c6e0cea598870#egg=OLCTools
 olefile==0.46
 openpyxl==2.4.0b1
 pandas==0.23.4

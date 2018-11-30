@@ -202,8 +202,8 @@ dependencies:
     - attrs==18.2.0
     - chardet==3.0.4
     - click==7.0
-    - confindr==0.4.6
-    - cowbat==0.4.4.3
+    - confindr==0.4.7
+    - cowbat==0.4.4.5
     - cycler==0.10.0
     - deepdiff==3.3.0
     - geneseekr==0.2.7

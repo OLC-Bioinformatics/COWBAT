@@ -12,5 +12,7 @@ setup(
     author_email='adam.koziol@canada.ca',
     description='CFIA OLC Workflow for Bacterial Assembly and Typing',
     url='https://github.com/OLC-Bioinformatics/COWBAT',
-    long_description=open('README.md').read()
+    long_description=open('README.md').read(),
+    install_requires=['validator_helper',
+                      'olctools']
 )

@@ -49,7 +49,10 @@ docker run -it --name cowbat --rm cowbat:latest /bin/bash -c "source activate co
 Use the database setup script included in OLCTools. This will download and set up all required databases.
 
 NOTE: If you want rMLST databases, you must contact Keith Jolley (keith.jolley@zoo.ox.ac.uk)
-for an account, and for the necessary keys.
+for an account, and for the necessary keys. 
+
+IMPORTANT NOTE: The `-c` flag should be provided with the path to the directory where `secret.txt` is stored,
+not to the `secret.txt` itself.
 
 ```
 python -m databasesetup.database_setup -d /PATH/TO/DESIRED/LOCATION -c /PATH/TO/RMLST/CREDENTIALS

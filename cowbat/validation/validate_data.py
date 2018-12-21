@@ -50,7 +50,7 @@ if __name__ == '__main__':
     parser.add_argument('-r', '--reference_csv',
                         required=True,
                         help='Path to reference CSV with acceptable data.')
-    parser.add_argument('-r', '--test_csv',
+    parser.add_argument('-t', '--test_csv',
                         required=True,
                         help='Path to test CSV with data to be evaluated.')
     parser.add_argument('-a', '--assembly',

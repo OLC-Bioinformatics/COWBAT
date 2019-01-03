@@ -27,7 +27,6 @@ def validate_cowbat(reference_report, test_report, assembly_typer=False):
         column_list.append(validate.Column(name='InsertSizeSTD', column_type='Range', acceptable_range=50))
         column_list.append(validate.Column(name='AverageCoverageDepth', column_type='Range', acceptable_range=10))
         column_list.append(validate.Column(name='CoverageDepthSTD', column_type='Range', acceptable_range=10))
-        column_list.append(validate.Column(name='MASH_NumMatchingHashes', column_type='Range', acceptable_range=50))
 
     validator = validate.Validator(reference_csv=reference_report,
                                    test_csv=test_report,

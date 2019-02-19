@@ -102,7 +102,7 @@ dependencies:
   - cairo=1.14.12=h276e583_5
   - capnproto=0.6.1=hfc679d8_1
   - certifi=2018.10.15=py36_1000
-  - curl=7.61.0=h93b3f91_2
+  - curl
   - et_xmlfile=1.0.1=py36_0
   - expat=2.2.5=hfc679d8_2
   - fontconfig=2.13.1=h65d0f4c_0
@@ -118,7 +118,7 @@ dependencies:
   - icu=58.2=hfc679d8_0
   - jdcal=1.4=py_1
   - jpeg=9c=h470a237_1
-  - krb5=1.14.6=0
+  - krb5=1.16.2
   - libffi=3.2.1=hfc679d8_5
   - libgcc=7.2.0=h69d50b8_2
   - libgcc-ng=7.2.0=hdf63c60_3
@@ -154,7 +154,7 @@ dependencies:
   - python=3.6.6=h5001a0f_3
   - python-dateutil=2.7.3=py_0
   - pytz=2018.5=py_0
-  - r-base=3.5.1=h4fe35fd_1
+  - r-base=3.5.1
   - r-bh=1.66.0_1=r351_1
   - r-bitops=1.0_6=r351hc070d10_2
   - r-formatr=1.5=r351h6115d3f_1
@@ -192,7 +192,7 @@ dependencies:
   - xz=5.2.4=h470a237_1
   - zlib=1.2.11=h470a237_3
   - intel-openmp=2019.0=118
-  - libcurl=7.61.0=h1ad7b7a_0
+  - libcurl
   - mkl=2019.0=118
   - openjdk=8.0.152=h46b5887_1
   - pycurl=7.43.0.2=py36hb7f436b_0
@@ -202,7 +202,7 @@ dependencies:
     - attrs==18.2.0
     - chardet==3.0.4
     - click==7.0
-    - confindr==0.4.7
+    - confindr==0.5.1
     - cowbat==0.4.4.5
     - cycler==0.10.0
     - deepdiff==3.3.0

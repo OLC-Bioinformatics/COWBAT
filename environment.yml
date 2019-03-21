@@ -2,7 +2,6 @@ name: cowbat
 channels:
   - bioconda
   - conda-forge
-  - dranew
   - defaults
 dependencies:
   - amos=3.1.0=py36pl5.22.0_3
@@ -35,10 +34,11 @@ dependencies:
   - htslib=1.9=hc238db4_4
   - jellyfish=2.2.10=h2d50403_0
   - jemalloc=4.5.0=0
+  - kma=1.2.0=h84994c4_0
   - libdeflate=1.0=h470a237_0
   - mafft=7.407=0
   - mash=2.0=gsl2.2_2
-  - mob_suite=1.4.8=py36_0
+  - mob_suite=1.4.9.1=py_0
   - mummer=3.23=pl5.22.0_5
   - openpyxl=2.4.0=py36_0
   - perl-app-cpanminus=1.7043=pl5.22.0_0
@@ -121,7 +121,7 @@ dependencies:
   - krb5=1.16.2
   - libffi=3.2.1=hfc679d8_5
   - libgcc=7.2.0=h69d50b8_2
-  - libgcc-ng=7.2.0=hdf63c60_3
+  - libgcc-ng=7.3.0=hdf63c60_0
   - libgfortran=3.0.0=1
   - libgfortran-ng=7.2.0=hdf63c60_3
   - libiconv=1.15=h470a237_3
@@ -202,7 +202,7 @@ dependencies:
     - attrs==18.2.0
     - chardet==3.0.4
     - click==7.0
-    - confindr==0.5.1
+    - confindr==0.6.0
     - cowbat==0.4.4.5
     - cycler==0.10.0
     - deepdiff==3.3.0
@@ -216,7 +216,7 @@ dependencies:
     - more-itertools==4.3.0
     - msgpack==0.5.6
     - olcnastools==1.1.5
-    - olctools==0.6.6
+    - olctools==0.8.4
     - pluggy==0.7.1
     - psutil==5.4.7
     - py==1.7.0
@@ -226,11 +226,11 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.2.13
+    - sipprverse==0.2.22
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23
+    - validator-helper==0.0.6
     - xlrd==1.1.0
     - xlsxwriter==1.1.1
-prefix: /home/adamkoziol/miniconda3/envs/cowbat
-
+prefix: /home/ubuntu/miniconda/envs/cowbat

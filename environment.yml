@@ -35,6 +35,7 @@ dependencies:
   - htslib=1.9=hc238db4_4
   - jellyfish=2.2.10=h2d50403_0
   - jemalloc=4.5.0=0
+  - kma=1.2.0=h84994c4_0
   - libdeflate=1.0=h470a237_0
   - mafft=7.407=0
   - mash=2.0=gsl2.2_2
@@ -93,16 +94,16 @@ dependencies:
   - skesa=2.3.0=h4ef8376_0
   - spades=3.12.0=1
   - biopython=1.72=py36_0
-  - blas=1.1=openblas
+  - blas=2.4=openblas
   - blosc=1.14.4=hfc679d8_0
   - boost=1.67.0=py36h3e44d54_0
   - boost-cpp=1.67.0=h3a22d5f_0
   - bzip2=1.0.6=h470a237_2
-  - ca-certificates=2018.10.15=ha4d7672_0
+  - ca-certificates=2019.3.9=hecc5488_0
   - cairo=1.14.12=h276e583_5
   - capnproto=0.6.1=hfc679d8_1
-  - certifi=2018.10.15=py36_1000
-  - curl=7.61.0=h93b3f91_2
+  - certifi=2019.3.9=py36_0
+  - curl=7.64.1=hf8cf82a_0
   - et_xmlfile=1.0.1=py36_0
   - expat=2.2.5=hfc679d8_2
   - fontconfig=2.13.1=h65d0f4c_0
@@ -112,36 +113,42 @@ dependencies:
   - gmp=6.1.2=hfc679d8_0
   - gnutls=3.5.19=h2a4e5f8_1
   - graphite2=1.3.12=hfc679d8_1
-  - gsl=2.2.1=blas_openblashddceaf2_6
   - harfbuzz=1.9.0=h04dbb29_1
   - hdf5=1.10.3=hc401514_2
   - icu=58.2=hfc679d8_0
   - jdcal=1.4=py_1
   - jpeg=9c=h470a237_1
-  - krb5=1.14.6=0
+  - krb5=1.16.3=h05b26f9_1001
+  - libblas=3.8.0=4_openblas
+  - libcblas=3.8.0=4_openblas
+  - libcurl=7.64.1=hda55be3_0
+  - libedit=3.1.20170329=hf8c457e_1001
   - libffi=3.2.1=hfc679d8_5
   - libgcc=7.2.0=h69d50b8_2
-  - libgcc-ng=7.2.0=hdf63c60_3
   - libgfortran=3.0.0=1
   - libgfortran-ng=7.2.0=hdf63c60_3
   - libiconv=1.15=h470a237_3
+  - libidn2=2.1.1=h14c3975_0
+  - liblapack=3.8.0=4_openblas
+  - liblapacke=3.8.0=4_openblas
   - libpng=1.6.35=ha92aebf_2
-  - libssh2=1.8.0=h5b517e9_2
-  - libstdcxx-ng=7.2.0=hdf63c60_3
+  - libssh2=1.8.2=h22169c7_2
   - libtiff=4.0.9=he6b73bb_2
+  - libunistring=0.9.10=h14c3975_0
   - libuuid=2.32.1=h470a237_2
   - libxcb=1.13=h470a237_2
   - libxml2=2.9.8=h422b904_5
   - lzo=2.10=h470a237_0
+  - make=4.2.1=h14c3975_2004
   - mmtf-python=1.1.2=py_0
   - msgpack-python=0.5.6=py36h2d50403_3
   - ncurses=6.1=hfc679d8_1
   - nettle=3.3=0
   - numexpr=2.6.8=py36hf8a1672_0
-  - numpy=1.15.4=py36_blas_openblashb06ca3d_0
+  - numpy=1.16.2=py36h8b7e671_1
   - olefile=0.46=py_0
-  - openblas=0.3.3=ha44fe06_1
-  - openssl=1.0.2p=h470a237_1
+  - openblas=0.3.5=h9ac9557_1001
+  - openssl=1.1.1b=h14c3975_1
   - pandas=0.23.4=py36hf8a1672_0
   - pango=1.40.14=he752989_2
   - pcre=8.41=hfc679d8_3
@@ -151,10 +158,9 @@ dependencies:
   - pixman=0.34.0=h470a237_3
   - pthread-stubs=0.4=h470a237_1
   - pytables=3.4.4=py36h2392372_1
-  - python=3.6.6=h5001a0f_3
   - python-dateutil=2.7.3=py_0
   - pytz=2018.5=py_0
-  - r-base=3.5.1=h4fe35fd_1
+  - r-base=3.5.1=h391c2eb_5
   - r-bh=1.66.0_1=r351_1
   - r-bitops=1.0_6=r351hc070d10_2
   - r-formatr=1.5=r351h6115d3f_1
@@ -171,11 +177,12 @@ dependencies:
   - r-xml=3.98_1.16=r351hc070d10_0
   - readline=7.0=haf1bffa_1
   - reportlab=3.5.9=py36h77bcf2c_0
-  - scipy=1.1.0=py36_blas_openblashb06ca3d_202
+  - scipy=1.2.1=py36h09a28d5_1
   - setuptools=40.4.3=py36_0
   - six=1.11.0=py36_1001
   - sqlite=3.25.2=hb1c47c0_0
-  - tk=8.6.8=ha92aebf_0
+  - tk=8.6.9=h84994c4_1001
+  - wget=1.20.1=h90d6eec_0
   - wheel=0.32.1=py36_0
   - xorg-kbproto=1.0.7=h470a237_2
   - xorg-libice=1.0.9=h470a237_4
@@ -191,22 +198,27 @@ dependencies:
   - xorg-xproto=7.0.31=h470a237_7
   - xz=5.2.4=h470a237_1
   - zlib=1.2.11=h470a237_3
+  - _r-mutex=1.0.0=anacondar_1
+  - bwidget=1.9.11=1
+  - gsl=2.2.1=h0c605f7_3
   - intel-openmp=2019.0=118
-  - libcurl=7.61.0=h1ad7b7a_0
+  - libgcc-ng=8.2.0=hdf63c60_1
+  - libstdcxx-ng=8.2.0=hdf63c60_1
   - mkl=2019.0=118
   - openjdk=8.0.152=h46b5887_1
-  - pycurl=7.43.0.2=py36hb7f436b_0
-  - wget=1.19.5=h1ad7b7a_0
+  - pycurl=7.43.0.2=py36h1ba5d50_0
+  - python=3.6.7=h0371630_0
+  - tktable=2.10=h14c3975_0
   - pip:
     - atomicwrites==1.2.1
     - attrs==18.2.0
     - chardet==3.0.4
     - click==7.0
-    - confindr==0.4.7
+    - confindr==0.6.0
     - cowbat==0.4.4.5
     - cycler==0.10.0
     - deepdiff==3.3.0
-    - geneseekr==0.2.7
+    - geneseekr==0.3.3
     - genomeqaml==0.0.11
     - idna==2.7
     - interop==1.1.6
@@ -215,8 +227,9 @@ dependencies:
     - matplotlib==3.0.0
     - more-itertools==4.3.0
     - msgpack==0.5.6
+    - oauthlib==2.1.0
     - olcnastools==1.1.5
-    - olctools==0.6.6
+    - olctools==0.8.9
     - pluggy==0.7.1
     - psutil==5.4.7
     - py==1.7.0
@@ -226,10 +239,11 @@ dependencies:
     - requests==2.19.1
     - scikit-learn==0.20.0
     - seaborn==0.9.0
-    - sipprverse==0.2.13
+    - sipprverse==0.2.25
     - sklearn==0.0
     - tables==3.4.4
     - urllib3==1.23
+    - validator-helper==0.0.6
     - xlrd==1.1.0
     - xlsxwriter==1.1.1
 prefix: /home/adamkoziol/miniconda3/envs/cowbat

@@ -1,6 +1,14 @@
 # Compiled Python Files
 *.pyc
 
+# Docs
+site/
+
+# Access keys
+get/
+
+.idea/
+
 # Edited text files
 *~
 

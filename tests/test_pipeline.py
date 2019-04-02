@@ -289,8 +289,18 @@ def test_clear_reports(variables):
 def test_clear_assemblies(variables):
     shutil.rmtree(os.path.join(variables.sequencepath, 'BestAssemblies'))
 
+
 def test_clear_raw_assemblies(variables):
     shutil.rmtree(os.path.join(variables.sequencepath, 'raw_assemblies'))
+
+
+def test_clear_kma(variables):
+    targetpath = os.path.join(variables.referencefilepath, 'ConFindr', 'databases')
+    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.index.b'))
+    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.length.b'))
+    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.name'))
+    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.seq.b'))
+    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.comp.b'))
 
 
 def test_clear_logs(variables):

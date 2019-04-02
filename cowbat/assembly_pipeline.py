@@ -443,7 +443,8 @@ class RunAssemble(object):
         Legacy vtyper - uses ePCR
         """
         legacy_vtyper = LegacyVtyper(inputobject=self,
-                                     analysistype='legacy_vtyper')
+                                     analysistype='legacy_vtyper',
+                                     mismatches=2)
         legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(inputobject=self)
 

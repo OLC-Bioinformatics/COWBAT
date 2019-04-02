@@ -215,7 +215,7 @@ dependencies:
     - chardet==3.0.4
     - click==7.0
     - confindr==0.6.0
-    - cowbat==0.4.4.5
+    - cowbat==0.4.4.6
     - cycler==0.10.0
     - deepdiff==3.3.0
     - geneseekr==0.3.3

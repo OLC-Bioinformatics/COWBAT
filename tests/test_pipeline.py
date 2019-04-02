@@ -243,7 +243,7 @@ def test_univec():
 def test_virulence():
     method.virulence()
     for sample in method.runmetadata.samples:
-        assert sample.virulence.snplocations['stx1:3:M19437:3'] == [503]
+        assert sample.virulence.snplocations['stx1:3:M19437:3'] == [504]
 
 
 def test_mlst():

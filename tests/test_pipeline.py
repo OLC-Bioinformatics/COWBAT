@@ -14,9 +14,8 @@ scriptpath = os.path.join(testpath, '..')
 __author__ = 'adamkoziol'
 
 
-@pytest.fixture()
 def variables():
-    v = ArgumentParser()
+    v = MetadataObject()
     v.sequencepath = os.path.join(testpath, 'testdata')
     v.referencefilepath = os.path.join(v.sequencepath, 'databases')
     v.customsamplesheet = os.path.join(v.sequencepath, 'SampleSheet.csv')
@@ -32,32 +31,32 @@ def variables():
     return v
 
 
-@pytest.fixture()
-def method_init(variables):
-    method = RunAssemble(variables)
-    return method
+def method_init():
+    global var
+    var = variables()
+    method_obj = RunAssemble(var)
+    return method_obj
 
 
-@pytest.fixture()
-def read_metadata(variables):
-    metadata = metadataReader.MetadataReader(variables)
+def read_metadata():
+    metadata = metadataReader.MetadataReader()
     return metadata
 
 
-method = method_init(variables())
+method = method_init()
 
 
-def test_sistr(variables):
+def test_sistr():
     metadata = MetadataObject()
     method.runmetadata.samples = list()
-    fasta = os.path.join(variables.sequencepath, 'NC_003198.fasta')
+    fasta = os.path.join(var.sequencepath, 'NC_003198.fasta')
     metadata.name = os.path.split(fasta)[1].split('.')[0]
     # Initialise the general and run categories
     metadata.general = GenObject()
     metadata.run = GenObject()
     metadata.general.fastqfiles = list()
     # Set the destination folder
-    outputdir = os.path.join(variables.sequencepath, metadata.name)
+    outputdir = os.path.join(var.sequencepath, metadata.name)
     make_path(outputdir)
     # Add the output directory to the metadata
     metadata.general.outputdirectory = outputdir
@@ -80,12 +79,12 @@ def test_sistr(variables):
 
 def variable_update():
     global method
-    method = method_init(variables())
+    method = method_init()
 
 
-def test_basic_link(variables):
+def test_basic_link():
     method.helper()
-    assert os.path.islink(os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1.fastq.gz'))
+    assert os.path.islink(os.path.join(var.sequencepath, 'NC_002695', 'NC_002695_R1.fastq.gz'))
 
 
 def test_metadata():
@@ -119,9 +118,9 @@ def test_raw_fastqc_forward():
         assert size.st_size > 0
 
 
-def test_quality_trim(variables):
+def test_quality_trim():
     method.quality_trim()
-    outfile = os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed.fastq.gz')
+    outfile = os.path.join(var.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed.fastq.gz')
     size = os.stat(outfile)
     assert size.st_size > 0
 
@@ -134,9 +133,9 @@ def test_trimmed_fastqc():
         assert size.st_size > 0
 
 
-def test_error_correction(variables):
+def test_error_correction():
     method.error_correct()
-    assert os.path.isfile(os.path.join(variables.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed_corrected.fastq.gz'))
+    assert os.path.isfile(os.path.join(var.sequencepath, 'NC_002695', 'NC_002695_R1_trimmed_corrected.fastq.gz'))
 
 
 def test_confindr():
@@ -270,32 +269,32 @@ def test_coregenome():
         assert sample.coregenome.coreresults == '1/1'
 
 
-def test_clear_results(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'NC_002695'))
+def test_clear_results():
+    shutil.rmtree(os.path.join(var.sequencepath, 'NC_002695'))
 
 
-def test_clear_sistr(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'NC_003198'))
+def test_clear_sistr():
+    shutil.rmtree(os.path.join(var.sequencepath, 'NC_003198'))
 
 
-def test_clear_confindr(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'confindr'))
+def test_clear_confindr():
+    shutil.rmtree(os.path.join(var.sequencepath, 'confindr'))
 
 
-def test_clear_reports(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'reports'))
+def test_clear_reports():
+    shutil.rmtree(os.path.join(var.sequencepath, 'reports'))
 
 
-def test_clear_assemblies(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'BestAssemblies'))
+def test_clear_assemblies():
+    shutil.rmtree(os.path.join(var.sequencepath, 'BestAssemblies'))
 
 
-def test_clear_raw_assemblies(variables):
-    shutil.rmtree(os.path.join(variables.sequencepath, 'raw_assemblies'))
+def test_clear_raw_assemblies():
+    shutil.rmtree(os.path.join(var.sequencepath, 'raw_assemblies'))
 
 
-def test_clear_kma(variables):
-    targetpath = os.path.join(variables.referencefilepath, 'ConFindr', 'databases')
+def test_clear_kma():
+    targetpath = os.path.join(var.referencefilepath, 'ConFindr', 'databases')
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.index.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.length.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.name'))
@@ -303,6 +302,6 @@ def test_clear_kma(variables):
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.comp.b'))
 
 
-def test_clear_logs(variables):
-    os.remove(os.path.join(variables.sequencepath, 'logfile_err.txt'))
-    os.remove(os.path.join(variables.sequencepath, 'logfile_out.txt'))
+def test_clear_logs():
+    os.remove(os.path.join(var.sequencepath, 'logfile_err.txt'))
+    os.remove(os.path.join(var.sequencepath, 'logfile_out.txt'))

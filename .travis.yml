@@ -8,9 +8,11 @@ before_install:
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
   - conda update -q conda
-  - conda env create -f environment.yml
-  - source activate cowbat
+  - conda config --add channels dranew
+  - conda config --add channels conda-forge
+  - conda config --add channels bioconda
+  - conda install -c adamkoziol cowbat
   
 script:
-  - python -m pytest tests/test_imports.py
-  - python -m pytest tests/test_pipeline.py
+  - pytest tests/test_imports.py -s -vv
+  - pytest tests/test_pipeline.py -s -vv

@@ -1,0 +1,19 @@
+Strain,Gene,PercentIdentity,Genus,FoldCoverage
+2013-SEQ-0132,gi|631251361|ref|NR_112558.1| Escherichia coli strain JCM 1649,99.37,Escherichia,74.52
+2014-SEQ-0136,gi|636560745|ref|NR_116805.1| Listeria innocua strain ATCC 33090,99.67,Listeria,444.56
+2014-SEQ-0276,gi|631251361|ref|NR_112558.1| Escherichia coli strain JCM 1649,99.37,Escherichia,360.71
+2014-SEQ-0933,gi|636560745|ref|NR_116805.1| Listeria innocua strain ATCC 33090,99.67,Listeria,422.95
+2014-SEQ-1049,gi|636560066|ref|NR_116126.1| Salmonella enterica subsp. enterica serovar Typhimurium strain ATCC 13311,99.92,Salmonella,386.42
+2015-SEQ-0423,gi|444439484|ref|NR_074799.1| Salmonella enterica subsp. enterica serovar Typhi str. Ty2,99.67,Salmonella,68.02
+2015-SEQ-0626,gi|219857639|ref|NR_025228.1| Pseudomonas koreensis strain Ps 9-14,100.00,Pseudomonas,354.89
+2015-SEQ-1361,gi|559795346|ref|NR_104939.1| Moellerella wisconsensis strain 2896-78,99.80,Moellerella,383.50
+2017-HCLON-0380,gi|631251361|ref|NR_112558.1| Escherichia coli strain JCM 1649,99.91,Escherichia,339.37
+2017-SEQ-0905,gi|631252039|ref|NR_113237.1| Acinetobacter baumannii strain JCM 6841,99.93,Acinetobacter,414.70
+2017-SEQ-1501,gi|636560292|ref|NR_116352.1| Listeria marthii strain NR 9579,99.71,Listeria,440.05
+2018-STH-0076
+2016-SEQ-1221,gi|219856821|ref|NR_024640.1| Enterobacter asburiae strain JCM6051,99.65,Enterobacter,415.15
+2018-SEQ-0843,gi|659364618|ref|NR_121709.1| Vibrio alginolyticus strain NBRC 15630,99.87,Vibrio,402.81
+2018-LET-0007,gi|343201123|ref|NR_041834.1| Campylobacter jejuni strain NCTC 11351,99.78,Campylobacter,369.98
+2018-STH-0255,gi|636559466|ref|NR_115526.1| Bacillus cereus strain IAM 12605,99.87,Bacillus,404.22
+2014-SEQ-0335
+2019-SEQ-0183,gi|636560745|ref|NR_116805.1| Listeria innocua strain ATCC 33090,99.67,Listeria,372.79

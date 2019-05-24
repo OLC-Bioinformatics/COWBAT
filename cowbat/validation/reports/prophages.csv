@@ -1,0 +1,19 @@
+Strain,Gene,Host,PercentIdentity,PercentCovered,Contig,Location
+2013-SEQ-0132,
+2014-SEQ-0136,uid85_0.0,Listeria monocytogenes serotype 4b str. F2365,96.26,100.0,Contig_109_37.3827,680..10948
+2014-SEQ-0276,uid226_0.8,Escherichia coli O157:H7 str. Sakai,99.98,100.0,Contig_86_87.7399,274838..307203
+2014-SEQ-0933,uid85_0.0,Listeria monocytogenes serotype 4b str. F2365,96.24,100.0,Contig_17_164.943,398091..408359
+2014-SEQ-1049,
+2015-SEQ-0423,
+2015-SEQ-0626,
+2015-SEQ-1361,
+2017-HCLON-0380,
+2017-SEQ-0905,
+2017-SEQ-1501,uid85_0.0,Listeria monocytogenes serotype 4b str. F2365,96.1,100.0,Contig_30_157.805,386670..396938
+2018-STH-0076,
+2016-SEQ-1221,
+2018-SEQ-0843,
+2018-LET-0007,
+2018-STH-0255,
+2014-SEQ-0335,
+2019-SEQ-0183,uid85_0.0,Listeria monocytogenes serotype 4b str. F2365,97.97,100.0,Contig_44_91.8709,396391..406661

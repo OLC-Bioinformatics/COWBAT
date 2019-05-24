@@ -1,0 +1,19 @@
+Strain,ReferenceGenus,ReferenceFile,ReferenceGenomeMashDistance,Pvalue,NumMatchingHashes
+2013-SEQ-0132,Escherichia,Escherichia coli O157:H7 str. EC4076,0.00271444,0,895/1000
+2014-SEQ-0136,Listeria,Listeria monocytogenes,0.000956583,0,961/1000
+2014-SEQ-0276,Escherichia,Escherichia coli O157:H7 str. Sakai,0.00128842,0,948/1000
+2014-SEQ-0933,Listeria,Listeria monocytogenes,0.00058191,0,976/1000
+2014-SEQ-1049,Salmonella,Salmonella enterica subsp. enterica serovar Berta,7.15897e-05,0,997/1000
+2015-SEQ-0423,Salmonella,Salmonella enterica subsp. enterica serovar Infantis,0.00390583,0,854/1000
+2015-SEQ-0626,Pseudomonas,Pseudomonas sp. URIL14HWK12:I6,0.0214305,0,468/1000
+2015-SEQ-1361,Moellerella,Moellerella wisconsensis,0.000830728,0,966/1000
+2017-HCLON-0380,Escherichia,Escherichia coli O127:H27 str. C43/90,0.00638544,0,777/1000
+2017-SEQ-0905,Acinetobacter,Acinetobacter baumannii 118362,0.00328537,0,875/1000
+2017-SEQ-1501,Listeria,Listeria monocytogenes,2.38274e-05,0,999/1000
+2018-STH-0076,ND,ND,ND,ND,ND
+2016-SEQ-1221,Enterobacter,Enterobacter asburiae,0.00348975,0,868/1000
+2018-SEQ-0843,Vibrio,Vibrio parahaemolyticus,0.000167546,0,993/1000
+2018-LET-0007,Campylobacter,Campylobacter jejuni,0.0031121,0,881/1000
+2018-STH-0255,Bacillus,Bacillus cereus,0.00912584,0,703/1000
+2014-SEQ-0335,ND,ND,ND,ND,ND
+2019-SEQ-0183,Escherichia,Escherichia coli 9.0111,0.0264788,0,402/1000

@@ -8,6 +8,7 @@ import spadespipeline.runMetadata as runMetadata
 from spadespipeline.basicAssembly import Basic
 import spadespipeline.fastqmover as fastqmover
 from spadespipeline.mobrecon import MobRecon
+from spadespipeline.ec_typer import ECTyper
 import spadespipeline.compress as compress
 import spadespipeline.prodigal as prodigal
 import spadespipeline.reporter as reporter
@@ -26,9 +27,10 @@ from argparse import ArgumentParser
 import multiprocessing
 from time import time
 import logging
+import shutil
 import os
 
-__version__ = '0.4.4.5'
+__version__ = '0.5.0.0'
 __author__ = 'adamkoziol'
 
 
@@ -241,6 +243,8 @@ class RunAssemble(object):
         """
         # Run mash
         self.mash()
+        # run rMLST on assemblies
+        self.rmlst_assembled()
         # Run rMLST
         self.rmlst()
         # Run the 16S analyses
@@ -269,6 +273,26 @@ class RunAssemble(object):
         mash.Mash(inputobject=self,
                   analysistype='mash')
         metadataprinter.MetadataPrinter(inputobject=self)
+
+    def rmlst_assembled(self):
+        """
+        Run rMLST analyses on assemblies
+        """
+        rmlst = BLAST(args=self,
+                      analysistype='rmlst',
+                      cutoff=100)
+        rmlst.seekr()
+        metadataprinter.MetadataPrinter(inputobject=self)
+        # Move the .rmlst attribute to .rmlst_assembled, so the raw reads can use .rmlst
+        for sample in self.runmetadata.samples:
+            sample.rmlst_assembled = GenObject()
+            for key, value in sample.rmlst.datastore.items():
+                setattr(sample.rmlst_assembled, key, value)
+            sample.rmlst.datastore = {}
+        # In order to keep the raw read rMLST analyses from having issues with the .rmlst attribute already existing,
+        # copy the .rmlst attribute to .rmlst_assembled, and delete .rmlst from the object
+        shutil.move(src=os.path.join(self.reportpath, 'rmlst.csv'),
+                    dst=os.path.join(self.reportpath, 'rmlst_assembled.csv'))
 
     def rmlst(self):
         """
@@ -402,6 +426,8 @@ class RunAssemble(object):
         # Run modules and print metadata to file
         # MLST
         self.mlst()
+        # Assembly-based serotyping
+        self.ec_typer()
         # Serotyping
         self.serosippr()
         # Assembly-based vtyper
@@ -423,6 +449,18 @@ class RunAssemble(object):
                          cutoff=1.0,
                          pipeline=True)
         mlst.runner()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def ec_typer(self):
+        """
+        Assembly-based serotyping
+        """
+        ec = ECTyper(metadata=self.runmetadata,
+                     report_path=self.reportpath,
+                     assembly_path=os.path.join(self.path, 'raw_assemblies'),
+                     threads=self.cpus,
+                     logfile=self.logfile)
+        ec.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def serosippr(self):
@@ -463,8 +501,9 @@ class RunAssemble(object):
         """
         Sistr
         """
-        sistr.Sistr(inputobject=self,
-                    analysistype='sistr')
+        sistr_obj = sistr.Sistr(inputobject=self,
+                                analysistype='sistr')
+        sistr_obj.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def __init__(self, args):
@@ -473,20 +512,33 @@ class RunAssemble(object):
         :param args: list of arguments passed to the script
         """
         SetupLogging()
-        logging.info('Welcome to the CFIA de novo bacterial assembly pipeline {}'
-                     .format(__version__))
+        logging.info('Welcome to the CFIA de novo bacterial assembly pipeline {version}'
+                     .format(version=__version__))
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args
-        self.path = os.path.join(args.sequencepath)
-        self.reffilepath = os.path.join(args.referencefilepath)
+        if args.sequencepath.startswith('~'):
+            self.path = os.path.abspath(os.path.expanduser(os.path.join(args.sequencepath)))
+        else:
+            self.path = os.path.abspath(os.path.join(args.sequencepath))
+        self.sequencepath = self.path
+        if args.referencefilepath.startswith('~'):
+            self.reffilepath = os.path.expanduser(os.path.abspath(os.path.join(args.referencefilepath)))
+        else:
+            self.reffilepath = os.path.abspath(os.path.join(args.referencefilepath))
         self.numreads = args.numreads
         self.preprocess = args.preprocess
         # Define the start time
         self.starttime = args.startingtime
-        self.customsamplesheet = args.customsamplesheet
+        if args.customsamplesheet:
+            if args.customsamplesheet.startswith('~'):
+                self.customsamplesheet = os.path.expanduser(os.path.abspath(os.path.join(self.customsamplesheet)))
+            else:
+                self.customsamplesheet = os.path.abspath(os.path.join(args.customsamplesheet))
+        else:
+            self.customsamplesheet = args.customsamplesheet
         if self.customsamplesheet:
-            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {}'\
-                .format(self.customsamplesheet)
+            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {css}'\
+                .format(css=self.customsamplesheet)
         self.basicassembly = args.basicassembly
         if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
             self.basicassembly = True

@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from accessoryFunctions.accessoryFunctions import SetupLogging
+from olctools.accessoryFunctions.accessoryFunctions import SetupLogging
 from validator_helper import validate
 from argparse import ArgumentParser
 import logging

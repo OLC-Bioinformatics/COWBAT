@@ -1,11 +1,9 @@
 #!/usr/bin/env python 3
-from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path
+from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path
+from genemethods.assemblypipeline import metadataReader
 from cowbat.assembly_pipeline import RunAssemble
-from spadespipeline import metadataReader
-from argparse import ArgumentParser
 import multiprocessing
 from time import time
-import pytest
 import shutil
 import os
 

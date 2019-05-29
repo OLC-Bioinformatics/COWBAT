@@ -4,12 +4,12 @@ import os
 __author__ = 'adamkoziol'
 setup(
     name="COWBAT",
-    version="0.5.0.2",
+    version="0.5.0.4",
     include_package_data=True,
     packages=find_packages(),
     scripts=[os.path.join('cowbat', 'assembly_pipeline.py'),
              os.path.join('cowbat', 'assembly_typing.py'),
-             os.path.join('cowbat', 'validation/validate_data.py')
+             os.path.join('cowbat', 'validation', 'validate_cowbat.py')
              ],
     license='MIT',
     author='Adam Koziol',

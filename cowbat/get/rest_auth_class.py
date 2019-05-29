@@ -1,5 +1,5 @@
 #!/usr/bin/env python 3
-from accessoryFunctions.accessoryFunctions import printtime
+from olctools.accessoryFunctions.accessoryFunctions import printtime
 from rauth import OAuth1Session
 import multiprocessing
 import os

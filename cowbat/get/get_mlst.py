@@ -12,7 +12,7 @@ from argparse import ArgumentParser
 import xml.dom.minidom as xml
 import urllib.request as url
 from urllib.parse import urlparse
-from accessoryFunctions.accessoryFunctions import make_path
+from olctools.accessoryFunctions.accessoryFunctions import make_path
 import os
 
 '''

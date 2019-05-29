@@ -2,7 +2,7 @@
 from olctools.accessoryFunctions.accessoryFunctions import GenObject, MetadataObject, make_path, SetupLogging
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.assemblypipeline import fileprep, createobject
-from genewrappers.metagenomefilter import filtermetagenome
+from cowbat.metagenomefilter import filtermetagenome
 from argparse import ArgumentParser
 from shutil import move, which
 from click import progressbar

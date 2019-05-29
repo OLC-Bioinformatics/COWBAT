@@ -1,12 +1,13 @@
 #!/usr/bin/env python 3
-from accessoryFunctions.accessoryFunctions import printtime, make_path
+from olctools.accessoryFunctions.accessoryFunctions import printtime, make_path
+from cowbat.get import rest_auth_class
 from Bio import SeqIO
 from argparse import ArgumentParser
 from glob import glob
 import time
 import os
 
-from . import rest_auth_class
+
 __author__ = 'adamkoziol'
 
 

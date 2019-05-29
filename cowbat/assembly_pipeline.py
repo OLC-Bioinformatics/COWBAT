@@ -1,28 +1,28 @@
 #!/usr/bin/env python3
-from spadespipeline.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Virulence
-from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
-from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
-import accessoryFunctions.metadataprinter as metadataprinter
-from sixteenS.sixteens_full import SixteenS as SixteensFull
-import spadespipeline.runMetadata as runMetadata
-from spadespipeline.basicAssembly import Basic
-import spadespipeline.fastqmover as fastqmover
-from spadespipeline.mobrecon import MobRecon
-from spadespipeline.ec_typer import ECTyper
-import spadespipeline.compress as compress
-import spadespipeline.prodigal as prodigal
-import spadespipeline.reporter as reporter
-import spadespipeline.quality as quality
-import spadespipeline.depth as depth
-import spadespipeline.sistr as sistr
-import spadespipeline.skesa as skesa
-import spadespipeline.phix as phix
-from MLSTsippr.mlst import GeneSippr as MLSTSippr
-from metagenomefilter import automateCLARK
-from genesippr.genesippr import GeneSippr
-from geneseekr.blast import BLAST
-import coreGenome.core as core
-import MASHsippr.mash as mash
+from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
+from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Virulence
+from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
+import olctools.accessoryFunctions.metadataprinter as metadataprinter
+from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
+import genemethods.assemblypipeline.runMetadata as runMetadata
+from genemethods.assemblypipeline.basicAssembly import Basic
+import genemethods.assemblypipeline.fastqmover as fastqmover
+from genemethods.assemblypipeline.mobrecon import MobRecon
+from genemethods.assemblypipeline.ec_typer import ECTyper
+import genemethods.assemblypipeline.compress as compress
+import genemethods.assemblypipeline.prodigal as prodigal
+import genemethods.assemblypipeline.reporter as reporter
+import genemethods.assemblypipeline.quality as quality
+import genemethods.assemblypipeline.depth as depth
+import genemethods.assemblypipeline.sistr as sistr
+import genemethods.assemblypipeline.skesa as skesa
+import genemethods.assemblypipeline.phix as phix
+from genemethods.MLSTsippr.mlst import GeneSippr as MLSTSippr
+from cowbat.metagenomefilter import automateCLARK
+from genemethods.genesippr.genesippr import GeneSippr
+from genemethods.geneseekr.blast import BLAST
+import genemethods.coreGenome.core as core
+import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
 from time import time
@@ -549,6 +549,7 @@ class RunAssemble(object):
         make_path(self.path)
         assert os.path.isdir(self.path), 'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
         self.reportpath = os.path.join(self.path, 'reports')
+        make_path(self.reportpath)
         assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
             .format(self.reffilepath)
         self.commit = __version__

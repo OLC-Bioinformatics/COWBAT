@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-from accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
-from spadespipeline.legacy_vtyper import Vtyper as LegacyVtyper
-import accessoryFunctions.metadataprinter as metadataprinter
-from spadespipeline.typingclasses import Prophages, Univec
-from spadespipeline.createobject import ObjectCreation
-from spadespipeline.mobrecon import MobRecon
-from metagenomefilter import automateCLARK
-import spadespipeline.prodigal as prodigal
-import spadespipeline.reporter as reporter
-import spadespipeline.quality as quality
-import spadespipeline.sistr as sistr
-from geneseekr.blast import BLAST
-import coreGenome.core as core
-import MASHsippr.mash as mash
+from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
+from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
+import olctools.accessoryFunctions.metadataprinter as metadataprinter
+from genemethods.assemblypipeline.typingclasses import Prophages, Univec
+from genemethods.assemblypipeline.createobject import ObjectCreation
+from genemethods.assemblypipeline.mobrecon import MobRecon
+from cowbat.metagenomefilter import automateCLARK
+import genemethods.assemblypipeline.prodigal as prodigal
+import genemethods.assemblypipeline.reporter as reporter
+import genemethods.assemblypipeline.quality as quality
+import genemethods.assemblypipeline.sistr as sistr
+from genemethods.geneseekr.blast import BLAST
+import genemethods.coreGenome.core as core
+import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
 from time import time

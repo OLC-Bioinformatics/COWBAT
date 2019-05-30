@@ -11,7 +11,7 @@ before_install:
   - conda config --add channels dranew
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
-  - conda install -c adamkoziol cowbat
+  - conda install -c olcbioinformatics cowbat
   
 script:
   - pytest tests/test_imports.py -s -vv

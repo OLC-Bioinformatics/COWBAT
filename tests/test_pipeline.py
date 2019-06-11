@@ -192,7 +192,7 @@ def test_mash():
 def test_rmlst():
     method.rmlst()
     for sample in method.runmetadata.samples:
-        assert sample.rmlst.sequencetype == '2124'
+        assert sample.rmlst.sequencetype == ['2124']
 
 
 def test_sixteens():
@@ -244,9 +244,16 @@ def test_virulence():
 
 
 def test_mlst():
-    method.mlst()
+    method.mlst_assembled()
     for sample in method.runmetadata.samples:
-        assert sample.mlst.sequencetype == '11'
+        assert sample.mlst.sequencetype == ['11']
+
+
+def test_ec_typer():
+    method.ec_typer()
+    for sample in method.runmetadata.samples:
+        assert sample.ectyper.o_type == '-'
+        assert sample.ectyper.h_type == 'H7'
 
 
 def test_serosippr():

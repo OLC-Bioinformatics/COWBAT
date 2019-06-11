@@ -23,24 +23,13 @@ WORKDIR HOME
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /home/ubuntu/miniconda.sh
 RUN bash /home/ubuntu/miniconda.sh -b -p /home/ubuntu/miniconda
 ENV PATH /home/ubuntu/miniconda/bin:$PATH
-RUN echo $PATH
-	    # && rm -rf miniconda.sh \
-RUN conda install -y python=3.6 && conda update conda	
+RUN conda install -y python=3.6 && conda update conda
+RUN conda config --add channels dranew	
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
-# Add miniconda to the PATH
-# ENV PATH $HOME/miniconda/bin:$PATH
-
-# Upgrade pip
-RUN pip install --upgrade pip
 
 # Install the pipeline
-WORKDIR /home/ubuntu/
-ENV PATH /home/ubuntu/COWBAT/cowbat:$PATH
-RUN git clone https://github.com/OLC-Bioinformatics/COWBAT.git
-WORKDIR /home/ubuntu/COWBAT
-RUN git fetch --tags
-RUN conda env create -f environment.yml
+RUN conda install -c olcbioinformatics cowbat
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8

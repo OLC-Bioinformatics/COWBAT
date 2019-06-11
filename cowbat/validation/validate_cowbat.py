@@ -17,13 +17,14 @@ class ValidateCowbat(object):
         logging.info('Double validating combinedMetadata.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'combinedMetadata.csv'),
                              test_report=os.path.join(self.test_folder, 'combinedMetadata.csv'),
-                             columns_to_exclude=['SeqID', 'AssemblyDate'],
+                             columns_to_exclude=['SeqID', 'AssemblyDate', 'MASH_NumMatchingHashes', 'CoreGenesPresent',
+                                                 '16S_result'],
                              identifying_column='SeqID')
         # AMRSummary
         logging.info('Validating amr_summary.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'amr_summary.csv'),
                              test_report=os.path.join(self.test_folder, 'amr_summary.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Contig'],
                              identifying_column='Strain',
                              one_to_one=True)
         # ConFindr
@@ -42,7 +43,7 @@ class ValidateCowbat(object):
         logging.info('Validating Escherichia_core.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'Escherichia_core.csv'),
                              test_report=os.path.join(self.test_folder, 'Escherichia_core.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Genes Present/Total'],
                              identifying_column='Strain')
         # GDCS
         logging.info('Validating GDCS.csv')
@@ -66,7 +67,7 @@ class ValidateCowbat(object):
         logging.info('Validating mash.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'mash.csv'),
                              test_report=os.path.join(self.test_folder, 'mash.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'NumMatchingHashes', 'ReferenceGenomeMashDistance'],
                              identifying_column='Strain')
         # MLST Bacillus
         logging.info('Validating mlst_Bacillus.csv')
@@ -114,14 +115,14 @@ class ValidateCowbat(object):
         logging.info('Validating mob_recon_summary.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'mob_recon_summary.csv'),
                              test_report=os.path.join(self.test_folder, 'mob_recon_summary.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Contig'],
                              identifying_column='Strain',
                              one_to_one=True)
         # Prophages
         logging.info('Validating prophages.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'prophages.csv'),
                              test_report=os.path.join(self.test_folder, 'prophages.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Contig'],
                              identifying_column='Strain')
         # QAML report
         logging.info('Validating QAMLReport.csv')
@@ -167,13 +168,13 @@ class ValidateCowbat(object):
         logging.info('Validating sixteens_full.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'sixteens_full.csv'),
                              test_report=os.path.join(self.test_folder, 'sixteens_full.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Gene'],
                              identifying_column='Strain')
         # Univec
         logging.info('Validating univec.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'univec.csv'),
                              test_report=os.path.join(self.test_folder, 'univec.csv'),
-                             columns_to_exclude=['Strain'],
+                             columns_to_exclude=['Strain', 'Contig', 'Location'],
                              identifying_column='Strain',
                              resfinder=True)
         # Virulence
@@ -221,7 +222,8 @@ class ValidateCowbat(object):
         else:
             self.validate_pass = True
 
-    def validate_report(self, reference_report, test_report, columns_to_exclude, identifying_column, one_to_one=False,
+    @staticmethod
+    def validate_report(reference_report, test_report, columns_to_exclude, identifying_column, one_to_one=False,
                         resfinder=False, separator=','):
         columns = validate.find_all_columns(csv_file=test_report,
                                             columns_to_exclude=columns_to_exclude,

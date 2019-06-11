@@ -307,6 +307,16 @@ def test_clear_kma():
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.comp.b'))
 
 
+def test_clear_blastdb():
+    targetpath = os.path.join(var.referencefilepath, 'MLST', 'Escherichia')
+    os.remove(os.path.join(targetpath, 'combinedtargets.nhr'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.nin'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.nog'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.nsd'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.nsi'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.nsq'))
+
+
 def test_clear_logs():
     os.remove(os.path.join(var.sequencepath, 'logfile_err.txt'))
     os.remove(os.path.join(var.sequencepath, 'logfile_out.txt'))

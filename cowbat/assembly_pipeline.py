@@ -30,7 +30,7 @@ import logging
 import shutil
 import os
 
-__version__ = '0.5.0.0'
+__version__ = '0.5.0.5'
 __author__ = 'adamkoziol'
 
 
@@ -425,7 +425,7 @@ class RunAssemble(object):
         """
         # Run modules and print metadata to file
         # MLST
-        self.mlst()
+        self.mlst_assembled()
         # Assembly-based serotyping
         self.ec_typer()
         # Serotyping
@@ -437,18 +437,15 @@ class RunAssemble(object):
         # Sistr
         self.sistr()
 
-    def mlst(self):
+    def mlst_assembled(self):
         """
-         MLST analyses
+        Run rMLST analyses on assemblies
         """
-        mlst = MLSTSippr(args=self,
-                         pipelinecommit=self.commit,
-                         startingtime=self.starttime,
-                         scriptpath=self.homepath,
-                         analysistype='MLST',
-                         cutoff=1.0,
-                         pipeline=True)
-        mlst.runner()
+        mlst = BLAST(args=self,
+                     analysistype='mlst',
+                     cutoff=100,
+                     genus_specific=True)
+        mlst.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def ec_typer(self):

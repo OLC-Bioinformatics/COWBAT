@@ -1,4 +1,5 @@
-# Dockerfile for COWBAT
+#Dockerfile for COWBAT
+
 FROM ubuntu:18.04
 
 MAINTAINER Dr. Adam G. Koziol <adam.koziol@canada.ca>
@@ -39,4 +40,4 @@ USER root
 RUN ln -s /home/ubuntu/miniconda/envs/cowbat/bin/show-coords /usr/local/bin/show-coords
 USER ubuntu
 
-#CMD /bin/bash -c "source activate cowbat && assembly_pipeline.py -s /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.3.4/databases"
+#CMD /bin/bash -c "assembly_pipeline.py -s /mnt/scratch/test/sequences -r /mnt/nas/assemblydatabases/0.5.0.0"

@@ -4,7 +4,9 @@ from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages,
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
+import genemethods.assemblypipeline.assembly_evaluation as evaluate
 import genemethods.assemblypipeline.runMetadata as runMetadata
+from genemethods.MLSTsippr.mlst import GeneSippr as MLSTSippr
 from genemethods.assemblypipeline.basicAssembly import Basic
 import genemethods.assemblypipeline.fastqmover as fastqmover
 from genemethods.assemblypipeline.mobrecon import MobRecon
@@ -13,13 +15,11 @@ import genemethods.assemblypipeline.compress as compress
 import genemethods.assemblypipeline.prodigal as prodigal
 import genemethods.assemblypipeline.reporter as reporter
 import genemethods.assemblypipeline.quality as quality
-import genemethods.assemblypipeline.depth as depth
+from genemethods.genesippr.genesippr import GeneSippr
 import genemethods.assemblypipeline.sistr as sistr
 import genemethods.assemblypipeline.skesa as skesa
-import genemethods.assemblypipeline.phix as phix
-from genemethods.MLSTsippr.mlst import GeneSippr as MLSTSippr
 from cowbat.metagenomefilter import automateCLARK
-from genemethods.genesippr.genesippr import GeneSippr
+import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
 import genemethods.coreGenome.core as core
 import genemethods.MASHsippr.mash as mash
@@ -172,11 +172,7 @@ class RunAssemble(object):
         # Assemble genomes
         self.assemble_genomes()
         # Calculate assembly metrics on raw assemblies
-        self.quality_features(analysis='raw')
-        # Calculate the depth of coverage as well as other quality metrics using Qualimap
-        self.qualimap()
-        # Calculate assembly metrics on polished assemblies
-        self.quality_features(analysis='polished')
+        self.evaluate_assemblies()
         # ORF detection
         self.prodigal()
         # Assembly quality determination
@@ -192,22 +188,13 @@ class RunAssemble(object):
         assembly.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def qualimap(self):
+    def evaluate_assemblies(self):
         """
-        Calculate the depth of coverage as well as other quality metrics using Qualimap
+        Evaluate assemblies with Quast
         """
-        qual = depth.QualiMap(inputobject=self)
+        qual = evaluate.AssemblyEvaluation(inputobject=self)
         qual.main()
         metadataprinter.MetadataPrinter(inputobject=self)
-
-    def quality_features(self, analysis):
-        """
-        Extract features from assemblies such as total genome size, longest contig, and N50
-        """
-        features = quality.QualityFeatures(inputobject=self,
-                                           analysis=analysis)
-        features.main()
-        metadataprinter.MetadataPrinter(self)
 
     def prodigal(self):
         """

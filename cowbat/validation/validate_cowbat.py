@@ -18,7 +18,7 @@ class ValidateCowbat(object):
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'combinedMetadata.csv'),
                              test_report=os.path.join(self.test_folder, 'combinedMetadata.csv'),
                              columns_to_exclude=['SeqID', 'AssemblyDate', 'MASH_NumMatchingHashes', 'CoreGenesPresent',
-                                                 '16S_result'],
+                                                 '16S_result', 'PlasmidProfile', 'PipelineVersion'],
                              identifying_column='SeqID')
         # AMRSummary
         logging.info('Validating amr_summary.csv')

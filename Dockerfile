@@ -25,12 +25,12 @@ RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -
 RUN bash /home/ubuntu/miniconda.sh -b -p /home/ubuntu/miniconda
 ENV PATH /home/ubuntu/miniconda/bin:$PATH
 RUN conda install -y python=3.6 && conda update conda
-RUN conda config --add channels dranew	
+RUN conda config --add channels Freenome	
 RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
 
 # Install the pipeline
-RUN conda install -c olcbioinformatics cowbat
+RUN conda install -y -c olcbioinformatics cowbat
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8

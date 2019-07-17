@@ -20,7 +20,7 @@ ENV PATH /usr/sbin:$PATH
 RUN useradd -ms /bin/bash/ ubuntu
 USER ubuntu
 
-WORKDIR HOME
+WORKDIR /home/ubuntu
 RUN wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /home/ubuntu/miniconda.sh
 RUN bash /home/ubuntu/miniconda.sh -b -p /home/ubuntu/miniconda
 ENV PATH /home/ubuntu/miniconda/bin:$PATH

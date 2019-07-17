@@ -7,12 +7,13 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - hash -r
   - conda config --set always_yes yes --set changeps1 no
+  - conda install python=3.6.8
   - conda update -q conda
-  - conda config --add channels dranew
+  - conda config --add channels Freenome
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
   - conda install -c olcbioinformatics cowbat
   
 script:
-  - pytest tests/test_imports.py -s -vv
-  - pytest tests/test_pipeline.py -s -vv
+  - pytest tests/test_imports.py -s -vv --maxfail=1
+  - pytest tests/test_pipeline.py -s -vv --maxfail=1

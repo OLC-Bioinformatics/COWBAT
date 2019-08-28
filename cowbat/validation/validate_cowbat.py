@@ -115,9 +115,11 @@ class ValidateCowbat(object):
         logging.info('Validating mob_recon_summary.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'mob_recon_summary.csv'),
                              test_report=os.path.join(self.test_folder, 'mob_recon_summary.csv'),
-                             columns_to_exclude=['Strain', 'Contig'],
+                             columns_to_exclude=['Strain', 'Contig', 'Incompatibility', 'IncompatibilityAccession',
+                                                 'RelaxaseType'],
                              identifying_column='Strain',
-                             one_to_one=True)
+                             one_to_one=True,
+                             check_rows=False)
         # Prophages
         logging.info('Validating prophages.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'prophages.csv'),
@@ -199,7 +201,6 @@ class ValidateCowbat(object):
         column_list.append(validate.Column(name='GeneSeekr_Profile'))
         column_list.append(validate.Column(name='Vtyper_Profile'))
         column_list.append(validate.Column(name='AMR_Profile'))
-        column_list.append(validate.Column(name='PlasmidProfile'))
         column_list.append(validate.Column(name='TotalPredictedGenes', column_type='Range', acceptable_range=50))
         if not assembly_typer:
             column_list.append(validate.Column(name='SamplePurity'))
@@ -224,7 +225,7 @@ class ValidateCowbat(object):
 
     @staticmethod
     def validate_report(reference_report, test_report, columns_to_exclude, identifying_column, one_to_one=False,
-                        resfinder=False, separator=','):
+                        resfinder=False, separator=',', check_rows=True):
         columns = validate.find_all_columns(csv_file=test_report,
                                             columns_to_exclude=columns_to_exclude,
                                             separator=separator)
@@ -235,9 +236,9 @@ class ValidateCowbat(object):
                                              separator=separator)
         if resfinder or one_to_one:
             if one_to_one:
-                assert report_validate.check_resfinderesque_output(one_to_one=True) is True
+                assert report_validate.check_resfinderesque_output(one_to_one=True, check_rows=check_rows) is True
             else:
-                assert report_validate.check_resfinderesque_output() is True
+                assert report_validate.check_resfinderesque_output(check_rows=check_rows) is True
         else:
             assert report_validate.all_test_columns_in_ref_and_test() is True
             assert report_validate.same_columns_in_ref_and_test() is True

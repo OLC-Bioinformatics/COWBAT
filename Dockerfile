@@ -30,7 +30,7 @@ RUN conda config --add channels conda-forge
 RUN conda config --add channels bioconda
 
 # Install the pipeline
-RUN conda install -y -c olcbioinformatics cowbat
+RUN conda install -y -c olcbioinformatics cowbat=0.5.0.7
 
 # Set the language to use utf-8 encoding - encountered issues parsing accented characters in Mash database
 ENV LANG C.UTF-8

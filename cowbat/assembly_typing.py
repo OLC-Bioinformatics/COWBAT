@@ -2,7 +2,7 @@
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
-from genemethods.assemblypipeline.typingclasses import Prophages, Univec
+from genemethods.typingclasses.typingclasses import Prophages, Univec
 from genemethods.assemblypipeline.createobject import ObjectCreation
 from genemethods.assemblypipeline.mobrecon import MobRecon
 from cowbat.metagenomefilter import automateCLARK

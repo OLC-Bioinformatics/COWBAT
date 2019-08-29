@@ -10,7 +10,6 @@ before_install:
   - conda install python=3.6.8
   - conda update -q conda
   - conda config --add channels Freenome
-  - conda config --add channels kbessonov
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
   - conda install -y -c olcbioinformatics cowbat=0.5.0.8

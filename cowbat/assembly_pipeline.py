@@ -6,7 +6,6 @@ import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
 import genemethods.assemblypipeline.assembly_evaluation as evaluate
 import genemethods.assemblypipeline.runMetadata as runMetadata
-from genemethods.MLSTsippr.mlst import GeneSippr as MLSTSippr
 from genemethods.assemblypipeline.basicAssembly import Basic
 import genemethods.assemblypipeline.fastqmover as fastqmover
 from genemethods.assemblypipeline.mobrecon import MobRecon
@@ -16,21 +15,21 @@ import genemethods.assemblypipeline.prodigal as prodigal
 import genemethods.assemblypipeline.reporter as reporter
 import genemethods.assemblypipeline.quality as quality
 from genemethods.genesippr.genesippr import GeneSippr
+from genemethods.MLSTsippr.mlst import ReportParse
 import genemethods.assemblypipeline.sistr as sistr
 import genemethods.assemblypipeline.skesa as skesa
 from cowbat.metagenomefilter import automateCLARK
 import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
-import genemethods.coreGenome.core as core
+# import genemethods.coreGenome.core as core
 import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
 from time import time
 import logging
-import shutil
 import os
 
-__version__ = '0.5.0.8'
+__version__ = '0.5.0.9'
 __author__ = 'adamkoziol'
 
 
@@ -232,12 +231,8 @@ class RunAssemble(object):
         self.mash()
         # run rMLST on assemblies
         self.rmlst_assembled()
-        # Run rMLST
-        self.rmlst()
         # Run the 16S analyses
         self.sixteens()
-        # Calculate the presence/absence of GDCS
-        self.run_gdcs()
         # Find genes of interest
         self.genesippr()
         # Resistance finding - raw reads
@@ -265,34 +260,15 @@ class RunAssemble(object):
         """
         Run rMLST analyses on assemblies
         """
-        rmlst = BLAST(args=self,
-                      analysistype='rmlst',
-                      cutoff=100)
-        rmlst.seekr()
-        metadataprinter.MetadataPrinter(inputobject=self)
-        # Move the .rmlst attribute to .rmlst_assembled, so the raw reads can use .rmlst
-        for sample in self.runmetadata.samples:
-            sample.rmlst_assembled = GenObject()
-            for key, value in sample.rmlst.datastore.items():
-                setattr(sample.rmlst_assembled, key, value)
-            sample.rmlst.datastore = {}
-        # In order to keep the raw read rMLST analyses from having issues with the .rmlst attribute already existing,
-        # copy the .rmlst attribute to .rmlst_assembled, and delete .rmlst from the object
-        shutil.move(src=os.path.join(self.reportpath, 'rmlst.csv'),
-                    dst=os.path.join(self.reportpath, 'rmlst_assembled.csv'))
-
-    def rmlst(self):
-        """
-        Run rMLST analyses
-        """
-        rmlst = MLSTSippr(args=self,
-                          pipelinecommit=self.commit,
-                          startingtime=self.starttime,
-                          scriptpath=self.homepath,
-                          analysistype='rMLST',
-                          pipeline=True,
-                          cutoff=1.0)
-        rmlst.runner()
+        if not os.path.isfile(os.path.join(self.reportpath, 'rmlst.csv')):
+            rmlst = BLAST(args=self,
+                          analysistype='rmlst',
+                          cutoff=100)
+            rmlst.seekr()
+        else:
+            parse = ReportParse(args=self,
+                                analysistype='rmlst')
+            parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def sixteens(self):
@@ -305,15 +281,6 @@ class RunAssemble(object):
                      scriptpath=self.homepath,
                      analysistype='sixteens_full',
                      cutoff=0.95)
-        metadataprinter.MetadataPrinter(inputobject=self)
-
-    def run_gdcs(self):
-        """
-        Determine the presence of genomically-dispersed conserved sequences for Escherichia, Listeria, and Salmonella
-        strains
-        """
-        # Run the GDCS analysis
-        GDCS(inputobject=self)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def genesippr(self):
@@ -413,6 +380,8 @@ class RunAssemble(object):
         # Run modules and print metadata to file
         # MLST
         self.mlst_assembled()
+        # cgMLST
+        self.cgmlst_assembled()
         # Assembly-based serotyping
         self.ec_typer()
         # Serotyping
@@ -420,19 +389,43 @@ class RunAssemble(object):
         # Assembly-based vtyper
         self.legacy_vtyper()
         # Core genome calculation
-        self.coregenome()
+        # self.coregenome()
         # Sistr
         self.sistr()
+        # Calculate the presence/absence of GDCS
+        self.run_gdcs()
 
     def mlst_assembled(self):
         """
         Run rMLST analyses on assemblies
         """
-        mlst = BLAST(args=self,
-                     analysistype='mlst',
-                     cutoff=100,
-                     genus_specific=True)
-        mlst.seekr()
+        if not os.path.isfile(os.path.join(self.reportpath, 'mlst.csv')):
+
+            mlst = BLAST(args=self,
+                         analysistype='mlst',
+                         cutoff=100,
+                         genus_specific=True)
+            mlst.seekr()
+        else:
+            parse = ReportParse(args=self,
+                                analysistype='mlst')
+            parse.report_parse()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def cgmlst_assembled(self):
+        """
+        Run rMLST analyses on assemblies
+        """
+        if not os.path.isfile(os.path.join(self.reportpath, 'cgmlst.csv')):
+            cgmlst = BLAST(args=self,
+                           analysistype='cgMLST',
+                           cutoff=100,
+                           genus_specific=True)
+            cgmlst.seekr()
+        else:
+            parse = ReportParse(args=self,
+                                analysistype='cgmlst')
+            parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def ec_typer(self):
@@ -470,17 +463,6 @@ class RunAssemble(object):
         legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def coregenome(self):
-        """
-        Core genome calculation
-        """
-        coregen = core.CoreGenome(args=self,
-                                  analysistype='coregenome',
-                                  genus_specific=True)
-        coregen.seekr()
-        core.AnnotatedCore(inputobject=self)
-        metadataprinter.MetadataPrinter(inputobject=self)
-
     def sistr(self):
         """
         Sistr
@@ -488,6 +470,16 @@ class RunAssemble(object):
         sistr_obj = sistr.Sistr(inputobject=self,
                                 analysistype='sistr')
         sistr_obj.main()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def run_gdcs(self):
+        """
+        Determine the presence of genomically-dispersed conserved sequences (genes from MLST, rMLST, and cgMLST
+        analyses)
+        """
+        # Run the GDCS analysis
+        gdcs = GDCS(inputobject=self)
+        gdcs.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def __init__(self, args):

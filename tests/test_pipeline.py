@@ -179,7 +179,7 @@ def test_mash():
 
 
 def test_rmlst():
-    method.rmlst()
+    method.rmlst_assembled()
     for sample in method.runmetadata.samples:
         assert sample.rmlst.sequencetype == ['2124']
 
@@ -188,12 +188,6 @@ def test_sixteens():
     method.sixteens()
     for sample in method.runmetadata.samples:
         assert float(sample.sixteens_full.results['gi|219846739|ref|NR_026331.1|']) >= 99
-
-
-def test_gdcs():
-    method.run_gdcs()
-    for sample in method.runmetadata.samples:
-        assert os.path.isfile(sample.GDCS.baitedfastq)
 
 
 def test_genesippr():
@@ -238,6 +232,12 @@ def test_mlst():
         assert sample.mlst.sequencetype == ['11']
 
 
+def test_cgmlst():
+    method.cgmlst_assembled()
+    for sample in method.runmetadata.samples:
+        assert sample.cgmlst.sequencetype == ['105242']
+
+
 def test_ec_typer():
     method.ec_typer()
     for sample in method.runmetadata.samples:
@@ -257,10 +257,11 @@ def test_legacy_vtyper():
         assert 'vtx2f' in sample.legacy_vtyper.toxinprofile
 
 
-def test_coregenome():
-    method.coregenome()
+def test_gdcs():
+    method.run_gdcs()
     for sample in method.runmetadata.samples:
-        assert sample.coregenome.coreresults == '1/1'
+        if sample.name == 'NC_002695':
+            assert sample.gdcs.mlst_genes_present == 7
 
 
 def test_clear_results():
@@ -288,22 +289,12 @@ def test_clear_raw_assemblies():
 
 
 def test_clear_kma():
-    targetpath = os.path.join(var.referencefilepath, 'ConFindr', 'databases')
+    targetpath = os.path.join(var.referencefilepath, 'ConFindr')
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.index.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.length.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.name'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.seq.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.comp.b'))
-
-
-def test_clear_blastdb():
-    targetpath = os.path.join(var.referencefilepath, 'MLST', 'Escherichia')
-    os.remove(os.path.join(targetpath, 'combinedtargets.nhr'))
-    os.remove(os.path.join(targetpath, 'combinedtargets.nin'))
-    os.remove(os.path.join(targetpath, 'combinedtargets.nog'))
-    os.remove(os.path.join(targetpath, 'combinedtargets.nsd'))
-    os.remove(os.path.join(targetpath, 'combinedtargets.nsi'))
-    os.remove(os.path.join(targetpath, 'combinedtargets.nsq'))
 
 
 def test_clear_logs():

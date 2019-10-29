@@ -12,6 +12,7 @@ from genemethods.assemblypipeline.mobrecon import MobRecon
 from genemethods.assemblypipeline.ec_typer import ECTyper
 import genemethods.assemblypipeline.compress as compress
 import genemethods.assemblypipeline.prodigal as prodigal
+from genemethods.assemblypipeline.seqsero import SeqSero
 import genemethods.assemblypipeline.reporter as reporter
 import genemethods.assemblypipeline.quality as quality
 from genemethods.genesippr.genesippr import GeneSippr
@@ -21,7 +22,6 @@ import genemethods.assemblypipeline.skesa as skesa
 from cowbat.metagenomefilter import automateCLARK
 import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
-# import genemethods.coreGenome.core as core
 import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
@@ -29,7 +29,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.9'
+__version__ = '0.5.0.10'
 __author__ = 'adamkoziol'
 
 
@@ -386,6 +386,8 @@ class RunAssemble(object):
         self.ec_typer()
         # Serotyping
         self.serosippr()
+        # SeqSero
+        self.seqsero()
         # Assembly-based vtyper
         self.legacy_vtyper()
         # Core genome calculation
@@ -453,6 +455,14 @@ class RunAssemble(object):
                  pipeline=True)
         metadataprinter.MetadataPrinter(inputobject=self)
 
+    def seqsero(self):
+        """
+        Run SeqSero2 on Salmonella samples
+        """
+        seqsero = SeqSero(self)
+        seqsero.main()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
     def legacy_vtyper(self):
         """
         Legacy vtyper - uses ePCR
@@ -488,7 +498,7 @@ class RunAssemble(object):
         :param args: list of arguments passed to the script
         """
         SetupLogging()
-        logging.info('Welcome to the CFIA de novo bacterial assembly pipeline {version}'
+        logging.info('Welcome to the CFIA OLC Workflow for Bacterial Assembly and Typing (COWBAT) version {version}'
                      .format(version=__version__))
         # Define variables from the arguments - there may be a more streamlined way to do this
         self.args = args

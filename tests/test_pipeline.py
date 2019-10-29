@@ -44,7 +44,7 @@ def read_metadata():
 method = method_init()
 
 
-def test_sistr():
+def test_sistr_seqsero():
     metadata = MetadataObject()
     method.runmetadata.samples = list()
     fasta = os.path.join(var.sequencepath, 'NC_003198.fasta')
@@ -53,6 +53,9 @@ def test_sistr():
     metadata.general = GenObject()
     metadata.run = GenObject()
     metadata.general.fastqfiles = list()
+    metadata.general.trimmedcorrectedfastqfiles = [os.path.join(var.sequencepath,
+                                                                'seqsero',
+                                                                '2014-SEQ-1049_seqsero.fastq.gz')]
     # Set the destination folder
     outputdir = os.path.join(var.sequencepath, metadata.name)
     make_path(outputdir)
@@ -72,6 +75,9 @@ def test_sistr():
     method.sistr()
     for sample in method.runmetadata.samples:
         assert sample.sistr.cgmlst_genome_match == 'SAL_BA2732AA'
+    method.seqsero()
+    for sample in method.runmetadata.samples:
+        assert sample.seqsero.predicted_serotype == 'Berta'
     variable_update()
 
 

@@ -29,7 +29,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.10'
+__version__ = '0.5.0.11'
 __author__ = 'adamkoziol'
 
 
@@ -54,7 +54,8 @@ class RunAssemble(object):
         # Create a report
         reporter.Reporter(self)
         # Compress or remove all large, temporary files created by the pipeline
-        compress.Compress(self)
+        if not self.debug:
+            compress.Compress(self)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def helper(self):
@@ -96,7 +97,8 @@ class RunAssemble(object):
         """
         # Validate that the FASTQ files are in the proper format, and that there are no issues e.g. different numbers
         # of forward and reverse reads, read length longer than quality score length, proper extension
-        self.fastq_validate()
+        if not self.debug:
+            self.fastq_validate()
         # Run FastQC on the unprocessed fastq files
         self.fastqc_raw()
         # Perform quality trimming and FastQC on the trimmed files
@@ -497,7 +499,8 @@ class RunAssemble(object):
         Initialises the variables required for this class
         :param args: list of arguments passed to the script
         """
-        SetupLogging()
+        self.debug = args.debug
+        SetupLogging(self.debug)
         logging.info('Welcome to the CFIA OLC Workflow for Bacterial Assembly and Typing (COWBAT) version {version}'
                      .format(version=__version__))
         # Define variables from the arguments - there may be a more streamlined way to do this
@@ -581,6 +584,10 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Performs quality trimming and error correction only. Does not assemble the trimmed + '
                              'corrected reads')
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help='Enable debug mode for the pipeline (skip FASTQ validation, and file deletion. Enable '
+                             'debug-level messages if they exist)')
     # Get the arguments into an object
     arguments = parser.parse_args()
     arguments.startingtime = time()

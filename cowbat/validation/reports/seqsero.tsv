@@ -1,0 +1,20 @@
+Strain	O_antigen_prediction	H1_antigen_prediction	H2_antigen_prediction	Predicted_subspecies	Predicted_antigenic_profile	Predicted_serotype	Note
+2013-SEQ-0132	
+2014-SEQ-0136	
+2014-SEQ-0276	
+2014-SEQ-0933	
+2014-SEQ-1049	9	f,g,t	-	I	9:f,g,t:-	Berta	
+2015-SEQ-0423	7	r	1,5	I	7:r:1,5	Infantis	
+2015-SEQ-0626	
+2015-SEQ-1361	
+2017-HCLON-0380	
+2017-SEQ-0905	
+2017-SEQ-1501	
+2016-SEQ-1221	
+2018-SEQ-0843	
+2018-LET-0007	
+2018-STH-0255	
+2014-SEQ-0335	
+2019-SEQ-0183	
+NC_003198_NC_003197_0_1_50_HS25	9	d	1,2	I	9:d:1,2	9:d:1,2	This predicted serotype is not in the Kauffman-White scheme. Co-existence of multiple serotypes detected, indicating potential inter-serotype contamination. See 'Extracted_antigen_alleles.fasta' for detected serotype determinant alleles.
+2019-CAL-0091	

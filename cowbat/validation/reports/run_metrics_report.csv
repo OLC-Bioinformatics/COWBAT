@@ -1,0 +1,2 @@
+RunName,SequencingDate,Analyst,ClusterDensity,PercentOverQ30,NumberofClustersPF,PercentReadsPhiX,ErrorRate, LengthForwardRead,LengthReverseRead,Flowcell,MachineName
+assembly_pipeline,2018-10-05,validator,1438 +/- 14,65.19,43156,1.87,2.75,301,301,000000000-C6CTR,M05722,

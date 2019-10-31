@@ -10,10 +10,11 @@ Strain,ReferenceGenus,ReferenceFile,ReferenceGenomeMashDistance,Pvalue,NumMatchi
 2017-HCLON-0380,Escherichia,Escherichia coli O127:H27 str. C43/90,0.00900687,0,706/1000
 2017-SEQ-0905,Acinetobacter,Acinetobacter baumannii 118362,0.00442466,0,837/1000
 2017-SEQ-1501,Listeria,Listeria monocytogenes,0.00162709,0,935/1000
-2018-STH-0076,ND,ND,ND,ND,ND
 2016-SEQ-1221,Enterobacter,Enterobacter asburiae,0.0055427,0,802/1000
 2018-SEQ-0843,Vibrio,Vibrio parahaemolyticus,0.00229842,0,910/1000
 2018-LET-0007,Campylobacter,Campylobacter jejuni,0.00433199,0,840/1000
 2018-STH-0255,Bacillus,Bacillus cereus,0.0101459,0,678/1000
 2014-SEQ-0335,ND,ND,ND,ND,ND
 2019-SEQ-0183,Escherichia,Escherichia coli,0.0269907,0,396/1000
+NC_003198_NC_003197_0_1_50_HS25,Salmonella,Salmonella enterica subsp. enterica serovar Typhi,0.00489536,0,822/1000
+2019-CAL-0091,Cronobacter,Cronobacter sakazakii,0.0123533,0,628/1000

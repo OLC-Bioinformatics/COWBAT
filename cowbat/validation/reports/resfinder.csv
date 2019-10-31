@@ -8,7 +8,7 @@ Strain,Resistance,Gene,Allele,Accession,PercentIdentity,Length,FoldCoverage
 2013-SEQ-0132,aminoglycoside,aadA22,1,AM261837,97.47,792,17.30
 2013-SEQ-0132,aminoglycoside,aadA24,1,AM711129,93.33,780,13.84
 2013-SEQ-0132,aminoglycoside,aadA8b,1,AY139603,92.55,792,17.53
-2013-SEQ-0132,aminoglycoside,ant(3'')-Ia,1,X02340,99.59,968,19.34
+2013-SEQ-0132,aminoglycoside,ant(3'')-Ia,1,X02340,99.59,968,19.30
 2013-SEQ-0132,tetracycline,tet(A),4,AJ517790,100.00,1200,15.77
 2014-SEQ-0136,fosfomycin,fosX,2,AL591981,97.26,402,22.54
 2014-SEQ-0276,macrolide,mdf(A),1,Y08743,98.54,1233,90.98
@@ -38,10 +38,9 @@ Strain,Resistance,Gene,Allele,Accession,PercentIdentity,Length,FoldCoverage
 2017-SEQ-0905,beta-lactam,blaADC,1,EF016355,96.44,1151,76.95
 2017-SEQ-0905,beta-lactam,blaOXA,1,DQ519086,100.00,825,69.46
 2017-SEQ-1501,fosfomycin,fosX,2,AL591981,98.76,402,94.28
-2018-STH-0076
 2016-SEQ-1221,beta-lactam,blaACT,1,JN848330,98.08,1146,147.16
 2016-SEQ-1221,beta-lactam,blaCMG,1,AY265892,90.99,1050,135.67
-2016-SEQ-1221,beta-lactam,blaIMI,1,GU015024,99.77,879,291.05
+2016-SEQ-1221,beta-lactam,blaIMI,1,GU015024,99.77,879,291.09
 2016-SEQ-1221,beta-lactam,blaMIR,1,AY743435,92.15,1146,146.56
 2016-SEQ-1221,beta-lactam,blaNMC,1,AJ536087,96.81,879,298.58
 2016-SEQ-1221,fosfomycin,fosA2,1,EU487198,92.96,426,160.35
@@ -61,3 +60,6 @@ Strain,Resistance,Gene,Allele,Accession,PercentIdentity,Length,FoldCoverage
 2014-SEQ-0335
 2019-SEQ-0183,fosfomycin,fosX,2,AL591981,92.79,401,81.89
 2019-SEQ-0183,macrolide,mdf(A),1,Y08743,98.38,1233,10.77
+NC_003198_NC_003197_0_1_50_HS25,aminoglycoside,aac(6')-Iaa,1,NC_003197,97.26,438,58.48
+2019-CAL-0091,fosfomycin,fos,2,FN543093,88.48,408,29.58
+2019-CAL-0091,colistin,mcr-9,1,NZ_NAAN01000063.1,100.00,1620,122.89

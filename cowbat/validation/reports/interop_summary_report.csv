@@ -1,0 +1,34 @@
+# Version: v3.0.35-src
+assembly_pipeline
+Level          ,Yield          ,Projected Yield,Aligned        ,Error Rate     ,Intensity C1   ,%>=Q30         
+Read 1         ,8.42           ,8.42           ,1.89           ,1.81           ,244            ,75.19          
+Read 2 (I)     ,0.20           ,0.20           ,0.00           ,nan            ,40             ,93.83          
+Read 3 (I)     ,0.20           ,0.20           ,0.00           ,nan            ,473            ,92.95          
+Read 4         ,8.42           ,8.42           ,1.85           ,3.70           ,226            ,53.88          
+Non-indexed    ,16.84          ,16.84          ,1.87           ,2.75           ,235            ,64.54          
+Total          ,17.23          ,17.23          ,1.87           ,2.75           ,246            ,65.19          
+
+
+Read 1
+Lane           ,Surface        ,Tiles          ,Density        ,Cluster PF     ,Legacy Phasing/Prephasing Rate,Phasing  slope/offset,Prephasing slope/offset,Reads          ,Reads PF       ,%>=Q30         ,Yield          ,Cycles Error   ,Aligned        ,Error          ,Error (35)     ,Error (75)     ,Error (100)    ,Intensity C1   
+1              ,-              ,38             ,1438 +/- 14    ,86.15 +/- 1.09 ,10.120 / 13.732,nan / nan      ,nan / nan      ,32.58          ,28.06          ,75.19          ,8.42           ,300            ,1.89 +/- 0.11  ,1.81 +/- 0.12  ,0.16 +/- 0.12  ,0.23 +/- 0.09  ,0.32 +/- 0.15  ,244 +/- 17     
+1              ,1              ,19             ,1448 +/- 6     ,85.37 +/- 0.88 ,9.934 / 14.349 ,nan / nan      ,nan / nan      ,16.29          ,13.91          ,73.61          ,4.17           ,-              ,1.91 +/- 0.11  ,1.82 +/- 0.11  ,0.14 +/- 0.03  ,0.25 +/- 0.10  ,0.30 +/- 0.08  ,257 +/- 14     
+1              ,2              ,19             ,1428 +/- 12    ,86.92 +/- 0.64 ,10.305 / 13.114,nan / nan      ,nan / nan      ,16.28          ,14.16          ,76.75          ,4.25           ,-              ,1.87 +/- 0.10  ,1.79 +/- 0.14  ,0.18 +/- 0.17  ,0.21 +/- 0.08  ,0.35 +/- 0.20  ,232 +/- 9      
+Read 2 (I)
+Lane           ,Surface        ,Tiles          ,Density        ,Cluster PF     ,Legacy Phasing/Prephasing Rate,Phasing  slope/offset,Prephasing slope/offset,Reads          ,Reads PF       ,%>=Q30         ,Yield          ,Cycles Error   ,Aligned        ,Error          ,Error (35)     ,Error (75)     ,Error (100)    ,Intensity C1   
+1              ,-              ,38             ,1438 +/- 14    ,86.15 +/- 1.09 ,0.000 / 0.000  ,nan / nan      ,nan / nan      ,32.58          ,28.06          ,93.83          ,0.20           ,0              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,40 +/- 2       
+1              ,1              ,19             ,1448 +/- 6     ,85.37 +/- 0.88 ,nan / nan      ,nan / nan      ,nan / nan      ,16.29          ,13.91          ,93.85          ,0.10           ,-              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,42 +/- 1       
+1              ,2              ,19             ,1428 +/- 12    ,86.92 +/- 0.64 ,nan / nan      ,nan / nan      ,nan / nan      ,16.28          ,14.16          ,93.81          ,0.10           ,-              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,38 +/- 1       
+Read 3 (I)
+Lane           ,Surface        ,Tiles          ,Density        ,Cluster PF     ,Legacy Phasing/Prephasing Rate,Phasing  slope/offset,Prephasing slope/offset,Reads          ,Reads PF       ,%>=Q30         ,Yield          ,Cycles Error   ,Aligned        ,Error          ,Error (35)     ,Error (75)     ,Error (100)    ,Intensity C1   
+1              ,-              ,38             ,1438 +/- 14    ,86.15 +/- 1.09 ,0.000 / 0.000  ,nan / nan      ,nan / nan      ,32.58          ,28.06          ,92.95          ,0.20           ,0              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,473 +/- 41     
+1              ,1              ,19             ,1448 +/- 6     ,85.37 +/- 0.88 ,nan / nan      ,nan / nan      ,nan / nan      ,16.29          ,13.91          ,92.95          ,0.10           ,-              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,505 +/- 21     
+1              ,2              ,19             ,1428 +/- 12    ,86.92 +/- 0.64 ,nan / nan      ,nan / nan      ,nan / nan      ,16.28          ,14.16          ,92.95          ,0.10           ,-              ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,nan +/- nan    ,440 +/- 30     
+Read 4
+Lane           ,Surface        ,Tiles          ,Density        ,Cluster PF     ,Legacy Phasing/Prephasing Rate,Phasing  slope/offset,Prephasing slope/offset,Reads          ,Reads PF       ,%>=Q30         ,Yield          ,Cycles Error   ,Aligned        ,Error          ,Error (35)     ,Error (75)     ,Error (100)    ,Intensity C1   
+1              ,-              ,38             ,1438 +/- 14    ,86.15 +/- 1.09 ,14.513 / 16.378,nan / nan      ,nan / nan      ,32.58          ,28.06          ,53.88          ,8.42           ,300            ,1.85 +/- 0.10  ,3.70 +/- 0.27  ,0.20 +/- 0.02  ,0.29 +/- 0.03  ,0.39 +/- 0.14  ,226 +/- 22     
+1              ,1              ,19             ,1448 +/- 6     ,85.37 +/- 0.88 ,14.303 / 16.984,nan / nan      ,nan / nan      ,16.29          ,13.91          ,54.01          ,4.17           ,-              ,1.87 +/- 0.11  ,3.65 +/- 0.20  ,0.19 +/- 0.01  ,0.28 +/- 0.03  ,0.35 +/- 0.04  ,244 +/- 9      
+1              ,2              ,19             ,1428 +/- 12    ,86.92 +/- 0.64 ,14.724 / 15.771,nan / nan      ,nan / nan      ,16.28          ,14.16          ,53.75          ,4.25           ,-              ,1.83 +/- 0.10  ,3.75 +/- 0.32  ,0.20 +/- 0.02  ,0.30 +/- 0.03  ,0.43 +/- 0.19  ,207 +/- 13     
+Extracted: 618
+Called: 618
+Scored: 618

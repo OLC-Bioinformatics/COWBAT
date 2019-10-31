@@ -1,4 +1,4 @@
-Strain,MASHGenus,CC,Lineage,PredictedSerogroup,SequenceType,Matches,abcZ,bglA,cat,dapE,dat,ldh,lhkA,
-2014-SEQ-0136,Listeria,CC121,II,IIa,121,7,7,6,8,8,6,37,1,
-2014-SEQ-0933,Listeria,CC9,II,IIc,9,7,6,5,6,4,1,4,1,
-2017-SEQ-1501,Listeria,CC204,II,ND,204,7,5,7,6,4,5,4,1,
+Strain,MASHGenus,PredictedSerogroup,SequenceType,Matches,abcZ,bglA,cat,dapE,dat,ldh,lhkA,
+2014-SEQ-0136,Listeria,IIa,121,7,7,6,8,8,6,37,1,
+2014-SEQ-0933,Listeria,IIc,9,7,6,5,6,4,1,4,1,
+2017-SEQ-1501,Listeria,ND,204,7,5,7,6,4,5,4,1,

@@ -1,3 +1,3 @@
-Strain,MASHGenus,CC,SequenceType,Matches,dnaE,dtdS,gyrB,pntA,pyrC,recA,tnaA,
-2018-SEQ-0843,Vibrio,no,1140,6,19,223,295,136,11,NA (295),13,
-2018-SEQ-0843,Vibrio,no,1184,6,19,223,295,136,11,NA (31),13,
+Strain,MASHGenus,SequenceType,Matches,dnaE,dtdS,gyrB,pntA,pyrC,recA,tnaA,
+2018-SEQ-0843,Vibrio,1140,6,19,223,295,136,11,NA (295),13,
+2018-SEQ-0843,Vibrio,1184,6,19,223,295,136,11,NA (31),13,

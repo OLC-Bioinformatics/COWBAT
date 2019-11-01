@@ -114,38 +114,34 @@ class ValidateCowbat(object):
                              identifying_column='Strain',
                              one_to_one=True)
         # MOB-Recon
-        logging.info('Validating mob_recon_summary.csv')
-        self.validate_report(reference_report=os.path.join(self.reference_folder, 'mob_recon_summary.csv'),
-                             test_report=os.path.join(self.test_folder, 'mob_recon_summary.csv'),
-                             columns_to_exclude=['Strain', 'Contig', 'Incompatibility', 'IncompatibilityAccession',
-                                                 'RelaxaseType'],
-                             identifying_column='Strain',
-                             one_to_one=True,
-                             check_rows=False)
+        # logging.info('Validating mob_recon_summary.csv')
+        # self.validate_report(reference_report=os.path.join(self.reference_folder, 'mob_recon_summary.csv'),
+        #                      test_report=os.path.join(self.test_folder, 'mob_recon_summary.csv'),
+        #                      columns_to_exclude=['Strain', 'Contig', 'Incompatibility', 'IncompatibilityAccession',
+        #                                          'RelaxaseType'],
+        #                      identifying_column='Strain',
+        #                      one_to_one=True,
+        #                      check_rows=False,
+        #                      resfinder=True)
         # Prophages
         logging.info('Validating prophages.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'prophages.csv'),
                              test_report=os.path.join(self.test_folder, 'prophages.csv'),
                              columns_to_exclude=['Strain', 'Contig'],
-                             identifying_column='Strain')
-        # QAML report
-        logging.info('Validating QAMLReport.csv')
-        self.validate_report(reference_report=os.path.join(self.reference_folder, 'QAMLReport.csv'),
-                             test_report=os.path.join(self.test_folder, 'QAMLReport.csv'),
-                             columns_to_exclude=['Sample'],
-                             identifying_column='Sample')
+                             identifying_column='Strain',
+                             resfinder=True)
         # Run metrics report
         logging.info('Validating run_metrics_report.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'run_metrics_report.csv'),
                              test_report=os.path.join(self.test_folder, 'run_metrics_report.csv'),
                              columns_to_exclude=[],
-                             identifying_column='Sample')
+                             identifying_column='RunName')
         # ResFinder
         logging.info('Validating resfinder.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'resfinder.csv'),
                              test_report=os.path.join(self.test_folder, 'resfinder.csv'),
                              columns_to_exclude=['Strain'],
-                             identifying_column='RunName',
+                             identifying_column='Strain',
                              one_to_one=True)
         # rMLST
         logging.info('Validating rmlst.csv')
@@ -154,13 +150,13 @@ class ValidateCowbat(object):
                              columns_to_exclude=['Strain'],
                              identifying_column='Strain',
                              one_to_one=True)
-        # rMLST Assembled
-        logging.info('Validating rmlst_assembled.csv')
-        self.validate_report(reference_report=os.path.join(self.reference_folder, 'rmlst_assembled.csv'),
-                             test_report=os.path.join(self.test_folder, 'rmlst_assembled.csv'),
-                             columns_to_exclude=['Strain'],
-                             identifying_column='Strain',
-                             one_to_one=True)
+        # # rMLST Assembled
+        # logging.info('Validating rmlst_assembled.csv')
+        # self.validate_report(reference_report=os.path.join(self.reference_folder, 'rmlst_assembled.csv'),
+        #                      test_report=os.path.join(self.test_folder, 'rmlst_assembled.csv'),
+        #                      columns_to_exclude=['Strain'],
+        #                      identifying_column='Strain',
+        #                      one_to_one=True)
         # serosippr
         logging.info('Validating serosippr.csv')
         self.validate_report(reference_report=os.path.join(self.reference_folder, 'serosippr.csv'),
@@ -251,7 +247,7 @@ class ValidateCowbat(object):
             assert report_validate.all_test_columns_in_ref_and_test() is True
             assert report_validate.same_columns_in_ref_and_test() is True
             assert report_validate.check_samples_present() is True
-            # assert report_validate.check_columns_match() is True
+            assert report_validate.check_columns_match() is True
 
     def __init__(self, reference_folder, test_folder, assembly_typer=False):
         """

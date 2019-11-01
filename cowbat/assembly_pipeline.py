@@ -29,7 +29,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.11'
+__version__ = '0.5.0.12'
 __author__ = 'adamkoziol'
 
 
@@ -156,7 +156,8 @@ class RunAssemble(object):
         """
         Calculate the levels of contamination in the reads
         """
-        self.qualityobject.contamination_finder(report_path=self.reportpath)
+        self.qualityobject.contamination_finder(report_path=self.reportpath,
+                                                debug=self.debug)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmedcorrected(self):
@@ -176,8 +177,6 @@ class RunAssemble(object):
         self.evaluate_assemblies()
         # ORF detection
         self.prodigal()
-        # Assembly quality determination
-        self.genome_qaml()
         # CLARK analyses
         self.clark()
 
@@ -203,14 +202,6 @@ class RunAssemble(object):
         """
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
-
-    def genome_qaml(self):
-        """
-        Use GenomeQAML to determine the quality of the assemblies
-        """
-        g_qaml = quality.GenomeQAML(inputobject=self)
-        g_qaml.main()
-        metadataprinter.MetadataPrinter(inputobject=self)
 
     def clark(self):
         """

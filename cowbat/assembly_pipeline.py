@@ -373,8 +373,7 @@ class RunAssemble(object):
         # Run modules and print metadata to file
         # MLST
         self.mlst_assembled()
-        # cgMLST
-        self.cgmlst_assembled()
+
         # Assembly-based serotyping
         self.ec_typer()
         # Serotyping
@@ -383,10 +382,10 @@ class RunAssemble(object):
         self.seqsero()
         # Assembly-based vtyper
         self.legacy_vtyper()
-        # Core genome calculation
-        # self.coregenome()
         # Sistr
         self.sistr()
+        # cgMLST
+        self.cgmlst_assembled()
         # Calculate the presence/absence of GDCS
         self.run_gdcs()
 

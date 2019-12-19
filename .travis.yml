@@ -12,7 +12,7 @@ before_install:
   - conda config --add channels Freenome
   - conda config --add channels conda-forge
   - conda config --add channels bioconda
-  - conda install -y -c olcbioinformatics cowbat=0.5.0.13=py_0
+  - conda install -y -c olcbioinformatics cowbat=0.5.0.14=py_0
   
 script:
   - pytest tests/test_imports.py -s -vv --maxfail=1

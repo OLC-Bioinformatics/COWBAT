@@ -29,7 +29,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.12'
+__version__ = '0.5.0.14'
 __author__ = 'adamkoziol'
 
 

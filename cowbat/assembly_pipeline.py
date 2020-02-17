@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
-from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Virulence
+from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Verotoxin, Virulence
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
@@ -22,6 +22,8 @@ import genemethods.assemblypipeline.skesa as skesa
 from cowbat.metagenomefilter import automateCLARK
 import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
+from genemethods.MLST.mlst_kma import KMAMLST
+# from genemethods.geneseekr.kma import KMA
 import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
@@ -29,7 +31,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.14'
+__version__ = '0.5.0.15'
 __author__ = 'adamkoziol'
 
 
@@ -222,6 +224,9 @@ class RunAssemble(object):
         """
         # Run mash
         self.mash()
+        # Run rMLST on raw reads
+        # self.rmlst()
+        # quit()
         # run rMLST on assemblies
         self.rmlst_assembled()
         # Run the 16S analyses
@@ -238,8 +243,16 @@ class RunAssemble(object):
         self.prophages()
         # Univec contamination search
         self.univec()
+        # Assembly-based vtyper
+        self.legacy_vtyper()
+        # Raw read verotoxin typing
+        self.verotoxin()
         # Virulence
         self.virulence()
+        # cgMLST
+        self.cgmlst()
+        # cgMLST assembled
+        # self.cgmlst_assembled()
 
     def mash(self):
         """
@@ -247,6 +260,16 @@ class RunAssemble(object):
         """
         mash.Mash(inputobject=self,
                   analysistype='mash')
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def rmlst(self):
+        """
+        Run rMLST analyses on raw reads
+        """
+        rmlst = KMAMLST(args=self,
+                        pipeline=True,
+                        analysistype='rmlst')
+        rmlst.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def rmlst_assembled(self):
@@ -336,19 +359,31 @@ class RunAssemble(object):
                               analysistype='prophages',
                               cutoff=cutoff,
                               unique=True)
-        prophages.seekr()
+        if not os.path.isfile(os.path.join(self.reportpath, 'prophages.csv')):
+            prophages.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def univec(self):
         """
         Univec contamination search
         """
-        univec = Univec(args=self,
-                        analysistype='univec',
-                        cutoff=80,
-                        unique=True)
-        univec.seekr()
+        if not os.path.isfile(os.path.join(self.reportpath, 'univec.csv')):
+            univec = Univec(args=self,
+                            analysistype='univec',
+                            cutoff=80,
+                            unique=True)
+            univec.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
+
+    def verotoxin(self):
+        """
+        Raw read verotoxin typing
+        """
+        vero = Verotoxin(args=self,
+                         pipeline=True,
+                         analysistype='verotoxin',
+                         cutoff=90)
+        vero.main()
 
     def virulence(self):
         """
@@ -359,50 +394,27 @@ class RunAssemble(object):
                         startingtime=self.starttime,
                         scriptpath=self.homepath,
                         analysistype='virulence',
-                        cutoff=0.95,
+                        cutoff=0.9,
                         pipeline=False,
                         revbait=True)
         if not os.path.isfile(os.path.join(self.reportpath, 'virulence.csv')):
             vir.reporter()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def typing(self):
+    def cgmlst(self):
         """
-        Perform analyses that use genera-specific databases
+        Run rMLST analyses on raw reads
         """
-        # Run modules and print metadata to file
-        # MLST
-        self.mlst_assembled()
-
-        # Assembly-based serotyping
-        self.ec_typer()
-        # Serotyping
-        self.serosippr()
-        # SeqSero
-        self.seqsero()
-        # Assembly-based vtyper
-        self.legacy_vtyper()
-        # Sistr
-        self.sistr()
-        # cgMLST
-        self.cgmlst_assembled()
-        # Calculate the presence/absence of GDCS
-        self.run_gdcs()
-
-    def mlst_assembled(self):
-        """
-        Run rMLST analyses on assemblies
-        """
-        if not os.path.isfile(os.path.join(self.reportpath, 'mlst.csv')):
-
-            mlst = BLAST(args=self,
-                         analysistype='mlst',
-                         cutoff=100,
-                         genus_specific=True)
-            mlst.seekr()
+        if not os.path.isfile(os.path.join(self.reportpath, 'cgmlst.csv')):
+            cgmlst = KMAMLST(args=self,
+                             pipeline=True,
+                             analysistype='cgmlst',
+                             cutoff=98,
+                             kma_kwargs=' -cge -and')
+            cgmlst.main()
         else:
             parse = ReportParse(args=self,
-                                analysistype='mlst')
+                                analysistype='cgmlst')
             parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -419,6 +431,55 @@ class RunAssemble(object):
         else:
             parse = ReportParse(args=self,
                                 analysistype='cgmlst')
+            parse.report_parse()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def typing(self):
+        """
+        Perform analyses that use genera-specific databases
+        """
+        # Run modules and print metadata to file
+        # MLST
+        self.mlst()
+        # MLST on assemblies
+        self.mlst_assembled()
+        # Assembly-based serotyping
+        self.ec_typer()
+        # Serotyping
+        self.serosippr()
+        # SeqSero
+        self.seqsero()
+        # Assembly-based vtyper
+        self.legacy_vtyper()
+        # Sistr
+        self.sistr()
+        # Calculate the presence/absence of GDCS
+        self.run_gdcs()
+
+    def mlst(self):
+        """
+        Run rMLST analyses on raw reads
+        """
+        mlst = KMAMLST(args=self,
+                       pipeline=True,
+                       analysistype='mlst')
+        mlst.main()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def mlst_assembled(self):
+        """
+        Run rMLST analyses on assemblies
+        """
+        if not os.path.isfile(os.path.join(self.reportpath, 'mlst.csv')):
+
+            mlst = BLAST(args=self,
+                         analysistype='mlst',
+                         cutoff=100,
+                         genus_specific=True)
+            mlst.seekr()
+        else:
+            parse = ReportParse(args=self,
+                                analysistype='mlst')
             parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -516,7 +577,7 @@ class RunAssemble(object):
         else:
             self.customsamplesheet = args.customsamplesheet
         if self.customsamplesheet:
-            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {css}'\
+            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {css}' \
                 .format(css=self.customsamplesheet)
         self.basicassembly = args.basicassembly
         if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
@@ -529,7 +590,7 @@ class RunAssemble(object):
         assert os.path.isdir(self.path), 'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
         self.reportpath = os.path.join(self.path, 'reports')
         make_path(self.reportpath)
-        assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}'\
+        assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}' \
             .format(self.reffilepath)
         self.commit = __version__
         self.homepath = args.homepath
@@ -560,7 +621,7 @@ if __name__ == '__main__':
                         default=2,
                         type=int,
                         help='Specify the number of reads. Paired-reads:'
-                        ' 2, unpaired-reads: 1. Default is paired-end')
+                             ' 2, unpaired-reads: 1. Default is paired-end')
     parser.add_argument('-t', '--threads',
                         help='Number of threads. Default is the number of cores in the system')
     parser.add_argument('-c', '--customsamplesheet',

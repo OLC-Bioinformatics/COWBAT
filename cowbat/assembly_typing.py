@@ -2,14 +2,17 @@
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
-from genemethods.typingclasses.typingclasses import Prophages, Univec
+from genemethods.typingclasses.typingclasses import GDCS, Prophages, Univec
 from genemethods.assemblypipeline.createobject import ObjectCreation
 from genemethods.assemblypipeline.mobrecon import MobRecon
-from cowbat.metagenomefilter import automateCLARK
+from genemethods.assemblypipeline.ec_typer import ECTyper
+import genemethods.assemblypipeline.compress as compress
 import genemethods.assemblypipeline.prodigal as prodigal
 import genemethods.assemblypipeline.reporter as reporter
 import genemethods.assemblypipeline.quality as quality
+from genemethods.MLSTsippr.mlst import ReportParse
 import genemethods.assemblypipeline.sistr as sistr
+from cowbat.metagenomefilter import automateCLARK
 from genemethods.geneseekr.blast import BLAST
 import genemethods.coreGenome.core as core
 import genemethods.MASHsippr.mash as mash
@@ -37,10 +40,11 @@ class Typing(object):
         self.agnostictyping()
         # Perform typing
         self.typing()
-        #
+        # Create a report
         self.typing_reports()
         # Compress or remove all large, temporary files created by the pipeline
-        # compress.Compress(self)
+        if not self.debug:
+            compress.Compress(self)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def objects(self):
@@ -62,12 +66,10 @@ class Typing(object):
         """
         Perform some basic quality analyses on the assemblies
         """
-        # Calculate assembly metrics on polished assemblies
+        # Calculate assembly metrics on raw assemblies
         self.quality_features(analysis='polished')
         # ORF detection
         self.prodigal()
-        # Assembly quality determination
-        self.genome_qaml()
         # CLARK analyses
         self.clark()
         metadataprinter.MetadataPrinter(inputobject=self)
@@ -88,14 +90,6 @@ class Typing(object):
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
 
-    def genome_qaml(self):
-        """
-        Use GenomeQAML to determine the quality of the assemblies
-        """
-        g_qaml = quality.GenomeQAML(inputobject=self)
-        g_qaml.main()
-        metadataprinter.MetadataPrinter(inputobject=self)
-
     def clark(self):
         """
         Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
@@ -113,11 +107,9 @@ class Typing(object):
         # Run mash
         self.mash()
         # Run rMLST
-        self.rmlst()
+        self.rmlst_assembled()
         # Run the 16S analyses
         self.sixteens()
-        # Calculate the presence/absence of GDCS
-        self.run_gdcs()
         # Find genes of interest
         self.geneseekr()
         # Resistance finding - assemblies
@@ -140,17 +132,20 @@ class Typing(object):
                   analysistype='mash')
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def rmlst(self):
+    def rmlst_assembled(self):
         """
-        Run rMLST analyses
+        Run rMLST analyses on assemblies
         """
-        logging.info('rMLST')
-        rmlst = BLAST(args=self,
-                      analysistype='rMLST',
-                      cutoff=100,
-                      unique=True,
-                      pipeline=True)
-        rmlst.seekr()
+        if os.path.isfile(os.path.join(self.reportpath, 'rmlst.csv')):
+            parse = ReportParse(args=self,
+                                analysistype='rmlst')
+            parse.report_parse()
+
+        else:
+            rmlst = BLAST(args=self,
+                          analysistype='rmlst',
+                          cutoff=100)
+            rmlst.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def sixteens(self):
@@ -161,20 +156,6 @@ class Typing(object):
                           analysistype='sixteens_full',
                           cutoff=95)
         sixteen_s.seekr()
-        metadataprinter.MetadataPrinter(inputobject=self)
-
-    def run_gdcs(self):
-        """
-        Determine the presence of genomically-dispersed conserved sequences for Escherichia, Listeria, and Salmonella
-        strains
-        """
-        # Run the GDCS analysis
-        gdcs = BLAST(args=self,
-                     analysistype='GDCS',
-                     cutoff=90,
-                     genus_specific=True,
-                     unique=False,)
-        gdcs.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def geneseekr(self):
@@ -246,7 +227,9 @@ class Typing(object):
         """
         # Run modules and print metadata to file
         # MLST
-        self.mlst()
+        self.mlst_assembled()
+        # Assembly-based serotyping
+        self.ec_typer()
         # Serotyping
         self.serosippr()
         # Assembly-based vtyper
@@ -255,18 +238,38 @@ class Typing(object):
         self.coregenome()
         # Sistr
         self.sistr()
+        # cgMLST
+        self.cgmlst_assembled()
+        # Calculate the presence/absence of GDCS
+        self.run_gdcs()
 
-    def mlst(self):
+    def mlst_assembled(self):
         """
-         MLST analyses
+        Run rMLST analyses on assemblies
         """
-        logging.info('MLST')
-        mlst = BLAST(args=self,
-                     analysistype='MLST',
-                     genus_specific=True,
-                     cutoff=100,
-                     unique=True)
-        mlst.seekr()
+        if os.path.isfile(os.path.join(self.reportpath, 'mlst.csv')):
+            parse = ReportParse(args=self,
+                                analysistype='mlst')
+            parse.report_parse()
+
+        else:
+            mlst = BLAST(args=self,
+                         analysistype='mlst',
+                         cutoff=100,
+                         genus_specific=True)
+            mlst.seekr()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def ec_typer(self):
+        """
+        Assembly-based serotyping
+        """
+        ec = ECTyper(metadata=self.runmetadata,
+                     report_path=self.reportpath,
+                     assembly_path=os.path.join(self.path, 'BestAssemblies'),
+                     threads=self.cpus,
+                     logfile=self.logfile)
+        ec.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def serosippr(self):
@@ -311,6 +314,32 @@ class Typing(object):
                     analysistype='sistr')
         metadataprinter.MetadataPrinter(inputobject=self)
 
+    def cgmlst_assembled(self):
+        """
+        Run rMLST analyses on assemblies
+        """
+        if os.path.isfile(os.path.join(self.reportpath, 'cgmlst.csv')):
+            parse = ReportParse(args=self,
+                                analysistype='cgmlst')
+            parse.report_parse()
+        else:
+            cgmlst = BLAST(args=self,
+                           analysistype='cgMLST',
+                           cutoff=100,
+                           genus_specific=True)
+            cgmlst.seekr()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def run_gdcs(self):
+        """
+        Determine the presence of genomically-dispersed conserved sequences (genes from MLST, rMLST, and cgMLST
+        analyses)
+        """
+        # Run the GDCS analysis
+        gdcs = GDCS(inputobject=self)
+        gdcs.main()
+        metadataprinter.MetadataPrinter(inputobject=self)
+
     def typing_reports(self):
         """
         Create empty attributes for analyses that were not performed, so that the metadata report can be created
@@ -319,9 +348,12 @@ class Typing(object):
         for sample in self.runmetadata.samples:
             sample.confindr = GenObject()
             sample.mapping = GenObject()
+            sample.quast = GenObject()
+            sample.qualimap = GenObject()
+            if not GenObject.isattr(sample, 'sistr'):
+                sample.sistr = GenObject()
             sample.mapping.MeanInsertSize = 0
             sample.mapping.MeanCoveragedata = 0
-            sample.mlst.results = sample.mlst.blastresults
             sample.genesippr.report_output = set()
             sample.genesippr.results = dict()
             try:
@@ -332,10 +364,9 @@ class Typing(object):
                 sample.genesippr.report_output = list()
             sample.genesippr.report_output = sorted(list(sample.genesippr.report_output))
         # Create a report
-        reporter.Reporter(inputobject=self,
-                          legacy=False)
+        reporter.Reporter(inputobject=self)
 
-    def __init__(self, start, sequencepath, referencefilepath, scriptpath):
+    def __init__(self, start, sequencepath, referencefilepath, scriptpath, debug):
         """
         
         :param start: 
@@ -343,7 +374,8 @@ class Typing(object):
         :param referencefilepath: 
         :param scriptpath:
         """
-        SetupLogging(debug=True)
+        self.debug = debug
+        SetupLogging(self.debug)
         logging.info('Welcome to the CFIA bacterial typing pipeline {}'
                      .format(__version__))
         # Define variables from the arguments - there may be a more streamlined way to do this
@@ -388,11 +420,16 @@ if __name__ == '__main__':
                         required=True,
                         help='Provide the location of the folder containing the pipeline accessory files (reference '
                              'genomes, MLST data, etc.')
+    parser.add_argument('-d', '--debug',
+                        action='store_true',
+                        help='Enable debug mode for the pipeline (skip file deletion, and enable '
+                             'debug-level messages if they exist)')
     arguments = parser.parse_args()
     # Run the pipeline
     pipeline = Typing(start=time(),
                       sequencepath=arguments.sequencepath,
                       referencefilepath=arguments.referencefilepath,
-                      scriptpath=homepath)
+                      scriptpath=homepath,
+                      debug=arguments.debug)
     pipeline.main()
     logging.info('Characterisation complete')

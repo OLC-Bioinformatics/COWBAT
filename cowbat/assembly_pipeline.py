@@ -23,7 +23,6 @@ from cowbat.metagenomefilter import automateCLARK
 import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
 from genemethods.MLST.mlst_kma import KMAMLST
-# from genemethods.geneseekr.kma import KMA
 import genemethods.MASHsippr.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
@@ -224,9 +223,6 @@ class RunAssemble(object):
         """
         # Run mash
         self.mash()
-        # Run rMLST on raw reads
-        # self.rmlst()
-        # quit()
         # run rMLST on assemblies
         self.rmlst_assembled()
         # Run the 16S analyses
@@ -243,16 +239,10 @@ class RunAssemble(object):
         self.prophages()
         # Univec contamination search
         self.univec()
-        # Assembly-based vtyper
-        self.legacy_vtyper()
-        # Raw read verotoxin typing
-        self.verotoxin()
         # Virulence
         self.virulence()
         # cgMLST
         self.cgmlst()
-        # cgMLST assembled
-        # self.cgmlst_assembled()
 
     def mash(self):
         """
@@ -260,16 +250,6 @@ class RunAssemble(object):
         """
         mash.Mash(inputobject=self,
                   analysistype='mash')
-        metadataprinter.MetadataPrinter(inputobject=self)
-
-    def rmlst(self):
-        """
-        Run rMLST analyses on raw reads
-        """
-        rmlst = KMAMLST(args=self,
-                        pipeline=True,
-                        analysistype='rmlst')
-        rmlst.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def rmlst_assembled(self):
@@ -375,16 +355,6 @@ class RunAssemble(object):
             univec.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def verotoxin(self):
-        """
-        Raw read verotoxin typing
-        """
-        vero = Verotoxin(args=self,
-                         pipeline=True,
-                         analysistype='verotoxin',
-                         cutoff=90)
-        vero.main()
-
     def virulence(self):
         """
         Virulence gene detection
@@ -418,29 +388,11 @@ class RunAssemble(object):
             parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def cgmlst_assembled(self):
-        """
-        Run rMLST analyses on assemblies
-        """
-        if not os.path.isfile(os.path.join(self.reportpath, 'cgmlst.csv')):
-            cgmlst = BLAST(args=self,
-                           analysistype='cgMLST',
-                           cutoff=100,
-                           genus_specific=True)
-            cgmlst.seekr()
-        else:
-            parse = ReportParse(args=self,
-                                analysistype='cgmlst')
-            parse.report_parse()
-        metadataprinter.MetadataPrinter(inputobject=self)
-
     def typing(self):
         """
         Perform analyses that use genera-specific databases
         """
         # Run modules and print metadata to file
-        # MLST
-        self.mlst()
         # MLST on assemblies
         self.mlst_assembled()
         # Assembly-based serotyping
@@ -451,20 +403,12 @@ class RunAssemble(object):
         self.seqsero()
         # Assembly-based vtyper
         self.legacy_vtyper()
+        # Raw read verotoxin typing
+        self.verotoxin()
         # Sistr
         self.sistr()
         # Calculate the presence/absence of GDCS
         self.run_gdcs()
-
-    def mlst(self):
-        """
-        Run rMLST analyses on raw reads
-        """
-        mlst = KMAMLST(args=self,
-                       pipeline=True,
-                       analysistype='mlst')
-        mlst.main()
-        metadataprinter.MetadataPrinter(inputobject=self)
 
     def mlst_assembled(self):
         """
@@ -525,6 +469,16 @@ class RunAssemble(object):
                                      mismatches=2)
         legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(inputobject=self)
+
+    def verotoxin(self):
+        """
+        Raw read verotoxin typing
+        """
+        vero = Verotoxin(args=self,
+                         pipeline=True,
+                         analysistype='verotoxin',
+                         cutoff=90)
+        vero.main()
 
     def sistr(self):
         """

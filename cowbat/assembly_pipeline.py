@@ -52,8 +52,6 @@ class RunAssemble(object):
         self.agnostictyping()
         # Perform typing
         self.typing()
-        # Create a report
-        reporter.Reporter(self)
         # Compress or remove all large, temporary files created by the pipeline
         if not self.debug:
             compress.Compress(self)
@@ -223,8 +221,10 @@ class RunAssemble(object):
         """
         # Run mash
         self.mash()
-        # run rMLST on assemblies
+        # Run rMLST on assemblies
         self.rmlst_assembled()
+        # Create reports summarising the run and sample qualities
+        self.quality_report()
         # Run the 16S analyses
         self.sixteens()
         # Find genes of interest
@@ -266,6 +266,14 @@ class RunAssemble(object):
                                 analysistype='rmlst')
             parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
+
+    def quality_report(self):
+        """
+        Create reports summarising the run and sample quality outputs
+        """
+        qual_report = reporter.Reporter(self)
+        qual_report.run_quality_reporter()
+        qual_report.sample_quality_report()
 
     def sixteens(self):
         """
@@ -409,6 +417,8 @@ class RunAssemble(object):
         self.sistr()
         # Calculate the presence/absence of GDCS
         self.run_gdcs()
+        # Create a final summary report
+        self.run_report()
 
     def mlst_assembled(self):
         """
@@ -498,6 +508,17 @@ class RunAssemble(object):
         gdcs = GDCS(inputobject=self)
         gdcs.main()
         metadataprinter.MetadataPrinter(inputobject=self)
+
+    def run_report(self):
+        """
+        Create the final combinedMetadata report
+        """
+        run_report = reporter.Reporter(self)
+        # Create the standard and legacy reports
+        run_report.metadata_reporter()
+        run_report.legacy_reporter()
+        # Clean the large attributes from the metadata objects
+        run_report.clean_object()
 
     def __init__(self, args):
         """

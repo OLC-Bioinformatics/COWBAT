@@ -74,7 +74,7 @@ def test_sistr_seqsero():
     method.runmetadata.samples.append(metadata)
     method.sistr()
     for sample in method.runmetadata.samples:
-        assert sample.sistr.cgmlst_genome_match == 'SAL_BA2732AA'
+        assert sample.sistr.cgmlst_genome_match == 'ERR586739' or sample.sistr.cgmlst_genome_match == 'SAL_BA2732AA'
     method.seqsero()
     for sample in method.runmetadata.samples:
         assert sample.seqsero.predicted_serotype == 'Berta'
@@ -229,7 +229,7 @@ def test_univec():
 def test_virulence():
     method.virulence()
     for sample in method.runmetadata.samples:
-        assert sample.virulence.snplocations['stx1:3:M19437:3'] == [504]
+        assert sample.virulence.results['stx1_M19437_3'] == '99.92'
 
 
 def test_mlst():
@@ -239,7 +239,7 @@ def test_mlst():
 
 
 def test_cgmlst():
-    method.cgmlst_assembled()
+    method.cgmlst()
     for sample in method.runmetadata.samples:
         assert sample.cgmlst.sequencetype == ['105242']
 
@@ -261,6 +261,12 @@ def test_legacy_vtyper():
     method.legacy_vtyper()
     for sample in method.runmetadata.samples:
         assert 'vtx2f' in sample.legacy_vtyper.toxinprofile
+
+
+def test_verotoxin():
+    method.verotoxin()
+    for sample in method.runmetadata.samples:
+        assert sample.verotoxin.verotoxin_subtypes_set == 'vtx1a;vtx2a;vtx2b;vtx2c;vtx2d'
 
 
 def test_gdcs():

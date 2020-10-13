@@ -77,7 +77,7 @@ def test_sistr_seqsero():
         assert sample.sistr.cgmlst_genome_match == 'ERR586739' or sample.sistr.cgmlst_genome_match == 'SAL_BA2732AA'
     method.seqsero()
     for sample in method.runmetadata.samples:
-        assert sample.seqsero.predicted_serotype == 'Berta'
+        assert sample.seqsero.predicted_serotype == '- 9:f,g,t:-'
     variable_update()
 
 
@@ -302,7 +302,6 @@ def test_clear_raw_assemblies():
 
 def test_clear_kma():
     targetpath = os.path.join(var.referencefilepath, 'ConFindr')
-    os.remove(os.path.join(targetpath, 'Escherichia_db_kma.index.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.length.b'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.name'))
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.seq.b'))

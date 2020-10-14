@@ -308,6 +308,17 @@ def test_clear_kma():
     os.remove(os.path.join(targetpath, 'Escherichia_db_kma.comp.b'))
 
 
+def test_clear_cgmlst():
+    targetpath = os.path.join(var.referencefilepath, 'cgMLST', 'Escherichia')
+    os.remove(os.path.join(targetpath, 'combinedtargets.comp.b'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.length.b'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.name'))
+    os.remove(os.path.join(targetpath, 'combinedtargets.seq.b'))
+    os.remove(os.path.join(targetpath, 'novel_alleles.fna'))
+
+
 def test_clear_logs():
     os.remove(os.path.join(var.sequencepath, 'logfile_err.txt'))
     os.remove(os.path.join(var.sequencepath, 'logfile_out.txt'))
+    os.remove(os.path.join(var.sequencepath, 'log_err.txt'))
+    os.remove(os.path.join(var.sequencepath, 'log_out.txt'))

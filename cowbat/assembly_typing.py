@@ -350,12 +350,14 @@ class Typing(object):
             sample.mapping = GenObject()
             sample.quast = GenObject()
             sample.qualimap = GenObject()
+            sample.verotoxin = GenObject()
             if not GenObject.isattr(sample, 'sistr'):
                 sample.sistr = GenObject()
             sample.mapping.MeanInsertSize = 0
             sample.mapping.MeanCoveragedata = 0
             sample.genesippr.report_output = set()
             sample.genesippr.results = dict()
+            sample.verotoxin.verotoxin_subtypes_set = sample.legacy_vtyper.toxinprofile
             try:
                 for gene, percentid in sample.genesippr.blastresults.items():
                     if percentid > 95:
@@ -364,7 +366,10 @@ class Typing(object):
                 sample.genesippr.report_output = list()
             sample.genesippr.report_output = sorted(list(sample.genesippr.report_output))
         # Create a report
-        reporter.Reporter(inputobject=self)
+        run_report = reporter.Reporter(self)
+        # Create the standard and legacy reports
+        run_report.metadata_reporter()
+        run_report.legacy_reporter()
 
     def __init__(self, start, sequencepath, referencefilepath, scriptpath, debug):
         """

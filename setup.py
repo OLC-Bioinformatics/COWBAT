@@ -4,7 +4,7 @@ import os
 __author__ = 'adamkoziol'
 setup(
     name="COWBAT",
-    version="0.5.0.17",
+    version="0.5.0.18",
     include_package_data=True,
     packages=find_packages(),
     scripts=[os.path.join('cowbat', 'assembly_pipeline.py'),

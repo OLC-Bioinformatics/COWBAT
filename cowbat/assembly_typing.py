@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, SetupLogging
+from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, relative_symlink, \
+    SetupLogging
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.typingclasses.typingclasses import GDCS, Prophages, Univec

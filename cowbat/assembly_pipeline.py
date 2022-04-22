@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
 from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Verotoxin, Virulence
-from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
+from genemethods.assemblypipeline.primer_finder_ipcress import VtyperIP as IdentityVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
 from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
 import genemethods.assemblypipeline.assembly_evaluation as evaluate
@@ -30,7 +30,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.15'
+__version__ = '0.5.0.18'
 __author__ = 'adamkoziol'
 
 
@@ -404,13 +404,13 @@ class RunAssemble(object):
         # MLST on assemblies
         self.mlst_assembled()
         # Assembly-based serotyping
-        self.ec_typer()
+        # self.ec_typer()
         # Serotyping
         self.serosippr()
         # SeqSero
         self.seqsero()
         # Assembly-based vtyper
-        self.legacy_vtyper()
+        self.identity_vtyper()
         # Raw read verotoxin typing
         self.verotoxin()
         # Sistr
@@ -470,13 +470,14 @@ class RunAssemble(object):
         seqsero.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def legacy_vtyper(self):
+    def identity_vtyper(self):
         """
         Legacy vtyper - uses ePCR
         """
-        legacy_vtyper = LegacyVtyper(inputobject=self,
-                                     analysistype='legacy_vtyper',
-                                     mismatches=2)
+        legacy_vtyper = IdentityVtyper(metadataobject=self.runmetadata.samples,
+                                       analysistype='legacy_vtyper',
+                                       reportpath=self.reportpath,
+                                       mismatches=3)
         legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(inputobject=self)
 

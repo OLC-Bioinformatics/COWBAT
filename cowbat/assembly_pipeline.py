@@ -30,7 +30,7 @@ from time import time
 import logging
 import os
 
-__version__ = '0.5.0.18'
+from cowbat.version import __version__
 __author__ = 'adamkoziol'
 
 
@@ -519,6 +519,7 @@ class RunAssemble(object):
         # Create the standard and legacy reports
         run_report.metadata_reporter()
         run_report.legacy_reporter()
+        run_report.lab_report()
         # Clean the large attributes from the metadata objects
         run_report.clean_object()
 

@@ -297,7 +297,7 @@ class RunAssemble(object):
                   scriptpath=self.homepath,
                   analysistype='genesippr',
                   cutoff=0.95,
-                  kmer=13,
+                  kmer_size=13,
                   pipeline=False,
                   revbait=False)
         metadataprinter.MetadataPrinter(inputobject=self)

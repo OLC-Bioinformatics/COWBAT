@@ -156,7 +156,8 @@ class RunAssemble(object):
         Calculate the levels of contamination in the reads
         """
         self.qualityobject.contamination_finder(report_path=self.reportpath,
-                                                debug=self.debug)
+                                                debug=self.debug,
+                                                threads=self.cpus)
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmedcorrected(self):
@@ -405,7 +406,7 @@ class RunAssemble(object):
         # MLST on assemblies
         self.mlst_assembled()
         # Assembly-based serotyping
-        # self.ec_typer()
+        self.ec_typer()
         # Serotyping
         self.serosippr()
         # SeqSero

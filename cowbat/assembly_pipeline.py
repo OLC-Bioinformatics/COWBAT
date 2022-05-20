@@ -19,7 +19,7 @@ from genemethods.genesippr.genesippr import GeneSippr
 from genemethods.MLSTsippr.mlst import ReportParse
 import genemethods.assemblypipeline.sistr as sistr
 import genemethods.assemblypipeline.skesa as skesa
-from cowbat.metagenomefilter import automateCLARK
+# from cowbat.metagenomefilter import automateCLARK
 import genemethods.assemblypipeline.phix as phix
 from genemethods.geneseekr.blast import BLAST
 from genemethods.MLST.mlst_kma import KMAMLST
@@ -178,7 +178,7 @@ class RunAssemble(object):
         # ORF detection
         self.prodigal()
         # CLARK analyses
-        self.clark()
+        # self.clark()
 
     def assemble_genomes(self):
         """
@@ -203,18 +203,18 @@ class RunAssemble(object):
         prodigal.Prodigal(self)
         metadataprinter.MetadataPrinter(self)
 
-    def clark(self):
-        """
-        Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
-        """
-        # Run CLARK typing on the .fastq and .fasta files
-        automateCLARK.PipelineInit(inputobject=self,
-                                   extension='fasta',
-                                   light=True
-                                   )
-        automateCLARK.PipelineInit(inputobject=self,
-                                   extension='fastq',
-                                   light=True)
+    # def clark(self):
+    #     """
+    #     Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
+    #     """
+    #     # Run CLARK typing on the .fastq and .fasta files
+    #     automateCLARK.PipelineInit(inputobject=self,
+    #                                extension='fasta',
+    #                                light=True
+    #                                )
+    #     automateCLARK.PipelineInit(inputobject=self,
+    #                                extension='fastq',
+    #                                light=True)
 
     def agnostictyping(self):
         """
@@ -243,7 +243,7 @@ class RunAssemble(object):
         # Virulence
         self.virulence()
         # cgMLST
-        self.cgmlst()
+        # self.cgmlst()
 
     def mash(self):
         """

@@ -1,4 +1,4 @@
-#!/home/olf408/miniconda3/envs/cowbat/bin/python
+#!/usr/bin/env python3
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
 from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Verotoxin, Virulence
 from genemethods.assemblypipeline.primer_finder_ipcress import VtyperIP as IdentityVtyper

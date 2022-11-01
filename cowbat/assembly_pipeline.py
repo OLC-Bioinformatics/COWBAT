@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/olf408/miniconda3/envs/cowbat/bin/python
 from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
 from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Verotoxin, Virulence
 from genemethods.assemblypipeline.primer_finder_ipcress import VtyperIP as IdentityVtyper
@@ -110,6 +110,8 @@ class RunAssemble(object):
         self.contamination_detection()
         # Run FastQC on the processed fastq files
         self.fastqc_trimmedcorrected()
+        # Fix issue with bbmap gzip
+        self.fix_gzip()
         # Exit if only pre-processing of data is requested
         metadataprinter.MetadataPrinter(inputobject=self)
         if self.preprocess:
@@ -165,6 +167,13 @@ class RunAssemble(object):
         Run FastQC on the processed fastq files
         """
         self.qualityobject.fastqcthreader(level='trimmedcorrected')
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def fix_gzip(self):
+        """
+        Fix issue with BBDuk gzip
+        """
+        self.qualityobject.fix_gzip()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def assemble(self):

@@ -110,6 +110,8 @@ class RunAssemble(object):
         self.contamination_detection()
         # Run FastQC on the processed fastq files
         self.fastqc_trimmedcorrected()
+        # Fix issue with bbmap gzip
+        self.fix_gzip()
         # Exit if only pre-processing of data is requested
         metadataprinter.MetadataPrinter(inputobject=self)
         if self.preprocess:
@@ -165,6 +167,13 @@ class RunAssemble(object):
         Run FastQC on the processed fastq files
         """
         self.qualityobject.fastqcthreader(level='trimmedcorrected')
+        metadataprinter.MetadataPrinter(inputobject=self)
+
+    def fix_gzip(self):
+        """
+        Fix issue with BBDuk gzip
+        """
+        self.qualityobject.fix_gzip()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def assemble(self):

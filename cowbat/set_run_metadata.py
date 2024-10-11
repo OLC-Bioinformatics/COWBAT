@@ -208,6 +208,7 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
             # Split the line into key-value pairs and store them as integers
             key, value = line.split(',', 1)
             data["Reads"][key.strip()] = int(value.strip())
+
             logging.debug(
                 "Parsed read cycle count: %s = %d",
                 key.strip(), int(value.strip())
@@ -247,6 +248,10 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
                     "ProjectName", "")
                 data["Cloud_Data"].append(sample_data)
                 logging.debug("Parsed Cloud_Data sample: %s", sample_data)
+
+    # Adhere to the same naming scheme as the MiSeq Reads section
+    data["Reads"]['forward_read_length'] = data["Reads"]["Read1Cycles"]
+    data["Reads"]['reverse_read_length'] = data["Reads"]["Read2Cycles"]
 
     logging.info("Finished parsing NextSeq sample sheet: %s", file_path)
     return data
@@ -371,6 +376,10 @@ def populate_metadata(
     # Create the .general attribute
     metadata.general = CustomBox()
 
+    # Create the .commands attribute
+    metadata.commands = CustomBox()
+    metadata.commands.test = 'test'
+
     # Set the destination folder
     output_dir = os.path.join(sequence_path, fastq_name)
 
@@ -419,7 +428,6 @@ def populate_metadata(
                     sample_number=sample_number
                 )
             )
-
     return samples
 
 
@@ -539,6 +547,9 @@ def sample_sheet_metadata_populate(
 
     # Set the sample name in the object
     strain_metadata.name = sample_name
+
+    # Create the commands attribute
+    strain_metadata.commands = CustomBox()
 
     # Create the 'General' category for strain_metadata
     strain_metadata.general = CustomBox(

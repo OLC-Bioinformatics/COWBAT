@@ -7,10 +7,21 @@ Common methods used by the COWBAT pipeline.
 # Standard imports
 import logging
 import os
-from typing import List, Tuple
+from typing import Tuple
 
-# Third party imports
-from olctools.accessoryFunctions.metadata import CustomBox
+# Third-party imports
+from genemethods.assemblypipeline.fastqmover import FastqMover
+from olctools.accessoryFunctions.accessoryFunctions import (
+    write_metadata_to_file
+)
+
+# Local imports
+from cowbat.set_run_metadata import (
+    basic,
+    determine_and_parse_sample_sheet,
+    process_sample
+)
+from cowbat.teacup_version import __version__
 
 
 def read_checkpoint(checkpoint_file: str) -> str:
@@ -96,6 +107,11 @@ def initialize_logging(
         Tuple[logging.Logger, logging.Logger]: The main logger instance and
             the error logger instance.
     """
+    # Remove previous versions of the files before initializing
+    for file in [log_file, error_log_file]:
+        if os.path.exists(file):
+            os.remove(file)
+
     # Create a logger
     logger = logging.getLogger()
     logger.setLevel(getattr(logging, logging_level))
@@ -161,34 +177,50 @@ def initialize_error_log(error_log_file: str) -> logging.Logger:
     return error_logger
 
 
-def write_metadata_to_file(
-        error_logger: logging.Logger,
-        metadata: List[CustomBox]) -> None:
+def sample_metadata(
+    error_logger,
+    metadata,
+    sequence_path
+):
     """
-    Write metadata for each sample to its respective JSON file.
-
-    This function iterates over a list of CustomBox metadata objects for
-    samples and writes each one to its specified JSON file. If an IOError
-    occurs during the file writing process, it logs the error and calls an
-    error logger.
-
-    Args:
-        error_logger (logging.Logger): Logger instance for logging errors.
-        metadata (List[CustomBox]): List of CustomBox metadata objects.
-
-    Example usage:
-    >>> metadata = [CustomBox(name='sample1',
-        json_file='sample1_metadata.json')]
-    >>> write_metadata_to_file(error_logger, metadata)
+    Helper method to prep metadata from sample sheet (if available)
     """
-    for sample in metadata:
-        try:
-            # Write the metadata to the specified JSON file
-            sample.to_file(file_path=sample.json_file)
-        except IOError:
-            # Log the error traceback
-            logging.error("Failed to write metadata to file", exc_info=True)
-            # Call the error logger with the error traceback
-            error_logger.error(
-                "Failed to write metadata to file",
-                exc_info=True)
+    # Define the sample sheet
+    sample_sheet = os.path.join(
+        sequence_path,
+        'SampleSheet.csv'
+    )
+
+    # Process the samples appropriate depending on whether a sample sheet
+    # was provided
+    if os.path.isfile(sample_sheet):
+
+        # Extract the necessary information from the sample sheet
+        data = determine_and_parse_sample_sheet(
+            file_path=sample_sheet
+        )
+        # Create the metadata for each sample
+        metadata = process_sample(
+            commit=__version__,
+            data=data,
+            path=sequence_path
+        )
+    else:
+        # If the sample sheet is missing, perform basic assembly
+        metadata = basic(
+            commit=__version__,
+            sequence_path=sequence_path
+        )
+    # Move/link the FASTQ files to strain-specific working directories
+    FastqMover(
+        metadata=metadata,
+        path=sequence_path
+    )
+
+    # Write the metadata to file
+    write_metadata_to_file(
+        error_logger=error_logger,
+        metadata=metadata
+    )
+
+    return metadata

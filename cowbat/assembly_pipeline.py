@@ -1,40 +1,69 @@
 #!/usr/bin/env python3
-from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenObject, make_path, SetupLogging
-from genemethods.typingclasses.typingclasses import GDCS, Resistance, Prophages, Serotype, Univec, Verotoxin, Virulence
-from genemethods.assemblypipeline.primer_finder_ipcress import VtyperIP as IdentityVtyper
-import olctools.accessoryFunctions.metadataprinter as metadataprinter
-from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
-import genemethods.assemblypipeline.assembly_evaluation as evaluate
-import genemethods.assemblypipeline.runMetadata as runMetadata
-from genemethods.assemblypipeline.basicAssembly import Basic
-import genemethods.assemblypipeline.fastqmover as fastqmover
-from genemethods.assemblypipeline.mobrecon import MobRecon
-from genemethods.assemblypipeline.ec_typer import ECTyper
-import genemethods.assemblypipeline.compress as compress
-import genemethods.assemblypipeline.prodigal as prodigal
-from genemethods.assemblypipeline.seqsero import SeqSero
-import genemethods.assemblypipeline.reporter as reporter
-import genemethods.assemblypipeline.quality as quality
-from genemethods.genesippr.genesippr import GeneSippr
-from genemethods.MLSTsippr.mlst import ReportParse
-import genemethods.assemblypipeline.sistr as sistr
-import genemethods.assemblypipeline.skesa as skesa
-# from cowbat.metagenomefilter import automateCLARK
-import genemethods.assemblypipeline.phix as phix
-from genemethods.geneseekr.blast import BLAST
-from genemethods.MLST.mlst_kma import KMAMLST
-import genemethods.MASHsippr.mash as mash
-from argparse import ArgumentParser
-import multiprocessing
-from time import time
-import logging
-import os
 
+"""
+COWBAT pipeline for assembly and typing of bacterial genomes
+"""
+
+# Standard imports
+import logging
+import multiprocessing
+import os
+from argparse import ArgumentParser
+from time import time
+
+# Third-party imports
+from olctools.accessoryFunctions.accessoryFunctions import (
+    GenObject,
+    make_path,
+    MetadataObject,
+    SetupLogging,
+)
+from olctools.accessoryFunctions import metadataprinter
+
+from genemethods.assemblypipeline import (
+    assembly_evaluation,
+    basicAssembly,
+    compress,
+    ec_typer,
+    fastqmover,
+    mobrecon,
+    phix,
+    prodigal,
+    quality,
+    reporter,
+    runMetadata,
+    seqsero,
+    sistr,
+    skesa,
+)
+from genemethods.assemblypipeline.primer_finder_ipcress import (
+    VtyperIP as IdentityVtyper,
+)
+from genemethods.geneseekr.blast import BLAST
+from genemethods.genesippr.genesippr import GeneSippr
+from genemethods.MASHsippr import mash
+from genemethods.MLST.mlst_kma import KMAMLST
+from genemethods.MLSTsippr.mlst import ReportParse
+from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
+from genemethods.typingclasses.typingclasses import (
+    GDCS,
+    Prophages,
+    Resistance,
+    Serotype,
+    Univec,
+    Verotoxin,
+    Virulence,
+)
+
+# Local imports
 from cowbat.version import __version__
 __author__ = 'adamkoziol'
 
 
-class RunAssemble(object):
+class RunAssemble:
+    """
+    Collection of methods to run the COWBAT pipeline
+    """
 
     def main(self):
         """
@@ -49,7 +78,7 @@ class RunAssemble(object):
         # Perform assembly
         self.assemble()
         # Perform genus-agnostic typing
-        self.agnostictyping()
+        self.agnostic_typing()
         # Perform typing
         self.typing()
         # Compress or remove all large, temporary files created by the pipeline
@@ -58,28 +87,36 @@ class RunAssemble(object):
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def helper(self):
-        """Helper function for file creation (if desired), manipulation, quality assessment,
-        and trimming as well as the assembly"""
-        # Simple assembly without requiring accessory files (SampleSheet.csv, etc).
-        if self.basicassembly:
-            self.runmetadata = Basic(inputobject=self)
+        """
+        Helper function for file creation (if desired), manipulation, quality
+        assessment, and trimming as well as the assembly
+        """
+        # Simple assembly without requiring accessory files (SampleSheet.csv,
+        # etc).
+        if self.basic_assembly:
+            self.runmetadata = basicAssembly.Basic(inputobject=self)
         else:
-            # Populate the runmetadata object by parsing the SampleSheet.csv, GenerateFASTQRunStatistics.xml, and
-            # RunInfo.xml files
-            self.runinfo = os.path.join(self.path, 'RunInfo.xml')
+            # Populate the runmetadata object by parsing the SampleSheet.csv,
+            # GenerateFASTQRunStatistics.xml, and RunInfo.xml files
+            self.run_info = os.path.join(self.path, 'RunInfo.xml')
             self.runmetadata = runMetadata.Metadata(passed=self)
-            # Extract the flowcell ID and the instrument name if the RunInfo.xml file was provided
+            # Extract the flowcell ID and the instrument name if the
+            # RunInfo.xml file was provided
             self.runmetadata.parseruninfo()
             # Extract PhiX mapping information from the run
             phi = phix.PhiX(inputobject=self)
             phi.main()
-            # Populate the lack of bclcall and nohup call into the metadata sheet
+            # Populate the lack of bclcall and nohup call into the metadata
+            # sheet
             for sample in self.runmetadata.samples:
                 sample.commands = GenObject()
                 sample.commands.nohupcall = 'NA'
                 sample.commands.bclcall = 'NA'
             # Move/link the FASTQ files to strain-specific working directories
-            fastqmover.FastqMover(inputobject=self)
+            fastqmover.FastqMover(
+                metadata=self.runmetadata,
+                path=self.sequence_path
+            )
         # Print the metadata to file
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -91,11 +128,12 @@ class RunAssemble(object):
 
     def quality(self):
         """
-        Creates quality objects and runs quality assessments and quality processes on the
-        supplied sequences
+        Creates quality objects and runs quality assessments and quality
+        processes on the supplied sequences
         """
-        # Validate that the FASTQ files are in the proper format, and that there are no issues e.g. different numbers
-        # of forward and reverse reads, read length longer than quality score length, proper extension
+        # Validate that the FASTQ files are in the proper format, and that
+        # there are no issues e.g. different numbers of forward and reverse
+        # reads, read length longer than quality score length, proper extension
         if not self.debug:
             self.fastq_validate()
         # Run FastQC on the unprocessed fastq files
@@ -109,14 +147,14 @@ class RunAssemble(object):
         # Detect contamination in the reads
         self.contamination_detection()
         # Run FastQC on the processed fastq files
-        self.fastqc_trimmedcorrected()
+        self.fastqc_trimmed_corrected()
         # Fix issue with bbmap gzip
         self.fix_gzip()
         # Exit if only pre-processing of data is requested
         metadataprinter.MetadataPrinter(inputobject=self)
         if self.preprocess:
             logging.info('Pre-processing complete')
-            quit()
+            raise SystemExit
 
     def fastq_validate(self):
         """
@@ -157,12 +195,14 @@ class RunAssemble(object):
         """
         Calculate the levels of contamination in the reads
         """
-        self.qualityobject.contamination_finder(report_path=self.reportpath,
-                                                debug=self.debug,
-                                                threads=self.cpus)
+        self.qualityobject.contamination_finder(
+            report_path=self.report_path,
+            debug=self.debug,
+            threads=self.cpus
+        )
         metadataprinter.MetadataPrinter(inputobject=self)
 
-    def fastqc_trimmedcorrected(self):
+    def fastqc_trimmed_corrected(self):
         """
         Run FastQC on the processed fastq files
         """
@@ -186,48 +226,50 @@ class RunAssemble(object):
         self.evaluate_assemblies()
         # ORF detection
         self.prodigal()
-        # CLARK analyses
-        # self.clark()
 
     def assemble_genomes(self):
         """
         Use skesa to assemble genomes
         """
-        assembly = skesa.Skesa(inputobject=self)
-        assembly.main()
+        assembly = skesa.Skesa(
+            log_file=self.logfile,
+            metadata=self.runmetadata.samples,
+            report_path=self.report_path,
+            sequence_path=self.path,
+            threads=self.cpus
+        )
+        self.runmetadata.samples = assembly.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def evaluate_assemblies(self):
         """
         Evaluate assemblies with Quast
         """
-        qual = evaluate.AssemblyEvaluation(inputobject=self)
-        qual.main()
+        qual = assembly_evaluation.AssemblyEvaluation(
+            log_file=self.logfile,
+            metadata=self.runmetadata.samples,
+            sequence_path=self.path,
+            threads=self.cpus
+        )
+        self.runmetadata.samples = qual.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def prodigal(self):
         """
         Use prodigal to detect open reading frames in the assemblies
         """
-        prodigal.Prodigal(self)
+        prod = prodigal.Prodigal(
+            log_file=self.logfile,
+            metadata=self.runmetadata.samples
+        )
+        
+        self.runmetadata.samples = prod.main()
         metadataprinter.MetadataPrinter(self)
 
-    # def clark(self):
-    #     """
-    #     Run CLARK metagenome analyses on the raw reads and assemblies if the system has adequate resources
-    #     """
-    #     # Run CLARK typing on the .fastq and .fasta files
-    #     automateCLARK.PipelineInit(inputobject=self,
-    #                                extension='fasta',
-    #                                light=True
-    #                                )
-    #     automateCLARK.PipelineInit(inputobject=self,
-    #                                extension='fastq',
-    #                                light=True)
-
-    def agnostictyping(self):
+    def agnostic_typing(self):
         """
-        Perform typing that does not require the genus of the organism to be known
+        Perform typing that does not require the genus of the organism to be
+        known
         """
         # Run mash
         self.mash()
@@ -258,22 +300,28 @@ class RunAssemble(object):
         """
         Run mash to determine closest refseq genome
         """
-        mash.Mash(inputobject=self,
-                  analysistype='mash')
+        mash.Mash(
+            inputobject=self,
+            analysistype='mash'
+        )
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def rmlst_assembled(self):
         """
         Run rMLST analyses on assemblies
         """
-        if not os.path.isfile(os.path.join(self.reportpath, 'rmlst.csv')):
-            rmlst = BLAST(args=self,
-                          analysistype='rmlst',
-                          cutoff=100)
+        if not os.path.isfile(os.path.join(self.report_path, 'rmlst.csv')):
+            rmlst = BLAST(
+                args=self,
+                analysistype='rmlst',
+                cutoff=100
+            )
             rmlst.seekr()
         else:
-            parse = ReportParse(args=self,
-                                analysistype='rmlst')
+            parse = ReportParse(
+                args=self,
+                analysistype='rmlst'
+            )
             parse.report_parse()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -289,39 +337,45 @@ class RunAssemble(object):
         """
         Run the 16S analyses
         """
-        SixteensFull(args=self,
-                     pipelinecommit=self.commit,
-                     startingtime=self.starttime,
-                     scriptpath=self.homepath,
-                     analysistype='sixteens_full',
-                     cutoff=0.95)
+        SixteensFull(
+            args=self,
+            pipelinecommit=self.commit,
+            startingtime=self.start_time,
+            scriptpath=self.home_path,
+            analysistype='sixteens_full',
+            cutoff=0.95
+        )
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def genesippr(self):
         """
         Find genes of interest
         """
-        GeneSippr(args=self,
-                  pipelinecommit=self.commit,
-                  startingtime=self.starttime,
-                  scriptpath=self.homepath,
-                  analysistype='genesippr',
-                  cutoff=0.95,
-                  kmer_size=13,
-                  pipeline=False,
-                  revbait=False)
+        GeneSippr(
+            args=self,
+            pipelinecommit=self.commit,
+            startingtime=self.start_time,
+            scriptpath=self.home_path,
+            analysistype='genesippr',
+            cutoff=0.95,
+            kmer_size=13,
+            pipeline=False,
+            revbait=False
+        )
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def mob_suite(self):
         """
-
+        Run MOB Suite analyses
         """
-        mob = MobRecon(metadata=self.runmetadata.samples,
-                       analysistype='mobrecon',
-                       databasepath=self.reffilepath,
-                       threads=self.cpus,
-                       logfile=self.logfile,
-                       reportpath=self.reportpath)
+        mob = mobrecon.MobRecon(
+            metadata=self.runmetadata.samples,
+            analysistype='mobrecon',
+            databasepath=self.ref_file_path,
+            threads=self.cpus,
+            logfile=self.logfile,
+            reportpath=self.report_path
+        )
         mob.mob_recon()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -329,14 +383,16 @@ class RunAssemble(object):
         """
         Resistance finding - raw reads
         """
-        res = Resistance(args=self,
-                         pipelinecommit=self.commit,
-                         startingtime=self.starttime,
-                         scriptpath=self.homepath,
-                         analysistype='resfinder',
-                         cutoff=0.7,
-                         pipeline=False,
-                         revbait=True)
+        res = Resistance(
+            args=self,
+            pipelinecommit=self.commit,
+            startingtime=self.start_time,
+            scriptpath=self.home_path,
+            analysistype='resfinder',
+            cutoff=0.7,
+            pipeline=False,
+            revbait=True
+        )
         res.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -344,8 +400,10 @@ class RunAssemble(object):
         """
         Resistance finding - assemblies
         """
-        resfinder = BLAST(args=self,
-                          analysistype='resfinder_assembled')
+        resfinder = BLAST(
+            args=self,
+            analysistype='resfinder_assembled'
+        )
         resfinder.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -354,11 +412,13 @@ class RunAssemble(object):
         Prophage detection
         :param cutoff: cutoff value to be used in the analyses
         """
-        prophages = Prophages(args=self,
-                              analysistype='prophages',
-                              cutoff=cutoff,
-                              unique=True)
-        if not os.path.isfile(os.path.join(self.reportpath, 'prophages.csv')):
+        prophages = Prophages(
+            args=self,
+            analysistype='prophages',
+            cutoff=cutoff,
+            unique=True
+        )
+        if not os.path.isfile(os.path.join(self.report_path, 'prophages.csv')):
             prophages.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -366,11 +426,13 @@ class RunAssemble(object):
         """
         Univec contamination search
         """
-        if not os.path.isfile(os.path.join(self.reportpath, 'univec.csv')):
-            univec = Univec(args=self,
-                            analysistype='univec',
-                            cutoff=80,
-                            unique=True)
+        if not os.path.isfile(os.path.join(self.report_path, 'univec.csv')):
+            univec = Univec(
+                args=self,
+                analysistype='univec',
+                cutoff=80,
+                unique=True
+            )
             univec.seekr()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -378,15 +440,17 @@ class RunAssemble(object):
         """
         Virulence gene detection
         """
-        vir = Virulence(args=self,
-                        pipelinecommit=self.commit,
-                        startingtime=self.starttime,
-                        scriptpath=self.homepath,
-                        analysistype='virulence',
-                        cutoff=0.9,
-                        pipeline=False,
-                        revbait=True)
-        if not os.path.isfile(os.path.join(self.reportpath, 'virulence.csv')):
+        vir = Virulence(
+            args=self,
+            pipelinecommit=self.commit,
+            startingtime=self.start_time,
+            scriptpath=self.home_path,
+            analysistype='virulence',
+            cutoff=0.9,
+            pipeline=False,
+            revbait=True
+        )
+        if not os.path.isfile(os.path.join(self.report_path, 'virulence.csv')):
             vir.reporter()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -394,12 +458,14 @@ class RunAssemble(object):
         """
         Run rMLST analyses on raw reads
         """
-        if not os.path.isfile(os.path.join(self.reportpath, 'cgmlst.csv')):
-            cgmlst = KMAMLST(args=self,
-                             pipeline=True,
-                             analysistype='cgmlst',
-                             cutoff=98,
-                             kma_kwargs=' -cge -and')
+        if not os.path.isfile(os.path.join(self.report_path, 'cgmlst.csv')):
+            cgmlst = KMAMLST(
+                args=self,
+                pipeline=True,
+                analysistype='cgmlst',
+                cutoff=98,
+                kma_kwargs=' -cge -and'
+            )
             cgmlst.main()
         else:
             parse = ReportParse(args=self,
@@ -435,12 +501,14 @@ class RunAssemble(object):
         """
         Run rMLST analyses on assemblies
         """
-        if not os.path.isfile(os.path.join(self.reportpath, 'mlst.csv')):
+        if not os.path.isfile(os.path.join(self.report_path, 'mlst.csv')):
 
-            mlst = BLAST(args=self,
-                         analysistype='mlst',
-                         cutoff=100,
-                         genus_specific=True)
+            mlst = BLAST(
+                args=self,
+                analysistype='mlst',
+                cutoff=100,
+                genus_specific=True
+            )
             mlst.seekr()
         else:
             parse = ReportParse(args=self,
@@ -452,11 +520,13 @@ class RunAssemble(object):
         """
         Assembly-based serotyping
         """
-        ec = ECTyper(metadata=self.runmetadata,
-                     report_path=self.reportpath,
-                     assembly_path=os.path.join(self.path, 'raw_assemblies'),
-                     threads=self.cpus,
-                     logfile=self.logfile)
+        ec = ec_typer.ECTyper(
+            metadata=self.runmetadata,
+            report_path=self.report_path,
+            assembly_path=os.path.join(self.path, 'raw_assemblies'),
+            threads=self.cpus,
+            logfile=self.logfile
+        )
         ec.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -464,31 +534,35 @@ class RunAssemble(object):
         """
         Serotyping analyses
         """
-        Serotype(args=self,
-                 pipelinecommit=self.commit,
-                 startingtime=self.starttime,
-                 scriptpath=self.homepath,
-                 analysistype='serosippr',
-                 cutoff=0.90,
-                 pipeline=True)
+        Serotype(
+            args=self,
+            pipelinecommit=self.commit,
+            startingtime=self.start_time,
+            scriptpath=self.home_path,
+            analysistype='serosippr',
+            cutoff=0.90,
+            pipeline=True
+        )
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def seqsero(self):
         """
         Run SeqSero2 on Salmonella samples
         """
-        seqsero = SeqSero(self)
-        seqsero.main()
+        seqsero_obj = seqsero.SeqSero(self)
+        seqsero_obj.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def identity_vtyper(self):
         """
         Legacy vtyper - uses ePCR
         """
-        legacy_vtyper = IdentityVtyper(metadataobject=self.runmetadata.samples,
-                                       analysistype='legacy_vtyper',
-                                       reportpath=self.reportpath,
-                                       mismatches=3)
+        legacy_vtyper = IdentityVtyper(
+            metadataobject=self.runmetadata.samples,
+            analysistype='legacy_vtyper',
+            reportpath=self.report_path,
+            mismatches=3
+        )
         legacy_vtyper.vtyper()
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -496,25 +570,29 @@ class RunAssemble(object):
         """
         Raw read verotoxin typing
         """
-        vero = Verotoxin(args=self,
-                         pipeline=True,
-                         analysistype='verotoxin',
-                         cutoff=90)
-        vero.main()
+        verotoxin = Verotoxin(
+            args=self,
+            pipeline=True,
+            analysistype='verotoxin',
+            cutoff=90
+        )
+        verotoxin.main()
 
     def sistr(self):
         """
         Sistr
         """
-        sistr_obj = sistr.Sistr(inputobject=self,
-                                analysistype='sistr')
+        sistr_obj = sistr.Sistr(
+            inputobject=self,
+            analysistype='sistr'
+        )
         sistr_obj.main()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def run_gdcs(self):
         """
-        Determine the presence of genomically-dispersed conserved sequences (genes from MLST, rMLST, and cgMLST
-        analyses)
+        Determine the presence of genomically-dispersed conserved sequences
+        (genes from MLST, rMLST, and cgMLST analyses)
         """
         # Run the GDCS analysis
         gdcs = GDCS(inputobject=self)
@@ -540,50 +618,78 @@ class RunAssemble(object):
         """
         self.debug = args.debug
         SetupLogging(self.debug)
-        logging.info('Welcome to the CFIA OLC Workflow for Bacterial Assembly and Typing (COWBAT) version {version}'
-                     .format(version=__version__))
-        # Define variables from the arguments - there may be a more streamlined way to do this
+        logging.info(
+            'Welcome to the CFIA OLC Workflow for Bacterial Assembly and '
+            'Typing (COWBAT) version %s', __version__
+        )
+        # Define variables from the arguments - there may be a more
+        # streamlined way to do this
         self.args = args
-        if args.sequencepath.startswith('~'):
-            self.path = os.path.abspath(os.path.expanduser(os.path.join(args.sequencepath)))
+        if args.sequence_path.startswith('~'):
+            self.path = os.path.abspath(
+                os.path.expanduser(
+                    os.path.join(args.sequence_path)
+                )
+            )
         else:
-            self.path = os.path.abspath(os.path.join(args.sequencepath))
-        self.sequencepath = self.path
-        if args.referencefilepath.startswith('~'):
-            self.reffilepath = os.path.expanduser(os.path.abspath(os.path.join(args.referencefilepath)))
+            self.path = os.path.abspath(os.path.join(args.sequence_path))
+        self.sequence_path = self.path
+        if args.reference_file_path.startswith('~'):
+            self.ref_file_path = os.path.expanduser(
+                os.path.abspath(
+                    os.path.join(args.reference_file_path)
+                )
+            )
         else:
-            self.reffilepath = os.path.abspath(os.path.join(args.referencefilepath))
-        self.numreads = args.numreads
+            self.ref_file_path = os.path.abspath(
+                os.path.join(args.reference_file_path)
+            )
+        self.num_reads = args.num_reads
         self.preprocess = args.preprocess
         # Define the start time
-        self.starttime = args.startingtime
-        if args.customsamplesheet:
-            if args.customsamplesheet.startswith('~'):
-                self.customsamplesheet = os.path.expanduser(os.path.abspath(os.path.join(self.customsamplesheet)))
+        self.start_time = args.startingtime
+        if args.custom_sample_sheet:
+            if args.custom_sample_sheet.startswith('~'):
+                self.custom_sample_sheet = os.path.expanduser(
+                    os.path.abspath(
+                        os.path.join(self.custom_sample_sheet)
+                    )
+                )
             else:
-                self.customsamplesheet = os.path.abspath(os.path.join(args.customsamplesheet))
+                self.custom_sample_sheet = os.path.abspath(
+                    os.path.join(args.custom_sample_sheet)
+                )
         else:
-            self.customsamplesheet = args.customsamplesheet
-        if self.customsamplesheet:
-            assert os.path.isfile(self.customsamplesheet), 'Cannot find custom sample sheet as specified {css}' \
-                .format(css=self.customsamplesheet)
-        self.basicassembly = args.basicassembly
-        if not self.customsamplesheet and not os.path.isfile(os.path.join(self.path, 'SampleSheet.csv')):
-            self.basicassembly = True
-            logging.warning('Could not find a sample sheet. Performing basic assembly (no run metadata captured)')
-        # Use the argument for the number of threads to use, or default to the number of cpus in the system
-        self.cpus = args.threads if args.threads else multiprocessing.cpu_count() - 1
+            self.custom_sample_sheet = args.custom_sample_sheet
+        if self.custom_sample_sheet:
+            assert os.path.isfile(self.custom_sample_sheet), \
+                'Cannot find custom sample sheet as specified ' \
+                '{self.custom_sample_sheet}'
+        self.basic_assembly = args.basic_assembly
+        if not self.custom_sample_sheet and not os.path.isfile(
+                os.path.join(self.path, 'SampleSheet.csv')):
+            self.basic_assembly = True
+            logging.warning(
+                'Could not find a sample sheet. Performing basic assembly '
+                '(no run metadata captured)'
+            )
+        # Use the argument for the number of threads to use, or default to the
+        # number of cpus in the system
+        self.cpus = args.threads if args.threads else \
+            multiprocessing.cpu_count() - 1
         # Assertions to ensure that the provided variables are valid
         make_path(self.path)
-        assert os.path.isdir(self.path), 'Supplied path location is not a valid directory {0!r:s}'.format(self.path)
-        self.reportpath = os.path.join(self.path, 'reports')
-        make_path(self.reportpath)
-        assert os.path.isdir(self.reffilepath), 'Reference file path is not a valid directory {0!r:s}' \
-            .format(self.reffilepath)
+        assert os.path.isdir(self.path), \
+            f'Supplied path location is not a valid directory {self.path!r}'
+        self.report_path = os.path.join(self.path, 'reports')
+        make_path(self.report_path)
+        assert os.path.isdir(self.ref_file_path), \
+            f'Reference file path is not a valid directory ' \
+            f'{self.ref_file_path!r}'
         self.commit = __version__
-        self.homepath = args.homepath
+        self.home_path = args.home_path
         self.logfile = os.path.join(self.path, 'logfile')
-        self.runinfo = str()
+        self.run_info = str()
         self.pipeline = True
         self.qualityobject = MetadataObject()
         # Initialise the metadata object
@@ -593,44 +699,67 @@ class RunAssemble(object):
 # If the script is called from the command line, then call the argument parser
 if __name__ == '__main__':
     # Extract the path of the current script from the full path + file name
-    homepath = os.path.split(os.path.abspath(__file__))[0]
+    home_path = os.path.split(os.path.abspath(__file__))[0]
     # Parser for arguments
-    parser = ArgumentParser(description='Assemble genomes from Illumina fastq files')
-    parser.add_argument('-v', '--version',
-                        action='version', version='%(prog)s commit {}'.format(__version__))
-    parser.add_argument('-s', '--sequencepath',
-                        required=True,
-                        help='Path to folder containing sequencing reads')
-    parser.add_argument('-r', '--referencefilepath',
-                        required=True,
-                        help='Provide the location of the folder containing the pipeline accessory files (reference '
-                             'genomes, MLST data, etc.')
-    parser.add_argument('-n', '--numreads',
-                        default=2,
-                        type=int,
-                        help='Specify the number of reads. Paired-reads:'
-                             ' 2, unpaired-reads: 1. Default is paired-end')
-    parser.add_argument('-t', '--threads',
-                        help='Number of threads. Default is the number of cores in the system')
-    parser.add_argument('-c', '--customsamplesheet',
-                        help='Path of folder containing a custom sample sheet and name of sample sheet file '
-                             'e.g. /home/name/folder/BackupSampleSheet.csv. Note that this sheet must still have the '
-                             'same format of Illumina SampleSheet.csv files')
-    parser.add_argument('-b', '--basicassembly',
-                        action='store_true',
-                        help='Performs a basic de novo assembly, and does not collect run metadata')
-    parser.add_argument('-p', '--preprocess',
-                        action='store_true',
-                        help='Performs quality trimming and error correction only. Does not assemble the trimmed + '
-                             'corrected reads')
-    parser.add_argument('-d', '--debug',
-                        action='store_true',
-                        help='Enable debug mode for the pipeline (skip FASTQ validation, and file deletion. Enable '
-                             'debug-level messages if they exist)')
+    parser = ArgumentParser(
+        description='Assemble genomes from Illumina fastq files'
+    )
+    parser.add_argument(
+        '-v', '--version',
+        action='version',
+        version=f'%(prog)s commit {__version__}'
+    )
+    parser.add_argument(
+        '-s', '--sequence_path',
+        required=True,
+        help='Path to folder containing sequencing reads'
+    )
+    parser.add_argument(
+        '-r', '--reference_file_path',
+        required=True,
+        help='Provide the location of the folder containing the pipeline '
+        'accessory files (reference genomes, MLST data, etc.'
+    )
+    parser.add_argument(
+        '-n', '--num_reads',
+        default=2,
+        type=int,
+        help='Specify the number of reads. Paired-reads: 2, unpaired-reads: 1 '
+        ' Default is paired-end'
+    )
+    parser.add_argument(
+        '-t', '--threads',
+        help='Number of threads. Default is the number of cores in the system'
+    )
+    parser.add_argument(
+        '-c', '--custom_sample_sheet',
+        help='Path of folder containing a custom sample sheet and name of '
+        'sample sheet file  e.g. /home/name/folder/BackupSampleSheet.csv. '
+        'Note that this sheet must still have the same format of Illumina '
+        'SampleSheet.csv files'
+    )
+    parser.add_argument(
+        '-b', '--basic_assembly',
+        action='store_true',
+        help='Performs a basic de novo assembly, and does not collect run '
+        'metadata'
+    )
+    parser.add_argument(
+        '-p', '--preprocess',
+        action='store_true',
+        help='Performs quality trimming and error correction only. Does not '
+        'assemble the trimmed + corrected reads'
+    )
+    parser.add_argument(
+        '-d', '--debug',
+        action='store_true',
+        help='Enable debug mode for the pipeline (skip FASTQ validation, and '
+        'file deletion. Enable debug-level messages if they exist)'
+    )
     # Get the arguments into an object
     arguments = parser.parse_args()
     arguments.startingtime = time()
-    arguments.homepath = homepath
+    arguments.home_path = home_path
     # Run the pipeline
     pipeline = RunAssemble(arguments)
     pipeline.main()

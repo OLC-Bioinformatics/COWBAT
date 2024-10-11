@@ -6,7 +6,8 @@ A reduced version of the COWBAT pipeline for diagnostic laboratories
 
 # Standard imports
 from argparse import ArgumentParser
-import logging
+import inspect
+import multiprocessing
 import os
 import traceback
 from typing import (
@@ -15,22 +16,16 @@ from typing import (
     Tuple
 )
 
-# Third-party imports
-from genemethods.assemblypipeline.fastqmover import FastqMover
-
 # Local imports
+from cowbat.assemble import assemble
 from cowbat.methods import (
     initialize_logging,
     read_checkpoint,
+    sample_metadata,
     tilde_expand,
     write_checkpoint,
-    write_metadata_to_file
 )
-from cowbat.set_run_metadata import (
-    basic,
-    determine_and_parse_sample_sheet,
-    process_sample
-)
+from cowbat.quality import quality
 from cowbat.teacup_version import __version__
 
 __author__ = 'adamkoziol'
@@ -46,11 +41,13 @@ class TeacupCOWBAT:
         self,
         sequence_path: str,
         database_path: str,
-        logging_level: str
+        logging_level: str,
+        threads: int = None
     ):
         # Initialise the variables
         self.sequence_path = tilde_expand(path=sequence_path)
         self.database_path = tilde_expand(path=database_path)
+        self.report_path = os.path.join(self.sequence_path, 'reports')
 
         # Set the name of the checkpoint file
         self.checkpoint_file = os.path.join(
@@ -58,7 +55,7 @@ class TeacupCOWBAT:
         )
 
         # Set the name of the log files
-        self.log_file = os.path.join(self.sequence_path, 'logfile')
+        self.log_file = os.path.join(self.sequence_path, 'log_file')
         self.error_log_file = os.path.join(self.sequence_path, 'error.log')
 
         # Initialize logging
@@ -79,9 +76,8 @@ class TeacupCOWBAT:
 
         # Define the pipeline steps and their corresponding methods
         self.pipeline_steps: List[Tuple[str, Callable[[], None]]] = [
-            ('create_quality_object', self.create_quality_object),
-            # ('quality', self.quality),
-            # ('assemble', self.assemble),
+            ('quality', quality),
+            ('assemble', assemble),
             # ('agnostic_typing', self.agnostic_typing),
             # ('typing', self.typing)
         ]
@@ -89,11 +85,19 @@ class TeacupCOWBAT:
         # Initialise the list of metadata
         self.metadata = []
 
+        # Use the argument for the number of threads to use, or default to the
+        # number of cpus in the system
+        self.threads = threads if threads else multiprocessing.cpu_count() - 1
+
     def main(self):
         """
         Run the Teacup COWBAT methods
         """
-        self.sample_metadata()
+        self.metadata = sample_metadata(
+            error_logger=self.error_logger,
+            metadata=self.metadata,
+            sequence_path=self.sequence_path
+        )
         self.run_next_step()
 
     def run_next_step(self) -> None:
@@ -112,67 +116,36 @@ class TeacupCOWBAT:
         # Execute the steps from the determined starting index
         for step, method in self.pipeline_steps[start_index:]:
             try:
-                method()
+                # Get the method's parameters
+                params = inspect.signature(method).parameters
+
+                # Prepare the arguments to pass to the method
+                args = {
+                    'error_logger': self.error_logger,
+                    'log_file': self.log_file,
+                    'metadata': self.metadata,
+                    'report_path': self.report_path,
+                    'sequence_path': self.sequence_path,
+                    'threads': self.threads
+                }
+
+                # Filter the arguments based on the method's parameters
+                filtered_args = {k: v for k, v in args.items() if k in params}
+
+                # Call the method with the filtered arguments
+                self.metadata = method(**filtered_args)
+
+                # Write the checkpoint
                 write_checkpoint(self.checkpoint_file, step)
-                logging.info("Saved checkpoint at step: %s", step)
+                self.logger.info("Saved checkpoint at step: %s", step)
             except Exception as exc:
-                logging.error(
+                self.logger.error(
                     "Pipeline terminated due to an error at step '%s': %s",
                     step, exc
                 )
-                logging.error(traceback.format_exc())
-                self.error_logger(traceback.format_exc())
+                self.logger.error(traceback.format_exc())
+                self.error_logger.error(traceback.format_exc())
                 raise
-
-    def sample_metadata(self):
-        """
-        Helper method to prep metadata from sample sheet (if available)
-        """
-        # Define the sample sheet
-        sample_sheet = os.path.join(
-            self.sequence_path,
-            'SampleSheet.csv'
-        )
-
-        # Process the samples appropriate depending on whether a sample sheet
-        # was provided
-        if os.path.isfile(sample_sheet):
-
-            # Extract the necessary information from the sample sheet
-            data = determine_and_parse_sample_sheet(
-                file_path=sample_sheet
-            )
-            # Create the metadata for each sample
-            self.metadata = process_sample(
-                commit=__version__,
-                data=data,
-                path=self.sequence_path
-            )
-        else:
-            # If the sample sheet is missing, perform basic assembly
-            self.metadata = basic(
-                commit=__version__,
-                sequence_path=self.sequence_path
-            )
-
-        # Move/link the FASTQ files to strain-specific working directories
-        FastqMover(
-            metadata=self.metadata,
-            path=self.sequence_path
-        )
-
-        # Write the metadata to file
-        write_metadata_to_file(
-            error_logger=self.error_logger,
-            metadata=self.metadata
-        )
-
-    def create_quality_object(self):
-        """
-        Run quality checking on the samples
-        """
-        print(self.metadata)
-        quit()
 
 
 def cli():
@@ -197,6 +170,10 @@ def cli():
         help='Path of the folder containing the database'
     )
     parser.add_argument(
+        '-t', '--threads',
+        help='Number of threads. Default is the number of cores in the system'
+    )
+    parser.add_argument(
         '-l', '--log',
         choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
         default='INFO',
@@ -210,7 +187,8 @@ def cli():
     teacup = TeacupCOWBAT(
         sequence_path=arguments.sequence_path,
         database_path=arguments.database_path,
-        logging_level=arguments.log
+        logging_level=arguments.log,
+        threads=arguments.threads
     )
 
     # Run the Teacup COWBAT pipeline

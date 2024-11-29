@@ -94,6 +94,7 @@ class TeacupCOWBAT:
 
         # Ensure that all the required programs are present in the environment
         missing = check_programs(
+            logger=self.logger,
             programs=programs
         )
 
@@ -102,7 +103,7 @@ class TeacupCOWBAT:
             raise SystemExit
 
         # Determine the last successful step
-        self.last_step = read_checkpoint(self.checkpoint_file)
+        self.last_step = read_checkpoint(checkpoint_file=self.checkpoint_file)
         self.logger.info("Starting from step: %s", self.last_step)
 
         # Define the pipeline steps and their corresponding methods
@@ -127,6 +128,7 @@ class TeacupCOWBAT:
         """
         self.metadata = sample_metadata(
             error_logger=self.error_logger,
+            logger=self.logger,
             metadata=self.metadata,
             sequence_path=self.sequence_path
         )
@@ -175,7 +177,10 @@ class TeacupCOWBAT:
                 self.metadata = method(**filtered_args)
 
                 # Write the checkpoint
-                write_checkpoint(self.checkpoint_file, step)
+                write_checkpoint(
+                    checkpoint_file=self.checkpoint_file,
+                    step=step
+                )
                 self.logger.info("Saved checkpoint at step: %s", step)
             except Exception as exc:
                 self.logger.error(

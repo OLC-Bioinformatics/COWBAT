@@ -21,6 +21,7 @@ __author__ = 'adamkoziol'
 
 
 def run_metaphlan_analyses(
+    *,  # Enforce keyword arguments
     error_logger: logging.Logger,
     file_format: str,
     log_file: str,
@@ -108,7 +109,11 @@ def run_metaphlan_analyses(
     return metadata
 
 
-def _set_metadata_attributes(file_format: str, sample: CustomBox) -> CustomBox:
+def _set_metadata_attributes(
+    *,  # Enforce keyword arguments
+    file_format: str,
+    sample: CustomBox
+) -> CustomBox:
     """
     Set the metaphlan attributes for the sample
 
@@ -149,6 +154,7 @@ def _set_metadata_attributes(file_format: str, sample: CustomBox) -> CustomBox:
 
 
 def _set_metaphlan_command(
+    *,  # Enforce keyword arguments
     file_format: str,
     sample: CustomBox,
     threads: int
@@ -199,6 +205,7 @@ def _set_metaphlan_command(
 
 
 def _write_to_log_files(
+    *,  # Enforce keyword arguments
     command: str,
     err: str,
     file_format: str,

@@ -14,7 +14,7 @@ import os
 from typing import Any, Dict, List, Optional
 
 # Third-party imports
-from genemethods.assemblypipeline.metadata_reader import read_metadata
+from cowbat.metadata_reader import read_metadata
 from olctools.accessoryFunctions.accessoryFunctions import (
     filer,
     make_path,
@@ -26,15 +26,20 @@ from olctools.accessoryFunctions.metadata import CustomBox
 NUM_LINES_TO_READ = 1000
 
 
-def determine_and_parse_sample_sheet(file_path: str) -> Dict[str, Any]:
+def determine_and_parse_sample_sheet(
+    *,
+    file_path: str,
+    logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Determines whether the sample sheet is for MiSeq or NextSeq based on its
     content and calls the appropriate parsing function.
 
     :param file_path: Path to the sample sheet file.
+    :param logger: Logger object for logging messages.
     :return: A dictionary containing parsed data from the sample sheet.
     """
-    logging.info(
+    logger.info(
         "Determining the type of sample sheet for file: %s",
         file_path)
 
@@ -45,29 +50,40 @@ def determine_and_parse_sample_sheet(file_path: str) -> Dict[str, Any]:
     # Check for specific keywords to determine the sample sheet type
     for line in lines:
         if "Local Run Manager Analysis Id" in line or "iemfileversion" in line:
-            logging.info("MiSeq sample sheet detected for file: %s", file_path)
-            return parse_miseq_sample_sheet(file_path=file_path)
+            logger.info("MiSeq sample sheet detected for file: %s", file_path)
+            return parse_miseq_sample_sheet(
+                file_path=file_path,
+                logger=logger
+            )
         if "FileFormatVersion" in line or "InstrumentPlatform" in line:
-            logging.info(
+            logger.info(
                 "NextSeq sample sheet detected for file: %s",
                 file_path)
-            return parse_nextseq_sample_sheet(file_path=file_path)
+            return parse_nextseq_sample_sheet(
+                file_path=file_path,
+                logger=logger
+            )
 
     # If no specific keywords are found, raise an error
-    logging.error(
+    logger.error(
         "Unable to determine the sample sheet type for file: %s",
         file_path)
     raise ValueError("Unable to determine the sample sheet type.")
 
 
-def parse_miseq_sample_sheet(file_path: str) -> Dict[str, Any]:
+def parse_miseq_sample_sheet(
+    *,  # All parameters below must be passed as keyword arguments
+    file_path: str,
+    logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Parses a MiSeq sample sheet and organizes the data into sections.
 
     :param file_path: Path to the MiSeq sample sheet file.
+    :param logger: Logger object for logging messages.
     :return: A dictionary containing parsed data from the sample sheet.
     """
-    logging.info("Parsing MiSeq sample sheet: %s", file_path)
+    logger.info("Parsing MiSeq sample sheet: %s", file_path)
 
     # Open the sample sheet file and read all lines
     with open(file_path, "r", encoding='utf-8') as file:
@@ -93,7 +109,7 @@ def parse_miseq_sample_sheet(file_path: str) -> Dict[str, Any]:
         # Check if the line indicates a new section
         if line.startswith("[") and line.endswith("]"):
             current_section = line[1:-1]  # Update the current section
-            logging.debug("Entering section: %s", current_section)
+            logger.debug("Entering section: %s", current_section)
             continue
 
         # Parse lines based on the current section
@@ -101,16 +117,16 @@ def parse_miseq_sample_sheet(file_path: str) -> Dict[str, Any]:
             # Split the line into key-value pairs and store them
             key, value = line.split(',', 1)
             data[current_section][key.strip()] = value.strip()
-            logging.debug("Parsed %s: %s", key.strip(), value.strip())
+            logger.debug("Parsed %s: %s", key.strip(), value.strip())
         elif current_section == "Reads":
             # Append read lengths to the Reads list
             data["ReadsList"].append(int(line))
-            logging.debug("Parsed read length: %d", int(line))
+            logger.debug("Parsed read length: %d", int(line))
         elif current_section == "Data":
             if not headers:
                 # The first line in the Data section contains headers
                 headers = line.split(',')
-                logging.debug("Parsed headers: %s", headers)
+                logger.debug("Parsed headers: %s", headers)
             else:
                 # Subsequent lines contain sample data
                 values = line.split(',')
@@ -119,7 +135,7 @@ def parse_miseq_sample_sheet(file_path: str) -> Dict[str, Any]:
                     headers[i]: values[i] for i in range(len(headers))
                 }
                 data["Data"].append(sample_data)
-                logging.debug("Parsed sample data: %s", sample_data)
+                logger.debug("Parsed sample data: %s", sample_data)
 
     # Convert Reads list to a dictionary with forward and reverse read lengths
     if len(data["ReadsList"]) == 2:
@@ -127,24 +143,29 @@ def parse_miseq_sample_sheet(file_path: str) -> Dict[str, Any]:
             "forward_read_length": data["ReadsList"][0],
             "reverse_read_length": data["ReadsList"][1]
         }
-        logging.info(
+        logger.info(
             "Parsed read lengths: forward=%d, reverse=%d",
             data["Reads"]["forward_read_length"],
             data["Reads"]["reverse_read_length"]
         )
 
-    logging.info("Finished parsing MiSeq sample sheet: %s", file_path)
+    logger.info("Finished parsing MiSeq sample sheet: %s", file_path)
     return data
 
 
-def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
+def parse_nextseq_sample_sheet(
+    *,  # All parameters below must be passed as keyword arguments
+    file_path: str,
+    logger: logging.Logger
+) -> Dict[str, Any]:
     """
     Parses a NextSeq sample sheet and organizes the data into sections.
 
     :param file_path: Path to the NextSeq sample sheet file.
+    :param logger: Logger object for logging messages.
     :return: A dictionary containing parsed data from the sample sheet.
     """
-    logging.info("Parsing NextSeq sample sheet: %s", file_path)
+    logger.info("Parsing NextSeq sample sheet: %s", file_path)
 
     # Open the sample sheet file and read all lines
     with open(file_path, "r", encoding='utf-8') as file:
@@ -155,13 +176,13 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
         "Header": {},  # Stores key-value pairs from the [Header] section
         "Reads": {},  # Stores read cycle counts from the [Reads] section
         "Sequencing_Settings": {},  # Stores key-value pairs from the
-                                    # [Sequencing_Settings] section
+        # [Sequencing_Settings] section
         "BCLConvert_Settings": {},  # Stores key-value pairs from the
-                                    # [BCLConvert_Settings] section
+        # [BCLConvert_Settings] section
         "BCLConvert_Data": [],  # Stores sample data from the
-                                # [BCLConvert_Data] section
+        # [BCLConvert_Data] section
         "Cloud_Settings": {},  # Stores key-value pairs from the
-                               # [Cloud_Settings] section
+        # [Cloud_Settings] section
         "Cloud_Data": []  # Stores sample data from the [Cloud_Data] section
     }
 
@@ -185,7 +206,7 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
             # Update the current section. Remove square brackets
             current_section = line.replace(',', '').replace('[', '') \
                 .replace(']', '')
-            logging.debug("Entering section: %s", current_section)
+            logger.debug("Entering section: %s", current_section)
             continue
 
         # Create a variable to store all the sections of the sample sheet
@@ -202,14 +223,14 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
             # Split the line into key-value pairs and store them
             key, value = line.split(',', 1)
             data[current_section][key.strip()] = value.strip()
-            logging.debug("Parsed %s: %s", key.strip(), value.strip())
+            logger.debug("Parsed %s: %s", key.strip(), value.strip())
         elif current_section == "Reads":
 
             # Split the line into key-value pairs and store them as integers
             key, value = line.split(',', 1)
             data["Reads"][key.strip()] = int(value.strip())
 
-            logging.debug(
+            logger.debug(
                 "Parsed read cycle count: %s = %d",
                 key.strip(), int(value.strip())
             )
@@ -219,7 +240,7 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
                 # The first line in the BCLConvert_Data section contains
                 # headers
                 bcl_data_headers = line.split(',')
-                logging.debug("Parsed headers: %s", bcl_data_headers)
+                logger.debug("Parsed headers: %s", bcl_data_headers)
             else:
 
                 # Subsequent lines contain sample data
@@ -228,13 +249,13 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
                     bcl_data_headers[i]: values[i]
                     for i in range(len(bcl_data_headers))}
                 data["BCLConvert_Data"].append(sample_data)
-                logging.debug("Parsed BCLConvert_Data sample: %s", sample_data)
+                logger.debug("Parsed BCLConvert_Data sample: %s", sample_data)
         elif current_section == "Cloud_Data":
             if not cloud_data_headers:
 
                 # The first line in the Cloud_Data section contains headers
                 cloud_data_headers = line.split(',')
-                logging.debug("Parsed headers: %s", cloud_data_headers)
+                logger.debug("Parsed headers: %s", cloud_data_headers)
             else:
 
                 # Subsequent lines contain sample data
@@ -247,19 +268,21 @@ def parse_nextseq_sample_sheet(file_path: str) -> Dict[str, Any]:
                 sample_data["Sample_Plate"] = sample_data.get(
                     "ProjectName", "")
                 data["Cloud_Data"].append(sample_data)
-                logging.debug("Parsed Cloud_Data sample: %s", sample_data)
+                logger.debug("Parsed Cloud_Data sample: %s", sample_data)
 
     # Adhere to the same naming scheme as the MiSeq Reads section
     data["Reads"]['forward_read_length'] = data["Reads"]["Read1Cycles"]
     data["Reads"]['reverse_read_length'] = data["Reads"]["Read2Cycles"]
 
-    logging.info("Finished parsing NextSeq sample sheet: %s", file_path)
+    logger.info("Finished parsing NextSeq sample sheet: %s", file_path)
     return data
 
 
 def process_sample(
+    *,  # All parameters below must be passed as keyword arguments
     commit: str,
     data: Dict[str, str],
+    logger: logging.Logger,
     path: str,
 ) -> List[CustomBox]:
     """
@@ -268,6 +291,7 @@ def process_sample(
 
     :param commit: String of the Teacup COWBAT commit
     :param data: Dictionary containing sample data.
+    :param logger: Logger object for logging messages.
     :param path: Path to the output directory.
     :return: List of CustomBox objects
     """
@@ -283,17 +307,21 @@ def process_sample(
         key = "Cloud_Data"
 
     for i, sample in enumerate(data[key]):
-        logging.info("Processing sample: %s", sample["Sample_ID"])
+        logger.info("Processing sample: %s", sample["Sample_ID"])
 
         # Try and replicate the Illumina rules to create file names from
         # "Sample_Name"
-        sample_name = sample_namer(raw_sample_name=sample["Sample_ID"])
-        logging.debug("Sanitized sample name: %s", sample_name)
+        sample_name = sample_namer(
+            logger=logger,
+            raw_sample_name=sample["Sample_ID"]
+        )
+        logger.debug("Sanitized sample name: %s", sample_name)
 
         samples = populate_metadata(
             basic_assembly=False,
             commit=commit,
             fastq_name=sample_name,
+            logger=logger,
             samples=samples,
             sequence_path=path,
             data=data,
@@ -304,17 +332,22 @@ def process_sample(
     return samples
 
 
-def sample_namer(raw_sample_name: str) -> str:
+def sample_namer(
+    *,  # All parameters below must be passed as keyword arguments
+    logger: logging.Logger,
+    raw_sample_name: str
+) -> str:
     """
     Tries to replicate the Illumina rules to create names from 'Sample_Name'.
 
     This function replaces spaces and certain special characters in the sample
     name with hyphens or removes them entirely to create a valid file name.
 
+    :param logger: Logger object for logging messages.
     :param raw_sample_name: The raw sample name to be processed.
     :return: A sanitized sample name suitable for use as a file name.
     """
-    logging.debug("Sanitizing sample name: %s", raw_sample_name)
+    logger.debug("Sanitizing sample name: %s", raw_sample_name)
 
     # Characters to replace with hyphens
     replace_with_hyphen = [" ", ".", "=", "/", "---", "--"]
@@ -328,21 +361,23 @@ def sample_namer(raw_sample_name: str) -> str:
     # Replace specified characters with hyphens
     for char in replace_with_hyphen:
         sample_name = sample_name.replace(char, "-")
-        logging.debug("Replaced '%s' with '-': %s", char, sample_name)
+        logger.debug("Replaced '%s' with '-': %s", char, sample_name)
 
     # Remove specified characters
     for char in remove_chars:
         sample_name = sample_name.replace(char, "")
-        logging.debug("Removed '%s': %s", char, sample_name)
+        logger.debug("Removed '%s': %s", char, sample_name)
 
-    logging.debug("Final sanitized sample name: %s", sample_name)
+    logger.debug("Final sanitized sample name: %s", sample_name)
     return sample_name
 
 
 def populate_metadata(
+    *,  # All parameters below must be passed as keyword arguments
     basic_assembly: bool,
     commit: str,
     fastq_name: str,
+    logger: logging.Logger,
     samples: List[CustomBox],
     sequence_path: str,
     data: Dict = None,
@@ -356,8 +391,13 @@ def populate_metadata(
     new metadata. If previous metadata exists, it appends it to the samples
         list.
 
+    :param basic_assembly: Boolean indicating whether to perform basic assembly
+    :param commit: Commit information to be added to the metadata.
+    :param data: Dictionary containing sample sheet data.
     :param fastq_name: Name of the FASTQ file (without extension).
+    :param logger: Logger object for logging messages.
     :param samples: List of CustomBox objects representing samples.
+    :param sample_number: Sample number to be added to the metadata.
     :param sequence_path: Path to the directory containing the sequence files.
     :return: Updated list of CustomBox objects representing samples.
 
@@ -385,7 +425,7 @@ def populate_metadata(
 
     # Make the destination folder
     make_path(output_dir)
-    logging.debug("Created output directory: %s", output_dir)
+    logger.debug("Created output directory: %s", output_dir)
 
     # Add the output directory to the metadata
     metadata.general.output_directory = output_dir
@@ -399,12 +439,12 @@ def populate_metadata(
     # Grab metadata from previous runs
     previous_metadata = read_metadata(sample=metadata)
 
-    logging.debug("Previous metadata: %s", previous_metadata)
+    logger.debug("Previous metadata: %s", previous_metadata)
 
     # Update samples (if required)
     if previous_metadata:
         samples.append(previous_metadata)
-        logging.info("Updated samples with previous metadata")
+        logger.info("Updated samples with previous metadata")
     # Otherwise, create new metadata using the appropriate method based on if
     # the sample sheet was provided
     else:
@@ -413,6 +453,7 @@ def populate_metadata(
                 basic_metadata_populate(
                     commit=commit,
                     fastq_name=fastq_name,
+                    logger=logger,
                     metadata=metadata,
                     output_dir=output_dir,
                     sequence_path=sequence_path
@@ -423,6 +464,7 @@ def populate_metadata(
                 sample_sheet_metadata_populate(
                     commit=commit,
                     data=data,
+                    logger=logger,
                     sample_name=fastq_name,
                     sequence_path=sequence_path,
                     sample_number=sample_number
@@ -432,8 +474,10 @@ def populate_metadata(
 
 
 def basic_metadata_populate(
+    *,
     commit: str,
     fastq_name: str,
+    logger: logging.Logger,
     metadata: CustomBox,
     output_dir: str,
     sequence_path: str
@@ -447,6 +491,7 @@ def basic_metadata_populate(
 
     :param commit: Commit information to be added to the metadata.
     :param fastq_name: Name of the FASTQ file (without extension).
+    :param logger: Logger object for logging messages.
     :param metadata: CustomBox object to be populated with metadata.
     :param output_dir: Path to the output directory.
     :param sequence_path: Path to the directory containing the sequence files.
@@ -464,13 +509,13 @@ def basic_metadata_populate(
     >>> print(populated_metadata)
     <CustomBox object at 0x...>
     """
-    logging.info("Added metadata for sample: %s", fastq_name)
+    logger.info("Added metadata for sample: %s", fastq_name)
 
     # Get the fastq files specific to the fastq_name
     specific_fastq = glob(
         os.path.join(sequence_path, f'{fastq_name}*.fastq*')
     )
-    logging.debug("Specific FASTQ files: %s", specific_fastq)
+    logger.debug("Specific FASTQ files: %s", specific_fastq)
 
     # Initialize the run category
     metadata.run = CustomBox()
@@ -484,7 +529,7 @@ def basic_metadata_populate(
         metadata.general.fastq_files.append(
             os.path.join(output_dir, os.path.basename(fastq))
         )
-        logging.debug("Linked FASTQ file: %s", fastq)
+        logger.debug("Linked FASTQ file: %s", fastq)
 
     # Add the log locations to the metadata object
     metadata.general.logout = os.path.join(
@@ -504,7 +549,10 @@ def basic_metadata_populate(
     metadata.general.commit = commit
 
     # Run the read length method
-    read_length(sample=metadata)
+    read_length(
+        logger=logger,
+        sample=metadata
+    )
 
     return metadata
 
@@ -512,6 +560,7 @@ def basic_metadata_populate(
 def sample_sheet_metadata_populate(
     commit: str,
     data: Dict[str, Any],
+    logger: logging.Logger,
     sample_name: str,
     sequence_path: str,
     sample_number: int
@@ -525,6 +574,7 @@ def sample_sheet_metadata_populate(
 
     :param commit: Commit information to be added to the metadata.
     :param data: Dictionary containing sample sheet data.
+    :param logger: Logger object for logging messages.
     :param sample_name: Name of the sample.
     :param sequence_path: Path to the directory containing the sequence files.
     :param sample_number: Sample number to be added to the metadata.
@@ -553,18 +603,23 @@ def sample_sheet_metadata_populate(
 
     # Create the 'General' category for strain_metadata
     strain_metadata.general = CustomBox(
-        {'output_directory': os.path.join(sequence_path, sample_name),
-         'pipeline_commit': commit, 'log_out': os.path.join(
-             sequence_path, sample_name, f'{sample_name} _log_out.txt'),
-         'log_err': os.path.join(
-             sequence_path, sample_name, f'{sample_name} _log_err.txt')})
+        {
+            'output_directory': os.path.join(sequence_path, sample_name),
+            'pipeline_commit': commit, 'log_out': os.path.join(
+                sequence_path, sample_name, f'{sample_name} _log_out.txt'
+            ),
+            'log_err': os.path.join(
+                sequence_path, sample_name, f'{sample_name} _log_err.txt'
+            )
+        }
+    )
 
     # Add the path to the JSON output file
     strain_metadata.json_file = os.path.join(
         strain_metadata.general.output_directory,
         f'{strain_metadata.name}_metadata.json'
     )
-    logging.debug("Set general attributes for sample: %s", sample_name)
+    logger.debug("Set general attributes for sample: %s", sample_name)
 
     # Add the header object to strain_metadata
     strain_metadata.run = CustomBox(copy.copy(data['Header']))
@@ -573,45 +628,61 @@ def sample_sheet_metadata_populate(
     # index2, Sample_Project
     for key, value in data.items():
         strain_metadata.run[key] = value if value else "NA"
-        logging.debug("Set run.%s = %s", key, value if value else "NA")
+        logger.debug("Set run.%s = %s", key, value if value else "NA")
+
+    # Adjust the run.Data attribute to be the first element in the list
+    try:
+        if isinstance(strain_metadata.run.Data, list):
+            strain_metadata.run.Data = strain_metadata.run.Data[0]
+    # For NextSeq
+    except AttributeError:
+        if isinstance(strain_metadata.run.Cloud_Data, list):
+            strain_metadata.run.Data = strain_metadata.run.Cloud_Data[0]
 
     # Add the sample number
     strain_metadata.run.SampleNumber = sample_number
-    logging.debug(
+    logger.debug(
         "Set run.SampleNumber = %d",
         strain_metadata.run.SampleNumber)
 
     return strain_metadata
 
 
-def basic(commit: str, sequence_path: str) -> List[CustomBox]:
+def basic(
+    *,  # All parameters below must be passed as keyword arguments
+    commit: str,
+    logger: logging.Logger,
+    sequence_path: str
+) -> List[CustomBox]:
     """
     Processes FASTQ files, extracts metadata, and sets up the output
     directories.
 
     :param commit: String of the commit
+    :param logger: Logger object for logging messages.
     :param sequence_path: Path to the directory containing FASTQ files.
     :return: A list of CustomBox objects containing sample metadata.
     """
-    logging.info("Processing FASTQ files in directory: %s", sequence_path)
+    logger.info("Processing FASTQ files in directory: %s", sequence_path)
 
     # Initialize a list of samples
     samples: List[CustomBox] = []
 
     # Grab any .fastq files in the path
     fastq_files = glob(os.path.join(sequence_path, '*.fastq*'))
-    logging.debug("Found FASTQ files: %s", fastq_files)
+    logger.debug("Found FASTQ files: %s", fastq_files)
 
     # Extract the base name of the globbed name + path provided
     fastq_names = map(lambda x: os.path.split(x)[1], filer(fastq_files))
 
     # Iterate through the names of the fastq files
     for fastq_name in sorted(fastq_names):
-        logging.info("Processing FASTQ file: %s", fastq_name)
+        logger.info("Processing FASTQ file: %s", fastq_name)
         samples = populate_metadata(
             basic_assembly=True,
             commit=commit,
             fastq_name=fastq_name,
+            logger=logger,
             samples=samples,
             sequence_path=sequence_path
         )
@@ -619,15 +690,20 @@ def basic(commit: str, sequence_path: str) -> List[CustomBox]:
     return samples
 
 
-def read_length(sample: CustomBox) -> None:
+def read_length(
+    *,  # All parameters below must be passed as keyword arguments
+    logger: logging.Logger,
+    sample: CustomBox
+) -> None:
     """
     Calculates the read length of the FASTQ files. Short reads will not be
     able to be assembled properly with the default parameters used for
     SKESA.
 
+    :param logger: Logger object for logging messages.
     :param sample: CustomBox object containing sample metadata.
     """
-    logging.info('Estimating read lengths of FASTQ files')
+    logger.info('Estimating read lengths of FASTQ files')
 
     # Populate empty attributes
     sample.run.Date = 'NA'
@@ -646,21 +722,30 @@ def read_length(sample: CustomBox) -> None:
         if isinstance(sample.general.fastq_files, list):
             # Set the forward fastq to be the first entry in the list
             forward_fastq = sorted(sample.general.fastq_files)[0]
-            logging.debug(
+            logger.debug(
                 "Processing forward FASTQ file: %s",
                 forward_fastq)
 
             # Read the first 1000 lines of the FASTQ file
-            forward_reads = read_first_1000_lines(forward_fastq)
+            forward_reads = read_first_1000_lines(
+                file_path=forward_fastq,
+                logger=logger
+            )
 
             # Decode the bytes object to a string
             forward_reads_str = decode_bytes(
-                forward_reads, sample, 'forward_length')
+                attr='forward_length',
+                data=forward_reads,
+                logger=logger,
+                sample=sample
+            )
 
             # Calculate the length of the forward reads
             sample.run.forward_length = calculate_read_length(
-                forward_reads_str)
-            logging.debug(
+                logger=logger,
+                reads=forward_reads_str
+            )
+            logger.debug(
                 "Forward read length: %d",
                 sample.run.forward_length)
 
@@ -668,37 +753,51 @@ def read_length(sample: CustomBox) -> None:
             # reverse reads
             if len(sample.general.fastq_files) == 2:
                 reverse_fastq = sorted(sample.general.fastq_files)[1]
-                logging.debug(
+                logger.debug(
                     "Processing reverse FASTQ file: %s",
                     reverse_fastq)
-                reverse_reads = read_first_1000_lines(reverse_fastq)
+                reverse_reads = read_first_1000_lines(
+                    file_path=reverse_fastq,
+                    logger=logger
+                )
 
                 # Decode the bytes object to a string
                 reverse_reads_str = decode_bytes(
-                    reverse_reads, sample, 'reverse_length')
+                    attr='reverse_length',
+                    data=reverse_reads,
+                    logger=logger,
+                    sample=sample
+                )
 
                 # Calculate the length of the reverse reads
                 sample.run.reverse_length = calculate_read_length(
-                    reverse_reads_str)
-                logging.debug(
+                    logger=logger,
+                    reads=reverse_reads_str
+                )
+                logger.debug(
                     "Reverse read length: %d",
                     sample.run.reverse_length)
 
             # Populate metadata of single end reads with 'NA'
             else:
                 sample.run.reverse_length = 0
-                logging.debug(
+                logger.debug(
                     "Single end read detected, reverse length set to 0")
 
 
-def read_first_1000_lines(file_path: str) -> bytes:
+def read_first_1000_lines(
+    *,  # All parameters below must be passed as keyword arguments
+    file_path: str,
+    logger: logging.Logger
+) -> bytes:
     """
     Reads the first 1000 lines of a FASTQ file.
 
     :param file_path: Path to the FASTQ file.
+    :param logger: Logger object for logging messages.
     :return: The first 1000 lines of the file as bytes.
     """
-    logging.debug("Reading first 1000 lines of file: %s", file_path)
+    logger.debug("Reading first 1000 lines of file: %s", file_path)
     lines = []
 
     # Determine the appropriate open function based on file extension
@@ -713,43 +812,55 @@ def read_first_1000_lines(file_path: str) -> bytes:
                     break  # Stop if end of file is reached
                 lines.append(line)
     except (OSError, IOError) as exc:
-        logging.error("Error reading file %s: %s", file_path, exc)
+        logger.error("Error reading file %s: %s", file_path, exc)
         return b''
 
     # Join the list of lines into a single bytes object
-    logging.debug("Successfully read first 1000 lines of file: %s", file_path)
+    logger.debug("Successfully read first 1000 lines of file: %s", file_path)
     return b''.join(lines)
 
 
-def decode_bytes(data: bytes, sample: CustomBox, attr: str) -> Optional[str]:
+def decode_bytes(
+    *,
+    attr: str,
+    data: bytes,
+    logger: logging.Logger,
+    sample: CustomBox
+) -> Optional[str]:
     """
     Decodes a bytes object to a string and handles UnicodeDecodeError.
 
-    :param data: The bytes object to decode.
-    :param sample: The sample object to update in case of error.
     :param attr: The attribute to set to 0 in case of error.
+    :param data: The bytes object to decode.
+    :param logger: Logger object for logging messages.
+    :param sample: The sample object to update in case of error.
     :return: The decoded string or None if decoding fails.
     """
-    logging.debug("Decoding bytes for attribute: %s", attr)
+    logger.debug("Decoding bytes for attribute: %s", attr)
     try:
         return data.decode('utf-8')
     except UnicodeDecodeError:
         setattr(sample.run, attr, 0)
-        logging.error(
+        logger.error(
             "UnicodeDecodeError: Setting %s to 0 for sample: %s",
             attr,
             sample.name)
         return None
 
 
-def calculate_read_length(reads: Optional[str]) -> int:
+def calculate_read_length(
+    *,
+    logger: logging.Logger,
+    reads: Optional[str]
+) -> int:
     """
     Calculates the length of the reads from the FASTQ file content.
 
+    :param logger: Logger object for logging messages.
     :param reads: The FASTQ file content as a string.
     :return: The maximum read length or 0 if reads is None.
     """
-    logging.debug("Calculating read length")
+    logger.debug("Calculating read length")
     if reads is None:
         return 0
 
@@ -760,5 +871,5 @@ def calculate_read_length(reads: Optional[str]) -> int:
             if iterator % 4 == 1
         )
     except (ValueError, TypeError):
-        logging.error("Error calculating read length")
+        logger.error("Error calculating read length")
         return 0

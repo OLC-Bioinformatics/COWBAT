@@ -12,6 +12,7 @@ from argparse import ArgumentParser
 from time import time
 
 # Third-party imports
+from cowbat import fastq_mover
 from olctools.accessoryFunctions.accessoryFunctions import (
     GenObject,
     make_path,
@@ -25,7 +26,7 @@ from genemethods.assemblypipeline import (
     basicAssembly,
     compress,
     ec_typer,
-    fastqmover,
+    mash,
     mobrecon,
     phix,
     prodigal,
@@ -41,11 +42,10 @@ from genemethods.assemblypipeline.primer_finder_ipcress import (
 )
 from genemethods.geneseekr.blast import BLAST
 from genemethods.genesippr.genesippr import GeneSippr
-from genemethods.MASHsippr import mash
 from genemethods.MLST.mlst_kma import KMAMLST
 from genemethods.MLSTsippr.mlst import ReportParse
 from genemethods.sixteenS.sixteens_full import SixteenS as SixteensFull
-from genemethods.typingclasses.typingclasses import (
+from genemethods.typing_classes.typing_classes import (
     GDCS,
     Prophages,
     Resistance,
@@ -113,7 +113,7 @@ class RunAssemble:
                 sample.commands.nohupcall = 'NA'
                 sample.commands.bclcall = 'NA'
             # Move/link the FASTQ files to strain-specific working directories
-            fastqmover.FastqMover(
+            fastq_mover.FastqMover(
                 metadata=self.runmetadata,
                 path=self.sequence_path
             )
@@ -124,7 +124,7 @@ class RunAssemble:
         """
         Create the quality object
         """
-        self.qualityobject = quality.Quality(inputobject=self)
+        self.quality_object = quality.Quality(inputobject=self)
 
     def quality(self):
         """
@@ -160,42 +160,42 @@ class RunAssemble:
         """
         Attempt to detect and fix issues with the FASTQ files
         """
-        self.qualityobject.validate_fastq()
+        self.quality_object.validate_fastq()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_raw(self):
         """
         Run FastQC on the unprocessed FASTQ files
         """
-        self.qualityobject.fastqcthreader(level='Raw')
+        self.quality_object.fastqc_threader(level='Raw')
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def quality_trim(self):
         """
         Perform quality trimming and FastQC on the trimmed files
         """
-        self.qualityobject.trimquality()
+        self.quality_object.trim_quality()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fastqc_trimmed(self):
         """
         Run FastQC on the quality trimmed FASTQ files
         """
-        self.qualityobject.fastqcthreader(level='Trimmed')
+        self.quality_object.fastqc_threader(level='Trimmed')
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def error_correct(self):
         """
         Perform error correcting on the reads
         """
-        self.qualityobject.error_correction()
+        self.quality_object.error_correction()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def contamination_detection(self):
         """
         Calculate the levels of contamination in the reads
         """
-        self.qualityobject.contamination_finder(
+        self.quality_object.contamination_finder(
             report_path=self.report_path,
             debug=self.debug,
             threads=self.cpus
@@ -206,14 +206,14 @@ class RunAssemble:
         """
         Run FastQC on the processed fastq files
         """
-        self.qualityobject.fastqcthreader(level='trimmedcorrected')
+        self.quality_object.fastqc_threader(level='trimmed_corrected')
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def fix_gzip(self):
         """
         Fix issue with BBDuk gzip
         """
-        self.qualityobject.fix_gzip()
+        self.quality_object.fix_gzip()
         metadataprinter.MetadataPrinter(inputobject=self)
 
     def assemble(self):
@@ -262,7 +262,7 @@ class RunAssemble:
             log_file=self.logfile,
             metadata=self.runmetadata.samples
         )
-        
+
         self.runmetadata.samples = prod.main()
         metadataprinter.MetadataPrinter(self)
 
@@ -300,9 +300,13 @@ class RunAssemble:
         """
         Run mash to determine closest refseq genome
         """
-        mash.Mash(
-            inputobject=self,
-            analysistype='mash'
+        self.runmetadata.samples = mash.run_mash_analyses(
+            analysis_type='mash',
+            log_file=self.logfile,
+            metadata=self.runmetadata.samples,
+            reference_file_path=self.ref_file_path,
+            report_path=self.report_path,
+            threads=self.cpus
         )
         metadataprinter.MetadataPrinter(inputobject=self)
 
@@ -339,7 +343,7 @@ class RunAssemble:
         """
         SixteensFull(
             args=self,
-            pipelinecommit=self.commit,
+            pipeline_commit=self.commit,
             startingtime=self.start_time,
             scriptpath=self.home_path,
             analysistype='sixteens_full',
@@ -353,7 +357,7 @@ class RunAssemble:
         """
         GeneSippr(
             args=self,
-            pipelinecommit=self.commit,
+            pipeline_commit=self.commit,
             startingtime=self.start_time,
             scriptpath=self.home_path,
             analysistype='genesippr',
@@ -385,7 +389,7 @@ class RunAssemble:
         """
         res = Resistance(
             args=self,
-            pipelinecommit=self.commit,
+            pipeline_commit=self.commit,
             startingtime=self.start_time,
             scriptpath=self.home_path,
             analysistype='resfinder',
@@ -442,7 +446,7 @@ class RunAssemble:
         """
         vir = Virulence(
             args=self,
-            pipelinecommit=self.commit,
+            pipeline_commit=self.commit,
             startingtime=self.start_time,
             scriptpath=self.home_path,
             analysistype='virulence',
@@ -536,7 +540,7 @@ class RunAssemble:
         """
         Serotype(
             args=self,
-            pipelinecommit=self.commit,
+            pipeline_commit=self.commit,
             startingtime=self.start_time,
             scriptpath=self.home_path,
             analysistype='serosippr',
@@ -691,7 +695,7 @@ class RunAssemble:
         self.logfile = os.path.join(self.path, 'logfile')
         self.run_info = str()
         self.pipeline = True
-        self.qualityobject = MetadataObject()
+        self.quality_object = MetadataObject()
         # Initialise the metadata object
         self.runmetadata = MetadataObject()
 

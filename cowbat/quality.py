@@ -24,6 +24,7 @@ from olctools.accessoryFunctions.accessoryFunctions import (
 
 
 def quality(
+    *,  # Enforce keyword arguments
     error_logger: logging.Logger,
     log_file: str,
     logger: logging.Logger,
@@ -51,6 +52,7 @@ def quality(
     # there are no issues e.g. different numbers of forward and reverse
     # reads, read length longer than quality score length, proper extension
     metadata = validate_fastq(
+        error_logger=error_logger,
         metadata=metadata,
         log_file=log_file,
         logger=logger,

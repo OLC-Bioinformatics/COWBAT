@@ -16,6 +16,7 @@ from olctools.accessoryFunctions.accessoryFunctions import (
 
 
 def multi_qc(
+    *,  # Enforce the use of keyword arguments
     log_file: str,
     logger: logging.Logger,
     report_path: str,
@@ -51,6 +52,7 @@ def multi_qc(
 
 
 def _prepare_command(
+    *,  # Enforce the use of keyword arguments
     report_path: str,
     sequence_path: str
 ) -> str:
@@ -66,6 +68,7 @@ def _prepare_command(
 
 
 def _run_command(
+    *,  # Enforce the use of keyword arguments
     command: str,
     logger: logging.Logger
 ) -> Tuple[str, str]:
@@ -85,6 +88,7 @@ def _run_command(
 
 
 def _write_to_logfile(
+    *,  # Enforce the use of keyword arguments
     err: str,
     log_file: str,
     out: str

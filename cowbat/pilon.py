@@ -18,6 +18,7 @@ from olctools.accessoryFunctions.metadata import CustomBox
 
 
 def pilon(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],
@@ -59,6 +60,7 @@ def pilon(
 
 
 def _is_valid_pilon_sample(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> bool:
@@ -106,6 +108,7 @@ def _is_valid_pilon_sample(
 
 
 def _initialize_sample_pilon(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox,
     threads: int
@@ -147,6 +150,7 @@ def _initialize_sample_pilon(
 
 
 def _run_pilon(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -173,6 +177,7 @@ def _run_pilon(
 
 
 def _execute_pilon_command(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -207,6 +212,7 @@ def _execute_pilon_command(
 
 
 def _log_pilon_output(
+    *,  # Enforce keyword arguments
     err: str,
     log_file: str,
     logger: logging.Logger,

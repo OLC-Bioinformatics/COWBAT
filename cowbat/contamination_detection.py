@@ -26,6 +26,7 @@ __author__ = 'adamkoziol'
 
 
 def contamination_finder(
+    *,  # Enforce keyword arguments
     input_path: str,
     log_file: str,
     logger: logging.Logger,
@@ -90,6 +91,7 @@ def contamination_finder(
 
 
 def run_confindr(
+    *,  # Enforce keyword arguments
     debug: bool,
     log_file: str,
     input_path: str,
@@ -140,7 +142,10 @@ def run_confindr(
     logger.info('Contamination detection complete!')
 
 
-def load_confindr_report(confindr_report: str) -> Dict[str, Dict[str, Any]]:
+def load_confindr_report(
+    *,  # Enforce keyword arguments
+    confindr_report: str
+) -> Dict[str, Dict[str, Any]]:
     """
     Load the ConFindr report into a dictionary using pandas.
 
@@ -154,6 +159,7 @@ def load_confindr_report(confindr_report: str) -> Dict[str, Dict[str, Any]]:
 
 
 def process_confindr_results(
+    *,  # Enforce keyword arguments
     confindr_results: Dict[str, Dict[str, Any]],
     logger: logging.Logger,
     metadata: List[CustomBox],
@@ -193,10 +199,14 @@ def process_confindr_results(
 
             # Handle percent contamination calculations
             sample.confindr.percent_contamination = get_confindr_value(
-                confindr_results[line], 'PercentContam', 0
+                result_line=confindr_results[line],
+                key='PercentContam',
+                default=0
             )
             sample.confindr.percent_contamination_std = get_confindr_value(
-                confindr_results[line], 'PercentContamStandardDeviation', 0
+                result_line=confindr_results[line],
+                key='PercentContamStandardDeviation',
+                default=0
             )
 
             if sample.confindr.contamination_status == 'True':
@@ -208,8 +218,11 @@ def process_confindr_results(
 
 
 def get_confindr_value(
-        result_line: Dict[str, Any],
-        key: str, default: Any) -> Any:
+    *,
+    result_line: Dict[str, Any],
+    key: str,
+    default: Any
+) -> Any:
     """
     Get a value from the ConFindr result line, handling missing keys.
 
@@ -230,8 +243,10 @@ def get_confindr_value(
 
 
 def write_pipeline_report(
-        metadata: List[CustomBox],
-        pipeline_report: str) -> None:
+    *,  # Enforce keyword arguments
+    metadata: List[CustomBox],
+    pipeline_report: str
+) -> None:
     """
     Write the processed ConFindr results to the pipeline report.
 

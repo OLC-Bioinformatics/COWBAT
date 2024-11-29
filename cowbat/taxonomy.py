@@ -11,7 +11,10 @@ from typing import List
 
 # Third-party imports
 from genemethods.assemblypipeline.mash import run_mash_analyses
-from olctools.accessoryFunctions.accessoryFunctions import CustomBox
+from olctools.accessoryFunctions.accessoryFunctions import (
+    CustomBox,
+    write_metadata_to_file
+)
 
 # Local imports
 from cowbat.metaphlan import run_metaphlan_analyses
@@ -49,10 +52,18 @@ def taxonomy(
         analysis_type='mash',
         error_logger=error_logger,
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         reference_file_path=reference_file_path,
         report_path=report_path,
         threads=threads
+    )
+
+    # Write the metadata to file
+    write_metadata_to_file(
+        error_logger=error_logger,
+        logger=logger,
+        metadata=metadata
     )
 
     # Perform metaphlan analyses on FASTQ files
@@ -80,4 +91,4 @@ def taxonomy(
     # Return the updated metadata
     quit()
 
-    return metadata
+    # return metadata

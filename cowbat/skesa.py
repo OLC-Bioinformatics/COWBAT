@@ -8,13 +8,14 @@ Run SKESA on FASTQ files.
 import logging
 import os
 import shutil
-from typing import List, Any
+from typing import List
 
 # Third-party imports
 from olctools.accessoryFunctions.accessoryFunctions import (
     run_subprocess,
     write_to_log_file
 )
+from olctools.accessoryFunctions.metadata import CustomBox
 
 __author__ = 'adamkoziol'
 
@@ -26,9 +27,10 @@ class Skesa:
 
     def __init__(
         self,
+        *,  # Enforce keyword arguments
         log_file: str,
         logger: logging.Logger,
-        metadata: List[Any],
+        metadata: List[CustomBox],
         report_path: str,
         sequence_path: str,
         threads: int
@@ -39,7 +41,7 @@ class Skesa:
         Args:
             log_file (str): Path to the log file.
             logger (logging.Logger): Logger for recording information.
-            metadata (List[Any]): List of metadata sample objects.
+            metadata (List[CustomBox]): List of metadata sample objects.
             report_path (str): Path to the report directory.
             sequence_path (str): Path to the sequence directory.
             threads (int): Number of threads to use.
@@ -57,7 +59,7 @@ class Skesa:
         os.makedirs(self.reportpath, exist_ok=True)
         logger.info('Assembling sequences')
 
-    def main(self) -> None:
+    def main(self) -> List[CustomBox]:
         """
         Assemble genomes and determine whether the assembly was successful.
         """
@@ -72,15 +74,15 @@ class Skesa:
         """
         for sample in self.metadata:
             self.logger.debug("Processing sample: %s", sample.name)
-            if not self._initialize_sample_assembly(sample):
+            if not self._initialize_sample_assembly(sample=sample):
                 continue
 
             if sample.commands.assemble and not os.path.isfile(
                 sample.general.assembly_file
             ):
-                self._run_skesa(sample)
+                self._run_skesa(sample=sample)
 
-    def _initialize_sample_assembly(self, sample) -> bool:
+    def _initialize_sample_assembly(self, *, sample: CustomBox) -> bool:
         """
         Initialize the assembly attributes for a sample.
 
@@ -157,7 +159,7 @@ class Skesa:
             sample.general.best_assembly_file = 'NA'
             return False
 
-    def _run_skesa(self, sample) -> None:
+    def _run_skesa(self, *, sample: CustomBox) -> None:
         """
         Run the SKESA command for a sample.
 

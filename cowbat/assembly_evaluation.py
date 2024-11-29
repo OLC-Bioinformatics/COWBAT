@@ -12,7 +12,7 @@ import logging
 import os
 import multiprocessing
 from queue import Queue
-from typing import Any, List
+from typing import List
 
 # Third-party imports
 from cowbat.bowtie2 import (
@@ -46,7 +46,7 @@ class AssemblyEvaluation:
         self,
         log_file: str,
         logger: logging.Logger,
-        metadata: List[Any],
+        metadata: List[CustomBox],
         sequence_path: str,
         threads: int
     ) -> None:
@@ -56,7 +56,7 @@ class AssemblyEvaluation:
         Args:
             log_file (str): Path to the log file.
             logger (logging.Logger): Logger for recording information.
-            metadata (List[Any]): List of metadata sample objects.
+            metadata (List[CustomBox]): List of metadata sample objects.
             sequence_path (str): Path to the sequence directory.
             threads (int): Number of threads to use.
         """

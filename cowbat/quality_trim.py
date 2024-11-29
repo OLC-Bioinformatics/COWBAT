@@ -20,6 +20,7 @@ __author__ = 'adamkoziol'
 
 
 def trim_quality(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox]

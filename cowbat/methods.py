@@ -7,15 +7,20 @@ Common methods used by the COWBAT pipeline.
 # Standard imports
 import logging
 import os
-from typing import Tuple
+import subprocess
+from typing import (
+    List,
+    Tuple
+)
 
 # Third-party imports
-from genemethods.assemblypipeline.fastqmover import FastqMover
 from olctools.accessoryFunctions.accessoryFunctions import (
     write_metadata_to_file
 )
+from olctools.accessoryFunctions.metadata import CustomBox
 
 # Local imports
+from cowbat.fastq_mover import FastqMover
 from cowbat.set_run_metadata import (
     basic,
     determine_and_parse_sample_sheet,
@@ -24,7 +29,7 @@ from cowbat.set_run_metadata import (
 from cowbat.teacup_version import __version__
 
 
-def read_checkpoint(checkpoint_file: str) -> str:
+def read_checkpoint(*, checkpoint_file: str) -> str:
     """
     Read the last successful step from the checkpoint file.
 
@@ -45,7 +50,7 @@ def read_checkpoint(checkpoint_file: str) -> str:
     return ""
 
 
-def write_checkpoint(checkpoint_file: str, step: str) -> None:
+def write_checkpoint(*, checkpoint_file: str, step: str) -> None:
     """
     Write the current step to the checkpoint file.
 
@@ -60,7 +65,7 @@ def write_checkpoint(checkpoint_file: str, step: str) -> None:
         f.write(step)
 
 
-def tilde_expand(path: str) -> str:
+def tilde_expand(*, path: str) -> str:
     """
     Expand the tilde (~) in the supplied path to the full user directory path.
 
@@ -88,8 +93,47 @@ def tilde_expand(path: str) -> str:
     return return_path
 
 
+def initialize_error_log(*, error_log_file: str) -> logging.Logger:
+    """
+    Initialize the error log file by setting up the file handler.
+
+    Args:
+        error_log_file (str): Path to the error log file.
+
+    Returns:
+        logging.Logger: The error logger instance.
+    """
+    # Create a separate logger for errors
+    error_logger = logging.getLogger('error_logger')
+    error_logger.setLevel(logging.ERROR)
+
+    # Clear existing handlers
+    if error_logger.hasHandlers():
+        error_logger.handlers.clear()
+
+    # File handler for logging errors to a file
+    error_file_handler = logging.FileHandler(error_log_file)
+    error_file_handler.setLevel(logging.ERROR)
+    error_file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    ))
+    error_logger.addHandler(error_file_handler)
+
+    # Stream handler for logging errors to the console
+    error_console_handler = logging.StreamHandler()
+    error_console_handler.setLevel(logging.ERROR)
+    error_console_handler.setFormatter(logging.Formatter(
+        '%(asctime)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    ))
+    error_logger.addHandler(error_console_handler)
+
+    return error_logger
+
+
 def initialize_logging(
-    error_log_file: str, log_file: str, logging_level: str
+    *, error_log_file: str, log_file: str, logging_level: str
 ) -> Tuple[logging.Logger, logging.Logger]:
     """
     Initializes logging for the application.
@@ -113,8 +157,12 @@ def initialize_logging(
             os.remove(file)
 
     # Create a logger
-    logger = logging.getLogger()
+    logger = logging.getLogger('main_logger')
     logger.setLevel(getattr(logging, logging_level))
+
+    # Clear existing handlers
+    if logger.hasHandlers():
+        logger.handlers.clear()
 
     # Create a formatter without milliseconds
     formatter = logging.Formatter(
@@ -122,21 +170,19 @@ def initialize_logging(
         datefmt='%Y-%m-%d %H:%M:%S'
     )
 
-    # Check if handlers already exist to avoid duplicate logs
-    if not logger.handlers:
-        # Create a file handler
-        file_handler = logging.FileHandler(log_file)
-        file_handler.setLevel(getattr(logging, logging_level))
-        file_handler.setFormatter(formatter)
+    # Create a file handler
+    file_handler = logging.FileHandler(log_file)
+    file_handler.setLevel(getattr(logging, logging_level))
+    file_handler.setFormatter(formatter)
 
-        # Create a stream handler (console)
-        console_handler = logging.StreamHandler()
-        console_handler.setLevel(getattr(logging, logging_level))
-        console_handler.setFormatter(formatter)
+    # Create a stream handler (console)
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(getattr(logging, logging_level))
+    console_handler.setFormatter(formatter)
 
-        # Add handlers to the logger
-        logger.addHandler(file_handler)
-        logger.addHandler(console_handler)
+    # Add handlers to the logger
+    logger.addHandler(file_handler)
+    logger.addHandler(console_handler)
 
     # Initialize the error log
     error_logger = initialize_error_log(error_log_file=error_log_file)
@@ -144,46 +190,21 @@ def initialize_logging(
     return logger, error_logger
 
 
-def initialize_error_log(error_log_file: str) -> logging.Logger:
-    """
-    Initialize the error log file by setting up the file handler.
-
-    Args:
-        error_log_file (str): Path to the error log file.
-
-    Returns:
-        logging.Logger: The error logger instance.
-    """
-    # Create a separate logger for errors
-    error_logger = logging.getLogger('error_logger')
-    error_logger.setLevel(logging.ERROR)
-
-    # Check if error logger handlers already exist
-    if not error_logger.handlers:
-        # File handler for logging errors to a file
-        error_file_handler = logging.FileHandler(error_log_file)
-        error_file_handler.setLevel(logging.ERROR)
-        error_file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s'))
-        error_logger.addHandler(error_file_handler)
-
-        # Stream handler for logging errors to the console
-        error_console_handler = logging.StreamHandler()
-        error_console_handler.setLevel(logging.ERROR)
-        error_console_handler.setFormatter(logging.Formatter(
-            '%(asctime)s - %(levelname)s - %(message)s'))
-        error_logger.addHandler(error_console_handler)
-
-    return error_logger
-
-
 def sample_metadata(
-    error_logger,
-    metadata,
-    sequence_path
+    *,  # Enforce the use of keyword arguments
+    error_logger: logging.Logger,
+    logger: logging.Logger,
+    metadata: List[CustomBox],
+    sequence_path: str
 ):
     """
     Helper method to prep metadata from sample sheet (if available)
+
+    Args:
+        error_logger (logging.Logger): Logger for recording errors.
+        logger (logging.Logger): Logger for recording information.
+        metadata (List[CustomBox]): List of metadata objects for the samples.
+        sequence_path (str): Path to the sequence files.
     """
     # Define the sample sheet
     sample_sheet = os.path.join(
@@ -197,30 +218,95 @@ def sample_metadata(
 
         # Extract the necessary information from the sample sheet
         data = determine_and_parse_sample_sheet(
-            file_path=sample_sheet
+            file_path=sample_sheet,
+            logger=error_logger
         )
+
         # Create the metadata for each sample
         metadata = process_sample(
             commit=__version__,
             data=data,
+            logger=error_logger,
             path=sequence_path
         )
     else:
         # If the sample sheet is missing, perform basic assembly
         metadata = basic(
             commit=__version__,
+            logger=error_logger,
             sequence_path=sequence_path
         )
     # Move/link the FASTQ files to strain-specific working directories
     FastqMover(
         metadata=metadata,
+        logger=logger,
         path=sequence_path
     )
 
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
     return metadata
+
+
+def check_programs(
+    *,  # Enforce the use of keyword arguments
+    logger: logging.Logger,
+    programs: List[str] = None
+) -> List[str]:
+    """
+    Check if the required command line programs are installed.
+
+    Args:
+        logger (logging.Logger): Logger for recording information.
+        programs (List[str]): List of program names to check. Defaults to None.
+
+    Returns:
+        List[str]: List of missing programs.
+    """
+    if not programs:
+        logger.error("No programs provided to check.")
+        return []
+
+    missing_programs = []
+
+    for program in programs:
+        try:
+            # Attempt to run the program with a simple command to check if it
+            # is installed
+            subprocess.run(
+                [program, '--version'],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=True
+            )
+            logger.debug("%s is installed.", program)
+        except subprocess.CalledProcessError:
+            try:
+                # Attempt to run the program with a different command
+                subprocess.run(
+                    [program, '-h'],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    check=True
+                )
+                logger.debug("%s is installed.", program)
+            except subprocess.CalledProcessError:
+                logger.warning("%s is missing.", program)
+                missing_programs.append(program)
+        except FileNotFoundError:
+            logger.warning("%s is missing.", program)
+            missing_programs.append(program)
+
+    if missing_programs:
+        logger.error("The following programs are missing:")
+        for program in missing_programs:
+            logger.error(program)
+        return missing_programs
+
+    logger.info("All required programs are installed.")
+    return []

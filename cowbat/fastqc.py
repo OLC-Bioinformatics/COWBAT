@@ -25,10 +25,12 @@ __author__ = 'adamkoziol'
 
 
 def fastqc_threader(
-        level: str,
-        log_file: str,
-        logger: logging.Logger,
-        metadata: List[CustomBox], threads: int
+    *,  # Enforce keyword arguments
+    level: str,
+    log_file: str,
+    logger: logging.Logger,
+    metadata: List[CustomBox],
+    threads: int
 ) -> List[CustomBox]:
     """
     Run quality control on FASTQ files using FastQC.
@@ -75,11 +77,12 @@ def fastqc_threader(
 
 
 def fastqc(
-        level: str,
-        log_file: str,
-        logger: logging.Logger,
-        sample: CustomBox,
-        threads: int
+    *,  # Enforce keyword arguments
+    level: str,
+    log_file: str,
+    logger: logging.Logger,
+    sample: CustomBox,
+    threads: int
 ) -> CustomBox:
     """
     Run FastQC on the given sample.
@@ -121,10 +124,11 @@ def fastqc(
 
 
 def prepare_fastqc_call(
-        level: str,
-        logger: logging.Logger,
-        sample: CustomBox,
-        threads: int
+    *,  # Enforce keyword arguments
+    level: str,
+    logger: logging.Logger,
+    sample: CustomBox,
+    threads: int
 ) -> Tuple[str, str]:
     """
     Prepare the FastQC system call based on the processing level.
@@ -222,6 +226,7 @@ def prepare_fastqc_call(
 
 
 def get_reader_and_files(
+    *,  # Enforce keyword arguments
     attr: str,
     logger: logging.Logger,
     sample: CustomBox,
@@ -311,13 +316,14 @@ def process_fastqc_queue() -> None:
 
 
 def run_fastqc(
-        system_call: str,
-        fastqc_reads: str,
-        log_file: str,
-        logger: logging.Logger,
-        level: str,
-        output_dir: str,
-        sample: CustomBox
+    *,  # Enforce keyword arguments
+    fastqc_reads: str,
+    log_file: str,
+    logger: logging.Logger,
+    level: str,
+    output_dir: str,
+    sample: CustomBox,
+    system_call: str,
 ) -> Tuple[str, str]:
     """
     Run the FastQC system calls and log the output.
@@ -392,6 +398,7 @@ def run_fastqc(
 
 
 def _run_command(
+    *,  # Enforce keyword arguments
     command: str,
     logger: logging.Logger
 ) -> Tuple[str, str]:
@@ -411,13 +418,14 @@ def _run_command(
 
 
 def _log_fastqc_output(
-        err_str: str,
-        fastqc_reads: str,
-        log_file: str,
-        logger: logging.Logger,
-        out_str: str,
-        sample: CustomBox,
-        system_call: str,
+    *,  # Enforce keyword arguments
+    err_str: str,
+    fastqc_reads: str,
+    log_file: str,
+    logger: logging.Logger,
+    out_str: str,
+    sample: CustomBox,
+    system_call: str,
 ) -> None:
     """
     Log the output and errors from the FastQC commands.
@@ -455,6 +463,7 @@ def _log_fastqc_output(
 
 
 def rename_fastqc_outputs(
+    *,  # Enforce keyword arguments
     level: str,
     logger: logging.Logger,
     output_dir: str,

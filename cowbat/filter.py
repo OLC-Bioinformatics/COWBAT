@@ -10,7 +10,7 @@ import logging
 import os
 import re
 import shutil
-from typing import Any, List
+from typing import List
 
 # Third-party imports
 from Bio import SeqIO
@@ -18,11 +18,12 @@ from olctools.accessoryFunctions.metadata import CustomBox
 
 
 def filter_contigs(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
-    metadata: List[Any],
+    metadata: List[CustomBox],
     sequence_path: str,
     threads: int
-) -> List[Any]:
+) -> List[CustomBox]:
     """
     Filter contigs based on depth and length.
 
@@ -76,6 +77,7 @@ def filter_contigs(
 
 
 def _is_valid_filter_sample(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> bool:
@@ -116,6 +118,7 @@ def _is_valid_filter_sample(
 
 
 def _initialize_sample_filter(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> None:
@@ -137,6 +140,7 @@ def _initialize_sample_filter(
 
 
 def _run_filter(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
     sample: CustomBox,
     sequence_path: str
@@ -178,6 +182,7 @@ def _run_filter(
 
 
 def _filter_contigs(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> None:
@@ -230,6 +235,7 @@ def _filter_contigs(
 
 
 def _copy_filtered_file(
+    *,  # Enforce the use of keyword arguments
     logger: logging.Logger,
     sample: CustomBox,
     sequence_path: str

@@ -252,10 +252,10 @@ def generate_sample_data(
 
 
 def write_quality_report(
+    *,  # Enforce keyword arguments
     commit: str,
     logger: logging.Logger,
     metadata: List[Any],
-    *,
     reference_file_path: str,
     report_path: str
 ) -> None:

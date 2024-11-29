@@ -15,6 +15,7 @@ __author__ = 'adamkoziol'
 
 
 def extract_insert_size(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     metadata: List[CustomBox]
 ) -> List[CustomBox]:
@@ -46,8 +47,8 @@ def extract_insert_size(
                 sample.name
             )
 
-            sample = initialize_sample_attributes(sample)
-            sample = parse_reads_stats_file(sample)
+            sample = initialize_sample_attributes(sample=sample)
+            sample = parse_reads_stats_file(sample=sample)
         else:
             logger.warning(
                 "Reads stats file not found for sample %s, skipping",
@@ -59,7 +60,7 @@ def extract_insert_size(
     return metadata
 
 
-def initialize_sample_attributes(sample: CustomBox) -> CustomBox:
+def initialize_sample_attributes(*, sample: CustomBox) -> CustomBox:
     """
     Initialize attributes for the insert size estimation.
 
@@ -77,7 +78,7 @@ def initialize_sample_attributes(sample: CustomBox) -> CustomBox:
     return sample
 
 
-def parse_reads_stats_file(sample: CustomBox) -> CustomBox:
+def parse_reads_stats_file(*, sample: CustomBox) -> CustomBox:
     """
     Parse the reads stats file to extract insert size estimations.
 
@@ -113,14 +114,19 @@ def parse_reads_stats_file(sample: CustomBox) -> CustomBox:
             # Continue parsing to find the FR section of the current block
             elif size in line:
                 sample = extract_insert_size_distribution(
-                    read_stats, sample, current_reads
+                    current_reads=current_reads,
+                    read_stats=read_stats,
+                    sample=sample
                 )
 
     return sample
 
 
 def extract_insert_size_distribution(
-    read_stats, sample: CustomBox, current_reads: int
+    *,  # Enforce keyword arguments
+    current_reads: int,
+    read_stats: iter,
+    sample: CustomBox
 ) -> CustomBox:
     """
     Extract the mean and standard deviation of the insert size for a block.
@@ -153,6 +159,7 @@ def extract_insert_size_distribution(
 
 
 def calculate_weighted_insert_size(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     metadata: List[CustomBox]
 ) -> List[CustomBox]:

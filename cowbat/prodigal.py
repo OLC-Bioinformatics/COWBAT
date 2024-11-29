@@ -31,6 +31,7 @@ class Prodigal:
 
     def __init__(
         self,
+        *,  # Enforce keyword arguments
         log_file: str,
         logger: logging.Logger,
         metadata: List[CustomBox]
@@ -122,15 +123,15 @@ class Prodigal:
             )
 
             # Populate attributes for Prodigal results
-            self.populate_prodigal_attributes(sample)
+            self.populate_prodigal_attributes(sample=sample)
 
             # Create the folder to store the reports
-            self.create_report_directory(sample)
+            self.create_report_directory(sample=sample)
 
             # Check if the report already exists and is not empty
-            if self.is_report_needed(sample):
+            if self.is_report_needed(sample=sample):
                 # Run the Prodigal command
-                self.run_prodigal_command(sample)
+                self.run_prodigal_command(sample=sample)
 
             self.logger.debug(
                 "Completed gene prediction for sample: %s", sample.name
@@ -139,7 +140,7 @@ class Prodigal:
             # Mark the task as done
             self.predict_queue.task_done()
 
-    def populate_prodigal_attributes(self, sample) -> None:
+    def populate_prodigal_attributes(self, *, sample: CustomBox) -> None:
         """
         Populate attributes for Prodigal results.
 
@@ -171,7 +172,7 @@ class Prodigal:
             sample.name, sample.commands.prodigal
         )
 
-    def create_report_directory(self, sample) -> None:
+    def create_report_directory(self, *, sample: CustomBox) -> None:
         """
         Create the folder to store the reports.
 
@@ -180,7 +181,7 @@ class Prodigal:
         """
         os.makedirs(sample.prodigal.report_dir, exist_ok=True)
 
-    def is_report_needed(self, sample) -> bool:
+    def is_report_needed(self, *, sample=CustomBox) -> bool:
         """
         Check if the report already exists and is not empty.
 
@@ -193,7 +194,7 @@ class Prodigal:
         return not os.path.isfile(sample.prodigal.results_file) or \
             os.stat(sample.prodigal.results_file).st_size == 0
 
-    def run_prodigal_command(self, sample) -> None:
+    def run_prodigal_command(self, *, sample: CustomBox) -> None:
         """
         Run the Prodigal command and log the output.
 
@@ -229,16 +230,16 @@ class Prodigal:
 
         for sample in self.metadata:
             # Initialize Prodigal attributes for the sample
-            self.initialize_prodigal_attributes(sample)
+            self.initialize_prodigal_attributes(sample=sample)
 
             if sample.general.best_assembly_file != 'NA':
                 self.logger.debug(
                     "Parsing Prodigal results for sample: %s", sample.name
                 )
                 # Parse the Prodigal results for the sample
-                self.parse_prodigal_results(sample)
+                self.parse_prodigal_results(sample=sample)
 
-    def initialize_prodigal_attributes(self, sample) -> None:
+    def initialize_prodigal_attributes(self, *, sample: CustomBox) -> None:
         """
         Initialize Prodigal attributes for a sample.
 
@@ -256,7 +257,7 @@ class Prodigal:
         sample.prodigal.predicted_genes_over_500bp = 0
         sample.prodigal.predicted_genes_under_500bp = 0
 
-    def parse_prodigal_results(self, sample) -> None:
+    def parse_prodigal_results(self, *, sample: CustomBox) -> None:
         """
         Parse the Prodigal results for a sample.
 

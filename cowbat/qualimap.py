@@ -8,7 +8,7 @@ Qualimap functions
 from concurrent.futures import as_completed, ThreadPoolExecutor
 import logging
 import os
-from typing import Any, Dict, List
+from typing import Dict, List
 
 # Third-party imports
 from olctools.accessoryFunctions.accessoryFunctions import (
@@ -19,11 +19,12 @@ from olctools.accessoryFunctions.metadata import CustomBox
 
 
 def qualimapper(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],
     threads: int
-) -> List[Any]:
+) -> List[CustomBox]:
     """
     Create threads and commands for performing reference mapping for
     qualimap analyses.
@@ -41,18 +42,18 @@ def qualimapper(
     Args:
         log_file (str): Path to the log file.
         logger (logging.Logger): Logger for recording information.
-        metadata (List[Any]): List of sample metadata.
+        metadata (List[CustomBox]): List of sample metadata.
         threads (int): Number of threads to use for processing.
 
     Returns:
-        List[Any]: Updated metadata after qualimap analyses.
+        List[CustomBox]: Updated metadata after qualimap analyses.
     """
     logger.info('Running qualimap on samples')
 
     futures = []
     with ThreadPoolExecutor(max_workers=threads) as executor:
         for sample in metadata:
-            sample = _initialize_sample_qualimap(sample)
+            sample = _initialize_sample_qualimap(sample=sample)
             if sample.general.best_assembly_file != "NA":
                 future = executor.submit(_run_qualimap, log_file, sample)
                 futures.append(future)
@@ -72,7 +73,7 @@ def qualimapper(
     return updated_metadata
 
 
-def _initialize_sample_qualimap(sample: CustomBox) -> None:
+def _initialize_sample_qualimap(*, sample: CustomBox) -> None:
     """
     Initialize the qualimap attributes for a sample.
 
@@ -99,6 +100,7 @@ def _initialize_sample_qualimap(sample: CustomBox) -> None:
 
 
 def _run_qualimap(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -111,13 +113,13 @@ def _run_qualimap(
         logger: The logger object to record information.
         sample: The sample object to run qualimap on.
     """
-    if not _is_valid_sample(sample):
+    if not _is_valid_sample(sample=sample):
         logger.warning(
             "Invalid sample %s, skipping qualimap run", sample.name
         )
         return
 
-    qualimap_call = _construct_qualimap_command(sample)
+    qualimap_call = _construct_qualimap_command(sample=sample)
     sample.commands.qualimap = qualimap_call
 
     logger.debug(
@@ -135,7 +137,7 @@ def _run_qualimap(
     return sample
 
 
-def _is_valid_sample(sample: CustomBox) -> bool:
+def _is_valid_sample(*, sample: CustomBox) -> bool:
     """
     Check if the sample is valid for running qualimap.
 
@@ -162,7 +164,7 @@ def _is_valid_sample(sample: CustomBox) -> bool:
     return True
 
 
-def _construct_qualimap_command(sample: CustomBox) -> str:
+def _construct_qualimap_command(*, sample: CustomBox) -> str:
     """
     Construct the qualimap command for a sample.
 
@@ -179,6 +181,7 @@ def _construct_qualimap_command(sample: CustomBox) -> str:
 
 
 def _execute_qualimap_command(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -207,6 +210,7 @@ def _execute_qualimap_command(
 
 
 def _log_qualimap_output(
+    *,  # Enforce keyword arguments
     err: str,
     log_file: str,
     out: str,
@@ -231,6 +235,7 @@ def _log_qualimap_output(
 
 
 def parse_qualimap_report(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     metadata: List[CustomBox]
 ) -> None:
@@ -252,7 +257,7 @@ def parse_qualimap_report(
         logger.debug("Processing sample: %s", sample.name)
 
         # Check if the sample is valid for parsing
-        if not _is_valid_qualimap_sample(sample):
+        if not _is_valid_qualimap_sample(sample=sample):
             logger.warning(
                 "Skipping sample %s as best assembly file is 'NA' or "
                 "report file not found", sample.name
@@ -265,12 +270,15 @@ def parse_qualimap_report(
             sample=sample
         )
         # Update the sample object with the extracted key-value pairs
-        sample = _update_sample_with_qualimap_dict(sample, qualimap_dict)
+        sample = _update_sample_with_qualimap_dict(
+            qualimap_dict=qualimap_dict,
+            sample=sample
+        )
 
     return metadata
 
 
-def _is_valid_qualimap_sample(sample: CustomBox) -> bool:
+def _is_valid_qualimap_sample(*, sample: CustomBox) -> bool:
     """
     Check if the sample is valid for parsing qualimap report.
 
@@ -290,6 +298,7 @@ def _is_valid_qualimap_sample(sample: CustomBox) -> bool:
 
 
 def _parse_report_file(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> dict:
@@ -308,7 +317,7 @@ def _parse_report_file(
         with open(sample.qualimap.report_file, encoding='utf-8') as report:
             for line in report:
                 # Sanitize the keys and values using qualimap_analyze
-                key, value = qualimap_analyze(line)
+                key, value = qualimap_analyze(line=line)
 
                 # If the keys and values exist, enter them into the dict
                 if (key, value) != (None, None):
@@ -333,6 +342,7 @@ def _parse_report_file(
 
 
 def _parse_contig_coverage(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     report: str,
     sample: CustomBox
@@ -365,8 +375,9 @@ def _parse_contig_coverage(
 
 
 def _update_sample_with_qualimap_dict(
+    *,  # Enforce keyword arguments
+    qualimap_dict: Dict,
     sample: CustomBox,
-    qualimap_dict: Dict
 ) -> None:
     """
     Update the sample object with the extracted key-value pairs.
@@ -384,7 +395,7 @@ def _update_sample_with_qualimap_dict(
     return sample
 
 
-def qualimap_analyze(line: str):
+def qualimap_analyze(*, line: str):
     """
     Analyze a line from the qualimap report.
 

@@ -6,7 +6,7 @@ Collection of functions to assemble bacterial genomes
 
 # Standard imports
 import logging
-from typing import Any, List
+from typing import List
 
 # Third-party imports
 from cowbat.assembly_evaluation import AssemblyEvaluation
@@ -16,6 +16,7 @@ from cowbat.skesa import Skesa
 from olctools.accessoryFunctions.accessoryFunctions import (
     write_metadata_to_file
 )
+from olctools.accessoryFunctions.metadata import CustomBox
 
 __author__ = 'adamkoziol'
 
@@ -24,11 +25,11 @@ def assemble(
     error_logger: logging.Logger,
     log_file: str,
     logger: logging.Logger,
-    metadata: List[Any],
+    metadata: List[CustomBox],
     report_path: str,
     sequence_path: str,
     threads: int
-) -> List[Any]:
+) -> List[CustomBox]:
     """
     Assemble genomes and perform basic quality analyses.
 
@@ -40,13 +41,13 @@ def assemble(
         error_logger (logging.Logger): Logger for recording errors.
         log_file (str): Path to the log file.
         logger (logging.Logger): Logger for recording information.
-        metadata (List[Any]): List of metadata objects for the samples.
+        metadata (List[CustomBox]): List of metadata objects for the samples.
         report_path (str): Path to save the report.
         sequence_path (str): Path to the sequence files.
         threads (int): Number of threads to use for processing.
 
     Returns:
-        List[Any]: Updated metadata after all processing steps.
+        List[CustomBox]: Updated metadata after all processing steps.
 
     Raises:
         IOError: If there is an issue with file operations.

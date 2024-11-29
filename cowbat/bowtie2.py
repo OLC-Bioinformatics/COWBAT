@@ -21,6 +21,7 @@ __author__ = 'adamkoziol'
 
 
 def prepare_sample_for_build(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> None:
@@ -40,7 +41,10 @@ def prepare_sample_for_build(
     logger.debug("Constructed build command: %s", sample.quast.build_command)
 
 
-def index_files_exist(sample: CustomBox) -> bool:
+def index_files_exist(
+    *,  # Enforce keyword arguments
+    sample: CustomBox
+) -> bool:
     """
     Check if the index files already exist.
 
@@ -54,6 +58,7 @@ def index_files_exist(sample: CustomBox) -> bool:
 
 
 def run_build_command(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -90,6 +95,7 @@ def run_build_command(
 
 
 def bowtie_build(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox]
@@ -118,7 +124,7 @@ def bowtie_build(
             sample=sample
         )
 
-        if not index_files_exist(sample):
+        if not index_files_exist(sample=sample):
             logger.info(
                 "Index files not found for sample %s. Running bowtie2-build",
                 sample.name
@@ -137,7 +143,10 @@ def bowtie_build(
     return metadata
 
 
-def prepare_output_directory(sample: CustomBox) -> None:
+def prepare_output_directory(
+    *,  # Enforce keyword arguments
+    sample: CustomBox
+) -> None:
     """
     Prepare the output directory for the sample.
 
@@ -154,6 +163,7 @@ def prepare_output_directory(sample: CustomBox) -> None:
 
 
 def construct_mapping_command(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox,
     threads: int
@@ -190,7 +200,10 @@ def construct_mapping_command(
     logger.debug("Constructed map command: %s", sample.quast.map_command)
 
 
-def sorted_bam_exists(sample: CustomBox) -> bool:
+def sorted_bam_exists(
+    *,  # Enforce keyword arguments
+    sample: CustomBox
+) -> bool:
     """
     Check if the sorted BAM file already exists.
 
@@ -204,6 +217,7 @@ def sorted_bam_exists(sample: CustomBox) -> bool:
 
 
 def run_mapping_command(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -240,6 +254,7 @@ def run_mapping_command(
 
 
 def bowtie_run(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],
@@ -283,7 +298,7 @@ def bowtie_run(
             threads=threads
         )
 
-        if not sorted_bam_exists(sample):
+        if not sorted_bam_exists(sample=sample):
             logger.info(
                 "Sorted BAM file not found for sample %s, running command",
                 sample.name

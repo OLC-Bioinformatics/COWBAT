@@ -26,6 +26,7 @@ __author__ = 'adamkoziol'
 
 
 def indexing(
+    *,  # Enforce keyword arguments
     index_queue: Queue,
     logger: logging.Logger,
     metadata: List[CustomBox],
@@ -138,6 +139,7 @@ def index(index_queue: Queue) -> None:
 
 
 def run_quast(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],
@@ -170,7 +172,7 @@ def run_quast(
             threads=threads
         )
 
-        if not quast_report_exists(sample):
+        if not quast_report_exists(sample=sample):
             logger.info(
                 "Quast report not found for sample %s, running command",
                 sample.name
@@ -190,6 +192,7 @@ def run_quast(
 
 
 def prepare_quast_command(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox,
     threads: int
@@ -236,7 +239,7 @@ def prepare_quast_command(
     return sample
 
 
-def quast_report_exists(sample: CustomBox) -> bool:
+def quast_report_exists(*, sample: CustomBox) -> bool:
     """
     Check if the Quast report already exists.
 
@@ -250,6 +253,7 @@ def quast_report_exists(sample: CustomBox) -> bool:
 
 
 def run_quast_command(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -284,6 +288,7 @@ def run_quast_command(
 
 
 def parse_quast_report(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     metadata: List[CustomBox]
 ) -> List[CustomBox]:
@@ -326,6 +331,7 @@ def parse_quast_report(
 
 
 def _parse_report(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> CustomBox:
@@ -342,7 +348,7 @@ def _parse_report(
     try:
         with open(sample.quast.report, 'r', encoding='utf-8') as report:
             for line in report:
-                key, value = analyze(line)
+                key, value = analyze(line=line)
                 logger.debug(
                     "Extracted key-value pair: %s: %s", key, value
                 )
@@ -357,6 +363,7 @@ def _parse_report(
 
 
 def clean_quast(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     metadata: List[CustomBox]
 ) -> None:
@@ -389,6 +396,7 @@ def clean_quast(
 
 
 def _clean_sample_quast_files(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> None:
@@ -411,6 +419,7 @@ def _clean_sample_quast_files(
 
 
 def _remove_large_files(
+    *,  # Enforce keyword arguments
     file_path: str,
     logger: logging.Logger,
     quast_file: str,
@@ -447,7 +456,7 @@ def _remove_large_files(
         )
 
 
-def analyze(line):
+def analyze(*, line):
     """
     Analyze a line from the report.
 

@@ -19,6 +19,7 @@ __author__ = 'adamkoziol'
 
 
 def error_correction(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],

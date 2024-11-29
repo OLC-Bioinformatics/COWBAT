@@ -21,14 +21,18 @@ from olctools.accessoryFunctions.metadata import CustomBox
 
 
 def validate_fastq(
-        log_file: str,
-        logger: logging.Logger,
-        metadata: List[CustomBox]) -> List[CustomBox]:
+    *,  # Enforce keyword arguments
+    error_logger: logging.Logger,
+    log_file: str,
+    logger: logging.Logger,
+    metadata: List[CustomBox]
+) -> List[CustomBox]:
     """
     Runs reformat.sh on the FASTQ files. If a CalledProcessError arises, do
     not proceed with the assembly of these files.
 
     Args:
+        error_logger (logging.Logger): Logger for recording errors.
         log_file (str): Path to the log file.
         logger (logging.Logger): Logger object.
         metadata (List[CustomBox]): List of metadata sample objects.
@@ -65,11 +69,11 @@ def validate_fastq(
                 sample=sample
             )
             logger.debug('Validation successful for sample: %s', sample.name)
-        except CalledProcessError as e:
+        except CalledProcessError as exc:
             # Handle any validation errors by attempting to repair the reads
             logger.error(
                 'Validation failed for sample: %s with error: %s',
-                sample.name, str(e)
+                sample.name, str(exc)
             )
             handle_validation_error(
                 log_file=log_file,
@@ -79,13 +83,18 @@ def validate_fastq(
 
     # Write the updated metadata to a file
     logger.debug('Writing updated metadata to file')
-    write_metadata_to_file(metadata)
+    write_metadata_to_file(
+        error_logger=error_logger,
+        logger=logger,
+        metadata=metadata,
+    )
 
     logger.info('FASTQ validation completed')
     return metadata
 
 
 def validate_file_size(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> bool:
@@ -114,6 +123,7 @@ def validate_file_size(
 
 
 def validate_reads(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -161,6 +171,7 @@ def validate_reads(
 
 
 def handle_validation_error(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -246,6 +257,7 @@ def handle_validation_error(
 
 
 def get_reformatted_and_repair_paths(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     sample: CustomBox
 ) -> tuple:
@@ -303,6 +315,7 @@ def get_reformatted_and_repair_paths(
 
 
 def reformat_reads(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     reformatted_forward: str,
@@ -357,6 +370,7 @@ def reformat_reads(
 
 
 def repair_reads(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     reformatted_forward: str,
@@ -432,6 +446,7 @@ def repair_reads(
 
 
 def handle_repair_error(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     reformatted_forward: str,
@@ -528,6 +543,7 @@ def handle_repair_error(
 
 
 def log_fastq_error(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     sample: CustomBox
@@ -563,6 +579,7 @@ def log_fastq_error(
 
 
 def error(
+    *,  # Enforce keyword arguments
     logger: logging.Logger,
     message: str,
     sample: CustomBox

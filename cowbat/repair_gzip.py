@@ -20,6 +20,7 @@ __author__ = 'adamkoziol'
 
 
 def repair_gzip(
+    *,  # Enforce keyword arguments
     log_file: str,
     logger: logging.Logger,
     metadata: List

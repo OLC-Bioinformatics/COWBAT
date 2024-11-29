@@ -3,7 +3,7 @@ from olctools.accessoryFunctions.accessoryFunctions import MetadataObject, GenOb
     SetupLogging
 from genemethods.assemblypipeline.legacy_vtyper import Vtyper as LegacyVtyper
 import olctools.accessoryFunctions.metadataprinter as metadataprinter
-from genemethods.typingclasses.typingclasses import GDCS, Prophages, Univec
+from genemethods.typing_classes.typing_classes import GDCS, Prophages, Univec
 from genemethods.assemblypipeline.createobject import ObjectCreation
 from genemethods.assemblypipeline.mobrecon import MobRecon
 from genemethods.assemblypipeline.ec_typer import ECTyper
@@ -16,7 +16,7 @@ import genemethods.assemblypipeline.sistr as sistr
 from cowbat.metagenomefilter import automateCLARK
 from genemethods.geneseekr.blast import BLAST
 import genemethods.coreGenome.core as core
-import genemethods.MASHsippr.mash as mash
+import genemethods.assemblypipeline.mash as mash
 from argparse import ArgumentParser
 import multiprocessing
 from time import time

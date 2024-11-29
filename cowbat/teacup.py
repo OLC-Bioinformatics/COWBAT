@@ -19,6 +19,7 @@ from typing import (
 # Local imports
 from cowbat.assemble import assemble
 from cowbat.methods import (
+    check_programs,
     initialize_logging,
     read_checkpoint,
     sample_metadata,
@@ -26,7 +27,10 @@ from cowbat.methods import (
     write_checkpoint,
 )
 from cowbat.quality import quality
+from cowbat.quality_report import write_quality_report
 from cowbat.teacup_version import __version__
+from cowbat.taxonomy import taxonomy
+from cowbat.typing import typing
 
 __author__ = 'adamkoziol'
 
@@ -70,6 +74,33 @@ class TeacupCOWBAT:
             "Welcome to Teacup COWBAT version %s", __version__
         )
 
+        # Set the list of required command line programs
+        programs = [
+            'bbduk.sh',
+            'bowtie2',
+            'centrifuge',
+            'confindr',
+            'fastqc',
+            'mash',
+            'metaphlan',
+            'multiqc',
+            'pilon',
+            'prodigal',
+            'qualimap',
+            'quast.py',
+            'samtools',
+            'skesa'
+        ]
+
+        # Ensure that all the required programs are present in the environment
+        missing = check_programs(
+            programs=programs
+        )
+
+        # If there are missing programs, exit
+        if missing:
+            raise SystemExit
+
         # Determine the last successful step
         self.last_step = read_checkpoint(self.checkpoint_file)
         self.logger.info("Starting from step: %s", self.last_step)
@@ -78,8 +109,9 @@ class TeacupCOWBAT:
         self.pipeline_steps: List[Tuple[str, Callable[[], None]]] = [
             ('quality', quality),
             ('assemble', assemble),
-            # ('agnostic_typing', self.agnostic_typing),
-            # ('typing', self.typing)
+            ('taxonomy', taxonomy),
+            ('quality_report', write_quality_report),
+            ('typing', typing)
         ]
 
         # Initialise the list of metadata
@@ -115,15 +147,22 @@ class TeacupCOWBAT:
 
         # Execute the steps from the determined starting index
         for step, method in self.pipeline_steps[start_index:]:
+
+            self.logger.info('Running %s section of COWBAT', step)
+
             try:
                 # Get the method's parameters
                 params = inspect.signature(method).parameters
 
                 # Prepare the arguments to pass to the method
                 args = {
+                    'analysis_type': step,
                     'error_logger': self.error_logger,
+                    'commit': __version__,
                     'log_file': self.log_file,
+                    'logger': self.logger,
                     'metadata': self.metadata,
+                    'reference_file_path': self.database_path,
                     'report_path': self.report_path,
                     'sequence_path': self.sequence_path,
                     'threads': self.threads

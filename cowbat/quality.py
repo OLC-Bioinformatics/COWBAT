@@ -5,24 +5,28 @@ Quality checking functions. Includes FastQC, FASTQ read trimming, error
 correction, and contamination discovery with ConFindr.
 """
 
+# Standard imports
+import logging
+from typing import List
+
 # Third-party imports
-from genemethods.assemblypipeline.contamination_detection import (
+from cowbat.contamination_detection import (
     contamination_finder
 )
-from genemethods.assemblypipeline.error_correct import error_correction
-from genemethods.assemblypipeline.fastqc import fastqc_threader
-from genemethods.assemblypipeline.quality_trim import trim_quality
-from genemethods.assemblypipeline.repair_gzip import repair_gzip
-from genemethods.assemblypipeline.validate_fastq import validate_fastq
+from cowbat.error_correct import error_correction
+from cowbat.fastqc import fastqc_threader
+from cowbat.quality_trim import trim_quality
+from cowbat.repair_gzip import repair_gzip
+from cowbat.validate_fastq import validate_fastq
 from olctools.accessoryFunctions.accessoryFunctions import (
     write_metadata_to_file
 )
-from typing import List, Any
 
 
 def quality(
-    error_logger: Any,
+    error_logger: logging.Logger,
     log_file: str,
+    logger: logging.Logger,
     metadata: List,
     report_path: str,
     sequence_path: str,
@@ -33,7 +37,7 @@ def quality(
     detection on the samples.
 
     Args:
-        error_logger (Any): Logger for error messages.
+        error_logger (logging.Logger): Logger for error messages.
         log_file (str): Path to the log file.
         metadata (List): List of metadata sample objects.
         report_path (str): Path to the report directory.
@@ -48,12 +52,14 @@ def quality(
     # reads, read length longer than quality score length, proper extension
     metadata = validate_fastq(
         metadata=metadata,
-        log_file=log_file
+        log_file=log_file,
+        logger=logger,
     )
 
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
@@ -61,6 +67,7 @@ def quality(
     metadata = fastqc_threader(
         level='Raw',
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         threads=threads
     )
@@ -68,18 +75,21 @@ def quality(
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
     # Perform quality trimming and FastQC on the trimmed files
     metadata = trim_quality(
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
     )
 
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
@@ -87,6 +97,7 @@ def quality(
     metadata = fastqc_threader(
         level='trimmed',
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         threads=threads
     )
@@ -94,12 +105,14 @@ def quality(
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
     # Perform error correction on the reads
     metadata = error_correction(
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         threads=threads
     )
@@ -107,6 +120,7 @@ def quality(
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
@@ -114,6 +128,7 @@ def quality(
     metadata = fastqc_threader(
         level='trimmed_corrected',
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         threads=threads
     )
@@ -121,12 +136,14 @@ def quality(
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 
     # Fix issue with bbmap gzip
     repair_gzip(
         log_file=log_file,
+        logger=logger,
         metadata=metadata
     )
 
@@ -134,6 +151,7 @@ def quality(
     metadata = contamination_finder(
         input_path=sequence_path,
         log_file=log_file,
+        logger=logger,
         metadata=metadata,
         report_path=report_path,
         threads=threads
@@ -142,6 +160,7 @@ def quality(
     # Write the metadata to file
     write_metadata_to_file(
         error_logger=error_logger,
+        logger=logger,
         metadata=metadata
     )
 

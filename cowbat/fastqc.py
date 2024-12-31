@@ -54,6 +54,7 @@ def fastqc_threader(
                 sample=sample,
                 level=level,
                 log_file=log_file,
+                logger=logger,
                 threads=threads) for sample in metadata if isinstance(
                 sample.general.fastq_files,
                 list)]
@@ -252,6 +253,7 @@ def get_reader_and_files(
             fastq_files = [fastq_files]
 
         # Determine the appropriate reader based on the file extension
+        print(fastq_files, attr)
         if '.gz' in fastq_files[0]:
             reader = 'gunzip --to-stdout'
         elif '.bz2' in fastq_files[0]:

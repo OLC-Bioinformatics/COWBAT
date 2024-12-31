@@ -57,7 +57,10 @@ def filter_contigs(
                     "Submitting filter task for sample: %s", sample.name
                 )
                 future = executor.submit(
-                    _run_filter, logger, sample, sequence_path
+                    _run_filter,
+                    logger=logger,
+                    sample=sample,
+                    sequence_path=sequence_path
                 )
                 futures.append(future)
 

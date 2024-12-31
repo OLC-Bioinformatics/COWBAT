@@ -55,7 +55,12 @@ def qualimapper(
         for sample in metadata:
             sample = _initialize_sample_qualimap(sample=sample)
             if sample.general.best_assembly_file != "NA":
-                future = executor.submit(_run_qualimap, log_file, sample)
+                future = executor.submit(
+                    _run_qualimap,
+                    log_file=log_file,
+                    logger=logger,
+                    sample=sample
+                )
                 futures.append(future)
 
     updated_metadata = []

@@ -606,10 +606,10 @@ def sample_sheet_metadata_populate(
         {
             'output_directory': os.path.join(sequence_path, sample_name),
             'pipeline_commit': commit, 'log_out': os.path.join(
-                sequence_path, sample_name, f'{sample_name} _log_out.txt'
+                sequence_path, sample_name, f'{sample_name}_log_out.txt'
             ),
             'log_err': os.path.join(
-                sequence_path, sample_name, f'{sample_name} _log_err.txt'
+                sequence_path, sample_name, f'{sample_name}_log_err.txt'
             )
         }
     )

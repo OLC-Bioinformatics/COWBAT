@@ -26,11 +26,11 @@ from cowbat.methods import (
     tilde_expand,
     write_checkpoint,
 )
+from cowbat.agnostic_typing import agnostic_typing
 from cowbat.quality import quality
 from cowbat.quality_report import write_quality_report
 from cowbat.teacup_version import __version__
 from cowbat.taxonomy import taxonomy
-from cowbat.typing import typing
 
 __author__ = 'adamkoziol'
 
@@ -76,11 +76,13 @@ class TeacupCOWBAT:
 
         # Set the list of required command line programs
         programs = [
+            'bakta',
             'bbduk.sh',
             'bowtie2',
             'centrifuge',
             'confindr',
             'fastqc',
+            'kma',
             'mash',
             'metaphlan',
             'multiqc',
@@ -112,7 +114,7 @@ class TeacupCOWBAT:
             ('assemble', assemble),
             ('taxonomy', taxonomy),
             ('quality_report', write_quality_report),
-            ('typing', typing)
+            ('agnostic_typing', agnostic_typing)
         ]
 
         # Initialise the list of metadata

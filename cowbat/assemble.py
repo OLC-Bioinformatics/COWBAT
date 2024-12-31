@@ -10,7 +10,7 @@ from typing import List
 
 # Third-party imports
 from cowbat.assembly_evaluation import AssemblyEvaluation
-from cowbat.multiqc import multi_qc
+from cowbat.bakta import bakta
 from cowbat.prodigal import Prodigal
 from cowbat.skesa import Skesa
 from olctools.accessoryFunctions.accessoryFunctions import (
@@ -26,6 +26,7 @@ def assemble(
     log_file: str,
     logger: logging.Logger,
     metadata: List[CustomBox],
+    reference_file_path: str,
     report_path: str,
     sequence_path: str,
     threads: int
@@ -42,6 +43,7 @@ def assemble(
         log_file (str): Path to the log file.
         logger (logging.Logger): Logger for recording information.
         metadata (List[CustomBox]): List of metadata objects for the samples.
+        reference_file_path (str): Path to the reference database.
         report_path (str): Path to save the report.
         sequence_path (str): Path to the sequence files.
         threads (int): Number of threads to use for processing.
@@ -105,12 +107,20 @@ def assemble(
             metadata=metadata
         )
 
-        # Use MultiQC to aggregate reports
-        multi_qc(
+        # Run Bakta analyses
+        metadata = bakta(
             log_file=log_file,
             logger=logger,
-            report_path=report_path,
+            metadata=metadata,
+            reference_file_path=reference_file_path,
             sequence_path=sequence_path
+        )
+
+        # Write the metadata to file
+        write_metadata_to_file(
+            error_logger=error_logger,
+            logger=logger,
+            metadata=metadata
         )
 
         return metadata

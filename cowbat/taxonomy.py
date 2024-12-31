@@ -7,6 +7,7 @@ and assemblies
 
 # Standard imports
 import logging
+import os
 from typing import List
 
 # Third-party imports
@@ -18,6 +19,10 @@ from olctools.accessoryFunctions.accessoryFunctions import (
 
 # Local imports
 from cowbat.metaphlan import run_metaphlan_analyses
+from cowbat.gtdbtk import (
+    gtdbtk,
+    parse_gtbdtk_output
+)
 
 __author__ = 'adamkoziol'
 
@@ -29,6 +34,7 @@ def taxonomy(
     metadata: List[CustomBox],
     reference_file_path: str,
     report_path: str,
+    sequence_path: str,
     threads: int
 ) -> List[CustomBox]:
     """
@@ -44,6 +50,7 @@ def taxonomy(
         metadata (List[Any]): List of metadata objects for the samples.
         reference_file_path (str): Path to the reference database.
         report_path (str): Path to save the report.
+        sequence_path (str): Path to the sequence files.
         threads (int): Number of threads to use for processing.
 
     """
@@ -74,21 +81,39 @@ def taxonomy(
         logger=logger,
         metadata=metadata,
         report_path=report_path,
+        sequence_path=sequence_path,
         threads=threads
     )
 
-    # Perform metaphlan analyses on FASTA files
-    metadata = run_metaphlan_analyses(
+    # Write the metadata to file
+    write_metadata_to_file(
         error_logger=error_logger,
-        file_format='fasta',
+        logger=logger,
+        metadata=metadata
+    )
+
+    # Run GTDB-Tk analyses
+    report = gtdbtk(
+        assembly_path=os.path.join(sequence_path, 'BestAssemblies'),
         log_file=log_file,
         logger=logger,
-        metadata=metadata,
+        reference_file_path=reference_file_path,
         report_path=report_path,
         threads=threads
     )
 
-    # Return the updated metadata
-    quit()
+    # Parse the GTDB-Tk output
+    metadata = parse_gtbdtk_output(
+        metadata=metadata,
+        report=report
+    )
 
-    # return metadata
+    # Write the metadata to file
+    write_metadata_to_file(
+        error_logger=error_logger,
+        logger=logger,
+        metadata=metadata
+    )
+
+    # Return the updated metadata
+    return metadata

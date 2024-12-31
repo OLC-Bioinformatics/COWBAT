@@ -48,13 +48,11 @@ def error_correction(
             f"{fastq.split('.fastq.gz')[0]}_trimmed_corrected.fastq.gz"
             for fastq in sorted(sample.general.fastq_files)
         ]
-
         if os.path.isfile(sample.general.trimmed_corrected_fastq_files[0]):
             logger.debug(
                 'Trimmed corrected FASTQ file already exists for sample: %s',
                 sample.name
             )
-            sample.general.trimmed_corrected_fastq_files = []
             continue
 
         try:

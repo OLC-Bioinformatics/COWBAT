@@ -13,6 +13,9 @@ from typing import Any, List
 # Third-party imports
 from olctools.accessoryFunctions.metadata import CustomBox
 
+# Local imports
+from cowbat.multiqc import multi_qc
+
 # Constants
 QUALITY_HEADERS = [
     'SeqID',
@@ -254,10 +257,12 @@ def generate_sample_data(
 def write_quality_report(
     *,  # Enforce keyword arguments
     commit: str,
+    log_file: str,
     logger: logging.Logger,
     metadata: List[Any],
     reference_file_path: str,
-    report_path: str
+    report_path: str,
+    sequence_path: str
 ) -> None:
     """
     Create a sample quality summary report in TSV format.
@@ -267,14 +272,25 @@ def write_quality_report(
 
     Args:
         commit (str): The pipeline version.
+        log_file (str): Path to the log file.
         logger (logging.Logger): Logger object.
         metadata (List[Any]): A list of sample objects containing metadata.
         reference_file_path (str): The path to the reference file.
         report_path (str): The path to save the report.
+        sequence_path (str): The path to the sequence files.
 
     Returns:
         None
     """
+    # Use MultiQC to aggregate reports
+    multi_qc(
+        log_file=log_file,
+        logger=logger,
+        metadata=metadata,
+        report_path=report_path,
+        sequence_path=sequence_path
+    )
+
     logger.info('Creating sample quality summary report')
     header = f"{'\t'.join(QUALITY_HEADERS)}\n"
 
@@ -297,3 +313,6 @@ def write_quality_report(
     with open(report, 'w', encoding='utf-8') as quality_report:
         quality_report.write(header)
         quality_report.write(clean_data)
+
+    # Return the metadata
+    return metadata

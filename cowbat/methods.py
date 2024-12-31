@@ -15,7 +15,8 @@ from typing import (
 
 # Third-party imports
 from olctools.accessoryFunctions.accessoryFunctions import (
-    write_metadata_to_file
+    write_metadata_to_file,
+    write_to_log_file
 )
 from olctools.accessoryFunctions.metadata import CustomBox
 
@@ -310,3 +311,55 @@ def check_programs(
 
     logger.info("All required programs are installed.")
     return []
+
+
+def write_to_log_files(
+    *,  # Enforce keyword arguments
+    command: str,
+    err: str,
+    log_file: str,
+    logger: logging.Logger,
+    out: str,
+    program: str,
+    sample: CustomBox
+) -> None:
+    """
+    Write the command and outputs to the log files
+
+    Args:
+        command (str): The command.
+        err (str): The error output from the command.
+        file_format (str): The format of the sequence files.
+        log_file (str): The name and path of the log file.
+        logger (logging.Logger): The logger object.
+        out (str): The output from the command.
+        program (str): The name of the program for which the command was run.
+        sample (CustomBox): The sample object
+    """
+    # Write the metaphlan command to the log files
+    logger.debug(
+        'Writing %s command to log for sample: %s',
+        program, sample.name
+    )
+    write_to_log_file(
+        out=command,
+        err=command,
+        log_file=log_file,
+        sample_log=sample.general.log_out,
+        sample_err=sample.general.log_err,
+    )
+
+    # Write the outputs to the log files
+    logger.debug(
+        'Writing %s output to log for sample: %s',
+        program, sample.name
+    )
+
+    # Write the outputs to the log files
+    write_to_log_file(
+        out=out,
+        err=err,
+        log_file=log_file,
+        sample_log=sample.general.log_out,
+        sample_err=sample.general.log_err,
+    )

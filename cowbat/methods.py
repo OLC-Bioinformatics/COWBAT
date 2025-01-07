@@ -321,7 +321,8 @@ def write_to_log_files(
     logger: logging.Logger,
     out: str,
     program: str,
-    sample: CustomBox
+    sample: CustomBox,
+    log_output: bool = False
 ) -> None:
     """
     Write the command and outputs to the log files
@@ -335,12 +336,16 @@ def write_to_log_files(
         out (str): The output from the command.
         program (str): The name of the program for which the command was run.
         sample (CustomBox): The sample object
+        log_output (bool): Whether to log the output to the sample log file.
     """
-    # Write the metaphlan command to the log files
-    logger.debug(
-        'Writing %s command to log for sample: %s',
-        program, sample.name
-    )
+    # Log the command
+    if log_output:
+        logger.debug(
+            'Writing %s command to log for sample: %s',
+            program, sample.name
+        )
+
+    # Write the command to the log files
     write_to_log_file(
         out=command,
         err=command,
@@ -349,11 +354,12 @@ def write_to_log_files(
         sample_err=sample.general.log_err,
     )
 
-    # Write the outputs to the log files
-    logger.debug(
-        'Writing %s output to log for sample: %s',
-        program, sample.name
-    )
+    # Log the output from the command
+    if log_output:
+        logger.debug(
+            'Writing %s output to log for sample: %s',
+            program, sample.name
+        )
 
     # Write the outputs to the log files
     write_to_log_file(

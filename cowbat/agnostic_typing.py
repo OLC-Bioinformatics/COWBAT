@@ -26,7 +26,8 @@ def agnostic_typing(
     logger: logging.Logger,
     metadata: List[CustomBox],
     reference_file_path: str,
-    report_path: str
+    report_path: str,
+    threads: int
 ) -> List[CustomBox]:
     """
     Perform genus-specific and agnostic typing of bacterial sequences
@@ -38,6 +39,7 @@ def agnostic_typing(
         metadata (List[Any]): List of metadata objects for the samples.
         reference_file_path (str): Path to the reference database.
         report_path (str): Path to save the report.
+        threads (int): Number of threads to use for the analyses
 
     Returns:
         List[Any]: Updated metadata after all processing steps.
@@ -48,12 +50,12 @@ def agnostic_typing(
             analyses.
     """
     metadata = rmlst(
-        error_logger=error_logger,
         log_file=log_file,
         logger=logger,
         metadata=metadata,
         reference_file_path=reference_file_path,
-        report_path=report_path
+        report_path=report_path,
+        threads=threads
     )
 
     # Write the metadata to file

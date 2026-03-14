@@ -1,0 +1,55 @@
+name: Build, Publish and Release Conda Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      CONDA_PKG_PATH: /usr/share/miniconda/conda-bld/noarch
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        activate-environment: teacup_cowbat_env
+        python-version: 3.12.3
+        auto-activate-base: false
+        channels: olcbioinformatics,bioconda,conda-forge
+    - name: Install Conda build
+      run: conda install -y conda-build
+    - name: Install conda-verify
+      run: conda install -y conda-verify
+    - name: Set version
+      run: echo "VERSION=${{ github.event.release.tag_name }}" >> $GITHUB_ENV
+    - name: Download source code
+      run: wget https://github.com/OLC-Bioinformatics/COWBAT/archive/$VERSION.tar.gz
+    - name: Calculate hash
+      run: |
+        echo "HASH=$(sha256sum $VERSION.tar.gz | awk '{ print $1 }')" >> $GITHUB_ENV
+    - name: Update meta.yaml
+      run: |
+        sed -i "s/{{ version }}/${VERSION#v}/g" recipes/teacup.yaml
+        sed -i "s|{{ url }}|https://github.com/OLC-Bioinformatics/COWBAT/archive/$VERSION.tar.gz|g" recipes/teacup.yaml
+        sed -i "s/{{ sha256 }}/$HASH/g" recipes/teacup.yaml
+    - name: Build Conda package
+      run: |
+        conda build --file recipes/teacup.yaml
+    - name: Upload Conda package
+      uses: actions/upload-artifact@v2
+      with:
+        name: azure_batch
+        path: $CONDA_PKG_PATH/teacup_cowbat-*.tar.bz2
+    - name: Install anaconda-client
+      run: |
+        conda install -y anaconda-client
+        echo "$(conda info --base)/bin" >> $GITHUB_PATH
+    - name: Upload package to olcbioinformatics
+      run: |
+        anaconda -t ${{ secrets.OLCBIOINFORMATICS_TEACUP_ANACONDA_API_TOKEN }} upload -u olcbioinformatics $CONDA_PKG_PATH/teacup_cowbat-*.tar.bz2
+    - name: Upload package to adamkoziol
+      run: |
+        anaconda -t ${{ secrets.ADAMKOZIOL_TEACUP_ANACONDA_API_TOKEN }} upload -u adamkoziol $CONDA_PKG_PATH/teacup_cowbat-*.tar.bz2

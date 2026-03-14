@@ -1,0 +1,44 @@
+{% set name = "teacup_cowbat" %}
+{% set version = "{{ version }}" %}
+
+package:
+  name: '{{ name|lower }}'
+  version: '{{ version }}'
+
+source:
+  url: '{{ url }}'
+  sha256: '{{ sha256 }}'
+
+build:
+  number: 0
+  noarch: python
+  script: python -m pip install --no-deps --ignore-installed .
+
+requirements:
+  host:
+    - python=3.12.3=hab00c5b_0_cpython
+  run:
+    - python=3.12.3=hab00c5b_0_cpython
+    - python-box=7.2.0=py312h9a8786e_0
+    - pytest=8.2.1=pyhd8ed1ab_0
+    - pytest-cov=5.0.0=pyhd8ed1ab_0
+
+test:
+  imports:
+    - azure_batch
+  commands:
+    - AzureBatch -h
+
+about:
+  home: https://github.com/OLC-Bioinformatics/COWBAT
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: 
+  description: |
+    
+  doc_url: https://github.com/OLC-Bioinformatics/COWBAT
+  dev_url: https://github.com/OLC-Bioinformatics/COWBAT
+
+extra:
+  recipe-maintainers: 'adamkoziol'

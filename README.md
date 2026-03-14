@@ -1,7 +1,16 @@
 ![alt text](cowbat.png "Cowbat")
 
-### CFIA OLC Workflow for Bacterial Assembly and Typing
+## CFIA OLC Workflow for Bacterial Assembly and Typing
 
-#### [Read the Docs](http://olc-bioinformatics.github.io/COWBAT/)
+Pipeline for automatic quality control, assembly, and typing of FASTQ-formatted reads from an Illumina MiSeq.
 
-[![Build Status](https://travis-ci.org/OLC-Bioinformatics/COWBAT.svg?branch=master)](https://travis-ci.org/OLC-Bioinformatics/COWBAT)
+### Documentation
+
+**[Read the Docs](http://olc-bioinformatics.github.io/COWBAT/)** — Installation, usage, and pipeline overview.
+
+### Quick Start
+
+```bash
+conda create -n cowbat -c olcbioinformatics -c bioconda -c conda-forge teacup_cowbat
+conda activate cowbat
+```
